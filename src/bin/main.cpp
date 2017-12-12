@@ -8,6 +8,9 @@
 #include "game_engine/ControlInput.hpp"
 #include "game_engine/FrameRateRegulator.hpp"
 
+namespace ge = game_engine;
+namespace dt = debug_tools;
+
 void displayFPS(double frame_time_ms) {
 
     /* That's so nasty */
@@ -25,9 +28,6 @@ void displayFPS(double frame_time_ms) {
     }
 
 }
-
-namespace ge = game_engine;
-namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 

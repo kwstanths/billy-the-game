@@ -1,20 +1,11 @@
 #ifndef __GameEngine_hpp__
 #define __GameEngine_hpp__
 
-#ifdef _WIN32
-#include <Windows.h>
-#elif
-
-#endif
-
 #include <string>
 
-#include <GL/glew.h>
-#include <glfw3.h>
-
-#include "FrameRateRegulator.hpp"
+#include "opengl/OpenGLContext.hpp"
 #include "ControlInput.hpp"
-#include "ErrorCodes.hpp"
+#include "Camera.hpp"
 
 namespace game_engine {
 
@@ -53,16 +44,16 @@ namespace game_engine {
         void Step();
 
         /**
-        
+            Get a struct with input from the user
+            @return A ControlInput_t struct
         */
         ControlInput_t GetControlsInput();
 
     private:
         bool is_inited_;
-        size_t window_width_;
-        size_t window_height_;
-        GLfloat window_ratio_;
-        GLFWwindow * glfw_window_;
+        OpenGLContext * context_ = nullptr;
+        Camera * camera_ = nullptr;
+
     };
 
 }

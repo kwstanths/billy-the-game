@@ -31,7 +31,6 @@ endif()
 
 find_package(OpenGL REQUIRED)
 
-include_directories(common)
 include_directories(${PROJECT_ROOT}/src/lib/)
 include_directories(${PROJECT_ROOT}/src/lib/external/glfw-3.1.2/include/GLFW/)
 include_directories(${PROJECT_ROOT}/src/lib/external/glm-0.9.7.1/)
@@ -54,14 +53,12 @@ add_definitions(
 
 file(GLOB ${NAME}_HEADERS *.hpp)
 file(GLOB ${NAME}_SOURCES *.cpp)
-file(GLOB ${NAME}_COMMON_HEADERS common/*.hpp)
-file(GLOB {$NAME}_COMMON_SOURCES common/*.cpp)
+file(GLOB ${NAME}_SHADERS ${PROJECT_ROOT}/src/shaders/*.glsl)
 
 add_executable(${NAME}
     ${${NAME}_HEADERS} 
     ${${NAME}_SOURCES}
-    ${${NAME}_COMMON_HEADERS} 
-    ${${NAME}_COMMON_SOURCES}
+    ${${NAME}_SHADERS}
 )
 
 target_link_libraries(${NAME}

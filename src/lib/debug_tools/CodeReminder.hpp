@@ -5,11 +5,13 @@
 #include "Console.hpp"
 
 
-#define CodeReminder(text) debug_tools::Console(debug_tools::CRITICAL, std::string(#text) + ":" + std::string(__FILE__) + ":" + std::to_string(__LINE__));
+#define CodeReminder(text) {\
+    std::cout << "Reminder: " + std::string(#text) + " : " + std::string(__FILE__) + ":" + std::to_string(__LINE__) << std::endl; \
+    }
 
 #define CodeReminderFatal(text) \
     { \
-        debug_tools::Console(debug_tools::FATAL, std::string(#text) + ":" + std::string(__FILE__) + ":" + std::to_string(__LINE__)); \
+        std::cout << "Reminder: " + std::string(#text) + " : " + std::string(__FILE__) + ":" + std::to_string(__LINE__) << std::endl; \
         debug_tools::WaitInput(); \
         exit(-1); \
     }

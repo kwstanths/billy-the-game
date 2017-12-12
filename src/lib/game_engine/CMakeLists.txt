@@ -34,6 +34,7 @@ endif()
 
 
 include_directories(${PROJECT_ROOT}/src/lib/)
+include_directories(opengl)
 include_directories(${PROJECT_ROOT}/src/lib/external/glfw-3.1.2/include/GLFW/)
 include_directories(${PROJECT_ROOT}/src/lib/external/glm-0.9.7.1/)
 include_directories(${PROJECT_ROOT}/src/lib/external/glew-1.13.0/include/)
@@ -41,7 +42,15 @@ include_directories(${PROJECT_ROOT}/src/lib/external/glew-1.13.0/include/)
 # Sources
 file(GLOB ${NAME}_HEADERS *.hpp)
 file(GLOB ${NAME}_SOURCES *.cpp)
+file(GLOB ${NAME}_GL_HEADERS opengl/*.hpp)
+file(GLOB ${NAME}_GL_SOURCES opengl/*.cpp)
+file(GLOB ${NAME}_GL_COMMON_HEADERS opengl/common/*.hpp)
+file(GLOB ${NAME}_GL_COMMON_SOURCES opengl/common/*.cpp)
 
 
 # Target
-add_library(${NAME} ${${NAME}_HEADERS} ${${NAME}_SOURCES})
+add_library(
+	${NAME} ${${NAME}_HEADERS} ${${NAME}_SOURCES} 
+	${${NAME}_GL_HEADERS} ${${NAME}_GL_SOURCES}
+	${${NAME}_GL_COMMON_HEADERS} ${${NAME}_GL_COMMON_SOURCES}
+	)
