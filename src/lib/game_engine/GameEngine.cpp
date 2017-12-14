@@ -9,12 +9,11 @@ namespace dt = debug_tools;
 
 namespace game_engine {
 
-    GameEngine::GameEngine() {
+    GameEngine::GameEngine(OpenGLContextParams_t & context_params, OpenGLCameraParams_t & camera_params) {
         is_inited_ = false;
 
-        context_ = new OpenGLContext();
-        camera_ = new OpenGLCamera();
-        test_object_1_ = new OpenGLObject();
+        context_ = new OpenGLContext(context_params);
+        camera_ = new OpenGLCamera(camera_params);
     }
 
     GameEngine::~GameEngine() {
@@ -22,21 +21,17 @@ namespace game_engine {
         delete context_;
     }
 
-    int GameEngine::Init(size_t opengl_version_major, size_t opengl_version_minor, size_t width, size_t height, std::string name) {
+    int GameEngine::Init() {
         if (is_inited_) return -1;
-
-        int ret = context_->Init(opengl_version_major, opengl_version_minor, width, height, name);
+        
+        int ret = context_->Init();
         if (ret != 0) {
             dt::Console(dt::FATAL, "Error: " + std::to_string(ret));
             Terminate();
         }
 
-        camera_->Init(0, 0, 0, 
-            0, 0, 1, 
-            0, 1, 0, 
-            context_);
+        camera_->Init(context_);
         
-        test_object_1_->Init("", "", 0, 0, 10, context_);
 
         CodeReminder("Support key remapping");
 
@@ -47,7 +42,7 @@ namespace game_engine {
     int GameEngine::Destroy() {
         if (!is_inited_) return -1;
 
-        test_object_1_->Destroy();
+        for(size_t i=0; i<objects_.size(); i++) objects_[i]->Destroy();
         camera_->Destroy();
         context_->Destroy();
 
@@ -59,7 +54,7 @@ namespace game_engine {
         context_->ClearColor();
 
         camera_->SetView();
-        test_object_1_->Draw(delta_time);
+        for(size_t i=0; i<objects_.size(); i++) objects_[i]->Draw(delta_time);
 
         context_->SwapBuffers();
     }
@@ -68,8 +63,17 @@ namespace game_engine {
         return context_->GetControlsInput();
     }
 
-    void GameEngine::Fun(float test_x, float test_y, float test_z) {
-        camera_->Fun(test_x, test_y, test_z);
+    void GameEngine::CameraMove2D(float move_x, float move_y, float move_z) {
+        camera_->Move2D(move_x, move_y, move_z);
+    }
+
+    int GameEngine::AddObject(OpenGLObject * obj) {
+        if (!is_inited_) return -1;
+        CodeReminder("Objects should be allocated sequentially, and not in the heap");
+        obj->Init(context_);
+        objects_.push_back(obj);
+
+        return 0;
     }
 
     void GameEngine::Terminate() {

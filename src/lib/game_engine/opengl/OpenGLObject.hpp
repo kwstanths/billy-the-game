@@ -1,5 +1,5 @@
 #ifndef __OpenGLObject_hpp__
-#define __OpenGLObject_cpp__
+#define __OpenGLObject_hpp__
 
 #include "OpenGLIncludes.hpp"
 #include "OpenGLShaderVariables.hpp"
@@ -9,22 +9,37 @@
 
 namespace game_engine {
 
+    /**
+        Values necessary to initialize the OpenGLObject
+    */
+    typedef struct {
+        GLfloat pos_x_, pos_y_, pos_z_;
+        std::string object_path_;
+        std::string texture_path_;
+    } OpenGLObjectParams_t;
+
+
     class OpenGLObject {
     public:
-        OpenGLObject();
+        OpenGLObject(OpenGLObjectParams_t params);
 
-        int Init(const char * object_path, 
-            const char * texture_path, 
-            int pos_x, int pos_y, int pos_z, 
-            OpenGLContext * context_);
+        int Init(OpenGLContext * context_);
 
         int Destroy();
 
+        //TODO delta_time needed?
         int Draw(double delta_time);
+
+        /**
+            Set position does not need to be called after Init()
+        */
+        void SetPosition(GLfloat pos_x, GLfloat pos_y, GLfloat pos_z);
+
 
     private:
         bool is_inited_;
         glm::mat4 model_;
+        OpenGLObjectParams_t params_;
         OpenGLShaderVariables_t shader_vars_;
 
         GLuint VAO, vertex_buffer_, color_buffer_;

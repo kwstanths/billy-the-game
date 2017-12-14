@@ -2,28 +2,31 @@
 
 #include "OpenGLMath.hpp"
 
+#include "debug_tools/Console.hpp"
+
 namespace game_engine{
 
-    OpenGLObject::OpenGLObject() {
+    OpenGLObject::OpenGLObject(OpenGLObjectParams_t params) {
+        params_ = params;
+        
         is_inited_ = false;
     }
 
-    int OpenGLObject::Init(const char * object_path, 
-        const char * texture_path, 
-        int pos_x, int pos_y, int pos_z, 
-        OpenGLContext * context) 
+    int OpenGLObject::Init(OpenGLContext * context) 
     {
+        if (is_inited_) return -1;
+
+        SetPosition(params_.pos_x_, params_.pos_y_, params_.pos_z_);
         
-        model_ = GetTranslateMatrix(glm::vec3(pos_x, pos_y, pos_z));
         shader_vars_ = context->GetShaderVariables();
 
         /* Vertex positions */
         static const GLfloat vertex_buffer_data[] = {
-            -1.0f, -1.0f, 0.0f,
             -1.0f, 1.0f, 0.0f,
-            1.0f, 1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
             -1.0f, -1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f,
+            -1.0f, -1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f,
             1.0f, 1.0f, 0.0f,
         };
 
@@ -34,8 +37,8 @@ namespace game_engine{
 
         /* Vertex colors */
         static const GLfloat color_buffer_data[] = {
-            0.0f,  0.0f,  0.0f,
             1.0f,  0.0f,  0.0f,
+            0.0f,  0.0f,  0.0f,
             1.0f,  1.0f,  1.0f,
             0.0f,  0.0f,  0.0f,
             1.0f,  0.0f,  0.0f,
@@ -83,6 +86,13 @@ namespace game_engine{
         glDrawArrays(GL_TRIANGLES, 0, 2 * 3);
 
         return 0;
+    }
+
+    void OpenGLObject::SetPosition(GLfloat pos_x, GLfloat pos_y, GLfloat pos_z) {
+        params_.pos_x_ = pos_x;
+        params_.pos_y_ = pos_y;
+        params_.pos_z_ = pos_z;
+        model_ = GetTranslateMatrix(glm::vec3(pos_x, pos_y, pos_z));
     }
 
 }

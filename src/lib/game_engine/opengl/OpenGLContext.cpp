@@ -8,16 +8,16 @@
 
 namespace game_engine {
 
-    OpenGLContext::OpenGLContext() {
+    OpenGLContext::OpenGLContext(OpenGLContextParams_t params) {
         is_inited_ = false;
+
+        params_ = params;
     }
 
-    int OpenGLContext::Init(size_t opengl_version_major, size_t opengl_version_minor, size_t width, size_t height, std::string name) {
+    int OpenGLContext::Init() {
         if (is_inited_) return -1;
         
-        window_width_ = width;
-        window_height_ = height;
-        window_ratio_ = (width * 1.0f) / (height * 1.0f);
+        GLfloat window_ratio_ = (params_.window_width_ * 1.0f) / (params_.window_height_ * 1.0f);
 
         /* Initialise GLFW */
         if (!glfwInit()) {
@@ -25,13 +25,13 @@ namespace game_engine {
         }
 
         glfwWindowHint(GLFW_SAMPLES, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, opengl_version_major);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, opengl_version_minor);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, params_.opengl_version_major_);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, params_.opengl_version_minor_);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);                /* To make MacOS happy; should not be needed */
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);      /* We don't want old OpenGL */
 
                                                                             /* Open a window and create its OpenGL context */
-        glfw_window_ = glfwCreateWindow(window_width_, window_height_, name.c_str(), NULL, NULL);
+        glfw_window_ = glfwCreateWindow(params_.window_width_, params_.window_height_, params_.window_name_.c_str(), NULL, NULL);
         if (glfw_window_ == NULL) {
             glfwTerminate();
             return Error::ERROR_GLFW_WINDOW;
@@ -52,13 +52,25 @@ namespace game_engine {
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
         CodeReminder("Change hardcoded shader paths");
-        int ret = LoadShaders("shaders/VertexShader.glsl", "shaders/FragmentShader.glsl");
+        int ret = LoadShaders(params_.shader_vertex_file_path_.c_str(), params_.shader_fragment_file_path_.c_str());
         if (ret != 0) return ret;
 
         glUseProgram(shader_vars_.program_id_);
 
         is_inited_ = true;
         return 0;
+    }
+
+    size_t OpenGLContext::GetWindowWidth() {
+        if (!is_inited_) return 0;
+
+        return params_.window_width_;
+    }
+
+    size_t OpenGLContext::GetWindowHeight() {
+        if (!is_inited_) return false;
+
+        return params_.window_height_;
     }
 
     int OpenGLContext::Destroy() {
@@ -84,6 +96,8 @@ namespace game_engine {
         if (glfwGetKey(glfw_window_, GLFW_KEY_DOWN) == GLFW_PRESS) input.KEY_DOWN = true;
         if (glfwGetKey(glfw_window_, GLFW_KEY_LEFT) == GLFW_PRESS) input.KEY_LEFT = true;
         if (glfwGetKey(glfw_window_, GLFW_KEY_RIGHT) == GLFW_PRESS) input.KEY_RIGHT = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS) input.KEY_PAGE_DOWN = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_PAGE_UP) == GLFW_PRESS) input.KEY_PAGE_UP = true;
 
         return input;
     }
