@@ -43,6 +43,11 @@ namespace game_engine {
         ControlInput_t GetControlsInput();
 
         /**
+            Get shader variables
+        */
+        OpenGLShaderVariables_t GetShaderVariables();
+
+        /**
             Clears the color of the screen
             @return 0=OK, -1=Not initialsed
         */

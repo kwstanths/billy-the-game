@@ -68,5 +68,10 @@ namespace debug_tools{
 #endif 
     }
 
+    void WaitInput() {
+        std::cout << "Type Enter to continue..." << std::endl;
+        std::cin.ignore();
+    }
+
 }
 

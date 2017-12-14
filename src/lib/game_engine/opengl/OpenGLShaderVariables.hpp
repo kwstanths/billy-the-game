@@ -7,11 +7,11 @@
 
 namespace game_engine {
 
-    static const char name_vertex_position[] = "vertex_position_modelspace";
-    static const char name_vertex_color[] = "vertex_color";
-    static const char name_uni_model[] = "matrix_model";
-    static const char name_uni_view[] = "matrix_view";
-    static const char name_uni_projection[] = "matrix_projection";
+    static const char shader_name_vertex_position[] = "vertex_position_modelspace";
+    static const char shader_name_vertex_color[] = "vertex_color";
+    static const char shader_name_uni_model[] = "matrix_model";
+    static const char shader_name_uni_view[] = "matrix_view";
+    static const char shader_name_uni_projection[] = "matrix_projection";
 
     typedef struct {
         GLuint program_id_;

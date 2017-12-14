@@ -114,6 +114,10 @@ namespace debug_tools{
         ConsoleInfo(args...);
     }
 
+    /**
+        Wait for anything to be typed
+    */
+    void WaitInput();
 }
 
 

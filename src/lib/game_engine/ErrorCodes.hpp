@@ -9,6 +9,7 @@ namespace game_engine {
         ERROR_GLEW_INIT,
         ERROR_SHADER_FILES_NOT_FOUND,
         ERROR_SHADER_RES_NOT_FOUND,
+        ERROR_SHADER_COMPILE,
     };
 
 }

@@ -4,8 +4,10 @@
 #include <string>
 
 #include "opengl/OpenGLContext.hpp"
+#include "opengl/OpenGLObject.hpp"
+#include "opengl/OpenGLCamera.hpp"
+
 #include "ControlInput.hpp"
-#include "Camera.hpp"
 
 namespace game_engine {
 
@@ -15,6 +17,11 @@ namespace game_engine {
             Does nothing important
         */
         GameEngine();
+
+        /**
+            
+        */
+        ~GameEngine();
 
         /**
             Initializes the window GLFW and GLEW,
@@ -41,7 +48,7 @@ namespace game_engine {
         /**
             A single engine step, Should be called inside the main loop
         */
-        void Step();
+        void Step(double delta_time);
 
         /**
             Get a struct with input from the user
@@ -49,10 +56,17 @@ namespace game_engine {
         */
         ControlInput_t GetControlsInput();
 
+        void Fun(float test_x, float test_y, float test_z);
+
     private:
         bool is_inited_;
         OpenGLContext * context_ = nullptr;
-        Camera * camera_ = nullptr;
+        OpenGLCamera * camera_ = nullptr;
+
+        OpenGLObject * test_object_1_;
+        OpenGLObject * test_object_2_;
+
+        void Terminate();
 
     };
 
