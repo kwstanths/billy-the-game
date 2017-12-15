@@ -9,6 +9,7 @@
 #include "opengl/OpenGLCamera.hpp"
 
 #include "ControlInput.hpp"
+#include "WorldObject.hpp"
 
 namespace game_engine {
 
@@ -17,7 +18,7 @@ namespace game_engine {
         /**
             TODO
         */
-        GameEngine(OpenGLContextParams_t & context_params, OpenGLCameraParams_t & camera_params);
+        GameEngine(OpenGLContextConfig_t & context_params, OpenGLCameraConfig_t & camera_params);
 
         /**
             
@@ -49,17 +50,24 @@ namespace game_engine {
 
         /**
             Moves the camera initilised in a 2D manner. Changes of the camera's position will be reflected to the
-            camera's direction as well. See OpenGLCamera::Move2D()
+            camera's direction as well. See OpenGLCamera::Move()
             @param move_x Displacement in X axis
             @param move_y Displacement in Y axis
             @param move_z Displacement in Z axis
         */
-        void CameraMove2D(float move_x, float move_y, float move_z);
+        void CameraMove2D(float move_x, float move_y);
 
         /**
-        
+            Zooms into an orthographic camera
+            @param zoom_factor The zoom factor
         */
-        int AddObject(OpenGLObject * obj);
+        void CameraZoom2D(float zoom_factor);
+
+        /**
+            Add a new object to the scene. The game engine will keep a pointer to the object
+            Don't delete the object without first removing it from the engine
+        */
+        int AddObject(WorldObject * obj, OpenGLObjectConfig_t config);
 
     private:
         bool is_inited_;
@@ -68,7 +76,7 @@ namespace game_engine {
         OpenGLCamera * camera_ = nullptr;
 
         /* A struct to keep the object */
-        std::vector<OpenGLObject *> objects_;
+        std::vector<WorldObject *> objects_;
 
         void Terminate();
 

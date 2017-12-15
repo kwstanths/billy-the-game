@@ -16,33 +16,52 @@ namespace game_engine {
         GLfloat pos_x_, pos_y_, pos_z_;
         std::string object_path_;
         std::string texture_path_;
-    } OpenGLObjectParams_t;
+    } OpenGLObjectConfig_t;
 
 
     class OpenGLObject {
     public:
-        OpenGLObject(OpenGLObjectParams_t params);
+        /**
+            Does nothing
+        */
+        OpenGLObject();
 
-        int Init(OpenGLContext * context_);
+        /**
+            Reads object and texture files, initializes vertex array object
+        */
+        int Init(OpenGLObjectConfig_t config, OpenGLContext * context);
 
+        /**
+            Deallocates everything
+        */
         int Destroy();
 
-        //TODO delta_time needed?
+        /**
+            Paint the object
+        */
         int Draw(double delta_time);
 
         /**
-            Set position does not need to be called after Init()
+            Return wether the object is initialised
+        */
+        bool IsInited();
+
+    protected:
+        /**
+            Set rendered object position
         */
         void SetPosition(GLfloat pos_x, GLfloat pos_y, GLfloat pos_z);
 
+        GLfloat pos_x_, pos_y_, pos_z_;
 
     private:
         bool is_inited_;
         glm::mat4 model_;
-        OpenGLObjectParams_t params_;
         OpenGLShaderVariables_t shader_vars_;
 
-        GLuint VAO, vertex_buffer_, color_buffer_;
+        size_t triangles_;
+        GLuint VAO_, vertex_buffer_, uv_buffer_, texture_;
+
     };
 
 }

@@ -28,7 +28,7 @@ namespace game_engine {
         std::string shader_vertex_file_path_;
         /* The fragment shader path in the disk */
         std::string shader_fragment_file_path_;
-    } OpenGLContextParams_t;
+    } OpenGLContextConfig_t;
 
 
     class OpenGLContext {
@@ -38,7 +38,7 @@ namespace game_engine {
             after this call
             @param param The necessary stuff when Init() is called
         */
-        OpenGLContext(OpenGLContextParams_t params);
+        OpenGLContext(OpenGLContextConfig_t params);
 
         /**
             Uses the parameters set to initialise and OpenGL context. Initializes  the window, GLFW, GLEW, reads 
@@ -91,7 +91,7 @@ namespace game_engine {
 
     private:
         bool is_inited_;
-        OpenGLContextParams_t params_;
+        OpenGLContextConfig_t config_;
         OpenGLShaderVariables_t shader_vars_;
 
         GLFWwindow * glfw_window_ = nullptr;

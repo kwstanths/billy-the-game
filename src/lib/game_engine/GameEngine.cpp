@@ -9,8 +9,10 @@ namespace dt = debug_tools;
 
 namespace game_engine {
 
-    GameEngine::GameEngine(OpenGLContextParams_t & context_params, OpenGLCameraParams_t & camera_params) {
+    GameEngine::GameEngine(OpenGLContextConfig_t & context_params, OpenGLCameraConfig_t & camera_params) {
         is_inited_ = false;
+        
+        CodeReminder("Game engine FPS");
 
         context_ = new OpenGLContext(context_params);
         camera_ = new OpenGLCamera(camera_params);
@@ -54,7 +56,10 @@ namespace game_engine {
         context_->ClearColor();
 
         camera_->SetView();
-        for(size_t i=0; i<objects_.size(); i++) objects_[i]->Draw(delta_time);
+        for (size_t i = 0; i < objects_.size(); i++) {
+            objects_[i]->Step(delta_time);
+            objects_[i]->Draw(delta_time);
+        }
 
         context_->SwapBuffers();
     }
@@ -63,14 +68,25 @@ namespace game_engine {
         return context_->GetControlsInput();
     }
 
-    void GameEngine::CameraMove2D(float move_x, float move_y, float move_z) {
-        camera_->Move2D(move_x, move_y, move_z);
+    void GameEngine::CameraMove2D(float move_x, float move_y) {
+        camera_->Move(move_x, move_y, 0);
     }
 
-    int GameEngine::AddObject(OpenGLObject * obj) {
+    void GameEngine::CameraZoom2D(float factor) {
+        camera_->Zoom(factor);
+    }
+
+    int GameEngine::AddObject(WorldObject * obj, OpenGLObjectConfig_t config) {
         if (!is_inited_) return -1;
-        CodeReminder("Objects should be allocated sequentially, and not in the heap");
-        obj->Init(context_);
+        
+        int ret = obj->Init(config, context_);
+        if (ret != 0) {
+            dt::ConsoleInfoL(dt::WARNING, "Cannot load assets",
+                "Object", config.object_path_,
+                "Texture", config.texture_path_);
+            return ret;
+        }
+
         objects_.push_back(obj);
 
         return 0;

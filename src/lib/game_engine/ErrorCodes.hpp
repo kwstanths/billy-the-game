@@ -10,6 +10,9 @@ namespace game_engine {
         ERROR_SHADER_FILES_NOT_FOUND,
         ERROR_SHADER_RES_NOT_FOUND,
         ERROR_SHADER_COMPILE,
+        ERROR_ASSET_NOT_FOUND,
+        ERROR_ASSET_NOT_DDS,
+        ERROR_ASSET_DDS,
     };
 
 }

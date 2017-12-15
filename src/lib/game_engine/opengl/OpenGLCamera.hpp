@@ -13,20 +13,27 @@ namespace game_engine {
         Values necessary to initialize an OpenGLCamera object
     */
     typedef struct {
+        /* Camera position */
         float pos_x_, pos_y_, pos_z_;
+        /* Camera view direction */
         float dir_x_, dir_y_, dir_z_;
+        /* Camera up vector */
         float up_x_, up_y_, up_z_;
-    } OpenGLCameraParams_t;
+        /* true: Orthographic-2D, false: Perspective-3D */
+        bool orthographic_;
+        /* If orthigraphic is applied, set the zoom factor */
+        float zoom_factor_;
+    } OpenGLCameraConfig_t;
 
 
     class OpenGLCamera {
     public:
         /**
             Sets the parameters to the local variable, does nothing else. Feel free to discard 
-            the params object after this call
-            @param params The necessary stuff when Init() is called
+            the config object after this call
+            @param config The necessary stuff when Init() is called
         */
-        OpenGLCamera(OpenGLCameraParams_t params);
+        OpenGLCamera(OpenGLCameraConfig_t config);
 
         /**
             Uses the parameters set to initialise the View matrix, and the projection matrix.
@@ -47,16 +54,23 @@ namespace game_engine {
             Sets a new position for the camera
             @param params The necessary stuff to set the camera position
         */
-        void SetPosition(OpenGLCameraParams_t params);
+        void SetPosition(OpenGLCameraConfig_t params);
 
         /**
             Move the camera's position relative the parameters already set. The direction of where the
-            camera looks at is changed as well with the same value, in order to maintain the 2D movement
+            camera looks at is changed as well with the same value, in order to maintain the movement.
+            If orthographic projection is set, the move_z value must be zero
             @param move_x Add to the camera position/direction x, the value move_x
             @param move_y Add to the camera position/direction y, the value move_y
             @param move_z Add to the camera position/direction z, the value move_z
         */
-        void Move2D(float move_x, float move_y, float move_z);
+        void Move(float move_x, float move_y, float move_z);
+
+        /**
+            If orthographic projection is set, zoom in/out of the scene
+            @param factor Add to the camera zoom_factor already set
+        */
+        void Zoom(float factor);
 
         /**
             Sets the view and projection matrix to the shaders
@@ -66,11 +80,23 @@ namespace game_engine {
 
     private:
         bool is_inited_;
-        OpenGLCameraParams_t params_;
+        OpenGLContext * context_;
+        OpenGLCameraConfig_t config_;
         OpenGLShaderVariables_t shader_vars_;
 
         glm::mat4 view_matrix_;
         glm::mat4 projection_matrix_;
+
+        /**
+            Set Orthographic projection matrix
+        */
+        void Ortho2D(float zoom_factor);
+
+        /**
+            Set Perspective-3D projection matrix
+        */
+        void Project3D();
+
     };
 }
 

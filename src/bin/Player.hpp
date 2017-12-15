@@ -1,12 +1,12 @@
 #ifndef __Player_hpp__
 #define __Player_hpp__
 
-#include "game_engine/opengl/OpenGLObject.hpp"
+#include "game_engine/WorldObject.hpp"
 
 
-class Player : public game_engine::OpenGLObject {
+class Player : public game_engine::WorldObject{
 public:
-    Player(game_engine::OpenGLObjectParams_t params);
+    Player();
 
     int Init();
 
@@ -14,9 +14,10 @@ public:
 
     void Move(float move_x, float move_y);
 
+    void Step(double delta_time);
+
 private:
     bool is_inited_;
-    float pos_x_, pos_y_, pos_z_;
 
 };
 
