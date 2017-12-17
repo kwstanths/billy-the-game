@@ -1,5 +1,9 @@
 #include "FrameRateRegulator.hpp"
+
 #include <iostream>
+
+#include "debug_tools/CodeReminder.hpp" 
+
 namespace game_engine {
 
     void FrameRateRegulator::Init(size_t frame_rate) {
@@ -34,7 +38,8 @@ namespace game_engine {
 #ifdef _WIN32
             Sleep(1000 * (frame_time_required_ - actual_delta));
 #elif __linux__
-            CodeReminderFatal();
+            CodeReminderFatal("sleep in linux");
+		
 #endif
             delta_ = glfwGetTime() - frame_start_time_;
         } else {

@@ -1,6 +1,7 @@
 #ifndef __HelpFunctions_hpp__
 #define __HelpFunctions_hpp__
 
+#include <cstdlib>
 #include <limits>
 
 namespace game_engine {

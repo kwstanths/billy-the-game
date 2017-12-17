@@ -1,6 +1,7 @@
 #include "OpenGLTexture.hpp"
 
 #include <cstdio>
+#include <cstring>
 
 #include "../ErrorCodes.hpp"
 

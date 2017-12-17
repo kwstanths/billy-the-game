@@ -38,10 +38,10 @@ include_directories(${PROJECT_ROOT}/src/lib/external/glew-1.13.0/include/)
 
 set(ALL_LIBS
 	${OPENGL_LIBRARY}
-	glfw
-	GLEW_1130
 	debug_tools
 	game_engine
+	glfw
+	GLEW_1130
 )
 
 add_definitions(
