@@ -47,8 +47,8 @@ namespace game_engine {
 
         glfwSetInputMode(glfw_window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
         glDepthFunc(GL_LESS);
+        glEnable(GL_CULL_FACE);
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
         int ret = LoadShaders(config_.shader_vertex_file_path_.c_str(), config_.shader_fragment_file_path_.c_str());

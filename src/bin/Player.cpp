@@ -28,16 +28,16 @@ void Player::Move(float move_x, float move_y) {
     pos_x_ += move_x;
     pos_y_ += move_y;
     
-    OpenGLObject::SetPosition(pos_x_, pos_y_, pos_z_);
+    SetPosition(pos_x_, pos_y_, pos_z_);
 }
 
 void Player::Step(double delta_time) {
 
-    dt::ConsoleInfoL(dt::INFO, "Player info",
-        "delta time", delta_time,
-        "x", pos_x_,
-        "y", pos_y_,
-        "z", pos_z_);
+    //dt::ConsoleInfoL(dt::INFO, "Player info",
+    //    "delta time", delta_time,
+    //    "x", pos_x_,
+    //    "y", pos_y_,
+    //    "z", pos_z_);
 
 }
 

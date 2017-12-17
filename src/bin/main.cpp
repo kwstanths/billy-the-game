@@ -9,6 +9,9 @@
 #include "game_engine/FrameRateRegulator.hpp"
 #include "game_engine/GameWorld.hpp"
 
+#include "game_engine/opengl/OpenGLObject.hpp"
+#include "game_engine/opengl/OpenGLTexture.hpp"
+
 #include "Player.hpp"
 
 namespace ge = game_engine;
@@ -39,8 +42,8 @@ int main(int argc, char ** argv) {
     ge::OpenGLContextConfig_t context_params;
     context_params.opengl_version_major_ = 3;
     context_params.opengl_version_minor_ = 3;
-    context_params.window_width_ = 640;
-    context_params.window_height_ = 480;
+    context_params.window_width_ = 1024;
+    context_params.window_height_ = 768;
     context_params.window_name_ = "billy";
     context_params.shader_vertex_file_path_ = "shaders/VertexShader.glsl";
     context_params.shader_fragment_file_path_ = "shaders/FragmentShader.glsl";
@@ -54,31 +57,36 @@ int main(int argc, char ** argv) {
     camera_params.up_x_ = 0;
     camera_params.up_y_ = 1;
     camera_params.up_z_ = 0;
+    camera_params.orthographic_ = true;
     camera_params.zoom_factor_ = 75;
     ge::GameEngine engine(context_params, camera_params);
     engine.Init();
     
-    ge::GameWorld game_world;
-    game_world.Init(50,50);
+    /* Initialize assets */
+    ge::OpenGLObject * object_cube = new ge::OpenGLObject();
+    object_cube->Init("assets/cube.obj");
+    ge::OpenGLObject * object_grass = new ge::OpenGLObject();
+    object_grass->Init("assets/grass.obj");
+
+    ge::OpenGLTexture * texture_cube = new ge::OpenGLTexture();
+    texture_cube->Init("assets/uvmap_cube.DDS", ge::OpenGLTexture::TEXTURE_DDS);
+    ge::OpenGLTexture * texture_grass = new ge::OpenGLTexture();
+    texture_grass->Init("assets/grass.bmp", ge::OpenGLTexture::TEXTURE_BMP);
+
 
     /* Create some dummy objects */
     std::vector<Player> some_objects;
     some_objects.resize(2);
-    
-    ge::OpenGLObjectConfig_t params;
-    params.pos_x_ = 0;
-    params.pos_y_ = 0;
-    params.pos_z_ = 0.1f;
-    params.object_path_ = "assets/cube.obj";
-    params.texture_path_ = "assets/uvmap_cube.DDS";
+
+    /* Object number 1*/
     some_objects[0].Init();
-    engine.AddObject(&(some_objects[0]),params);
-    
-    params.pos_x_ = 2.5;
-    params.pos_y_ = 2.5;
-    params.pos_z_ = 0;
+    some_objects[0].SetPosition(0.0f, 0.0f, 0.0f);
+    engine.AddObject(&(some_objects[0]), object_cube, texture_cube);
+
+    /* Object number 2*/
     some_objects[1].Init();
-    engine.AddObject(&(some_objects[1]), params);
+    some_objects[1].SetPosition(2.5f, 2.5f, 0.0f);
+    engine.AddObject(&(some_objects[1]), object_grass, texture_grass);
 
     ge::FrameRateRegulator frame_regulator;
     frame_regulator.Init(30);

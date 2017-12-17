@@ -16,6 +16,7 @@ namespace game_engine {
 
         context_ = new OpenGLContext(context_params);
         camera_ = new OpenGLCamera(camera_params);
+        renderer_ = new OpenGLRenderer();
     }
 
     GameEngine::~GameEngine() {
@@ -34,6 +35,7 @@ namespace game_engine {
 
         camera_->Init(context_);
         
+        renderer_->Init(context_);
 
         CodeReminder("Support key remapping");
 
@@ -58,7 +60,7 @@ namespace game_engine {
         camera_->SetView();
         for (size_t i = 0; i < objects_.size(); i++) {
             objects_[i]->Step(delta_time);
-            objects_[i]->Draw(delta_time);
+            objects_[i]->Draw();
         }
 
         context_->SwapBuffers();
@@ -76,16 +78,10 @@ namespace game_engine {
         camera_->Zoom(factor);
     }
 
-    int GameEngine::AddObject(WorldObject * obj, OpenGLObjectConfig_t config) {
+    int GameEngine::AddObject(WorldObject * obj, OpenGLObject * object, OpenGLTexture * texture) {
         if (!is_inited_) return -1;
         
-        int ret = obj->Init(config, context_);
-        if (ret != 0) {
-            dt::ConsoleInfoL(dt::WARNING, "Cannot load assets",
-                "Object", config.object_path_,
-                "Texture", config.texture_path_);
-            return ret;
-        }
+        int ret = obj->Init(object, texture, renderer_);
 
         objects_.push_back(obj);
 

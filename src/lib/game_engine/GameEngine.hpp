@@ -5,8 +5,10 @@
 #include <vector>
 
 #include "opengl/OpenGLContext.hpp"
-#include "opengl/OpenGLObject.hpp"
 #include "opengl/OpenGLCamera.hpp"
+#include "opengl/OpenGLRenderer.hpp"
+#include "opengl/OpenGLObject.hpp"
+#include "opengl/OpenGLTexture.hpp"
 
 #include "ControlInput.hpp"
 #include "WorldObject.hpp"
@@ -67,13 +69,14 @@ namespace game_engine {
             Add a new object to the scene. The game engine will keep a pointer to the object
             Don't delete the object without first removing it from the engine
         */
-        int AddObject(WorldObject * obj, OpenGLObjectConfig_t config);
+        int AddObject(WorldObject * obj, OpenGLObject * object, OpenGLTexture * texture);
 
     private:
         bool is_inited_;
 
         OpenGLContext * context_ = nullptr;
         OpenGLCamera * camera_ = nullptr;
+        OpenGLRenderer * renderer_ = nullptr;
 
         /* A struct to keep the object */
         std::vector<WorldObject *> objects_;
