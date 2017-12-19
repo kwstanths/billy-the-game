@@ -3,7 +3,7 @@
 
 #include "OpenGLIncludes.hpp"
 #include "OpenGLContext.hpp"
-#include "OpenGLShaderVariables.hpp"
+#include "OpenGLShaders.hpp"
 #include "OpenGLTexture.hpp"
 #include "OpenGLObject.hpp"
 

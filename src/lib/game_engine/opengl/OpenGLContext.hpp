@@ -5,7 +5,7 @@
 
 #include "OpenGLIncludes.hpp"
 
-#include "OpenGLShaderVariables.hpp"
+#include "OpenGLShaders.hpp"
 #include "../ControlInput.hpp"
 
 namespace game_engine {

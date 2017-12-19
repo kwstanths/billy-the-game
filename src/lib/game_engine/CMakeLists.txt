@@ -44,8 +44,6 @@ file(GLOB ${NAME}_HEADERS *.hpp)
 file(GLOB ${NAME}_SOURCES *.cpp)
 file(GLOB ${NAME}_GL_HEADERS opengl/*.hpp)
 file(GLOB ${NAME}_GL_SOURCES opengl/*.cpp)
-file(GLOB ${NAME}_GL_COMMON_HEADERS opengl/common/*.hpp)
-file(GLOB ${NAME}_GL_COMMON_SOURCES opengl/common/*.cpp)
 
 
 # Target

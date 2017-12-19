@@ -15,11 +15,11 @@ namespace game_engine {
         is_inited_ = false;
     }
 
-    int OpenGLTexture::Init(std::string file_path, texture_type type) {
+    int OpenGLTexture::Init(std::string file_path, OpenGLTextureType type) {
         if (is_inited_) return -1;
 
         int ret;
-        if (type == texture_type::TEXTURE_BMP) ret = LoadBMP(file_path.c_str(), &texture_);
+        if (type == OpenGLTextureType::TEXTURE_BMP) ret = LoadBMP(file_path.c_str(), &texture_);
         else ret = LoadDDS(file_path.c_str(), &texture_);
 
         if (ret != 0) return ret;

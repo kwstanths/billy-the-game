@@ -29,7 +29,7 @@ namespace game_engine {
         
         int ret = context_->Init();
         if (ret != 0) {
-            dt::Console(dt::FATAL, "Error: " + std::to_string(ret));
+            PrintError(ret);
             Terminate();
         }
 

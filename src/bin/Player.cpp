@@ -41,3 +41,8 @@ void Player::Step(double delta_time) {
 
 }
 
+float Player::GetSpeed(bool running) {
+    if (!running) return 4.0;
+    else return 9.0;
+}
+

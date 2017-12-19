@@ -2,7 +2,7 @@
 #define __OpenGLCamera_hpp__
 
 #include "OpenGLIncludes.hpp"
-#include "OpenGLShaderVariables.hpp"
+#include "OpenGLShaders.hpp"
 #include "OpenGLContext.hpp"
 
 #include <glm/glm.hpp>

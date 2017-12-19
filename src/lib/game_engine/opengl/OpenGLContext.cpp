@@ -1,7 +1,5 @@
 #include "OpenGLContext.hpp"
 
-#include "common/OpenGLLoadShaders.hpp"
-
 #include "../ErrorCodes.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
@@ -51,7 +49,7 @@ namespace game_engine {
         glEnable(GL_CULL_FACE);
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-        int ret = LoadShaders(config_.shader_vertex_file_path_.c_str(), config_.shader_fragment_file_path_.c_str());
+        int ret = ret = OpenGLLoadShaders(config_.shader_vertex_file_path_, config_.shader_fragment_file_path_, &shader_vars_);
         if (ret != 0) return ret;
 
         glUseProgram(shader_vars_.program_id_);
@@ -91,6 +89,7 @@ namespace game_engine {
         if (glfwGetKey(glfw_window_, GLFW_KEY_ESCAPE) == GLFW_PRESS) input.KEY_ESC = true;
         if (glfwGetKey(glfw_window_, GLFW_KEY_E) == GLFW_PRESS) input.KEY_ACT = true;
         if (glfwGetKey(glfw_window_, GLFW_KEY_ENTER) == GLFW_PRESS) input.KEY_ENTER = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) input.KEY_RUN = true;
 
         if (glfwGetKey(glfw_window_, GLFW_KEY_UP) == GLFW_PRESS) input.KEY_UP = true;
         if (glfwGetKey(glfw_window_, GLFW_KEY_W) == GLFW_PRESS) input.KEY_UP = true;
@@ -132,25 +131,5 @@ namespace game_engine {
         return 0;
     }
 
-    int OpenGLContext::LoadShaders(std::string vertex_shader_path, std::string fragment_shader_path) {
-    
-        int ret = OpenGLLoadShaders(vertex_shader_path.c_str(), fragment_shader_path.c_str(), &(shader_vars_.program_id_));
-        if (ret != 0) return ret;
-
-        if ((shader_vars_.attr_vertex_position_ = glGetAttribLocation(shader_vars_.program_id_, shader_name_vertex_position)) == -1) 
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars_.attr_vertex_uv_ = glGetAttribLocation(shader_vars_.program_id_, shader_name_vertex_uv)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars_.uni_Model_ = glGetUniformLocation(shader_vars_.program_id_, shader_name_uni_model)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars_.uni_View_ = glGetUniformLocation(shader_vars_.program_id_, shader_name_uni_view)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars_.uni_Projection_ = glGetUniformLocation(shader_vars_.program_id_, shader_name_uni_projection)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars_.uni_Texture_ = glGetUniformLocation(shader_vars_.program_id_, shader_name_uni_texture)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-
-        return 0;
-    }
 
 }

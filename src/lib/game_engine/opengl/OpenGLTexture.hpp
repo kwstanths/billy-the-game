@@ -9,7 +9,7 @@ namespace game_engine {
 
     class OpenGLTexture {
     public:
-        enum texture_type {
+        enum OpenGLTextureType {
             TEXTURE_BMP,
             TEXTURE_DDS,
         };
@@ -24,7 +24,7 @@ namespace game_engine {
             @param file_path The path to the disk file
             @return 0=OK, -1=Already initialised, else see ErrorCodes.hpp
         */
-        int Init(std::string file_path, texture_type type);
+        int Init(std::string file_path, OpenGLTextureType type);
 
         /**
         

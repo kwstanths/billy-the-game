@@ -1,6 +1,8 @@
 #ifndef __ErrorCodes_hpp__
 #define __ErrorCodes_hpp__
 
+#include "debug_tools/Console.hpp"
+
 namespace game_engine {
     
     enum Error {
@@ -17,9 +19,12 @@ namespace game_engine {
         ERROR_ASSET_DDS_COMPRESSION,
         ERROR_ASSET_BMP_ERROR,
 
+        ERROR_OBJECT_PARSE,
         ERROR_OBJECT_NOT_INIT,
         ERROR_TEXTURE_NOT_INIT,
     };
+
+    void PrintError(int error);
 
 }
 

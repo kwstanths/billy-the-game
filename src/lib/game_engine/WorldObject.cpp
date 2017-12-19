@@ -10,12 +10,20 @@ namespace game_engine {
 
         SetPosition(0.0f, 0.0f, 0.0f);
 
+        func_ = nullptr;
+
         is_inited_ = false;
     }
 
     int WorldObject::Init(OpenGLObject * object, OpenGLTexture * texture, OpenGLRenderer * renderer) {
-        if (!object->IsInited()) return Error::ERROR_OBJECT_NOT_INIT;
-        if (!texture->IsInited()) return Error::ERROR_TEXTURE_NOT_INIT;
+        if (!object->IsInited()) {
+            PrintError(Error::ERROR_OBJECT_NOT_INIT);
+            return Error::ERROR_OBJECT_NOT_INIT;
+        }
+        if (!texture->IsInited()) {
+            PrintError(Error::ERROR_TEXTURE_NOT_INIT);
+            return Error::ERROR_TEXTURE_NOT_INIT;
+        }
 
         object_ = object;
         texture_ = texture;
@@ -42,6 +50,10 @@ namespace game_engine {
         renderer_->Draw(object_, texture_, model_);
     }
 
+    void WorldObject::Step(double delta_time) {
+        if (func_ != nullptr) func_(delta_time);
+    }
+
     void WorldObject::SetPosition(float pos_x, float pos_y, float pos_z) {
         pos_x_ = pos_x;
         pos_y_ = pos_y;
@@ -49,6 +61,10 @@ namespace game_engine {
 
         model_ = GetTranslateMatrix(glm::vec3(pos_x_, pos_y_, pos_z_));
 
+    }
+
+    void WorldObject::SetStepFunction(std::function<void(double)> func) {
+        func_ = func;
     }
 
 

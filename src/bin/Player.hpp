@@ -16,6 +16,8 @@ public:
 
     void Step(double delta_time);
 
+    float GetSpeed(bool running);
+
 private:
     bool is_inited_;
 

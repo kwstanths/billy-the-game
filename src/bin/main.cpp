@@ -3,11 +3,14 @@
 #endif
 
 #include "debug_tools/CodeReminder.hpp"
+#include "debug_tools/Console.hpp"
 
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/ControlInput.hpp"
 #include "game_engine/FrameRateRegulator.hpp"
-#include "game_engine/GameWorld.hpp"
+#include "game_engine/GameSector.hpp"
+#include "game_engine/ErrorCodes.hpp"
+#include "game_engine/WorldObject.hpp"
 
 #include "game_engine/opengl/OpenGLObject.hpp"
 #include "game_engine/opengl/OpenGLTexture.hpp"
@@ -35,9 +38,10 @@ namespace dt = debug_tools;
 //
 //}
 
+
 int main(int argc, char ** argv) {
 
-    CodeReminder("game world class in main add objects");
+    CodeReminder("Change asset tile to have width and height equal to 1");
 
     ge::OpenGLContextConfig_t context_params;
     context_params.opengl_version_major_ = 3;
@@ -63,33 +67,41 @@ int main(int argc, char ** argv) {
     engine.Init();
     
     /* Initialize assets */
-    ge::OpenGLObject * object_cube = new ge::OpenGLObject();
-    object_cube->Init("assets/cube.obj");
-    ge::OpenGLObject * object_grass = new ge::OpenGLObject();
-    object_grass->Init("assets/grass.obj");
-
-    ge::OpenGLTexture * texture_cube = new ge::OpenGLTexture();
-    texture_cube->Init("assets/uvmap_cube.DDS", ge::OpenGLTexture::TEXTURE_DDS);
+    /* Objects */
+    ge::OpenGLObject * object_tile = new ge::OpenGLObject();
+    object_tile->Init("assets/tile.obj");
+    /* Textures */
     ge::OpenGLTexture * texture_grass = new ge::OpenGLTexture();
+    ge::OpenGLTexture * texture_treasure = new ge::OpenGLTexture();
+    ge::OpenGLTexture * texture_player = new ge::OpenGLTexture();
     texture_grass->Init("assets/grass.bmp", ge::OpenGLTexture::TEXTURE_BMP);
+    texture_treasure->Init("assets/treasure.bmp", ge::OpenGLTexture::TEXTURE_BMP);
+    texture_player->Init("assets/player.bmp", ge::OpenGLTexture::TEXTURE_BMP);
 
+    /* Create a dummy world */
+    ge::GameSector sector;
+    sector.Init(1000, 1000, -1000.0f, 1000.0f, -1000.0f, 1000.0f);
+    CodeReminderFatal("Seg fault");
+    engine.AddObject(sector.NewObj(-2.0f, 2.0f), object_tile, texture_grass);
+    engine.AddObject(sector.NewObj(0.0f, 2.0f), object_tile, texture_grass);
+    engine.AddObject(sector.NewObj(2.0f, 2.0f), object_tile, texture_grass);
+    engine.AddObject(sector.NewObj(-2.0f, 0.0f), object_tile, texture_grass);
+    engine.AddObject(sector.NewObj(0.0f, 0.0f), object_tile, texture_grass);
+    engine.AddObject(sector.NewObj(2.0f, 0.0f), object_tile, texture_grass);
+    engine.AddObject(sector.NewObj(-2.0f, -2.0f), object_tile, texture_grass);
+    engine.AddObject(sector.NewObj(0.0f, -2.0f), object_tile, texture_grass);
+    engine.AddObject(sector.NewObj(0.0f, -2.0f), object_tile, texture_grass);
+    engine.AddObject(sector.NewObj(2.0f, -2.0f), object_tile, texture_grass);
+    engine.AddObject(sector.NewObj(0.0f, 4.0f), object_tile, texture_treasure);
 
-    /* Create some dummy objects */
-    std::vector<Player> some_objects;
-    some_objects.resize(2);
-
-    /* Object number 1*/
-    some_objects[0].Init();
-    some_objects[0].SetPosition(0.0f, 0.0f, 0.0f);
-    engine.AddObject(&(some_objects[0]), object_cube, texture_cube);
-
-    /* Object number 2*/
-    some_objects[1].Init();
-    some_objects[1].SetPosition(2.5f, 2.5f, 0.0f);
-    engine.AddObject(&(some_objects[1]), object_grass, texture_grass);
+    /* Create a main player */
+    Player player;
+    player.Init();
+    player.SetPosition(0.0f, 0.0f, 0.1f);
+    engine.AddObject(&player,object_tile, texture_player);
 
     ge::FrameRateRegulator frame_regulator;
-    frame_regulator.Init(30);
+    frame_regulator.Init(60);
 
     do {
         frame_regulator.FrameStart();
@@ -99,28 +111,28 @@ int main(int argc, char ** argv) {
         if (input.KEY_ESC) {
             break;
         } 
+        float speed = player.GetSpeed(input.KEY_RUN);
         if (input.KEY_LEFT) {
-            engine.CameraMove2D(-4 * delta_time, 0);
-            some_objects[0].Move(-4 * delta_time, 0);
+            engine.CameraMove2D(-speed * delta_time, 0);
+            player.Move(-speed * delta_time, 0);
         }
         if (input.KEY_RIGHT) {
-            engine.CameraMove2D(4 * delta_time, 0);
-            some_objects[0].Move(4 * delta_time, 0);
+            engine.CameraMove2D(speed * delta_time, 0);
+            player.Move(speed * delta_time, 0);
         }
         if (input.KEY_UP) {
-            engine.CameraMove2D(0, 4 * delta_time);
-            some_objects[0].Move(0, 4 * delta_time);
+            engine.CameraMove2D(0, speed * delta_time);
+            player.Move(0, speed * delta_time);
         }
         if (input.KEY_DOWN) {
-            engine.CameraMove2D(0, -4 * delta_time);
-            some_objects[0].Move(0, -4 * delta_time);
+            engine.CameraMove2D(0, -speed * delta_time);
+            player.Move(0, -speed * delta_time);
         }
         if (input.KEY_PAGE_UP) engine.CameraZoom2D(20 * delta_time);
         if (input.KEY_PAGE_DOWN) engine.CameraZoom2D(-20 * delta_time);
 
 
         engine.Step(delta_time);
-
 
 
         frame_regulator.FrameEnd();
