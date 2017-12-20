@@ -17,12 +17,15 @@ namespace game_engine {
         OpenGLObject();
 
         /**
-            
+            Reads the object_path for a .obj file, and initializes the OpenGL stuff
+            @param The disk file path of the .obj file
+            @return 0=OK, -1=Already initialised, else see ErrorCodes.hpp
         */
         int Init(std::string object_path);
 
         /**
-            
+            Deallocates the OpenGL stuf initialized
+            @return 0=OK, -1=Not initialized
         */
         int Destroy();
 
@@ -32,17 +35,20 @@ namespace game_engine {
         bool IsInited();
 
         /**
-        
+            Get the vertex buffer OpenGL ID
+            @return The id
         */
         GLuint GetVertexBufferID();
 
         /**
-        
+            Get the UV buffer OpenGL ID
+            @return The id
         */
         GLuint GetUVBufferID();
 
         /**
-        
+            Get the number of triangles to draw
+            @return The number of triangles
         */
         size_t GetNoFTriangles();
 

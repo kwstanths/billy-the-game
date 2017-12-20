@@ -11,30 +11,31 @@
 #include "opengl/OpenGLTexture.hpp"
 
 #include "ControlInput.hpp"
-#include "WorldObject.hpp"
+#include "WorldSector.hpp"
 
 namespace game_engine {
 
     class GameEngine {
     public:
         /**
-            TODO
+            Does nothing in particular
         */
         GameEngine(OpenGLContextConfig_t & context_params, OpenGLCameraConfig_t & camera_params);
 
         /**
-            
+            Deallocates the objects used. DOES NOT call their respective Destroy() method
+            Objects should be deallocated through Destroy()
         */
         ~GameEngine();
 
         /**
-            TODO
-            @return 0=OK, -1=Not initialzed, anything else from ErrorCodes
+            Does Engine initialization using the configuration given in the constructor
+            @return 0=OK, -1=Not initialzed, anything else from ErrorCodes.hpp
         */
         int Init();
 
         /**
-            Terminates and deallocates window
+            Terminates and deallocates the window
             @return 0=OK, -1=Not initialized
         */
         int Destroy();
@@ -66,10 +67,24 @@ namespace game_engine {
         void CameraZoom2D(float zoom_factor);
 
         /**
-            Add a new object to the scene. The game engine will keep a pointer to the object
-            Don't delete the object without first removing it from the engine
+            Initialize an object. All objects that need drawing should be initialised through the engine
+            @param obj A pointer to the object
+            @param gl_object A pointer to the OpenGLObject that describes the mesh
+            @param gl_texture A pointer to the OpenGLTexture that describes the texture
+            @return -1=The engine is not initialised, or either gl_objects or gl_texture are null, else see ErrorCodes.hpp
         */
-        int AddObject(WorldObject * obj, OpenGLObject * object, OpenGLTexture * texture);
+        int WorldObjectInit(WorldObject * obj, OpenGLObject * gl_object, OpenGLTexture * gl_texture);
+
+        /**
+            
+        */
+        int AddWorldSector(WorldSector * sector);
+
+        /**
+            
+        */
+        int AddMainActor(WorldObject * object);
+
 
     private:
         bool is_inited_;
@@ -78,8 +93,9 @@ namespace game_engine {
         OpenGLCamera * camera_ = nullptr;
         OpenGLRenderer * renderer_ = nullptr;
 
-        /* A struct to keep the object */
-        std::vector<WorldObject *> objects_;
+        WorldSector * sector_ = nullptr;
+        WorldObject * main_actor_ = nullptr;
+        std::vector<WorldObject *> visible_world_;
 
         void Terminate();
 

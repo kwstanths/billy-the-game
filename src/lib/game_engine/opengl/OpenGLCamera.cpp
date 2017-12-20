@@ -48,6 +48,12 @@ namespace game_engine {
         view_matrix_ = glm::lookAt(position, direction, up);
     }
 
+    void OpenGLCamera::GetPosition(float * pos_x, float * pos_y, float * pos_z) {
+        *pos_x = config_.pos_x_;
+        *pos_y = config_.pos_y_;
+        *pos_z = config_.pos_z_;
+    }
+
     void OpenGLCamera::Move(float move_x, float move_y, float move_z) {
         if (config_.orthographic_ && !Equal(move_z, 0.0f)) {
             dt::Console(dt::WARNING, "OpenGLCamera::Move() : Called when orthgraphic projection is \

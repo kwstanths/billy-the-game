@@ -8,7 +8,7 @@
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/ControlInput.hpp"
 #include "game_engine/FrameRateRegulator.hpp"
-#include "game_engine/GameSector.hpp"
+#include "game_engine/WorldSector.hpp"
 #include "game_engine/ErrorCodes.hpp"
 #include "game_engine/WorldObject.hpp"
 
@@ -42,6 +42,7 @@ namespace dt = debug_tools;
 int main(int argc, char ** argv) {
 
     CodeReminder("Change asset tile to have width and height equal to 1");
+    CodeReminder("WorldSector::GetObjectsWindow borders/margins sanitization");
 
     ge::OpenGLContextConfig_t context_params;
     context_params.opengl_version_major_ = 3;
@@ -79,26 +80,28 @@ int main(int argc, char ** argv) {
     texture_player->Init("assets/player.bmp", ge::OpenGLTexture::TEXTURE_BMP);
 
     /* Create a dummy world */
-    ge::GameSector sector;
-    sector.Init(1000, 1000, -1000.0f, 1000.0f, -1000.0f, 1000.0f);
-    CodeReminderFatal("Seg fault");
-    engine.AddObject(sector.NewObj(-2.0f, 2.0f), object_tile, texture_grass);
-    engine.AddObject(sector.NewObj(0.0f, 2.0f), object_tile, texture_grass);
-    engine.AddObject(sector.NewObj(2.0f, 2.0f), object_tile, texture_grass);
-    engine.AddObject(sector.NewObj(-2.0f, 0.0f), object_tile, texture_grass);
-    engine.AddObject(sector.NewObj(0.0f, 0.0f), object_tile, texture_grass);
-    engine.AddObject(sector.NewObj(2.0f, 0.0f), object_tile, texture_grass);
-    engine.AddObject(sector.NewObj(-2.0f, -2.0f), object_tile, texture_grass);
-    engine.AddObject(sector.NewObj(0.0f, -2.0f), object_tile, texture_grass);
-    engine.AddObject(sector.NewObj(0.0f, -2.0f), object_tile, texture_grass);
-    engine.AddObject(sector.NewObj(2.0f, -2.0f), object_tile, texture_grass);
-    engine.AddObject(sector.NewObj(0.0f, 4.0f), object_tile, texture_treasure);
+    ge::WorldSector sector;
+    sector.Init(500, 500, -500.0f, 500.0f, -500.0f, 500.0f, 500 * 500);
+    engine.WorldObjectInit(sector.NewObj(-2.0f, 2.0f), object_tile, texture_grass);
+    engine.WorldObjectInit(sector.NewObj(0.0f, 2.0f), object_tile, texture_grass);
+    engine.WorldObjectInit(sector.NewObj(2.0f, 2.0f), object_tile, texture_grass);
+    engine.WorldObjectInit(sector.NewObj(-2.0f, 0.0f), object_tile, texture_grass);
+    engine.WorldObjectInit(sector.NewObj(0.0f, 0.0f), object_tile, texture_grass);
+    engine.WorldObjectInit(sector.NewObj(2.0f, 0.0f), object_tile, texture_grass);
+    engine.WorldObjectInit(sector.NewObj(-2.0f, -2.0f), object_tile, texture_grass);
+    engine.WorldObjectInit(sector.NewObj(0.0f, -2.0f), object_tile, texture_grass);
+    engine.WorldObjectInit(sector.NewObj(2.0f, -2.0f), object_tile, texture_grass);
+    engine.WorldObjectInit(sector.NewObj(0.0f, 3.0f, 0.1f), object_tile, texture_treasure);
+    
+    engine.AddWorldSector(&sector);
 
     /* Create a main player */
     Player player;
     player.Init();
     player.SetPosition(0.0f, 0.0f, 0.1f);
-    engine.AddObject(&player,object_tile, texture_player);
+    engine.WorldObjectInit(&player, object_tile, texture_player);
+
+    engine.AddMainActor(&player);
 
     ge::FrameRateRegulator frame_regulator;
     frame_regulator.Init(60);
@@ -131,9 +134,7 @@ int main(int argc, char ** argv) {
         if (input.KEY_PAGE_UP) engine.CameraZoom2D(20 * delta_time);
         if (input.KEY_PAGE_DOWN) engine.CameraZoom2D(-20 * delta_time);
 
-
         engine.Step(delta_time);
-
 
         frame_regulator.FrameEnd();
     } while (1);

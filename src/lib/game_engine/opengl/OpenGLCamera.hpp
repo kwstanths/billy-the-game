@@ -57,6 +57,14 @@ namespace game_engine {
         void SetPosition(OpenGLCameraConfig_t params);
 
         /**
+            Get camera's position
+            @param[out] pos_x X
+            @param[out] pos_y Y
+            @param[out] pos_z Z
+        */
+        void GetPosition(float * pos_x, float * pos_y, float * pos_z);
+
+        /**
             Move the camera's position relative the parameters already set. The direction of where the
             camera looks at is changed as well with the same value, in order to maintain the movement.
             If orthographic projection is set, the move_z value must be zero

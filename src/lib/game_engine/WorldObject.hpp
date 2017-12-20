@@ -11,29 +11,25 @@
 
 namespace game_engine {
 
-    typedef struct {
-
-    } WorldObjectVars_t;
-
     /**
         A world object is an entity in the world. Override this class, call the function
-        Init(... , ...), and provide your custom behaviour in the Step() function. Step()
-        should be overriden
+        Init(... , ...), and provide your custom behaviour in the Step() function
     */
     class WorldObject {
     public:
         /**
-            Does nothing
+            Does nothing in particular. Sets the position to (0,0,0)
         */
         WorldObject();
 
         /**
-            Initializes the position, and calls the OpenGLObject::Init()
+            Sets the OpenGL model and texture to the object. Also sets the renderer to be used
+            @return 0=OK, else see ErrorCodes.hpp
         */
         int Init(OpenGLObject * object, OpenGLTexture * texture, OpenGLRenderer * renderer);
 
         /**
-            Calls the OpenGLObject::Destroy()
+            Does nothing in particular
         */
         int Destroy();
 

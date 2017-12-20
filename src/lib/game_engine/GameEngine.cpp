@@ -20,8 +20,13 @@ namespace game_engine {
     }
 
     GameEngine::~GameEngine() {
-        delete camera_;
-        delete context_;
+        if (renderer_ != nullptr) delete renderer_;
+        if (camera_ != nullptr) delete camera_;
+        if (context_ != nullptr) delete context_;
+        
+        renderer_ = nullptr;
+        camera_ = nullptr;
+        context_ = nullptr;
     }
 
     int GameEngine::Init() {
@@ -37,6 +42,10 @@ namespace game_engine {
         
         renderer_->Init(context_);
 
+        CodeReminder("Find the size of the visible world based on the camera");
+        CodeReminder("Find the margin of the visible world based on the camera");
+        visible_world_ = std::vector<WorldObject *>(200);
+
         CodeReminder("Support key remapping");
 
         is_inited_ = true;
@@ -46,7 +55,6 @@ namespace game_engine {
     int GameEngine::Destroy() {
         if (!is_inited_) return -1;
 
-        for(size_t i=0; i<objects_.size(); i++) objects_[i]->Destroy();
         camera_->Destroy();
         context_->Destroy();
 
@@ -57,11 +65,24 @@ namespace game_engine {
     void GameEngine::Step(double delta_time) {
         context_->ClearColor();
 
+        /* Get visible items */
+        float center_x, center_y, center_z;
+        camera_->GetPosition(&center_x, &center_y, &center_z);
+
+        size_t nof = sector_->GetObjectsWindow(center_x, center_y, 10, visible_world_);
+
+        /* Set camera's view */
         camera_->SetView();
-        for (size_t i = 0; i < objects_.size(); i++) {
-            objects_[i]->Step(delta_time);
-            objects_[i]->Draw();
+
+        /* Draw visible world */
+        for (size_t i = 0; i < nof; i++) {
+            visible_world_[i]->Step(delta_time);
+            visible_world_[i]->Draw();
         }
+
+        /* Draw main actors */
+        main_actor_->Step(delta_time);
+        main_actor_->Draw();
 
         context_->SwapBuffers();
     }
@@ -78,13 +99,24 @@ namespace game_engine {
         camera_->Zoom(factor);
     }
 
-    int GameEngine::AddObject(WorldObject * obj, OpenGLObject * object, OpenGLTexture * texture) {
+    int GameEngine::WorldObjectInit(WorldObject * obj, OpenGLObject * object, OpenGLTexture * texture) {
         if (!is_inited_) return -1;
-        
+        if (obj == nullptr || object == nullptr || texture == nullptr) {
+            return -1;
+        }
+
         int ret = obj->Init(object, texture, renderer_);
 
-        objects_.push_back(obj);
+        return ret;
+    }
 
+    int GameEngine::AddWorldSector(WorldSector * sector) {
+        sector_ = sector;
+        return 0;
+    }
+
+    int GameEngine::AddMainActor(WorldObject * object) {
+        main_actor_ = object;
         return 0;
     }
 
