@@ -33,7 +33,7 @@ glm::mat4 GetScaleMatrix(glm::vec3 scale_vec);
 
 /**
   Get a rotation matrix
-  @param rotate_deg A rotation given in degrees
+  @param rotate_deg A rotation given in radians
   @param rotate_axis_vec The axis rotate around
   @return The rotation matrix
  */

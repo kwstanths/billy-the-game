@@ -47,6 +47,7 @@ namespace game_engine {
     void WorldObject::Draw() {
         if (!is_inited_) return;
 
+        model_ = translation_matrix_ * rotation_matrix_;
         renderer_->Draw(object_, texture_, model_);
     }
 
@@ -59,8 +60,18 @@ namespace game_engine {
         pos_y_ = pos_y;
         pos_z_ = pos_z;
 
-        model_ = GetTranslateMatrix(glm::vec3(pos_x_, pos_y_, pos_z_));
+        translation_matrix_= GetTranslateMatrix(glm::vec3(pos_x_, pos_y_, pos_z_));
 
+    }
+
+    void WorldObject::Rotate(float angle, size_t axis) {        
+        glm::vec3 rotation_axis;
+
+        if (axis == 0) rotation_axis = glm::vec3(1, 0, 0);
+        else if (axis == 1) rotation_axis = glm::vec3(0, 1, 0);
+        else if (axis == 2) rotation_axis = glm::vec3(0, 0, 1);
+        
+        rotation_matrix_ = GetRotateMatrix(angle, rotation_axis);
     }
 
     void WorldObject::SetStepFunction(std::function<void(double)> func) {

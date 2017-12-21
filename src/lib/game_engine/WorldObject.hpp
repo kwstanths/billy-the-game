@@ -57,6 +57,13 @@ namespace game_engine {
         void SetPosition(float pos_x, float pos_y, float pos_z);
 
         /**
+            Rotate the object
+            @param angle The angle of rotation, Can be negative
+            @param axis The axis to rotate arounf, 0=X-axis, 1=Y-axis, 2=Z-axis
+        */
+        void Rotate(float angle, size_t axis);
+
+        /**
             Set a function to be executed every time Step is called
         */
         void SetStepFunction(std::function<void(double)> func);
@@ -70,6 +77,8 @@ namespace game_engine {
         OpenGLObject * object_;
         OpenGLTexture * texture_;
         OpenGLRenderer * renderer_;
+        glm::mat4 translation_matrix_;
+        glm::mat4 rotation_matrix_;
         glm::mat4 model_;
 
         std::function<void(double)> func_;

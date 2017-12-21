@@ -16,6 +16,7 @@ namespace game_engine {
         return std::abs(a - b) <= e;
     }
 
+    float GetRadians(float degrees);
 }
 
 #endif

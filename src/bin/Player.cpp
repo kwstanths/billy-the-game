@@ -2,6 +2,8 @@
 
 #include "debug_tools/Console.hpp"
 
+#include "game_engine/HelpFunctions.hpp"
+
 namespace dt = debug_tools;
 
 Player::Player(): WorldObject() {
@@ -29,6 +31,10 @@ void Player::Move(float move_x, float move_y) {
     pos_y_ += move_y;
     
     SetPosition(pos_x_, pos_y_, pos_z_);
+    if (move_x > 0) Rotate(-game_engine::GetRadians(90.0f), 2);
+    else if (move_x < 0) Rotate(-game_engine::GetRadians(-90.0f), 2);
+    else if (move_y < 0) Rotate(-game_engine::GetRadians(180.0f), 2);
+    else if (move_y > 0) Rotate(0, 2);
 }
 
 void Player::Step(double delta_time) {
