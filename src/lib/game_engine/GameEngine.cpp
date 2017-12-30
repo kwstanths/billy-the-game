@@ -17,6 +17,7 @@ namespace game_engine {
         context_ = new OpenGLContext(context_params);
         camera_ = new OpenGLCamera(camera_params);
         renderer_ = new OpenGLRenderer();
+        sector_ = new WorldSector();
     }
 
     GameEngine::~GameEngine() {
@@ -41,6 +42,8 @@ namespace game_engine {
         camera_->Init(context_);
         
         renderer_->Init(context_);
+
+        sector_->Init(500, 500, -500.0f, 500.0f, -500.0f, 500.0f, 500 * 500);
 
         CodeReminder("Find the size of the visible world based on the camera");
         CodeReminder("Find the margin of the visible world based on the camera");
@@ -99,25 +102,35 @@ namespace game_engine {
         camera_->Zoom(factor);
     }
 
-    int GameEngine::WorldObjectInit(WorldObject * obj, OpenGLObject * object, OpenGLTexture * texture) {
+    int GameEngine::AddWorldObject(OpenGLObject * globject, OpenGLTexture * gltexture, float x, float y, float z) {
         if (!is_inited_) return -1;
-        if (obj == nullptr || object == nullptr || texture == nullptr) {
-            return -1;
-        }
 
-        int ret = obj->Init(object, texture, renderer_);
+        if (globject == nullptr) return Error::ERROR_OBJECT_NOT_INIT;
+        if (!globject->IsInited()) return Error::ERROR_OBJECT_NOT_INIT;
+        if (gltexture == nullptr) return Error::ERROR_TEXTURE_NOT_INIT;
+        if (!gltexture->IsInited()) return Error::ERROR_TEXTURE_NOT_INIT;
+
+        WorldObject * temp = sector_->NewObj(x, y, z);
+        int ret = temp->Init(globject, gltexture, renderer_);
 
         return ret;
     }
 
-    int GameEngine::AddWorldSector(WorldSector * sector) {
-        sector_ = sector;
+    int GameEngine::AddMainActor(WorldObject * object, OpenGLObject * globject, OpenGLTexture * gltexture) {
+        object->Init(globject, gltexture, renderer_);
+        main_actor_ = object;
         return 0;
     }
 
-    int GameEngine::AddMainActor(WorldObject * object) {
-        main_actor_ = object;
-        return 0;
+    CollisionResult_t GameEngine::CheckCollision(WorldObject * moving_object, float move_offset, ControlInput input) {
+        CollisionResult_t collision;
+        
+        if (input.KEY_UP) collision.move_up = true;
+        if (input.KEY_DOWN) collision.move_down = true;
+        if (input.KEY_LEFT) collision.move_left = true;
+        if (input.KEY_RIGHT) collision.move_right = true;
+
+        return collision;
     }
 
     void GameEngine::Terminate() {

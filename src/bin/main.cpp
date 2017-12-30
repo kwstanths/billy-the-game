@@ -79,29 +79,29 @@ int main(int argc, char ** argv) {
     texture_treasure->Init("assets/treasure.bmp", ge::OpenGLTexture::TEXTURE_BMP);
     texture_player->Init("assets/player.bmp", ge::OpenGLTexture::TEXTURE_BMP);
 
-    /* Create a dummy world */
-    ge::WorldSector sector;
-    sector.Init(500, 500, -500.0f, 500.0f, -500.0f, 500.0f, 500 * 500);
-    engine.WorldObjectInit(sector.NewObj(-2.0f, 2.0f), object_tile, texture_grass);
-    engine.WorldObjectInit(sector.NewObj(0.0f, 2.0f), object_tile, texture_grass);
-    engine.WorldObjectInit(sector.NewObj(2.0f, 2.0f), object_tile, texture_grass);
-    engine.WorldObjectInit(sector.NewObj(-2.0f, 0.0f), object_tile, texture_grass);
-    engine.WorldObjectInit(sector.NewObj(0.0f, 0.0f), object_tile, texture_grass);
-    engine.WorldObjectInit(sector.NewObj(2.0f, 0.0f), object_tile, texture_grass);
-    engine.WorldObjectInit(sector.NewObj(-2.0f, -2.0f), object_tile, texture_grass);
-    engine.WorldObjectInit(sector.NewObj(0.0f, -2.0f), object_tile, texture_grass);
-    engine.WorldObjectInit(sector.NewObj(2.0f, -2.0f), object_tile, texture_grass);
-    engine.WorldObjectInit(sector.NewObj(0.0f, 3.0f, 0.1f), object_tile, texture_treasure);
-    
-    engine.AddWorldSector(&sector);
+    /* Create a collision struct */
+    ge::CollisionConfig_t collision_config;
+    collision_config.type_ = ge::CollisionType::COLLISION_BOUNDING_RECTANGLE;
+    collision_config.parameter_ = 2;
 
+    /* Create a dummy world */
+    engine.AddWorldObject(object_tile, texture_grass, -2.0f, 2.0f);
+    engine.AddWorldObject(object_tile, texture_grass, 0.0f, 2.0f);
+    engine.AddWorldObject(object_tile, texture_grass, 2.0f, 2.0f);
+    engine.AddWorldObject(object_tile, texture_grass, -2.0f, 0.0f);
+    engine.AddWorldObject(object_tile, texture_grass, 0.0f, 0.0f);
+    engine.AddWorldObject(object_tile, texture_grass, 2.0f, 0.0f);
+    engine.AddWorldObject(object_tile, texture_grass, -2.0f, -2.0f);
+    engine.AddWorldObject(object_tile, texture_grass, 0.0f, -2.0f);
+    engine.AddWorldObject(object_tile, texture_grass, 2.0f, -2.0f);
+    engine.AddWorldObject(object_tile, texture_treasure, 0.0f, 3.0f, 0.1f);
+    
     /* Create a main player */
     Player player;
     player.Init();
     player.SetPosition(0.0f, 0.0f, 0.1f);
-    engine.WorldObjectInit(&player, object_tile, texture_player);
-
-    engine.AddMainActor(&player);
+    player.SetCollision(collision_config);
+    engine.AddMainActor(&player, object_tile, texture_player);
 
     ge::FrameRateRegulator frame_regulator;
     frame_regulator.Init(60);
@@ -114,23 +114,18 @@ int main(int argc, char ** argv) {
         if (input.KEY_ESC) {
             break;
         } 
+
+
         float speed = player.GetSpeed(input.KEY_RUN);
-        if (input.KEY_LEFT) {
-            engine.CameraMove2D(-speed * delta_time, 0);
-            player.Move(-speed * delta_time, 0);
-        }
-        if (input.KEY_RIGHT) {
-            engine.CameraMove2D(speed * delta_time, 0);
-            player.Move(speed * delta_time, 0);
-        }
-        if (input.KEY_UP) {
-            engine.CameraMove2D(0, speed * delta_time);
-            player.Move(0, speed * delta_time);
-        }
-        if (input.KEY_DOWN) {
-            engine.CameraMove2D(0, -speed * delta_time);
-            player.Move(0, -speed * delta_time);
-        }
+        float move_offset = (1.0 * speed) * delta_time;
+        ge::CollisionResult_t move_direction = engine.CheckCollision(&player, move_offset, input);
+        player.Move(move_offset, move_direction);
+        if (move_direction.move_left) engine.CameraMove2D(-move_offset, 0);
+        if (move_direction.move_right) engine.CameraMove2D(move_offset, 0);
+        if (move_direction.move_up) engine.CameraMove2D(0, move_offset);
+        if (move_direction.move_down) engine.CameraMove2D(0, -move_offset);
+
+
         if (input.KEY_PAGE_UP) engine.CameraZoom2D(20 * delta_time);
         if (input.KEY_PAGE_DOWN) engine.CameraZoom2D(-20 * delta_time);
 

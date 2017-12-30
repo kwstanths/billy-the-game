@@ -80,6 +80,11 @@ namespace game_engine {
         return index;
     }
 
+    bool WorldSector::CheckCollision(float move_offset, size_t direction) {
+
+        return false;
+    }
+
     size_t WorldSector::GetXPosition(float x) {
         return 0.0 + (world_[0].size()-1 - 0.0) * (x - x_margin_start_) / (x_margin_end_ - x_margin_start_);
     }

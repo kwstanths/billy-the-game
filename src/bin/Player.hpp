@@ -2,7 +2,8 @@
 #define __Player_hpp__
 
 #include "game_engine/WorldObject.hpp"
-
+#include "game_engine/ControlInput.hpp"
+#include "game_engine/Collision.hpp"
 
 class Player : public game_engine::WorldObject{
 public:
@@ -12,7 +13,7 @@ public:
 
     int Destroy();
 
-    void Move(float move_x, float move_y);
+    void Move(float move_offset, game_engine::CollisionResult_t input);
 
     void Step(double delta_time);
 
@@ -20,6 +21,8 @@ public:
 
 private:
     bool is_inited_;
+
+    float speed_regular_, speed_running_;
 
 };
 

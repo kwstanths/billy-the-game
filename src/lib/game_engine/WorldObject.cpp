@@ -28,6 +28,8 @@ namespace game_engine {
         object_ = object;
         texture_ = texture;
         renderer_ = renderer;
+
+        collision_config_.type_ = CollisionType::COLLISION_NONE;
         
         is_inited_ = true;
         return 0;
@@ -76,6 +78,10 @@ namespace game_engine {
 
     void WorldObject::SetStepFunction(std::function<void(double)> func) {
         func_ = func;
+    }
+
+    void WorldObject::SetCollision(CollisionConfig_t config) {
+        collision_config_ = config;
     }
 
 

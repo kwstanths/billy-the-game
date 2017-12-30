@@ -67,23 +67,25 @@ namespace game_engine {
         void CameraZoom2D(float zoom_factor);
 
         /**
-            Initialize an object. All objects that need drawing should be initialised through the engine
-            @param obj A pointer to the object
-            @param gl_object A pointer to the OpenGLObject that describes the mesh
-            @param gl_texture A pointer to the OpenGLTexture that describes the texture
-            @return -1=The engine is not initialised, or either gl_objects or gl_texture are null, else see ErrorCodes.hpp
+            Add an object to the world
+            @param globject The object's model
+            @param gltexture The object's texture
+            @param x The x coordinate
+            @param y The y coordinate
+            @param z The z coordiante
+            @return 0 = OK, -1 = Not initialised, else see ErrorCodes.hpp
         */
-        int WorldObjectInit(WorldObject * obj, OpenGLObject * gl_object, OpenGLTexture * gl_texture);
+        int AddWorldObject(OpenGLObject * globject, OpenGLTexture * gltexture, float x, float y, float z = 0.0f);
 
         /**
             
         */
-        int AddWorldSector(WorldSector * sector);
+        int AddMainActor(WorldObject * object, OpenGLObject * globject, OpenGLTexture * gltexture);
 
         /**
             
         */
-        int AddMainActor(WorldObject * object);
+        CollisionResult_t CheckCollision(WorldObject * moving_object, float move_offset, ControlInput input);
 
 
     private:
@@ -93,7 +95,7 @@ namespace game_engine {
         OpenGLCamera * camera_ = nullptr;
         OpenGLRenderer * renderer_ = nullptr;
 
-        WorldSector * sector_ = nullptr;
+        WorldSector * sector_;
         WorldObject * main_actor_ = nullptr;
         std::vector<WorldObject *> visible_world_;
 

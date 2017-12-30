@@ -30,14 +30,29 @@ namespace game_engine {
         int Destroy();
 
         /**
-            
+            Add a new object to the sextor
+            @param x Position x
+            @param y Position y
+            @param z Position z
+            @return A pointer to the world object
         */
-        WorldObject * NewObj(float x, float y, float z = 0.0f);
+        WorldObject * NewObj(float x, float y, float z);
 
         /**
-        
+            Get a window of object in the world. Objects are assigned sequentially to the visible world 
+            vector. Does not allocate any new memory
+            @param center_x The x coordinate of the window's center
+            @param center_y The y coordinate of the window's center
+            @param margin The top, down, left, right window margin
+            @param[out] visible_world The vector with pointers to the objects window
+            @return The number of objects assigned to the visible_world vector
         */
         size_t GetObjectsWindow(float center_x, float center_y, float margin, std::vector<WorldObject *> & visible_world);
+
+        /**
+           0=Top, 1=Bottom, 2=Left, 3=Right 
+        */
+        bool CheckCollision(float move_offset, size_t direction);
 
     private:
         

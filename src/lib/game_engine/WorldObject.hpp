@@ -6,6 +6,7 @@
 #include "opengl/OpenGLObject.hpp"
 #include "opengl/OpenGLTexture.hpp"
 #include "opengl/OpenGLRenderer.hpp"
+#include "Collision.hpp"   
 
 #include "glm/glm.hpp"
 
@@ -17,6 +18,7 @@ namespace game_engine {
     */
     class WorldObject {
     public:
+
         /**
             Does nothing in particular. Sets the position to (0,0,0)
         */
@@ -68,6 +70,12 @@ namespace game_engine {
         */
         void SetStepFunction(std::function<void(double)> func);
 
+        /**
+            Set the collision type to be used for this object. Default is no collision
+            @param config The collision configuration
+        */
+        void SetCollision(CollisionConfig_t config);
+
     protected:
         float pos_x_, pos_y_, pos_z_;
 
@@ -77,6 +85,8 @@ namespace game_engine {
         OpenGLObject * object_;
         OpenGLTexture * texture_;
         OpenGLRenderer * renderer_;
+        CollisionConfig_t collision_config_;
+
         glm::mat4 translation_matrix_;
         glm::mat4 rotation_matrix_;
         glm::mat4 model_;
