@@ -1,6 +1,7 @@
 #ifndef __Collision_hpp__
 #define __Collision_hpp__
 
+#include <cstdlib>
 
 namespace game_engine {
 
