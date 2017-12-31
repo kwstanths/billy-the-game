@@ -73,9 +73,9 @@ namespace game_engine {
             @param x The x coordinate
             @param y The y coordinate
             @param z The z coordiante
-            @return 0 = OK, -1 = Not initialised, else see ErrorCodes.hpp
+            @return 
         */
-        int AddWorldObject(OpenGLObject * globject, OpenGLTexture * gltexture, float x, float y, float z = 0.0f);
+        WorldObject * AddWorldObject(OpenGLObject * globject, OpenGLTexture * gltexture, float x, float y, float z = 0.0f);
 
         /**
             
@@ -87,9 +87,14 @@ namespace game_engine {
         */
         CollisionResult_t CheckCollision(WorldObject * moving_object, float move_offset, ControlInput input);
 
+        /**
+        
+        */
+        int GetLastError();
 
     private:
         bool is_inited_;
+        int last_error_;
 
         OpenGLContext * context_ = nullptr;
         OpenGLCamera * camera_ = nullptr;

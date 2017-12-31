@@ -38,7 +38,20 @@ namespace game_engine {
         bool move_right = false;
     } CollisionResult_t;
 
-
+    /**
+        Check for collision between two boxes
+        @param a_x The first box center x coordinate
+        @param a_y The first box center y coordinate
+        @param a_x_width The first box x-axis width
+        @param a_y_height The first box y-axis height
+        @param b_x The second box center x coordinate
+        @param b_y The second box center y coordinate
+        @param b_x_width The second box x-axis width
+        @param b_y_height The second box y-axis height
+        @return true = Boxes collide, false = Boxes do not collide
+    */
+    bool CollisionCheck2DRectangles(float a_x, float a_y, float a_x_width, float a_y_height,
+        float b_x, float b_y, float b_x_width, float b_y_height);
 
 }
 

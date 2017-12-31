@@ -12,6 +12,8 @@ namespace game_engine {
 
         func_ = nullptr;
 
+        collision_config_.type_ = CollisionType::COLLISION_NONE;
+
         is_inited_ = false;
     }
 
@@ -28,8 +30,6 @@ namespace game_engine {
         object_ = object;
         texture_ = texture;
         renderer_ = renderer;
-
-        collision_config_.type_ = CollisionType::COLLISION_NONE;
         
         is_inited_ = true;
         return 0;
@@ -57,6 +57,18 @@ namespace game_engine {
         if (func_ != nullptr) func_(delta_time);
     }
 
+    float WorldObject::GetXPosition() {
+        return pos_x_;
+    }
+
+    float WorldObject::GetYPosition() {
+        return pos_y_;
+    }
+
+    float WorldObject::GetZPosition() {
+        return pos_z_;
+    }
+
     void WorldObject::SetPosition(float pos_x, float pos_y, float pos_z) {
         pos_x_ = pos_x;
         pos_y_ = pos_y;
@@ -82,6 +94,10 @@ namespace game_engine {
 
     void WorldObject::SetCollision(CollisionConfig_t config) {
         collision_config_ = config;
+    }
+
+    CollisionConfig_t WorldObject::GetCollision() {
+        return collision_config_;
     }
 
 

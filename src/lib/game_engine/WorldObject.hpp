@@ -51,6 +51,24 @@ namespace game_engine {
         virtual void Step(double delta_time);
 
         /**
+            Get the x coordinate of the object's position
+            @return The x coordinate
+        */
+        float GetXPosition();
+
+        /**
+            Get the y coordinate of the object's position
+            @return The y coordinate
+        */
+        float GetYPosition();
+
+        /**
+            Get the z coordinate of the object's position
+            @return The z coordinate
+        */
+        float GetZPosition();
+
+        /**
             Set the model matrix for the object
             @param pos_x The model's position x
             @param pos_y The model's position y
@@ -75,6 +93,12 @@ namespace game_engine {
             @param config The collision configuration
         */
         void SetCollision(CollisionConfig_t config);
+
+        /**
+            Get the collision parameters
+            @return The collision configuration
+        */
+        CollisionConfig_t GetCollision();
 
     protected:
         float pos_x_, pos_y_, pos_z_;

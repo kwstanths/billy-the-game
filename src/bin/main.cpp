@@ -41,8 +41,9 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Change asset tile to have width and height equal to 1");
+    CodeReminder("Change world sector collision detection with functions Get neighbors and stuff");
     CodeReminder("WorldSector::GetObjectsWindow borders/margins sanitization");
+    CodeReminder("Fix collision margin left between colliding objects");
 
     ge::OpenGLContextConfig_t context_params;
     context_params.opengl_version_major_ = 3;
@@ -62,7 +63,7 @@ int main(int argc, char ** argv) {
     camera_params.up_x_ = 0;
     camera_params.up_y_ = 1;
     camera_params.up_z_ = 0;
-    camera_params.orthographic_ = true;
+    camera_params.orthographic_ = false;
     camera_params.zoom_factor_ = 75;
     ge::GameEngine engine(context_params, camera_params);
     engine.Init();
@@ -82,19 +83,20 @@ int main(int argc, char ** argv) {
     /* Create a collision struct */
     ge::CollisionConfig_t collision_config;
     collision_config.type_ = ge::CollisionType::COLLISION_BOUNDING_RECTANGLE;
-    collision_config.parameter_ = 2;
+    collision_config.parameter_ = 1;
 
     /* Create a dummy world */
-    engine.AddWorldObject(object_tile, texture_grass, -2.0f, 2.0f);
-    engine.AddWorldObject(object_tile, texture_grass, 0.0f, 2.0f);
-    engine.AddWorldObject(object_tile, texture_grass, 2.0f, 2.0f);
-    engine.AddWorldObject(object_tile, texture_grass, -2.0f, 0.0f);
+    engine.AddWorldObject(object_tile, texture_grass, -1.0f, 1.0f);
+    engine.AddWorldObject(object_tile, texture_grass, 0.0f, 1.0f);
+    engine.AddWorldObject(object_tile, texture_grass, 1.0f, 1.0f);
+    engine.AddWorldObject(object_tile, texture_grass, -1.0f, 0.0f);
     engine.AddWorldObject(object_tile, texture_grass, 0.0f, 0.0f);
-    engine.AddWorldObject(object_tile, texture_grass, 2.0f, 0.0f);
-    engine.AddWorldObject(object_tile, texture_grass, -2.0f, -2.0f);
-    engine.AddWorldObject(object_tile, texture_grass, 0.0f, -2.0f);
-    engine.AddWorldObject(object_tile, texture_grass, 2.0f, -2.0f);
-    engine.AddWorldObject(object_tile, texture_treasure, 0.0f, 3.0f, 0.1f);
+    engine.AddWorldObject(object_tile, texture_grass, 1.0f, 0.0f);
+    engine.AddWorldObject(object_tile, texture_grass, -1.0f, -1.0f);
+    engine.AddWorldObject(object_tile, texture_grass, 0.0f, -1.0f);
+    engine.AddWorldObject(object_tile, texture_grass, 1.0f, -1.0f);
+    ge::WorldObject * tres = engine.AddWorldObject(object_tile, texture_treasure, 0.0f, 1.5f, 0.1f);
+    tres->SetCollision(collision_config);
     
     /* Create a main player */
     Player player;

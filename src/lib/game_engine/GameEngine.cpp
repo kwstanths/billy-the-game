@@ -11,7 +11,8 @@ namespace game_engine {
 
     GameEngine::GameEngine(OpenGLContextConfig_t & context_params, OpenGLCameraConfig_t & camera_params) {
         is_inited_ = false;
-        
+        last_error_ = 0;
+
         CodeReminder("Game engine FPS");
 
         context_ = new OpenGLContext(context_params);
@@ -31,10 +32,14 @@ namespace game_engine {
     }
 
     int GameEngine::Init() {
-        if (is_inited_) return -1;
+        if (is_inited_) {
+            last_error_ = -1;
+            return -1;
+        }
         
         int ret = context_->Init();
         if (ret != 0) {
+            last_error_ = ret;
             PrintError(ret);
             Terminate();
         }
@@ -45,24 +50,28 @@ namespace game_engine {
 
         sector_->Init(500, 500, -500.0f, 500.0f, -500.0f, 500.0f, 500 * 500);
 
-        CodeReminder("Find the size of the visible world based on the camera");
-        CodeReminder("Find the margin of the visible world based on the camera");
+        CodeReminder("Find the size and margin of the visible world based on the camera");
         visible_world_ = std::vector<WorldObject *>(200);
 
         CodeReminder("Support key remapping");
 
         is_inited_ = true;
-        return 0;
+        last_error_ = 0;
+        return last_error_;
     }
 
     int GameEngine::Destroy() {
-        if (!is_inited_) return -1;
+        if (!is_inited_) {
+            last_error_ = -1;
+            return last_error_;
+        }
 
         camera_->Destroy();
         context_->Destroy();
 
         is_inited_ = false;
-        return 0;
+        last_error_ = 0;
+        return last_error_;
     }
 
     void GameEngine::Step(double delta_time) {
@@ -102,18 +111,34 @@ namespace game_engine {
         camera_->Zoom(factor);
     }
 
-    int GameEngine::AddWorldObject(OpenGLObject * globject, OpenGLTexture * gltexture, float x, float y, float z) {
-        if (!is_inited_) return -1;
+    WorldObject * GameEngine::AddWorldObject(OpenGLObject * globject, OpenGLTexture * gltexture, float x, float y, float z) {
+        if (!is_inited_) {
+            last_error_ = -1;
+            return nullptr;
+        }
 
-        if (globject == nullptr) return Error::ERROR_OBJECT_NOT_INIT;
-        if (!globject->IsInited()) return Error::ERROR_OBJECT_NOT_INIT;
-        if (gltexture == nullptr) return Error::ERROR_TEXTURE_NOT_INIT;
-        if (!gltexture->IsInited()) return Error::ERROR_TEXTURE_NOT_INIT;
+        if (globject == nullptr) {
+            last_error_ = Error::ERROR_OBJECT_NOT_INIT;
+            return nullptr;
+        }
+        if (!globject->IsInited()) {
+            last_error_ = Error::ERROR_OBJECT_NOT_INIT;
+            return nullptr;
+        }
+        if (gltexture == nullptr) {
+            last_error_ = Error::ERROR_TEXTURE_NOT_INIT;
+            return nullptr;
+        }
+        if (!gltexture->IsInited()) {
+            last_error_ = Error::ERROR_TEXTURE_NOT_INIT;
+            return nullptr;
+        }
 
         WorldObject * temp = sector_->NewObj(x, y, z);
-        int ret = temp->Init(globject, gltexture, renderer_);
-
-        return ret;
+        last_error_ = temp->Init(globject, gltexture, renderer_);
+        
+        if (last_error_ != 0) return nullptr;
+        else return temp;
     }
 
     int GameEngine::AddMainActor(WorldObject * object, OpenGLObject * globject, OpenGLTexture * gltexture) {
@@ -125,12 +150,18 @@ namespace game_engine {
     CollisionResult_t GameEngine::CheckCollision(WorldObject * moving_object, float move_offset, ControlInput input) {
         CollisionResult_t collision;
         
-        if (input.KEY_UP) collision.move_up = true;
-        if (input.KEY_DOWN) collision.move_down = true;
-        if (input.KEY_LEFT) collision.move_left = true;
-        if (input.KEY_RIGHT) collision.move_right = true;
+        /* TODO Find the suitable sector */
+
+        if (input.KEY_UP) collision.move_up = sector_->CheckCollision(moving_object, move_offset, 0);
+        if (input.KEY_DOWN) collision.move_down = sector_->CheckCollision(moving_object, move_offset, 1);
+        if (input.KEY_LEFT) collision.move_left = sector_->CheckCollision(moving_object, move_offset, 2);
+        if (input.KEY_RIGHT) collision.move_right = sector_->CheckCollision(moving_object, move_offset, 3);
 
         return collision;
+    }
+
+    int GameEngine::GetLastError() {
+        return last_error_;
     }
 
     void GameEngine::Terminate() {

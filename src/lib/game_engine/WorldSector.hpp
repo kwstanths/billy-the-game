@@ -50,9 +50,9 @@ namespace game_engine {
         size_t GetObjectsWindow(float center_x, float center_y, float margin, std::vector<WorldObject *> & visible_world);
 
         /**
-           0=Top, 1=Bottom, 2=Left, 3=Right 
+           0=Up, 1=Bottom, 2=Left, 3=Right 
         */
-        bool CheckCollision(float move_offset, size_t direction);
+        bool CheckCollision(WorldObject * moving_object, float move_offset, size_t direction);
 
     private:
         
@@ -60,18 +60,22 @@ namespace game_engine {
         size_t sector_id_;
         float x_margin_start_, x_margin_end_, y_margin_start_, y_margin_end_;
         
+        /* 
+            A struct that resembles the world. Holds pointers to actual objects that are stored 
+            sequentially
+        */
         std::vector<std::vector<std::deque<WorldObject *> > >world_;
         std::vector<WorldObject> objects_;
 
         /**
         
         */    
-        size_t GetXPosition(float x);
+        size_t GetRow(float x);
         
         /**
         
         */
-        size_t GetYPosition(float y);
+        size_t GetColumn(float y);
 
     };
 
