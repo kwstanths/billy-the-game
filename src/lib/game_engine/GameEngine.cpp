@@ -149,8 +149,8 @@ namespace game_engine {
 
     CollisionResult_t GameEngine::CheckCollision(WorldObject * moving_object, float move_offset, ControlInput input) {
         CollisionResult_t collision;
-        
-        /* TODO Find the suitable sector */
+
+        /* TODO find the appropriate sector */
 
         if (input.KEY_UP) collision.move_up = sector_->CheckCollision(moving_object, move_offset, 0);
         if (input.KEY_DOWN) collision.move_down = sector_->CheckCollision(moving_object, move_offset, 1);

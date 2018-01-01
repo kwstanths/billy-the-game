@@ -41,7 +41,7 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Change world sector collision detection with functions Get neighbors and stuff");
+    CodeReminder("Fix rows/columns window when detecting collion")
     CodeReminder("WorldSector::GetObjectsWindow borders/margins sanitization");
     CodeReminder("Fix collision margin left between colliding objects");
 

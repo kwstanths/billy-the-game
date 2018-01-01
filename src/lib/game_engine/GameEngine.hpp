@@ -11,7 +11,9 @@
 #include "opengl/OpenGLTexture.hpp"
 
 #include "ControlInput.hpp"
+#include "WorldObject.hpp"
 #include "WorldSector.hpp"
+#include "Collision.hpp"
 
 namespace game_engine {
 

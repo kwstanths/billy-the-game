@@ -2,6 +2,9 @@
 
 #include "debug_tools/CodeReminder.hpp"
 
+#include "Collision.hpp"
+#include "HelpFunctions.hpp"
+
 namespace dt = debug_tools;
 
 namespace game_engine {
@@ -89,7 +92,7 @@ namespace game_engine {
     bool WorldSector::CheckCollision(WorldObject * moving_object, float move_offset, size_t direction) {
         if (!is_inited_) {
             dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): World sector is not initialised");
-            return -1;
+            return false;
         }
         if (moving_object == nullptr) {
             dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): moving objectis null");
@@ -100,84 +103,138 @@ namespace game_engine {
             return false;
         }
 
+        /* Find the moving object's position inside the world sector */
+        size_t object_row_center = GetRow(moving_object->GetYPosition());
+        size_t object_column_center = GetColumn(moving_object->GetXPosition());
 
-        /* Find the moving object's position inside the world. TODO out of boundaries */
-        size_t moving_object_row_index = GetRow(moving_object->GetYPosition());
-        if (moving_object_row_index >= world_.size() || moving_object_row_index < 0) {
-            dt::ConsoleInfoL(dt::CRITICAL, "WorldSector::CheckCollision(): x index out of boundaries",
-                "x index", moving_object_row_index);
-            return false;
-        }
-        size_t moving_object_column_index = GetColumn(moving_object->GetXPosition());
-        if (moving_object_column_index >= world_.size() || moving_object_column_index < 0) {
-            dt::ConsoleInfoL(dt::CRITICAL, "WorldSector::CheckCollision(): y index out of boundaries",
-                "y_index", moving_object_column_index);
-            return false;
-        }
-        
         /* Get the type of collision of the moving object */
         CollisionConfig_t moving_object_collision_config = moving_object->GetCollision();
 
-
-        size_t row_center = moving_object_row_index;
-        size_t column_center = moving_object_column_index;
         /* Check collision with neighbours only in the desired directiion */
+        size_t rows_start = object_row_center;
+        size_t rows_end = object_row_center;
+        size_t columns_start = object_column_center;
+        size_t columns_end = object_column_center;
+        float moving_object_new_x;
+        float moving_object_new_y;
+
         switch (direction)
         {
         case 0 /* Up */:
         {
-            /* 
-                Going up in the world means going to bigger y world coordinates, 
-                which means going to a higher number of row index in the world sector
+
+            if (object_column_center < 0 || object_column_center >= world_[0].size()) {
+                dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Top] - Column center is out of boundaries");
+                return false;
+            }
+
+            /*
+                Going up in the world means going to bigger y world coordinates,
+                which means going to a bigger number of row index in the world sector
             */
-            for (size_t i = row_center; i <= row_center + 1; i++) {
-                for (std::deque<WorldObject *>::iterator itr = world_[i][column_center].begin();
-                    itr != world_[i][column_center].end();
+            if (object_row_center >= world_.size()) {
+                dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Top] - Row center is bigger than the world rows");
+                return false;
+            }
+            rows_start = (object_row_center < 0) ? 0 : object_row_center;
+            rows_end = (rows_start + 1 >= world_.size()) ? world_.size() - 1 : rows_start + 1;
+
+            moving_object_new_x = moving_object->GetXPosition();
+            moving_object_new_y = moving_object->GetYPosition() + move_offset;
+
+            break;
+        }
+        case 1 /* Bottom */:
+        {
+            if (object_column_center < 0 || object_column_center >= world_[0].size()) {
+                dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Bottom] - Column center is out of boundaries");
+                return false;
+            }
+
+            /*
+                Going down in the world means going to smaller y world coordinates,
+                which means going to a smaller number of row in the world sector
+            */
+            if (object_row_center < 0) {
+                dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Bottom] - Row center is smaller than zero");
+                return false;
+            }
+            rows_start = (object_row_center >= world_.size()) ? world_.size() - 1 : object_row_center;
+            rows_end = (rows_start - 1 < 0) ? 0 : rows_start - 1;
+            /* Swap the values so that we always use ++ operator when iterating over the objects */
+            Swap(rows_start, rows_end);
+
+            moving_object_new_x = moving_object->GetXPosition();
+            moving_object_new_y = moving_object->GetYPosition() - move_offset;
+
+            break;
+        }
+        case 2 /* Left */:
+        {
+            if (object_row_center < 0 || object_row_center >= world_.size()) {
+                dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Left] - Row center is out of baoundaries");
+                return false;
+            }
+
+            /*
+                Going left in the world means going to smaller x world coordinates
+                which  means going to a smaller number of column
+            */
+            if (object_column_center < 0) {
+                dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Left] - Column center is smaller than zero");
+                return false;
+            }
+            columns_start = (object_column_center >= world_[0].size()) ? world_[0].size() - 1 : object_column_center;
+            columns_end = (columns_start - 1 < 0) ? 0 : columns_start - 1;
+            /* Swap the values so that we always use ++ operator when iterating over the objects */
+            Swap(columns_start, columns_end);
+
+            moving_object_new_x = moving_object->GetXPosition() - move_offset;
+            moving_object_new_y = moving_object->GetYPosition();
+            break;
+        }
+        case 3 /* Right */:
+        {
+            if (object_row_center < 0 || object_row_center >= world_.size()) {
+                dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Right] - Row center is out of baoundaries");
+                return false;
+            }
+
+            /*
+                Going right in the world means going to bigger x word coordinates
+                which means going to bigger number of column
+            */
+            if (object_column_center >= world_[0].size()) {
+                dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Right] - Column center is bigger than the world columns");
+                return false;
+            }
+            columns_start = (object_column_center < 0) ? 0 : object_column_center;
+            columns_end = (columns_start + 1 >= world_[0].size()) ? world_[0].size() - 1 : columns_start + 1;
+
+            moving_object_new_x = moving_object->GetXPosition() + move_offset;
+            moving_object_new_y = moving_object->GetYPosition();
+            break;
+        }
+        default:
+            dt::Console(dt::WARNING, "WorldSector::CheckCollision(): Unrecognised direction");
+            return false;
+        }
+
+        for (size_t i = rows_start; i <= rows_end; i++){
+            for (size_t j = columns_start; j <= columns_end; j++){
+                for (std::deque<WorldObject *>::iterator itr = world_[i][j].begin();
+                    itr != world_[i][j].end();
                     ++itr)
                 {
                     WorldObject * neighbour = (*itr);
                     CollisionConfig_t neighbour_collision_config = neighbour->GetCollision();
                     if (neighbour_collision_config.type_ != CollisionType::COLLISION_NONE) {
                         /* If some neighbour on the top has a collision type, then check collision */
-                        
-                        CodeReminder("Collision, Distinguish between different collision types");
-
-                        if (CollisionCheck2DRectangles(moving_object->GetXPosition(),
-                            moving_object->GetYPosition() + move_offset,
-                            moving_object_collision_config.parameter_,
-                            moving_object_collision_config.parameter_,
-                            neighbour->GetXPosition(),
-                            neighbour->GetYPosition(),
-                            neighbour_collision_config.parameter_,
-                            neighbour_collision_config.parameter_)) 
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            break;
-        }
-        case 1 /* Bottom */:
-        {
-            /*
-                
-            */
-            for (size_t i = row_center; i >= row_center - 1; i--) {
-                for (std::deque<WorldObject *>::iterator itr = world_[i][column_center].begin();
-                    itr != world_[i][column_center].end();
-                    ++itr) 
-                {
-                    WorldObject * neighbour = (*itr);
-                    CollisionConfig_t neighbour_collision_config = neighbour->GetCollision();
-                    if (neighbour_collision_config.type_ != CollisionType::COLLISION_NONE) {
-                        /* If some neighbour on the top has a collision type, then check collision */
 
                         CodeReminder("Collision, Distinguish between different collision types");
 
-                        if (CollisionCheck2DRectangles(moving_object->GetXPosition(),
-                            moving_object->GetYPosition() - move_offset,
+                        if (CollisionCheck2DRectangles(moving_object_new_x,
+                            moving_object_new_y,
                             moving_object_collision_config.parameter_,
                             moving_object_collision_config.parameter_,
                             neighbour->GetXPosition(),
@@ -188,24 +245,8 @@ namespace game_engine {
                             return false;
                         }
                     }
-
                 }
             }
-
-
-            break;
-        }
-        case 2 /* Left */:
-        {
-            break;
-        }
-        case 3 /* Right */:
-        {
-            break;
-        }
-        default:
-            dt::Console(dt::WARNING, "WorldSector::CheckCollision(): Unrecognised direction");
-            return false;
         }
 
 
