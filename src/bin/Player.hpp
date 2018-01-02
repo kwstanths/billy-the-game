@@ -13,7 +13,7 @@ public:
 
     int Destroy();
 
-    void Move(float move_offset, game_engine::CollisionResult_t input);
+    void Move(float move_offset, ControlInput_t control_input, game_engine::CollisionResult_t collision_input);
 
     void Step(double delta_time);
 

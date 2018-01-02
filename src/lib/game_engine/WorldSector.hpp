@@ -50,9 +50,12 @@ namespace game_engine {
         size_t GetObjectsWindow(float center_x, float center_y, float margin, std::vector<WorldObject *> & visible_world);
 
         /**
-           0=Up, 1=Bottom, 2=Left, 3=Right 
+            Check for collision inside the world sector, provided the direction of the moving object
+            @param moving_object The object to check for collision with the world. Should have SetCollision() used
+            @param move_offset The amount of moving required
+            @param direction The direction of the movement, 0=Up, 1=Bottom, 2=Left, 3=Right 
         */
-        bool CheckCollision(WorldObject * moving_object, float move_offset, size_t direction);
+        float CheckCollision(WorldObject * moving_object, float move_offset, size_t direction);
 
     private:
         

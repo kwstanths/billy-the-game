@@ -152,10 +152,10 @@ namespace game_engine {
 
         /* TODO find the appropriate sector */
 
-        if (input.KEY_UP) collision.move_up = sector_->CheckCollision(moving_object, move_offset, 0);
-        if (input.KEY_DOWN) collision.move_down = sector_->CheckCollision(moving_object, move_offset, 1);
-        if (input.KEY_LEFT) collision.move_left = sector_->CheckCollision(moving_object, move_offset, 2);
-        if (input.KEY_RIGHT) collision.move_right = sector_->CheckCollision(moving_object, move_offset, 3);
+        if (input.KEY_UP) collision.up_ = sector_->CheckCollision(moving_object, move_offset, 0);
+        if (input.KEY_DOWN) collision.down_ = sector_->CheckCollision(moving_object, move_offset, 1);
+        if (input.KEY_LEFT) collision.left_ = sector_->CheckCollision(moving_object, move_offset, 2);
+        if (input.KEY_RIGHT) collision.right_ = sector_->CheckCollision(moving_object, move_offset, 3);
 
         return collision;
     }

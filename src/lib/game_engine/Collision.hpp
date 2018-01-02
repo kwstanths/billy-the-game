@@ -29,13 +29,14 @@ namespace game_engine {
     } CollisionConfig_t;
 
     /**
-        Result of collision detection
+        Result of collision detection.
+        Each field holds the amount of moving we can do in each direction
     */
     typedef struct {
-        bool move_up = false;
-        bool move_down = false;
-        bool move_left = false;
-        bool move_right = false;
+        float up_ = 0.0f;
+        float down_ = 0.0f;
+        float left_ = 0.0f;
+        float right_ = 0.0f;
     } CollisionResult_t;
 
     /**

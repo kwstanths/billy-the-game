@@ -20,30 +20,29 @@
 namespace ge = game_engine;
 namespace dt = debug_tools;
 
-//void displayFPS(double frame_time_ms) {
-//
-//    /* That's so nasty */
-//    static double start;
-//    static unsigned int frames;
-//
-//    start += frame_time_ms;
-//    frames++;
-//    if (start >= 1000.0f) {
-//       
-//        std::cout << "FPS: " << frames << std::endl;
-//
-//        start = 0.0;
-//        frames = 0;
-//    }
-//
-//}
+void displayFPS(double frame_time_ms) {
+
+    /* That's so nasty */
+    static double start;
+    static unsigned int frames;
+
+    start += frame_time_ms;
+    frames++;
+    if (start >= 1000.0f) {
+       
+        std::cout << "FPS: " << frames << std::endl;
+
+        start = 0.0;
+        frames = 0;
+    }
+
+}
 
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Fix rows/columns window when detecting collion")
+    CodeReminder("Implement bounding sphere");
     CodeReminder("WorldSector::GetObjectsWindow borders/margins sanitization");
-    CodeReminder("Fix collision margin left between colliding objects");
 
     ge::OpenGLContextConfig_t context_params;
     context_params.opengl_version_major_ = 3;
@@ -97,6 +96,8 @@ int main(int argc, char ** argv) {
     engine.AddWorldObject(object_tile, texture_grass, 1.0f, -1.0f);
     ge::WorldObject * tres = engine.AddWorldObject(object_tile, texture_treasure, 0.0f, 1.5f, 0.1f);
     tres->SetCollision(collision_config);
+    ge::WorldObject * tres_1 = engine.AddWorldObject(object_tile, texture_treasure, -2.4f, 1.5f, 0.1f);
+    tres_1->SetCollision(collision_config);
     
     /* Create a main player */
     Player player;
@@ -120,12 +121,12 @@ int main(int argc, char ** argv) {
 
         float speed = player.GetSpeed(input.KEY_RUN);
         float move_offset = (1.0 * speed) * delta_time;
-        ge::CollisionResult_t move_direction = engine.CheckCollision(&player, move_offset, input);
-        player.Move(move_offset, move_direction);
-        if (move_direction.move_left) engine.CameraMove2D(-move_offset, 0);
-        if (move_direction.move_right) engine.CameraMove2D(move_offset, 0);
-        if (move_direction.move_up) engine.CameraMove2D(0, move_offset);
-        if (move_direction.move_down) engine.CameraMove2D(0, -move_offset);
+        ge::CollisionResult_t can_move = engine.CheckCollision(&player, move_offset, input);
+        player.Move(move_offset, input, can_move);
+        if (can_move.left_) engine.CameraMove2D(-can_move.left_, 0);
+        if (can_move.right_) engine.CameraMove2D(can_move.right_, 0);
+        if (can_move.up_) engine.CameraMove2D(0, can_move.up_);
+        if (can_move.down_) engine.CameraMove2D(0, -can_move.down_);
 
 
         if (input.KEY_PAGE_UP) engine.CameraZoom2D(20 * delta_time);
