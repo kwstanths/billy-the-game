@@ -23,7 +23,7 @@ namespace game_engine {
         return 0;
     }
 
-    int OpenGLRenderer::Destory() {
+    int OpenGLRenderer::Destroy() {
 
         is_inited_ = false;
         return 0;
@@ -53,7 +53,9 @@ namespace game_engine {
         glBindBuffer(GL_ARRAY_BUFFER, object->GetUVBufferID());
         glVertexAttribPointer(shader_vars_.attr_vertex_uv_, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-        glDrawArrays(GL_TRIANGLES, 0, object->GetNoFTriangles());
+        /* Draw with index buffer */
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object->GetElementBufferID());
+        glDrawElements(GL_TRIANGLES, object->GetNoFElements(), GL_UNSIGNED_SHORT, (void*)0);
 
         return 0;
     }

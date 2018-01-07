@@ -20,28 +20,28 @@
 namespace ge = game_engine;
 namespace dt = debug_tools;
 
-void displayFPS(double frame_time_ms) {
-
-    /* That's so nasty */
-    static double start;
-    static unsigned int frames;
-
-    start += frame_time_ms;
-    frames++;
-    if (start >= 1000.0f) {
-       
-        std::cout << "FPS: " << frames << std::endl;
-
-        start = 0.0;
-        frames = 0;
-    }
-
-}
+//void displayFPS(double frame_time_ms) {
+//
+//    /* That's so nasty */
+//    static double start;
+//    static unsigned int frames;
+//
+//    start += frame_time_ms;
+//    frames++;
+//    if (start >= 1000.0f) {
+//       
+//        std::cout << "FPS: " << frames << std::endl;
+//
+//        start = 0.0;
+//        frames = 0;
+//    }
+//
+//}
 
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Implement bounding sphere");
+    CodeReminder("Implement bounding sphere collision");
     CodeReminder("WorldSector::GetObjectsWindow borders/margins sanitization");
 
     ge::OpenGLContextConfig_t context_params;
