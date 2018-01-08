@@ -59,6 +59,18 @@ namespace game_engine {
             text = "Texture is not initialised";
             level = debug_tools::CRITICAL;
             break;
+        case ERROR_FREETYPE_LIB:
+            text = "Could not find FreeType library";
+            level = debug_tools::CRITICAL;
+            break;
+        case ERROR_FREETYPE_FONT:
+            text = "Error loading font";
+            level = debug_tools::CRITICAL;
+            break;
+        case ERROR_FREETYPE_GLYPH:
+            text = "Error loading font character";
+            level = debug_tools::CRITICAL;
+            break;
         default:
             text = "Unkown error";
             level = debug_tools::WARNING;

@@ -50,8 +50,11 @@ int main(int argc, char ** argv) {
     context_params.window_width_ = 1024;
     context_params.window_height_ = 768;
     context_params.window_name_ = "billy";
+    context_params.font_file_path = "fonts/arial.ttf";
     context_params.shader_vertex_file_path_ = "shaders/VertexShader.glsl";
     context_params.shader_fragment_file_path_ = "shaders/FragmentShader.glsl";
+    context_params.shader_vertex_text_file_path = "shaders/TextVertexShader.glsl";
+    context_params.shader_fragment_text_file_path = "shaders/TextFragmentShader.glsl";
     ge::OpenGLCameraConfig_t camera_params;
     camera_params.pos_x_ = 0;
     camera_params.pos_y_ = 0;
@@ -95,10 +98,12 @@ int main(int argc, char ** argv) {
     engine.AddWorldObject(object_tile, texture_grass, 0.0f, -1.0f);
     engine.AddWorldObject(object_tile, texture_grass, 1.0f, -1.0f);
     ge::WorldObject * tres = engine.AddWorldObject(object_tile, texture_treasure, 0.0f, 1.5f, 0.1f);
-    tres->SetCollision(collision_config);
+    if (tres!= nullptr) tres->SetCollision(collision_config);
     ge::WorldObject * tres_1 = engine.AddWorldObject(object_tile, texture_treasure, -2.4f, 1.5f, 0.1f);
-    tres_1->SetCollision(collision_config);
-    
+    if (tres_1 != nullptr) tres_1->SetCollision(collision_config);
+    ge::WorldObject * tres_2 = engine.AddWorldObject(object_tile, texture_treasure, 5.0f, 5.0f, 0.1f);
+    tres_2->SetCollision(collision_config);
+
     /* Create a main player */
     Player player;
     player.Init();

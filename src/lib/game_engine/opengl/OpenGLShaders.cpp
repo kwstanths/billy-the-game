@@ -38,6 +38,23 @@ namespace game_engine {
         return 0;
     }
 
+    int OpenGLLoadShaders(std::string vertex_shader_path, std::string fragment_shader_path, OpenGLShaderTextVariables_t * shader_vars) {
+
+        int ret = OpenGLCompileShaders(vertex_shader_path.c_str(), fragment_shader_path.c_str(), &(shader_vars->program_id_));
+        if (ret != 0) return ret;
+
+        if ((shader_vars->attr_vertex_ = glGetAttribLocation(shader_vars->program_id_, shader_text_name_vertex)) == -1)
+            return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((shader_vars->uni_Projection_ = glGetUniformLocation(shader_vars->program_id_, shader_text_name_uni_projection)) == -1)
+            return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((shader_vars->uni_Texture_ = glGetUniformLocation(shader_vars->program_id_, shader_text_name_uni_texture)) == -1)
+            return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((shader_vars->uni_Texture_color_ = glGetUniformLocation(shader_vars->program_id_, shader_text_name_uni_texture_color)) == -1)
+            return Error::ERROR_SHADER_RES_NOT_FOUND;
+
+        return 0;
+    }
+
     int OpenGLCompileShaders(const char * vertex_file_path, const char * fragment_file_path, GLuint * program_id) {
         /* Create the shaders */
         GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);

@@ -94,6 +94,11 @@ namespace game_engine {
         */
         int GetLastError();
 
+        /**
+            
+        */
+        void Terminate();
+
     private:
         bool is_inited_;
         int last_error_;
@@ -105,8 +110,6 @@ namespace game_engine {
         WorldSector * sector_;
         WorldObject * main_actor_ = nullptr;
         std::vector<WorldObject *> visible_world_;
-
-        void Terminate();
 
     };
 

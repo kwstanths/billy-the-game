@@ -22,6 +22,10 @@ namespace game_engine {
         ERROR_OBJECT_PARSE,
         ERROR_OBJECT_NOT_INIT,
         ERROR_TEXTURE_NOT_INIT,
+
+        ERROR_FREETYPE_LIB,
+        ERROR_FREETYPE_FONT,
+        ERROR_FREETYPE_GLYPH,
     };
 
     void PrintError(int error);

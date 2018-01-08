@@ -9,6 +9,8 @@ set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../)
 set(NAME "game_engine")
 project(${NAME})
 
+# Condifure external packages include files 
+set(FREETYPE_INCLUDE_DIRS ${PROJECT_ROOT}/src/lib/external/freetype/include/)
 
 # Configuration
 if(MSVC)
@@ -18,6 +20,9 @@ if(MSVC)
 	add_definitions(-D_USE_MATH_DEFINES)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:wchar_t")
+
+	#Confifure external packages libraries
+	set(FREETYPE_LIBRARY ${PROJECT_ROOT}/src/lib/external/freetype/lib/win32/freetype271.lib)
 endif()
 
 # Check compiler for c++11
@@ -32,12 +37,12 @@ else()
         message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
-
 include_directories(${PROJECT_ROOT}/src/lib/)
 include_directories(opengl)
 include_directories(${PROJECT_ROOT}/src/lib/external/glfw-3.1.2/include/GLFW/)
 include_directories(${PROJECT_ROOT}/src/lib/external/glm-0.9.7.1/)
 include_directories(${PROJECT_ROOT}/src/lib/external/glew-1.13.0/include/)
+include_directories(${FREETYPE_INCLUDE_DIRS})
 
 # Sources
 file(GLOB ${NAME}_HEADERS *.hpp)
@@ -52,3 +57,5 @@ add_library(
 	${${NAME}_GL_HEADERS} ${${NAME}_GL_SOURCES}
 	${${NAME}_GL_COMMON_HEADERS} ${${NAME}_GL_COMMON_SOURCES}
 	)
+
+target_link_libraries(${NAME} ${FREETYPE_LIBRARY})

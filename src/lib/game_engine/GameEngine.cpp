@@ -92,6 +92,8 @@ namespace game_engine {
             visible_world_[i]->Draw();
         }
 
+        renderer_->Draw2DText("Welcome!", 100, 100, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
+
         /* Draw main actors */
         main_actor_->Step(delta_time);
         main_actor_->Draw();
@@ -119,18 +121,22 @@ namespace game_engine {
 
         if (globject == nullptr) {
             last_error_ = Error::ERROR_OBJECT_NOT_INIT;
+            PrintError(last_error_);
             return nullptr;
         }
         if (!globject->IsInited()) {
             last_error_ = Error::ERROR_OBJECT_NOT_INIT;
+            PrintError(last_error_);
             return nullptr;
         }
         if (gltexture == nullptr) {
             last_error_ = Error::ERROR_TEXTURE_NOT_INIT;
+            PrintError(last_error_);
             return nullptr;
         }
         if (!gltexture->IsInited()) {
             last_error_ = Error::ERROR_TEXTURE_NOT_INIT;
+            PrintError(last_error_);
             return nullptr;
         }
 

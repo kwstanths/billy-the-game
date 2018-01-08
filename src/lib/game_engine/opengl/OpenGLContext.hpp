@@ -24,10 +24,16 @@ namespace game_engine {
         size_t window_height_;
         /* The name of the window to create */
         std::string window_name_;
+        /* The file path of the font to be used */
+        std::string font_file_path;
         /* The vertex shader path in the disk */
         std::string shader_vertex_file_path_;
         /* The fragment shader path in the disk */
         std::string shader_fragment_file_path_;
+        /* The text vertex shader */
+        std::string shader_vertex_text_file_path;
+        /* The text fragment shader */
+        std::string shader_fragment_text_file_path;
     } OpenGLContextConfig_t;
 
 
@@ -73,9 +79,19 @@ namespace game_engine {
         ControlInput_t GetControlsInput();
 
         /**
-            Get shader variables
+            Get main shader variables
         */
         OpenGLShaderVariables_t GetShaderVariables();
+
+        /**
+            Get shader variables for 2d text
+        */
+        OpenGLShaderTextVariables_t GetShaderTextVariables();
+
+        /**
+            Get the font file location
+        */
+        std::string GetFontLocation();
 
         /**
             Clears the color of the screen
@@ -93,13 +109,9 @@ namespace game_engine {
         bool is_inited_;
         OpenGLContextConfig_t config_;
         OpenGLShaderVariables_t shader_vars_;
+        OpenGLShaderTextVariables_t shader_text_vars_;
 
         GLFWwindow * glfw_window_ = nullptr;
-
-        /**
-            Loads and compiles the shaders from the disk
-        */
-        int LoadShaders(std::string vertex_shader_path, std::string fragment_shader_path);
     };
 
 }

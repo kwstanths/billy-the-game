@@ -43,16 +43,18 @@ namespace game_engine {
             return Error::ERROR_GLEW_INIT;
         }
 
+        glViewport(0, 0, config_.window_width_, config_.window_height_);
         glfwSetInputMode(glfw_window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
         glEnable(GL_CULL_FACE);
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-        int ret = ret = OpenGLLoadShaders(config_.shader_vertex_file_path_, config_.shader_fragment_file_path_, &shader_vars_);
+        int ret;
+        ret = OpenGLLoadShaders(config_.shader_vertex_file_path_, config_.shader_fragment_file_path_, &shader_vars_);
         if (ret != 0) return ret;
-
-        glUseProgram(shader_vars_.program_id_);
+        ret = OpenGLLoadShaders(config_.shader_vertex_text_file_path, config_.shader_fragment_text_file_path, &shader_text_vars_);
+        if (ret != 0) return ret;
 
         is_inited_ = true;
         return 0;
@@ -113,6 +115,16 @@ namespace game_engine {
         if (!is_inited_) return OpenGLShaderVariables_t();
 
         return shader_vars_;
+    }
+
+    OpenGLShaderTextVariables_t OpenGLContext::GetShaderTextVariables() {
+        if (!is_inited_) return OpenGLShaderTextVariables_t();
+
+        return shader_text_vars_;
+    }
+
+    std::string OpenGLContext::GetFontLocation() {
+        return config_.font_file_path;
     }
 
     int OpenGLContext::ClearColor() {
