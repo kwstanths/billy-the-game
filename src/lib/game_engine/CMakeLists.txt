@@ -49,13 +49,15 @@ file(GLOB ${NAME}_HEADERS *.hpp)
 file(GLOB ${NAME}_SOURCES *.cpp)
 file(GLOB ${NAME}_GL_HEADERS opengl/*.hpp)
 file(GLOB ${NAME}_GL_SOURCES opengl/*.cpp)
+file(GLOB ${NAME}_PHY_HEADERS physics/*.hpp)
+file(GLOB ${NAME}_PHY_SOURCES physics/*.cpp)
 
 
 # Target
 add_library(
 	${NAME} ${${NAME}_HEADERS} ${${NAME}_SOURCES} 
 	${${NAME}_GL_HEADERS} ${${NAME}_GL_SOURCES}
-	${${NAME}_GL_COMMON_HEADERS} ${${NAME}_GL_COMMON_SOURCES}
+	${${NAME}_PHY_HEADERS} ${${NAME}_PHY_SOURCES}
 	)
 
 target_link_libraries(${NAME} ${FREETYPE_LIBRARY})

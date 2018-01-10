@@ -41,6 +41,9 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Collision detection, bounding sphere");
+    CodeReminder("Collision should take in mind object rotation");
+    CodeReminder("Use stbi_load to read textures from files");
     CodeReminder("Implement bounding sphere collision");
     CodeReminder("WorldSector::GetObjectsWindow borders/margins sanitization");
 
@@ -86,6 +89,9 @@ int main(int argc, char ** argv) {
     ge::CollisionConfig_t collision_config;
     collision_config.type_ = ge::CollisionType::COLLISION_BOUNDING_RECTANGLE;
     collision_config.parameter_ = 1;
+    ge::CollisionConfig_t collision_config_2;
+    collision_config_2.type_ = ge::CollisionType::COLLISION_BOUNDING_SPHERE;
+    collision_config_2.parameter_ = 0.75;
 
     /* Create a dummy world */
     engine.AddWorldObject(object_tile, texture_grass, -1.0f, 1.0f);
@@ -102,7 +108,7 @@ int main(int argc, char ** argv) {
     ge::WorldObject * tres_1 = engine.AddWorldObject(object_tile, texture_treasure, -2.4f, 1.5f, 0.1f);
     if (tres_1 != nullptr) tres_1->SetCollision(collision_config);
     ge::WorldObject * tres_2 = engine.AddWorldObject(object_tile, texture_treasure, 5.0f, 5.0f, 0.1f);
-    tres_2->SetCollision(collision_config);
+    tres_2->SetCollision(collision_config_2);
 
     /* Create a main player */
     Player player;

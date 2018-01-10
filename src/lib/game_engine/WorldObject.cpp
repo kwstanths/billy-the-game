@@ -1,7 +1,6 @@
 #include "WorldObject.hpp"
 
-#include "OpenGLMath.hpp"
-
+#include "physics/Matrices.hpp"
 #include "ErrorCodes.hpp"
 
 namespace game_engine {

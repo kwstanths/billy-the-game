@@ -36,7 +36,7 @@ namespace game_engine {
         int Destroy();
 
         /**
-            Get wether or not the object is initialised
+            Get whether or not the object is initialised
         */
         bool IsInited();
 

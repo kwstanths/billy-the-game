@@ -40,7 +40,7 @@ namespace game_engine {
         int Destroy();
 
         /**
-            Return wether the font is initialised or not
+            Return whether the font is initialised or not
             @return A boolean
         */
         bool IsInited();

@@ -4,6 +4,7 @@
 
 #include "Collision.hpp"
 #include "HelpFunctions.hpp"
+#include "physics/Types.hpp"
 
 namespace dt = debug_tools;
 
@@ -237,26 +238,22 @@ namespace game_engine {
                 {
                     WorldObject * neighbour = (*itr);
                     CollisionConfig_t neighbour_collision_config = neighbour->GetCollision();
-                    if (neighbour_collision_config.type_ != CollisionType::COLLISION_NONE) {
-                        /* If some neighbour on the top has a collision type, then check collision */
+                    if (neighbour_collision_config.type_ == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
+                        Rectangle2D_t rect_a(moving_object_new_x, moving_object_new_y, moving_object_collision_config.parameter_, moving_object_collision_config.parameter_);
+                        Rectangle2D_t rect_neighbor(neighbour->GetXPosition(), neighbour->GetYPosition(), neighbour_collision_config.parameter_, neighbour_collision_config.parameter_);
 
-                        //CodeReminder("Collision, Distinguish between different collision types");
-
-                        if (CollisionCheck2DRectangles(moving_object_new_x,
-                            moving_object_new_y,
-                            moving_object_collision_config.parameter_,
-                            moving_object_collision_config.parameter_,
-                            neighbour->GetXPosition(),
-                            neighbour->GetYPosition(),
-                            neighbour_collision_config.parameter_,
-                            neighbour_collision_config.parameter_))
-                        {
+                        if (CollisionCheck2DRectangles(rect_a, rect_neighbor)) {
                             if (direction == 0 || direction == 1)
                                 return std::abs(std::abs(moving_object->GetYPosition() - neighbour->GetYPosition()) - moving_object_collision_config.parameter_ / 2.0f - neighbour_collision_config.parameter_ / 2.0f);
 
                             if (direction == 2 || direction == 3)
                                 return std::abs(std::abs(moving_object->GetXPosition() - neighbour->GetXPosition()) - moving_object_collision_config.parameter_ / 2.0f - neighbour_collision_config.parameter_ / 2.0f);
                         }
+                    } else if (neighbour_collision_config.type_ == CollisionType::COLLISION_BOUNDING_SPHERE) {
+                        Rectangle2D_t rect(moving_object_new_x, moving_object_new_y, moving_object_collision_config.parameter_, moving_object_collision_config.parameter_);
+                        Circle2D_t circ(neighbour->GetXPosition(), neighbour->GetYPosition(), neighbour_collision_config.parameter_);
+                        
+                        if (CollisionCheck2DCircleRectangle(circ, rect)) return 0.0f;
                     }
                 }
             }

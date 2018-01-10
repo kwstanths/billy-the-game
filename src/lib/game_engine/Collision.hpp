@@ -3,6 +3,8 @@
 
 #include <cstdlib>
 
+#include "physics/Types.hpp"
+
 namespace game_engine {
 
     /**
@@ -25,7 +27,7 @@ namespace game_engine {
             If type_ is BOUNDING_RECTANGLE, parameter is the side length
             If type_ is BOUNDING_SPHERE, parameter is the radius
         */
-        size_t parameter_;
+        float parameter_;
     } CollisionConfig_t;
 
     /**
@@ -41,18 +43,16 @@ namespace game_engine {
 
     /**
         Check for collision between two boxes
-        @param a_x The first box center x coordinate
-        @param a_y The first box center y coordinate
-        @param a_x_width The first box x-axis width
-        @param a_y_height The first box y-axis height
-        @param b_x The second box center x coordinate
-        @param b_y The second box center y coordinate
-        @param b_x_width The second box x-axis width
-        @param b_y_height The second box y-axis height
+        @param a The first rectangle
+        @param b The second rectangle
         @return true = Boxes collide, false = Boxes do not collide
     */
-    bool CollisionCheck2DRectangles(float a_x, float a_y, float a_x_width, float a_y_height,
-        float b_x, float b_y, float b_x_width, float b_y_height);
+    bool CollisionCheck2DRectangles(Rectangle2D_t rect_a, Rectangle2D_t rect_b);
+
+    /**
+        
+    */
+    bool CollisionCheck2DCircleRectangle(Circle2D_t circle, Rectangle2D_t rect);
 
 }
 
