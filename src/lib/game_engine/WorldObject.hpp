@@ -6,7 +6,9 @@
 #include "opengl/OpenGLObject.hpp"
 #include "opengl/OpenGLTexture.hpp"
 #include "opengl/OpenGLRenderer.hpp"
+
 #include "Collision.hpp"   
+#include "physics/Types.hpp"
 
 #include "glm/glm.hpp"
 
@@ -69,6 +71,16 @@ namespace game_engine {
         float GetZPosition();
 
         /**
+        
+        */
+        float GetObjectWidth();
+
+        /**
+        
+        */
+        float GetObjectHeight();
+
+        /**
             Set the model matrix for the object
             @param pos_x The model's position x
             @param pos_y The model's position y
@@ -89,19 +101,29 @@ namespace game_engine {
         void SetStepFunction(std::function<void(double)> func);
 
         /**
-            Set the collision type to be used for this object. Default is no collision
-            @param config The collision configuration
+            Sets collision to NONE
         */
-        void SetCollision(CollisionConfig_t config);
+        void SetCollision();
+        
+        /**
+            
+        */
+        void SetCollision(float x_size, float y_size, float z_size = 0.0f);
 
         /**
-            Get the collision parameters
-            @return The collision configuration
+            
         */
-        CollisionConfig_t GetCollision();
+        void SetCollision(float radius);
+
+        /**
+        
+        */
+        CollisionType GetCollisionType();
 
     protected:
         float pos_x_, pos_y_, pos_z_;
+        float size_x_, size_y_, size_z_;
+        float rotated_angle_;
 
     private:
         bool is_inited_;
@@ -109,7 +131,7 @@ namespace game_engine {
         OpenGLObject * object_;
         OpenGLTexture * texture_;
         OpenGLRenderer * renderer_;
-        CollisionConfig_t collision_config_;
+        CollisionType collision_type_;
 
         glm::mat4 translation_matrix_;
         glm::mat4 rotation_matrix_;
@@ -117,5 +139,6 @@ namespace game_engine {
 
         std::function<void(double)> func_;
     };
+
 }
 #endif

@@ -10,11 +10,11 @@ namespace game_engine {
 
     bool PointInsideRectangle(Point2D_t point, Rectangle2D_t rect){
         
-        if (2.0*rect.x_ - rect.x_width_ <= 2.0*point.x_ &&  2.0*point.x_ <= 2.0*rect.x_ + rect.x_width_ &&
-            2.0*rect.y_ - rect.y_height_ <= 2.0*point.y_ && 2.0*point.y_ <= 2.0*rect.y_ + rect.y_height_)
-        {
-            return true;
-        }
+        //if (2.0*rect.x_ - rect.x_width_ <= 2.0*point.x_ &&  2.0*point.x_ <= 2.0*rect.x_ + rect.x_width_ &&
+        //    2.0*rect.y_ - rect.y_height_ <= 2.0*point.y_ && 2.0*point.y_ <= 2.0*rect.y_ + rect.y_height_)
+        //{
+        //    return true;
+        //}
 
         return false;
     }
@@ -72,12 +72,13 @@ namespace game_engine {
         float inner_product = vector_from_a_to_intersect.x_ * vector_from_b_to_intersect.x_ +
             vector_from_a_to_intersect.y_ * vector_from_b_to_intersect.y_;
 
-        //dt::ConsoleInfo("point a x", point_a.x_,
-        //    "point a y", point_a.y_,
-        //    "point b x", point_b.x_,
-        //    "point b y", point_b.y_,
-        //    "inter x", intersection_point.x_,
-        //    "inter y", intersection_point.y_);
+        dt::ConsoleInfo("point a x", point_a.x_,
+            "point a y", point_a.y_,
+            "point b x", point_b.x_,
+            "point b y", point_b.y_,
+            "inter x", intersection_point.x_,
+            "inter y", intersection_point.y_,
+            "product", inner_product);
 
         if (inner_product <= 0) return true;
 

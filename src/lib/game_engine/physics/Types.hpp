@@ -5,6 +5,9 @@
 
 namespace game_engine {
     
+    /* Shows a direction in degrees: 0 = top, 90 = left, 180 = bottom, 270 = right */
+    typedef float Direction;
+
     /**
         A point in a 2D pane 
         (x,y) : point coordinates
@@ -13,6 +16,9 @@ namespace game_engine {
         float x_;
         float y_;
 
+        Point2D() {
+            x_ = y_ = 0.0f;
+        }
         Point2D(float x, float y) : x_(x), y_(y) {};
     } Point2D_t;
 
@@ -82,19 +88,30 @@ namespace game_engine {
     } Line2D_t;
 
     /**
-        A rectangle in a 2D pane 
-        (x,y) : center coordinates 
-        x_width: the horizontal-x width
-        y_height: the vertical-y height 
+        A rectangle in a 2D pane defined by four points
+        D   C
+        A   B
     */
     typedef struct Rectangle2D {
-        float x_;
-        float y_;
-        float x_width_;
+        Point2D_t A_;
+        Point2D_t B_;
+        Point2D_t C_;
+        Point2D_t D_;
 
-        float y_height_;
-        Rectangle2D(float x, float y, float x_width, float y_height) :
-            x_(x), y_(y), x_width_(x_width), y_height_(y_height) {};
+        Rectangle2D() {};
+
+        Rectangle2D(Point2D_t A, Point2D_t B, Point2D_t C, Point2D_t D): A_(A), B_(B), C_(C), D_(D) {};
+        
+        Rectangle2D(float center_x, float center_y, float x_width, float y_height) {
+            float xmar = x_width / 2.0f;
+            float ymar = y_height / 2.0f;
+
+            A_ = Point2D_t(center_x - xmar, center_y - ymar);
+            B_ = Point2D_t(center_x + xmar, center_y - ymar);
+            C_ = Point2D_t(center_x + xmar, center_y + ymar);
+            D_ = Point2D_t(center_x - xmar, center_y + ymar);
+        }
+
     } Rectangle2D_t;
 
 }

@@ -5,6 +5,7 @@
 #include <deque>
 
 #include "WorldObject.hpp"
+#include "physics/Types.hpp"
 
 namespace game_engine {
     
@@ -55,7 +56,7 @@ namespace game_engine {
             @param move_offset The amount of moving required
             @param direction The direction of the movement, 0=Up, 1=Bottom, 2=Left, 3=Right 
         */
-        float CheckCollision(WorldObject * moving_object, float move_offset, size_t direction);
+        CollisionResult_t CheckCollision(WorldObject * moving_object, float move_offset, Direction direction);
 
     private:
         
@@ -79,6 +80,7 @@ namespace game_engine {
         
         */
         size_t GetColumn(float y);
+
 
     };
 

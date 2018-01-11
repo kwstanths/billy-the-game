@@ -11,7 +11,8 @@ namespace game_engine {
 
         func_ = nullptr;
 
-        collision_config_.type_ = CollisionType::COLLISION_NONE;
+        SetCollision();
+        rotated_angle_ = 0.0f;
 
         is_inited_ = false;
     }
@@ -68,6 +69,14 @@ namespace game_engine {
         return pos_z_;
     }
 
+    float WorldObject::GetObjectWidth() {
+        return size_x_;
+    }
+
+    float WorldObject::GetObjectHeight() {
+        return size_y_;
+    }
+
     void WorldObject::SetPosition(float pos_x, float pos_y, float pos_z) {
         pos_x_ = pos_x;
         pos_y_ = pos_y;
@@ -85,19 +94,37 @@ namespace game_engine {
         else if (axis == 2) rotation_axis = glm::vec3(0, 0, 1);
         
         rotation_matrix_ = GetRotateMatrix(angle, rotation_axis);
+        
+        rotated_angle_ = angle;
     }
 
     void WorldObject::SetStepFunction(std::function<void(double)> func) {
         func_ = func;
     }
 
-    void WorldObject::SetCollision(CollisionConfig_t config) {
-        collision_config_ = config;
+    void WorldObject::SetCollision() {
+        collision_type_ = CollisionType::COLLISION_NONE;
+        size_x_ = 0.0f;
+        size_y_ = 0.0f;
+        size_z_ = 0.0f;
     }
 
-    CollisionConfig_t WorldObject::GetCollision() {
-        return collision_config_;
+    void WorldObject::SetCollision(float x_size, float y_size, float z_size) {
+        collision_type_ = CollisionType::COLLISION_BOUNDING_RECTANGLE;
+        size_x_ = x_size;
+        size_y_ = y_size;
+        size_z_ = z_size;
     }
 
+    void WorldObject::SetCollision(float radius) {
+        collision_type_ = CollisionType::COLLISION_BOUNDING_CIRCLE;
+        size_x_ = 2.0*radius;
+        size_y_ = 2.0*radius;
+        size_z_ = 2.0*radius;
+    }
+
+    CollisionType WorldObject::GetCollisionType() {
+        return collision_type_;
+    }
 
 }

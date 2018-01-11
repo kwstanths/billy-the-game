@@ -20,32 +20,32 @@
 namespace ge = game_engine;
 namespace dt = debug_tools;
 
-//void displayFPS(double frame_time_ms) {
-//
-//    /* That's so nasty */
-//    static double start;
-//    static unsigned int frames;
-//
-//    start += frame_time_ms;
-//    frames++;
-//    if (start >= 1000.0f) {
-//       
-//        std::cout << "FPS: " << frames << std::endl;
-//
-//        start = 0.0;
-//        frames = 0;
-//    }
-//
-//}
+void displayFPS(double frame_time_ms) {
+
+    /* That's so nasty */
+    static double start;
+    static unsigned int frames;
+
+    start += frame_time_ms;
+    frames++;
+    if (start >= 1000.0f) {
+       
+        std::cout << "FPS: " << frames << std::endl;
+
+        start = 0.0;
+        frames = 0;
+    }
+
+}
 
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Fix FrameRateRegulator sleep function");
     CodeReminder("Collision detection, bounding sphere");
     CodeReminder("Collision should take in mind object rotation");
     CodeReminder("Use stbi_load to read textures from files");
     CodeReminder("Implement bounding sphere collision");
-    CodeReminder("WorldSector::GetObjectsWindow borders/margins sanitization");
 
     ge::OpenGLContextConfig_t context_params;
     context_params.opengl_version_major_ = 3;
@@ -85,14 +85,6 @@ int main(int argc, char ** argv) {
     texture_treasure->Init("assets/treasure.bmp", ge::OpenGLTexture::TEXTURE_BMP);
     texture_player->Init("assets/player.bmp", ge::OpenGLTexture::TEXTURE_BMP);
 
-    /* Create a collision struct */
-    ge::CollisionConfig_t collision_config;
-    collision_config.type_ = ge::CollisionType::COLLISION_BOUNDING_RECTANGLE;
-    collision_config.parameter_ = 1;
-    ge::CollisionConfig_t collision_config_2;
-    collision_config_2.type_ = ge::CollisionType::COLLISION_BOUNDING_SPHERE;
-    collision_config_2.parameter_ = 0.75;
-
     /* Create a dummy world */
     engine.AddWorldObject(object_tile, texture_grass, -1.0f, 1.0f);
     engine.AddWorldObject(object_tile, texture_grass, 0.0f, 1.0f);
@@ -104,21 +96,21 @@ int main(int argc, char ** argv) {
     engine.AddWorldObject(object_tile, texture_grass, 0.0f, -1.0f);
     engine.AddWorldObject(object_tile, texture_grass, 1.0f, -1.0f);
     ge::WorldObject * tres = engine.AddWorldObject(object_tile, texture_treasure, 0.0f, 1.5f, 0.1f);
-    if (tres!= nullptr) tres->SetCollision(collision_config);
+    if (tres != nullptr) tres->SetCollision(1.0f, 1.0f);
     ge::WorldObject * tres_1 = engine.AddWorldObject(object_tile, texture_treasure, -2.4f, 1.5f, 0.1f);
-    if (tres_1 != nullptr) tres_1->SetCollision(collision_config);
+    if (tres_1 != nullptr) tres_1->SetCollision(1.0f, 1.0f);
     ge::WorldObject * tres_2 = engine.AddWorldObject(object_tile, texture_treasure, 5.0f, 5.0f, 0.1f);
-    tres_2->SetCollision(collision_config_2);
+    tres_2->SetCollision(1.0f);
 
     /* Create a main player */
     Player player;
     player.Init();
     player.SetPosition(0.0f, 0.0f, 0.1f);
-    player.SetCollision(collision_config);
+    player.SetCollision(1.0f, 1.0f);
     engine.AddMainActor(&player, object_tile, texture_player);
 
     ge::FrameRateRegulator frame_regulator;
-    frame_regulator.Init(60);
+    frame_regulator.Init();
 
     do {
         frame_regulator.FrameStart();
@@ -146,6 +138,7 @@ int main(int argc, char ** argv) {
         engine.Step(delta_time);
 
         frame_regulator.FrameEnd();
+        displayFPS(frame_regulator.GetDelta() * 1000.0);
     } while (1);
 
     frame_regulator.Destroy();
