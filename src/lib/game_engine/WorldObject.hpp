@@ -96,29 +96,34 @@ namespace game_engine {
         void Rotate(float angle, size_t axis);
 
         /**
-            Set a function to be executed every time Step is called
-        */
-        void SetStepFunction(std::function<void(double)> func);
-
-        /**
             Sets collision to NONE
         */
         void SetCollision();
         
         /**
-            
+            Sets collision to Bounding rectangle
+            @param x_size Rectangle horizontal width
+            @param y_size Rectangle vertical width
         */
         void SetCollision(float x_size, float y_size, float z_size = 0.0f);
 
         /**
-            
+            Sets collision to Bounding circle
+            @param radius The circle radius
         */
         void SetCollision(float radius);
 
         /**
-        
+            Get the type of collision this object has set
         */
         CollisionType GetCollisionType();
+
+        /**
+            Check if this object in new_position collides with another object
+            @param new_position The new position
+            @param other The other object
+        */
+        bool Collides(Point2D_t new_position, WorldObject * other);
 
     protected:
         float pos_x_, pos_y_, pos_z_;
@@ -136,8 +141,6 @@ namespace game_engine {
         glm::mat4 translation_matrix_;
         glm::mat4 rotation_matrix_;
         glm::mat4 model_;
-
-        std::function<void(double)> func_;
     };
 
 }

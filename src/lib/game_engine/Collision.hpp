@@ -30,9 +30,9 @@ namespace game_engine {
     } CollisionResult_t;
 
 
-    bool CollisionCheck(Rectangle2D_t a, Rectangle2D_t b);
+    bool CollisionCheck(Rectangle2D_t rect_a, Rectangle2D_t rect_b);
 
-    bool CollisionCheck(Rectangle2D_t a, Circle2D_t b);
+    bool CollisionCheck(Rectangle2D_t rect, Circle2D_t circle);
 
     bool CollisionCheck(Circle2D_t a, Circle2D_t b);
 

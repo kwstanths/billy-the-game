@@ -9,8 +9,6 @@ namespace game_engine {
 
         SetPosition(0.0f, 0.0f, 0.0f);
 
-        func_ = nullptr;
-
         SetCollision();
         rotated_angle_ = 0.0f;
 
@@ -54,7 +52,7 @@ namespace game_engine {
     }
 
     void WorldObject::Step(double delta_time) {
-        if (func_ != nullptr) func_(delta_time);
+        
     }
 
     float WorldObject::GetXPosition() {
@@ -98,10 +96,6 @@ namespace game_engine {
         rotated_angle_ = angle;
     }
 
-    void WorldObject::SetStepFunction(std::function<void(double)> func) {
-        func_ = func;
-    }
-
     void WorldObject::SetCollision() {
         collision_type_ = CollisionType::COLLISION_NONE;
         size_x_ = 0.0f;
@@ -125,6 +119,43 @@ namespace game_engine {
 
     CollisionType WorldObject::GetCollisionType() {
         return collision_type_;
+    }
+
+    bool WorldObject::Collides(Point2D_t new_position, WorldObject * other) {
+
+        if (!is_inited_) return false;
+        
+        /* Apply rotations if applicable */
+        CollisionType neighbour_collision_type = other->GetCollisionType();
+        CollisionType moving_object_collision_type = collision_type_;
+
+        if (neighbour_collision_type == CollisionType::COLLISION_NONE) return false;
+        if (moving_object_collision_type == CollisionType::COLLISION_NONE) return false;
+
+        if (moving_object_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
+            Rectangle2D_t mo_br(new_position.x_, new_position.y_, size_x_, size_y_);
+            
+            if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
+                Circle2D_t n_bc(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth() / 2.0);
+                return CollisionCheck(mo_br, n_bc);
+            } else if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
+                Rectangle2D_t n_br(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth(), other->GetObjectHeight());
+                return CollisionCheck(mo_br, n_br);
+            }
+
+        } else if (moving_object_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
+            Circle2D_t mo_bc(new_position.x_, new_position.y_, size_x_ / 2.0);
+            
+            if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
+                Circle2D_t n_bc(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth() / 2.0);
+                return CollisionCheck(mo_bc, n_bc);
+            } else if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
+                Rectangle2D_t n_br(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth(), other->GetObjectHeight());
+                return CollisionCheck(n_br, mo_bc);
+            }
+        }
+        
+        return false;
     }
 
 }

@@ -41,11 +41,9 @@ void displayFPS(double frame_time_ms) {
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Fix FrameRateRegulator sleep function");
-    CodeReminder("Collision detection, bounding sphere");
-    CodeReminder("Collision should take in mind object rotation");
-    CodeReminder("Use stbi_load to read textures from files");
-    CodeReminder("Implement bounding sphere collision");
+    CodeReminder("FrameRateRegulator sleep function");
+    CodeReminder("Collision detection, rectangles rotation");
+    CodeReminder("See: stbi_load to read textures from files");
 
     ge::OpenGLContextConfig_t context_params;
     context_params.opengl_version_major_ = 3;
@@ -100,7 +98,7 @@ int main(int argc, char ** argv) {
     ge::WorldObject * tres_1 = engine.AddWorldObject(object_tile, texture_treasure, -2.4f, 1.5f, 0.1f);
     if (tres_1 != nullptr) tres_1->SetCollision(1.0f, 1.0f);
     ge::WorldObject * tres_2 = engine.AddWorldObject(object_tile, texture_treasure, 5.0f, 5.0f, 0.1f);
-    tres_2->SetCollision(1.0f);
+    tres_2->SetCollision(0.5f);
 
     /* Create a main player */
     Player player;

@@ -81,7 +81,14 @@ namespace game_engine {
         */
         size_t GetColumn(float y);
 
-
+        /**
+            Get the vertical and horizontal distance from the first colliding object in the world, if the
+            moving object is moved to the new_position
+            @param moving_object The object to be moved
+            @param new_position The new center position
+            @return <vertical, horizontal>
+        */
+        std::pair<float, float> CollisionGetDistance(WorldObject * moving_object, Point2D_t new_position);
     };
 
 }

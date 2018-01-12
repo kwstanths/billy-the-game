@@ -28,11 +28,16 @@ namespace game_engine {
         r : radius
     */
     typedef struct Circle2D {
-        float x_;
-        float y_;
+        Point2D_t c_;
         float r_;
 
-        Circle2D(float x, float y, float r) : x_(x), y_(y), r_(r) {};
+
+        Circle2D() {};
+        Circle2D(float x, float y, float r) {
+            c_.x_ = x;
+            c_.y_ = y;
+            r_ = r;
+        };
     } Circle2D_t;
 
     /**

@@ -4,46 +4,35 @@
 
 #include "physics/MathHelp.hpp"
 
+#include "debug_tools/Console.hpp"
+
 namespace game_engine {
-
-    /*bool CollisionCheck(Rectangle2D_t a, Rectangle2D_t b) {
-        if ((std::abs(a.x_ - b.x_) * 2.0 < (a.x_width_ + b.x_width_)) && (std::abs(a.y_ - b.y_) * 2.0 < (a.y_height_ + b.y_height_))) {
-            return true;
-        }
-        
-        return false;
-    }
-
-    bool CollisionCheck(Circle2D_t a, Rectangle2D_t b) {
-        float xmar = b.x_width_ / 2.0f;
-        float ymar = b.y_height_ / 2.0f;
-
-        Point2D_t point_A(b.x_ - xmar, b.y_ - ymar);
-        Point2D_t point_B(b.x_ + xmar, b.y_ - ymar);
-        Point2D_t point_C(b.x_ + xmar, b.y_ + ymar);
-        Point2D_t point_D(b.x_ - xmar, b.y_ + ymar);
-
-        return PointInsideRectangle(Point2D_t(a.x_, a.y_), b) ||
-            IntersectCircleLineSegment(a, point_A, point_B) ||
-            IntersectCircleLineSegment(a, point_B, point_C) ||
-            IntersectCircleLineSegment(a, point_C, point_D) ||
-            IntersectCircleLineSegment(a, point_D, point_A);
-
-    }*/
 
     bool CollisionCheck(Rectangle2D_t rect_a, Rectangle2D_t rect_b) {
         
-        bool a_is_left_of_b = rect_a.B_.x_ <= rect_b.A_.x_;
-        bool a_is_right_of_b = rect_a.A_.x_ >= rect_b.B_.x_;
-        bool a_is_bellow_of_b = rect_a.D_.y_ <= rect_b.A_.y_;
-        bool a_is_top_of_b = rect_a.A_.y_ >= rect_b.D_.y_;
+        if (PointInside(rect_a.A_, rect_b)) return true;
+        if (PointInside(rect_a.B_, rect_b)) return true;
+        if (PointInside(rect_a.C_, rect_b)) return true;
+        if (PointInside(rect_a.D_, rect_b)) return true;
+        if (PointInside(rect_b.A_, rect_a)) return true;
+        if (PointInside(rect_b.B_, rect_a)) return true;
+        if (PointInside(rect_b.C_, rect_a)) return true;
+        if (PointInside(rect_b.D_, rect_a)) return true;
 
-        bool collision = a_is_left_of_b || a_is_right_of_b || a_is_bellow_of_b || a_is_top_of_b;
-
-        return !collision;
+        return false;
     }
 
-    bool CollisionCheck(Rectangle2D_t a, Circle2D_t b) {
+    bool CollisionCheck(Rectangle2D_t rect, Circle2D_t circle) {
+       
+        if (PointInside(rect.A_, circle)) return true;
+        if (PointInside(rect.B_, circle)) return true;
+        if (PointInside(rect.C_, circle)) return true;
+        if (PointInside(rect.D_, circle)) return true;
+        if (IntersectCircleLineSegment(circle, rect.A_, rect.B_)) return true;
+        if (IntersectCircleLineSegment(circle, rect.B_, rect.C_)) return true;
+        if (IntersectCircleLineSegment(circle, rect.C_, rect.D_)) return true;
+        if (IntersectCircleLineSegment(circle, rect.D_, rect.A_)) return true;
+
         return false;
     }
 

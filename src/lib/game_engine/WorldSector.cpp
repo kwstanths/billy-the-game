@@ -114,294 +114,34 @@ namespace game_engine {
             return collision_res;
         }
 
-        float moving_object_new_x = moving_object->GetXPosition();
-        float moving_object_new_y = moving_object->GetYPosition();
+        bool moving_top = ((direction >= 0.0f && direction < 90.0f) || (direction > 270.0f && direction <= 360.0f));
+        bool moving_down = (direction > 90.0f && direction < 270.0f);
+        bool moving_left = (direction > 0 && direction < 180.0f);
+        bool moving_right = (direction > 180.0f && direction < 360.0f);
 
-        if (Equal(direction, 0.0f)) {
-            moving_object_new_y += move_offset;
-            collision_res.up_ = move_offset;
-        } else if (Equal(direction, 90.0f)) {
-            moving_object_new_x -= move_offset;
-            collision_res.left_ = move_offset;
-        } else if (Equal(direction, 180.0f)) {
-            moving_object_new_y -= move_offset;
-            collision_res.down_ = move_offset;
-        } else if (Equal(direction, 270.0f)) {
-            moving_object_new_x += move_offset;
-            collision_res.right_ = move_offset;
-        } else if (direction < 90.0f){
-            moving_object_new_x -= move_offset;
-            moving_object_new_y += move_offset;
-            collision_res.left_ = move_offset;
-            collision_res.up_ = move_offset;
-        } else if (direction < 180.0f) {
-            moving_object_new_x -= move_offset;
-            moving_object_new_y -= move_offset;
-            collision_res.left_ = move_offset;
-            collision_res.down_ = move_offset;
-        } else if (direction < 270.0f) {
-            moving_object_new_x += move_offset;
-            moving_object_new_y -= move_offset;
-            collision_res.right_ = move_offset;
-            collision_res.down_ = move_offset;
-        } else {
-            moving_object_new_x += move_offset;
-            moving_object_new_y += move_offset;
-            collision_res.right_ = move_offset;
-            collision_res.up_ = move_offset;
+        Point2D_t moving_object_new_position(moving_object->GetXPosition(), moving_object->GetYPosition());
+        if (moving_top) {
+            moving_object_new_position.y_ += move_offset;
+            collision_res.up_ = CollisionGetDistance(moving_object, moving_object_new_position).first;
+            moving_object_new_position.y_ = moving_object->GetYPosition() + collision_res.up_;
+        }
+        else if (moving_down) {
+            moving_object_new_position.y_ -= move_offset;
+            collision_res.down_ = CollisionGetDistance(moving_object, moving_object_new_position).first;
+            moving_object_new_position.y_ = moving_object->GetYPosition() - collision_res.up_;
         }
 
-        std::vector<WorldObject *> neighbours(50);
-        size_t nof = GetObjectsWindow(moving_object->GetXPosition(), moving_object->GetYPosition(), 1, neighbours);
-        for (size_t i = 0; i < nof; i++) {
-            WorldObject * neighbour = neighbours[i];
-            CollisionType neighbour_collision_type = neighbour->GetCollisionType();
-            if (neighbour_collision_type != CollisionType::COLLISION_NONE) {
+        if (moving_left) {
+            moving_object_new_position.x_ -= move_offset;
+            collision_res.left_ = CollisionGetDistance(moving_object, moving_object_new_position).second;
+            moving_object_new_position.x_ = moving_object->GetXPosition() - collision_res.left_;
 
-                if (!Equal(collision_res.up_, 0.0f)) {
-                    /* Check up */
-                }
-                if (!Equal(collision_res.down_, 0.0f)) {
-                    /* Check down */
-                }
-                if (!Equal(collision_res.left_, 0.0f)) {
-                    /* Check left */
-                }
-                if (!Equal(collision_res.right_, 0.0f)) {
-                    /* Check right */
-                }
+        } else if (moving_right) {
+            moving_object_new_position.x_ += move_offset;
+            collision_res.right_ = CollisionGetDistance(moving_object, moving_object_new_position).second;
+            moving_object_new_position.x_ = moving_object->GetXPosition() - collision_res.right_;
 
-                CollisionType moving_object_collision_type = moving_object->GetCollisionType();
-                if (moving_object_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
-                    if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
-                        Rectangle2D_t mo_br(moving_object_new_x, moving_object_new_y, moving_object->GetObjectWidth(), moving_object->GetObjectHeight());
-                        Circle2D_t n_bc(neighbour->GetXPosition(), neighbour->GetYPosition(), neighbour->GetObjectWidth() / 2.0);
-                      
-                        CollisionCheck(mo_br, n_bc);
-                    } else if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
-                        Rectangle2D_t mo_br(moving_object_new_x, moving_object_new_y, moving_object->GetObjectWidth(), moving_object->GetObjectHeight());
-                        Rectangle2D_t n_br(neighbour->GetXPosition(), neighbour->GetYPosition(), neighbour->GetObjectWidth(), neighbour->GetObjectHeight());
-
-                        if (CollisionCheck(mo_br, n_br)) return CollisionResult_t();
-                    }
-                }
-                else if (moving_object_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
-                    if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
-                        Circle2D_t mo_bc(moving_object_new_x, moving_object_new_y, moving_object->GetObjectWidth() / 2.0);
-                        Circle2D_t n_bc(neighbour->GetXPosition(), neighbour->GetYPosition(), neighbour->GetObjectWidth() / 2.0);
-                        
-                        CollisionCheck(mo_bc, n_bc);
-                    }
-                    else if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
-                        Circle2D_t mo_bc(moving_object_new_x, moving_object_new_y, moving_object->GetObjectWidth() / 2.0);
-                        Rectangle2D_t n_br(neighbour->GetXPosition(), neighbour->GetYPosition(), neighbour->GetObjectWidth(), neighbour->GetObjectHeight());
-                        
-                        CollisionCheck(n_br, mo_bc);
-                    }
-                }
-
-
-            }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        ///* Find the moving object's position inside the world sector */
-        //size_t object_row_center = GetRow(moving_object->GetYPosition());
-        //size_t object_column_center = GetColumn(moving_object->GetXPosition());
-
-        ///* Check collision with neighbours only in the desired directiion */
-        //size_t rows_start = object_row_center;
-        //size_t rows_end = object_row_center;
-        //size_t columns_start = object_column_center;
-        //size_t columns_end = object_column_center;
-        //float moving_object_new_x;
-        //float moving_object_new_y;
-
-        //switch (direction)
-        //{
-        //case 0 /* Up */:
-        //{
-
-        //    if (object_column_center < 0 || object_column_center >= world_[0].size()) {
-        //        dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Top] - Column center is out of boundaries");
-        //        return 0.0f;
-        //    }
-
-        //    /*
-        //        Going up in the world means going to bigger y world coordinates,
-        //        which means going to a bigger number of row index in the world sector
-        //    */
-        //    if (object_row_center >= world_.size()) {
-        //        dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Top] - Row center is bigger than the world rows");
-        //        return 0.0f;
-        //    }
-        //    rows_start = (object_row_center < 0) ? 0 : object_row_center;
-        //    rows_end = (rows_start + 1 >= world_.size()) ? world_.size() - 1 : rows_start + 1;
-        //    columns_start = (object_column_center - 1 < 0) ? 0 : (object_column_center - 1);
-        //    columns_end = (object_column_center + 1 >= world_[0].size()) ? world_[0].size() - 1 : (object_column_center + 1);
-
-        //    moving_object_new_x = moving_object->GetXPosition();
-        //    moving_object_new_y = moving_object->GetYPosition() + move_offset;
-
-        //    break;
-        //}
-        //case 1 /* Bottom */:
-        //{
-        //    if (object_column_center < 0 || object_column_center >= world_[0].size()) {
-        //        dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Bottom] - Column center is out of boundaries");
-        //        return 0.0f;
-        //    }
-
-        //    /*
-        //        Going down in the world means going to smaller y world coordinates,
-        //        which means going to a smaller number of row in the world sector
-        //    */
-        //    if (object_row_center < 0) {
-        //        dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Bottom] - Row center is smaller than zero");
-        //        return 0.0f;
-        //    }
-        //    rows_start = (object_row_center >= world_.size()) ? world_.size() - 1 : object_row_center;
-        //    rows_end = (rows_start - 1 < 0) ? 0 : rows_start - 1;
-        //    columns_start = (object_column_center - 1 < 0) ? object_column_center : (object_column_center - 1);
-        //    columns_end = (object_column_center + 1 >= world_[0].size()) ? world_[0].size() - 1 : (object_column_center + 1);
-
-        //    /* Swap the values so that we always use ++ operator when iterating over the objects */
-        //    Swap(rows_start, rows_end);
-        //    
-        //    moving_object_new_x = moving_object->GetXPosition();
-        //    moving_object_new_y = moving_object->GetYPosition() - move_offset;
-
-        //    break;
-        //}
-        //case 2 /* Left */:
-        //{
-        //    if (object_row_center < 0 || object_row_center >= world_.size()) {
-        //        dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Left] - Row center is out of baoundaries");
-        //        return 0.0f;
-        //    }
-
-        //    /*
-        //        Going left in the world means going to smaller x world coordinates
-        //        which  means going to a smaller number of column
-        //    */
-        //    if (object_column_center < 0) {
-        //        dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Left] - Column center is smaller than zero");
-        //        return 0.0f;
-        //    }
-        //    columns_start = (object_column_center >= world_[0].size()) ? world_[0].size() - 1 : object_column_center;
-        //    columns_end = (columns_start - 1 < 0) ? 0 : columns_start - 1;
-        //    rows_start = (object_row_center - 1 < 0) ? 0 : (object_row_center - 1);
-        //    rows_end = (object_row_center + 1 >= world_.size()) ? world_.size() - 1 : (object_row_center + 1);
-        //    /* Swap the values so that we always use ++ operator when iterating over the objects */
-        //    Swap(columns_start, columns_end);
-
-        //    moving_object_new_x = moving_object->GetXPosition() - move_offset;
-        //    moving_object_new_y = moving_object->GetYPosition();
-        //    break;
-        //}
-        //case 3 /* Right */:
-        //{
-        //    if (object_row_center < 0 || object_row_center >= world_.size()) {
-        //        dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Right] - Row center is out of baoundaries");
-        //        return 0.0f;
-        //    }
-
-        //    /*
-        //        Going right in the world means going to bigger x word coordinates
-        //        which means going to bigger number of column
-        //    */
-        //    if (object_column_center >= world_[0].size()) {
-        //        dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): [Right] - Column center is bigger than the world columns");
-        //        return 0.0f;
-        //    }
-        //    columns_start = (object_column_center < 0) ? 0 : object_column_center;
-        //    columns_end = (columns_start + 1 >= world_[0].size()) ? world_[0].size() - 1 : columns_start + 1;
-        //    rows_start = (object_row_center - 1 < 0) ? 0 : (object_row_center - 1);
-        //    rows_end = (object_row_center + 1 >= world_.size()) ? world_.size() - 1 : (object_row_center + 1);
-
-        //    moving_object_new_x = moving_object->GetXPosition() + move_offset;
-        //    moving_object_new_y = moving_object->GetYPosition();
-        //    break;
-        //}
-        //default:
-        //    dt::Console(dt::WARNING, "WorldSector::CheckCollision(): Unrecognised direction");
-        //    return 0.0f;
-        //}
-
-        //for (size_t i = rows_start; i <= rows_end; i++){
-        //    for (size_t j = columns_start; j <= columns_end; j++){
-        //        for (std::deque<WorldObject *>::iterator itr = world_[i][j].begin();
-        //            itr != world_[i][j].end();
-        //            ++itr)
-        //        {
-        //            WorldObject * neighbour = (*itr);
-        //            CollisionType neighbour_collision_type = neighbour->GetCollisionType();
-        //            if (neighbour_collision_type != CollisionType::COLLISION_NONE) {
-
-        //                CollisionType moving_object_collision_type = moving_object->GetCollisionType();
-        //                if (moving_object_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
-        //                    
-        //                    Rectangle2D_t mo_br(moving_object_new_x, moving_object_new_y, moving_object->GetObjectWidth(), moving_object->GetObjectHeight());
-        //                    if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
-        //                        Circle2D_t n_bc(neighbour->GetXPosition(), neighbour->GetYPosition(), neighbour->GetObjectWidth() / 2.0);
-        //                        CollisionCheck(mo_br, n_bc);
-        //                    } else if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
-        //                        Rectangle2D_t n_br(neighbour->GetXPosition(), neighbour->GetYPosition(), neighbour->GetObjectWidth(), neighbour->GetObjectHeight());
-
-        //                        if (CollisionCheck(mo_br, n_br)) return 0.0f;
-        //                        
-        //                    }
-        //                } else if (moving_object_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
-        //                    Circle2D_t mo_bc(moving_object_new_x, moving_object_new_y, moving_object->GetObjectWidth() / 2.0);
-        //                    
-        //                    if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
-        //                        Circle2D_t n_bc(neighbour->GetXPosition(), neighbour->GetYPosition(), neighbour->GetObjectWidth() / 2.0);
-        //                        CollisionCheck(mo_bc, n_bc);
-        //                    } else if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
-        //                        Rectangle2D_t n_br(neighbour->GetXPosition(), neighbour->GetYPosition(), neighbour->GetObjectWidth(), neighbour->GetObjectHeight());
-        //                        CollisionCheck(n_br, mo_bc);
-        //                    }
-        //                }
-
-
-        //                /* Get the type of collision of the moving object */
-        //                /*CollisionConfig_t moving_object_collision_config = moving_object->GetCollision();
-        //                CollisionConfig_t neighbour_collision_config = neighbour->GetCollision();
-        //                
-        //                if (CollisionCheck2DRectangles(rect_a, rect_neighbor)) {
-        //                    if (direction == 0 || direction == 1)
-        //                        return std::abs(std::abs(moving_object->GetYPosition() - neighbour->GetYPosition()) - moving_object_collision_config.parameter_ / 2.0f - neighbour_collision_config.parameter_ / 2.0f);
-
-        //                    if (direction == 2 || direction == 3)
-        //                        return std::abs(std::abs(moving_object->GetXPosition() - neighbour->GetXPosition()) - moving_object_collision_config.parameter_ / 2.0f - neighbour_collision_config.parameter_ / 2.0f);
-        //                }
-        //            } else if (neighbour_collision_config.type_ == CollisionType::COLLISION_BOUNDING_SPHERE) {
-        //                Rectangle2D_t rect(moving_object_new_x, moving_object_new_y, moving_object_collision_config.parameter_, moving_object_collision_config.parameter_);
-        //                Circle2D_t circ(neighbour->GetXPosition(), neighbour->GetYPosition(), neighbour_collision_config.parameter_);
-        //                
-        //                if (CollisionCheck2DCircleRectangle(circ, rect)) return 0.0f;*/
-
-        //                
-        //            }
-        //        }
-        //    }
-        //}
         
         return collision_res;
     }
@@ -412,6 +152,26 @@ namespace game_engine {
 
     size_t WorldSector::GetColumn(float y) {
         return 0.0 + (world_.size() - 1 - 0.0) * (y - y_margin_start_) / (y_margin_end_ - y_margin_start_);
+    }
+
+    std::pair<float, float> WorldSector::CollisionGetDistance(WorldObject * moving_object, Point2D_t new_position) {
+        /* Get neighbours */
+        std::vector<WorldObject *> neighbours(50);
+        size_t nof = GetObjectsWindow(moving_object->GetXPosition(), moving_object->GetYPosition(), 1, neighbours);
+        
+        float horizontal_move_offset = std::abs(moving_object->GetXPosition() - new_position.x_);
+        float vertical_move_offset = std::abs(moving_object->GetYPosition() - new_position.y_);
+        
+        for (size_t i = 0; i < nof; i++) {
+            WorldObject * neighbour = neighbours[i];
+
+            if (moving_object->Collides(new_position, neighbour)) {
+                /* TODO apply some clever mechanism to calculate remaining distance to colliding object */
+                return std::pair<float, float>(0.0f, 0.0f);
+            }
+        }
+
+        return std::pair<float, float>(vertical_move_offset, horizontal_move_offset);
     }
 
 }
