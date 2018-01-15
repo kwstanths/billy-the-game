@@ -10,7 +10,7 @@ if( CMAKE_BINARY_DIR MATCHES " " )
 	message( "Build directory contains spaces. Change it" )
 endif()
 
-set (PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../)
+set (PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../)
 set (NAME "billy")
 
 project (${NAME})

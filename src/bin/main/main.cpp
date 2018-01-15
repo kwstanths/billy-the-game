@@ -108,7 +108,7 @@ int main(int argc, char ** argv) {
     engine.AddMainActor(&player, object_tile, texture_player);
 
     ge::FrameRateRegulator frame_regulator;
-    frame_regulator.Init();
+    frame_regulator.Init(100);
 
     do {
         frame_regulator.FrameStart();
