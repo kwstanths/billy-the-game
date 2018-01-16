@@ -18,7 +18,7 @@ namespace memory_subsystem {
     bool ArrayAllocator::Init(size_t bytes_size) {
         if (is_inited_) return false;
 
-        size_t number_of_pages = std::ceil(((float) bytes_size) / ((float) PAGE_SIZE));
+        size_t number_of_pages = static_cast<size_t>(std::ceil(((float)bytes_size) / ((float)PAGE_SIZE)));
         pages_ = std::vector<MemoryPage *>(number_of_pages, new MemoryPage(PAGE_SIZE));
 
         page_offset_ = 0;

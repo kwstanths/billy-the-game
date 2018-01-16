@@ -12,7 +12,6 @@ endif()
 
 set (PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../)
 set (NAME "billy")
-
 project (${NAME})
 
 set(CMAKE_CXX_STANDARD 11)

@@ -16,6 +16,11 @@ namespace game_engine {
         return std::abs(a - b) <= e;
     }
 
+    /**
+        Swap two values, uses copy constructor
+        @param a Value a
+        @param b Value b
+    */
     template<typename T> void Swap(T & a, T & b) {
         T temp;
         temp = a;
@@ -23,6 +28,11 @@ namespace game_engine {
         b = temp;
     }
 
+    /**
+        Get radians from degrees
+        @param degrees
+        @return radians
+    */
     float GetRadians(float degrees);
 }
 

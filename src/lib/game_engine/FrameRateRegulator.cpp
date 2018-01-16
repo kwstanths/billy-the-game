@@ -49,7 +49,7 @@ namespace game_engine {
         return 0;
     }
 
-    double FrameRateRegulator::GetDelta() {
+    float FrameRateRegulator::GetDelta() {
         return delta_;
     }
 

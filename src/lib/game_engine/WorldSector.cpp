@@ -7,6 +7,7 @@
 #include "physics/Types.hpp"
 
 namespace dt = debug_tools;
+namespace ms = memory_subsystem;
 
 namespace game_engine {
 
@@ -20,8 +21,8 @@ namespace game_engine {
         size_t elements) 
     {
         world_ = std::vector<std::vector<std::deque<WorldObject *> > >(height, std::vector<std::deque<WorldObject *> >(width));
-        objects_ = std::vector<WorldObject>(elements);
-        sector_id_ = 0;
+        array_objects_ = new ms::ArrayAllocator();
+        array_objects_->Init(500 * 500);
 
         x_margin_start_ = x_margin_start;
         x_margin_end_ = x_margin_end;
@@ -34,31 +35,9 @@ namespace game_engine {
 
     int WorldSector::Destroy() {
         world_.clear();
-
+         
         is_inited_ = false;
         return 0;
-    }
-
-    WorldObject * WorldSector::NewObj(float x, float y, float z) {
-        if (!is_inited_) {
-            dt::Console(dt::CRITICAL, "World sector is not initialised");
-            return nullptr;
-        }
-        if (sector_id_ >= objects_.size()) {
-            dt::Console(dt::CRITICAL, "World sector's objects size has reached its limit");
-            return nullptr;
-        }
-
-        objects_[sector_id_].SetPosition(x, y, z);
-        WorldObject * the_new_object = &objects_[sector_id_];
-        sector_id_++;
-
-        size_t index_row = GetColumn(y);
-        size_t index_col = GetRow(x);
-
-        world_[index_row][index_col].push_back(the_new_object);
-
-        return the_new_object;
     }
 
     size_t WorldSector::GetObjectsWindow(float center_x, float center_y, float margin, 
@@ -72,7 +51,7 @@ namespace game_engine {
         size_t index = 0;
         size_t center_row = GetRow(center_y);
         size_t center_col = GetColumn(center_x);
-        size_t border = std::ceil(margin);
+        size_t border = static_cast<size_t>(std::ceil(margin));
         
         size_t rows_start = (center_row - border >= 0) ? (center_row - border) : 0;
         size_t rows_end = (center_row + border < world_.size()) ? (center_row + border) : (world_.size() - 1);
@@ -147,11 +126,13 @@ namespace game_engine {
     }
 
     size_t WorldSector::GetRow(float x) {
-        return 0.0 + (world_[0].size()-1 - 0.0) * (x - x_margin_start_) / (x_margin_end_ - x_margin_start_);
+        float index = 0.0f + (world_[0].size() - 1 - 0.0f) * (x - x_margin_start_) / (x_margin_end_ - x_margin_start_);
+        return static_cast<size_t>(index);
     }
 
     size_t WorldSector::GetColumn(float y) {
-        return 0.0 + (world_.size() - 1 - 0.0) * (y - y_margin_start_) / (y_margin_end_ - y_margin_start_);
+        float index = 0.0f + (world_.size() - 1 - 0.0f) * (y - y_margin_start_) / (y_margin_end_ - y_margin_start_);
+        return static_cast<size_t>(index);
     }
 
     std::pair<float, float> WorldSector::CollisionGetDistance(WorldObject * moving_object, Point2D_t new_position) {

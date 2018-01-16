@@ -6,6 +6,7 @@
 
 #include "WorldObject.hpp"
 #include "physics/Types.hpp"
+#include "memory/ArrayAllocator.hpp"
 
 namespace game_engine {
     
@@ -31,13 +32,28 @@ namespace game_engine {
         int Destroy();
 
         /**
-            Add a new object to the sextor
+            Add a new object T to the sector. The T object should be a subclass of WorldObject
             @param x Position x
             @param y Position y
             @param z Position z
-            @return A pointer to the world object
+            @return A pointer to the object
         */
-        WorldObject * NewObj(float x, float y, float z);
+        template<typename T> T * NewObj(float x, float y, float z) {
+            if (!is_inited_) {
+                dt::Console(dt::CRITICAL, "World sector is not initialised");
+                return nullptr;
+            }
+
+            T * the_new_object = new (array_objects_) T();
+            the_new_object->SetPosition(x, y, z);
+
+            size_t index_row = GetColumn(y);
+            size_t index_col = GetRow(x);
+
+            world_[index_row][index_col].push_back(the_new_object);
+
+            return the_new_object;
+        }
 
         /**
             Get a window of object in the world. Objects are assigned sequentially to the visible world 
@@ -61,7 +77,6 @@ namespace game_engine {
     private:
         
         bool is_inited_;
-        size_t sector_id_;
         float x_margin_start_, x_margin_end_, y_margin_start_, y_margin_end_;
         
         /* 
@@ -69,7 +84,7 @@ namespace game_engine {
             sequentially
         */
         std::vector<std::vector<std::deque<WorldObject *> > >world_;
-        std::vector<WorldObject> objects_;
+        memory_subsystem::ArrayAllocator * array_objects_;
 
         /**
         

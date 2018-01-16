@@ -18,8 +18,8 @@ namespace debug_tools {
         return std::to_string(value);
     }
 
-    size_t Timer::ToInt() {
-        return (1000.0 * (end_.time - start_.time) + (end_.millitm - start_.millitm));
+    int64_t Timer::ToInt() {
+        return (1000 * (end_.time - start_.time) + (end_.millitm - start_.millitm));
     }
 
     std::ostream & operator<<(std::ostream & stream, Timer const & R){

@@ -61,7 +61,8 @@ namespace memory_subsystem {
             BYTE * byte_address = Allocate(bytes);
             
             T * address = reinterpret_cast<T *>(byte_address);
-
+            dt::Console(&address);
+            dt::Console(address);
             return address;
         }
 

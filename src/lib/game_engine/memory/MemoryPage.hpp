@@ -43,6 +43,12 @@ namespace memory_subsystem {
         */
         BYTE * Get(size_t byte_index, size_t memory_size);
 
+        /**
+            Gets the size of the template type, calls Get with that size and casts the 
+            memory address to the required type
+            @param byte_index The first byte of the address
+            @return The memory address
+        */
         template<typename T> T * Get(size_t byte_index) {
             assert(mem_ != nullptr);
 

@@ -6,9 +6,11 @@
 #include "opengl/OpenGLObject.hpp"
 #include "opengl/OpenGLTexture.hpp"
 #include "opengl/OpenGLRenderer.hpp"
+#include "physics/Types.hpp"
+#include "memory/ArrayAllocator.hpp"
+#include "debug_tools/Console.hpp"
 
 #include "Collision.hpp"   
-#include "physics/Types.hpp"
 
 #include "glm/glm.hpp"
 
@@ -25,6 +27,15 @@ namespace game_engine {
             Does nothing in particular. Sets the position to (0,0,0)
         */
         WorldObject();
+
+        static void * operator new(size_t size, memory_subsystem::ArrayAllocator * array_objects) {
+            void * address = array_objects->Allocate(size);
+            return address;
+        }
+
+        static void operator delete(void * ptr, memory_subsystem::ArrayAllocator * array_objects) {
+            debug_tools::Console(debug_tools::FATAL, "WorldObject initialization failed");
+        }
 
         /**
             Sets the OpenGL model and texture to the object. Also sets the renderer to be used
@@ -71,12 +82,14 @@ namespace game_engine {
         float GetZPosition();
 
         /**
-        
+            Get the horizontal width of the object
+            @return The horizontal width
         */
         float GetObjectWidth();
 
         /**
-        
+            Get the vertical height of the object
+            @return The vertical height
         */
         float GetObjectHeight();
 

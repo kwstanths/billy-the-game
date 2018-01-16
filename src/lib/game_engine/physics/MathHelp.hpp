@@ -6,7 +6,7 @@
 namespace game_engine {
 
     /**
-        Find the innter product between two vectors defined by two points
+        Find the inner product between two vectors defined by points
         @param vector_b First vector
         @param vector_a Second vector
         @return The inner product
@@ -54,12 +54,20 @@ namespace game_engine {
     bool IntersectCircleLine(Circle2D_t circle, Line2D_t line);
 
     /**
-        
+        Check whether a line segment intersects with a circle, the line is contained
+        between two points
+        @param circle The circle
+        @param point_a The line segment first point
+        @param point_b The line segment second point
+        @return true = intersects, false = Does not intersect
     */
     bool IntersectCircleLineSegment(Circle2D_t circle, Point2D_t point_a, Point2D_t point_b);
 
     /**
-        
+        Get the point of intersection between two lines
+        @param line_a The first line
+        @param line_b The second line
+        @return The intersection point, infs will be returned in parallel lines
     */
     Point2D_t LinesIntersection(Line2D_t line_a, Line2D_t line_b);
 

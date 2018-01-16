@@ -69,15 +69,46 @@ namespace game_engine {
         void CameraZoom2D(float zoom_factor);
 
         /**
-            Add an object to the world
+            Add an object T to the world. The T object should be a subclass of WorldObject
             @param globject The object's model
             @param gltexture The object's texture
             @param x The x coordinate
             @param y The y coordinate
             @param z The z coordiante
-            @return 
+            @return A pointer to the new object
         */
-        WorldObject * AddWorldObject(OpenGLObject * globject, OpenGLTexture * gltexture, float x, float y, float z = 0.0f);
+        template<typename T> T * AddWorldObject(OpenGLObject * globject, OpenGLTexture * gltexture, float x, float y, float z = 0.0f) {
+            if (!is_inited_) {
+                last_error_ = -1;
+                return nullptr;
+            }
+
+            if (globject == nullptr) {
+                last_error_ = Error::ERROR_OBJECT_NOT_INIT;
+                PrintError(last_error_);
+                return nullptr;
+            }
+            if (!globject->IsInited()) {
+                last_error_ = Error::ERROR_OBJECT_NOT_INIT;
+                PrintError(last_error_);
+                return nullptr;
+            }
+            if (gltexture == nullptr) {
+                last_error_ = Error::ERROR_TEXTURE_NOT_INIT;
+                PrintError(last_error_);
+                return nullptr;
+            }
+            if (!gltexture->IsInited()) {
+                last_error_ = Error::ERROR_TEXTURE_NOT_INIT;
+                PrintError(last_error_);
+                return nullptr;
+            }
+            T * temp = sector_->NewObj<T>(x, y, z);
+            last_error_ = temp->Init(globject, gltexture, renderer_);
+
+            if (last_error_ != 0) return nullptr;
+            else return temp;
+        }
 
         /**
             
@@ -85,17 +116,22 @@ namespace game_engine {
         int AddMainActor(WorldObject * object, OpenGLObject * globject, OpenGLTexture * gltexture);
 
         /**
-            
+            Check for collision of the moving_object based on the input and the moving_offset
+            @param moving_object The object to check for collision
+            @param move_offset The amount of moving done
+            @param input The direction of the movement
+            @return The result of the collision detection
         */
         CollisionResult_t CheckCollision(WorldObject * moving_object, float move_offset, ControlInput input);
 
         /**
-        
+            Get the last error occured, 0 = No error
+            @return The last error
         */
         int GetLastError();
 
         /**
-            
+            Stops nothing and exits
         */
         void Terminate();
 

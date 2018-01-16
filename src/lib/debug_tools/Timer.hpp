@@ -45,7 +45,7 @@ namespace debug_tools {
               Get the time difference of the stoerd values in milliseconds in an integer
               @return Elapsed time
              */
-            size_t ToInt();
+            int64_t ToInt();
 
     };
 }

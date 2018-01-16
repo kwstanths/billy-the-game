@@ -127,8 +127,8 @@ namespace game_engine {
             return Point2D_t(-line_b.C_ / line_b.A_, -line_a.C_ / line_a.B_);
         }
 
-        double x = (yinter_b - yinter_a) / (gradient_a - gradient_b);
-        double y = gradient_a * x + yinter_a;
+        float x = (yinter_b - yinter_a) / (gradient_a - gradient_b);
+        float y = gradient_a * x + yinter_a;
 
         return Point2D_t(x, y);
         

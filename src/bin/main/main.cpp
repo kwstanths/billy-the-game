@@ -2,20 +2,21 @@
 #include <Windows.h>
 #endif
 
-#include "debug_tools/CodeReminder.hpp"
-#include "debug_tools/Console.hpp"
-
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/ControlInput.hpp"
 #include "game_engine/FrameRateRegulator.hpp"
 #include "game_engine/WorldSector.hpp"
 #include "game_engine/ErrorCodes.hpp"
 #include "game_engine/WorldObject.hpp"
-
 #include "game_engine/opengl/OpenGLObject.hpp"
 #include "game_engine/opengl/OpenGLTexture.hpp"
 
+#include "debug_tools/CodeReminder.hpp"
+#include "debug_tools/Console.hpp"
+
 #include "Player.hpp"
+#include "Grass.hpp"
+#include "Treasure.hpp"
 
 namespace ge = game_engine;
 namespace dt = debug_tools;
@@ -41,8 +42,9 @@ void displayFPS(double frame_time_ms) {
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Deal with ObjLoad files")
     CodeReminder("FrameRateRegulator sleep function");
-    CodeReminder("Collision detection, rectangles rotation");
+    CodeReminder("Collision detection, rotation");
     CodeReminder("See: stbi_load to read textures from files");
 
     ge::OpenGLContextConfig_t context_params;
@@ -84,20 +86,21 @@ int main(int argc, char ** argv) {
     texture_player->Init("assets/player.bmp", ge::OpenGLTexture::TEXTURE_BMP);
 
     /* Create a dummy world */
-    engine.AddWorldObject(object_tile, texture_grass, -1.0f, 1.0f);
-    engine.AddWorldObject(object_tile, texture_grass, 0.0f, 1.0f);
-    engine.AddWorldObject(object_tile, texture_grass, 1.0f, 1.0f);
-    engine.AddWorldObject(object_tile, texture_grass, -1.0f, 0.0f);
-    engine.AddWorldObject(object_tile, texture_grass, 0.0f, 0.0f);
-    engine.AddWorldObject(object_tile, texture_grass, 1.0f, 0.0f);
-    engine.AddWorldObject(object_tile, texture_grass, -1.0f, -1.0f);
-    engine.AddWorldObject(object_tile, texture_grass, 0.0f, -1.0f);
-    engine.AddWorldObject(object_tile, texture_grass, 1.0f, -1.0f);
-    ge::WorldObject * tres = engine.AddWorldObject(object_tile, texture_treasure, 0.0f, 1.5f, 0.1f);
+    engine.AddWorldObject<Grass>(object_tile, texture_grass, -1.0f, 1.0f);
+    engine.AddWorldObject<Grass>(object_tile, texture_grass, 0.0f, 1.0f);
+    engine.AddWorldObject<Grass>(object_tile, texture_grass, 1.0f, 1.0f);
+    engine.AddWorldObject<Grass>(object_tile, texture_grass, -1.0f, 0.0f);
+    engine.AddWorldObject<Grass>(object_tile, texture_grass, 0.0f, 0.0f);
+    engine.AddWorldObject<Grass>(object_tile, texture_grass, 1.0f, 0.0f);
+    engine.AddWorldObject<Grass>(object_tile, texture_grass, -1.0f, -1.0f);
+    engine.AddWorldObject<Grass>(object_tile, texture_grass, 0.0f, -1.0f);
+    engine.AddWorldObject<Grass>(object_tile, texture_grass, 1.0f, -1.0f);
+    engine.AddWorldObject<Grass>(object_tile, texture_grass, -1.0f, 2.0f);
+    Treasure * tres = engine.AddWorldObject<Treasure>(object_tile, texture_treasure, 0.0f, 1.5f, 0.1f);
     if (tres != nullptr) tres->SetCollision(1.0f, 1.0f);
-    ge::WorldObject * tres_1 = engine.AddWorldObject(object_tile, texture_treasure, -2.4f, 1.5f, 0.1f);
+    Treasure * tres_1 = engine.AddWorldObject<Treasure>(object_tile, texture_treasure, -2.4f, 1.5f, 0.1f);
     if (tres_1 != nullptr) tres_1->SetCollision(1.0f, 1.0f);
-    ge::WorldObject * tres_2 = engine.AddWorldObject(object_tile, texture_treasure, 5.0f, 5.0f, 0.1f);
+    Treasure * tres_2 = engine.AddWorldObject<Treasure>(object_tile, texture_treasure, 5.0f, 5.0f, 0.1f);
     tres_2->SetCollision(0.5f);
 
     /* Create a main player */
@@ -112,23 +115,21 @@ int main(int argc, char ** argv) {
 
     do {
         frame_regulator.FrameStart();
-        double delta_time = frame_regulator.GetDelta();
+        float delta_time = frame_regulator.GetDelta();
 
         ControlInput_t input = engine.GetControlsInput();
         if (input.KEY_ESC) {
             break;
         } 
-
-
+        
         float speed = player.GetSpeed(input.KEY_RUN);
-        float move_offset = (1.0 * speed) * delta_time;
+        float move_offset = (1.0f * speed) * delta_time;
         ge::CollisionResult_t can_move = engine.CheckCollision(&player, move_offset, input);
         player.Move(move_offset, input, can_move);
         if (can_move.left_) engine.CameraMove2D(-can_move.left_, 0);
         if (can_move.right_) engine.CameraMove2D(can_move.right_, 0);
         if (can_move.up_) engine.CameraMove2D(0, can_move.up_);
         if (can_move.down_) engine.CameraMove2D(0, -can_move.down_);
-
 
         if (input.KEY_PAGE_UP) engine.CameraZoom2D(20 * delta_time);
         if (input.KEY_PAGE_DOWN) engine.CameraZoom2D(-20 * delta_time);

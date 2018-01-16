@@ -24,7 +24,7 @@ namespace game_engine {
 
     /**
         A circle in a 2D pane 
-        (x,y) : center coordinates
+        c : center point
         r : radius
     */
     typedef struct Circle2D {
@@ -77,14 +77,14 @@ namespace game_engine {
         }
 
         /**
-        
+            Get the line gradient
         */
         float GetGradient() {
             return -A_ / B_;
         }
 
         /**
-        
+            Get the line y-intercept
         */
         float GetYIntercept() {
             return -C_ / A_;

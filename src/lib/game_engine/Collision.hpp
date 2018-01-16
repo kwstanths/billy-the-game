@@ -29,12 +29,29 @@ namespace game_engine {
         float right_ = 0.0f;
     } CollisionResult_t;
 
-
+    /**
+        Check for collision between two rectangles
+        @param rect_a The first rectangle
+        @param rect_b The second rectangle
+        @return true = Collide, false = do not collide
+    */
     bool CollisionCheck(Rectangle2D_t rect_a, Rectangle2D_t rect_b);
 
+    /**
+        Check for collision between a circle and a rectangle
+        @param rect The rectangle
+        @param circle The circle
+        @return true = Collide, false = do not collide
+    */
     bool CollisionCheck(Rectangle2D_t rect, Circle2D_t circle);
 
-    bool CollisionCheck(Circle2D_t a, Circle2D_t b);
+    /**
+        Check for collision betwwen two circles
+        @param circ_a The first circle
+        @param circ_b The second circle
+        @return true = Collide, false = do not collide
+    */
+    bool CollisionCheck(Circle2D_t circ_a, Circle2D_t circ_b);
 
     
 }

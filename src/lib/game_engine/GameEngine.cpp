@@ -114,40 +114,6 @@ namespace game_engine {
         camera_->Zoom(factor);
     }
 
-    WorldObject * GameEngine::AddWorldObject(OpenGLObject * globject, OpenGLTexture * gltexture, float x, float y, float z) {
-        if (!is_inited_) {
-            last_error_ = -1;
-            return nullptr;
-        }
-
-        if (globject == nullptr) {
-            last_error_ = Error::ERROR_OBJECT_NOT_INIT;
-            PrintError(last_error_);
-            return nullptr;
-        }
-        if (!globject->IsInited()) {
-            last_error_ = Error::ERROR_OBJECT_NOT_INIT;
-            PrintError(last_error_);
-            return nullptr;
-        }
-        if (gltexture == nullptr) {
-            last_error_ = Error::ERROR_TEXTURE_NOT_INIT;
-            PrintError(last_error_);
-            return nullptr;
-        }
-        if (!gltexture->IsInited()) {
-            last_error_ = Error::ERROR_TEXTURE_NOT_INIT;
-            PrintError(last_error_);
-            return nullptr;
-        }
-
-        WorldObject * temp = sector_->NewObj(x, y, z);
-        last_error_ = temp->Init(globject, gltexture, renderer_);
-        
-        if (last_error_ != 0) return nullptr;
-        else return temp;
-    }
-
     int GameEngine::AddMainActor(WorldObject * object, OpenGLObject * globject, OpenGLTexture * gltexture) {
         object->Init(globject, gltexture, renderer_);
         main_actor_ = object;

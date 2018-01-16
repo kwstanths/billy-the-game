@@ -18,7 +18,7 @@ namespace game_engine {
         /* Bearing of the character, offset from baseline to left/top of glyph */
         glm::ivec2 bearing_;
         /* Horizontal offset to advance to next character, the amount of space before and between for normal text */
-        GLuint advance_;
+        signed long advance_;
     } OpenGLCharacter_t;
 
 

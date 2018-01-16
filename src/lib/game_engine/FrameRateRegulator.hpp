@@ -44,7 +44,7 @@ namespace game_engine {
             Get the last frame's delta time in seconds, First frame will be 1/frame_rate requested
             @return The difference between frame_end_time - frame_start_time
         */
-        double GetDelta();
+        float GetDelta();
 
     private:
         bool is_inited_;

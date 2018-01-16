@@ -29,6 +29,5 @@ add_executable(${NAME} ${${NAME}_HEADERS} ${${NAME}_SOURCES}
 target_link_libraries(${NAME}
 	debug_tools
 	game_engine
-	${PROJECT_ROOT}../debug_tools/lib/debug_tools.lib
 )
 

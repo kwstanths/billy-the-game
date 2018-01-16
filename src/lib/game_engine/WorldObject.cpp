@@ -3,6 +3,9 @@
 #include "physics/Matrices.hpp"
 #include "ErrorCodes.hpp"
 
+#include "debug_tools/Console.hpp"
+namespace dt = debug_tools;
+
 namespace game_engine {
 
     WorldObject::WorldObject() {
@@ -16,6 +19,7 @@ namespace game_engine {
     }
 
     int WorldObject::Init(OpenGLObject * object, OpenGLTexture * texture, OpenGLRenderer * renderer) {
+         
         if (!object->IsInited()) {
             PrintError(Error::ERROR_OBJECT_NOT_INIT);
             return Error::ERROR_OBJECT_NOT_INIT;
@@ -112,9 +116,9 @@ namespace game_engine {
 
     void WorldObject::SetCollision(float radius) {
         collision_type_ = CollisionType::COLLISION_BOUNDING_CIRCLE;
-        size_x_ = 2.0*radius;
-        size_y_ = 2.0*radius;
-        size_z_ = 2.0*radius;
+        size_x_ = 2.0f*radius;
+        size_y_ = 2.0f*radius;
+        size_z_ = 2.0f*radius;
     }
 
     CollisionType WorldObject::GetCollisionType() {
@@ -136,7 +140,7 @@ namespace game_engine {
             Rectangle2D_t mo_br(new_position.x_, new_position.y_, size_x_, size_y_);
             
             if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
-                Circle2D_t n_bc(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth() / 2.0);
+                Circle2D_t n_bc(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth() / 2.0f);
                 return CollisionCheck(mo_br, n_bc);
             } else if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
                 Rectangle2D_t n_br(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth(), other->GetObjectHeight());
@@ -144,10 +148,10 @@ namespace game_engine {
             }
 
         } else if (moving_object_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
-            Circle2D_t mo_bc(new_position.x_, new_position.y_, size_x_ / 2.0);
+            Circle2D_t mo_bc(new_position.x_, new_position.y_, size_x_ / 2.0f);
             
             if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
-                Circle2D_t n_bc(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth() / 2.0);
+                Circle2D_t n_bc(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth() / 2.0f);
                 return CollisionCheck(mo_bc, n_bc);
             } else if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
                 Rectangle2D_t n_br(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth(), other->GetObjectHeight());

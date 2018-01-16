@@ -37,6 +37,9 @@ namespace game_engine {
     }
 
     bool CollisionCheck(Circle2D_t a, Circle2D_t b) {
+        
+        if (GetDistance(a.c_, b.c_) <= a.r_ + b.r_) return true;
+
         return false;
     }
 
