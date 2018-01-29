@@ -1,7 +1,7 @@
 #ifndef __MemoryPage_hpp__
 #define __MemoryPage_hpp__
 
-#include <cassert>
+#include "debug_tools/Assert.hpp"
 
 namespace memory_subsystem {
 
@@ -50,7 +50,7 @@ namespace memory_subsystem {
             @return The memory address
         */
         template<typename T> T * Get(size_t byte_index) {
-            assert(mem_ != nullptr);
+            _assert(mem_ != nullptr);
 
             if (byte_index + sizeof(T) > size_) return nullptr;
 

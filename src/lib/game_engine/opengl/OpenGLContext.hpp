@@ -94,7 +94,7 @@ namespace game_engine {
         std::string GetFontLocation();
 
         /**
-            Clears the color of the screen
+            Clears the color of the screen, clear the z-depth buffer
             @return 0=OK, -1=Not initialsed
         */
         int ClearColor();

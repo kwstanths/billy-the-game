@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "debug_tools/Console.hpp"
+#include "debug_tools/Assert.hpp"
 namespace dt = debug_tools;
 
 namespace memory_subsystem {
@@ -54,7 +55,7 @@ namespace memory_subsystem {
             }
 
             address = pages_[current_page_]->Get(page_offset_, bytes);
-            assert(address != nullptr);
+            _assert(address != nullptr);
         } 
         page_offset_ += bytes;
        
@@ -63,7 +64,7 @@ namespace memory_subsystem {
 
     BYTE * ArrayAllocator::AllocateAligned(size_t bytes, size_t alignment) {
         if (!is_inited_) return nullptr;
-        assert(alignment == 2 || alignment == 4 || alignment == 16);
+        _assert(alignment == 2 || alignment == 4 || alignment == 16);
 
         size_t expanded_size = bytes + alignment;
         BYTE * unaligned_address = Allocate(expanded_size);

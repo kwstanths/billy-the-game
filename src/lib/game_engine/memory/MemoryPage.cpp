@@ -16,7 +16,7 @@ namespace memory_subsystem {
     }
 
     BYTE * MemoryPage::Get(size_t byte_index) {
-        assert(mem_ != nullptr);
+        _assert(mem_ != nullptr);
         
         if (byte_index > size_) return nullptr;
 
@@ -24,7 +24,7 @@ namespace memory_subsystem {
     }
 
     BYTE * MemoryPage::Get(size_t byte_index, size_t memory_size) {
-        assert(mem_ != nullptr);
+        _assert(mem_ != nullptr);
 
         if (byte_index + memory_size > size_) return nullptr;
 

@@ -53,6 +53,8 @@ file(GLOB ${NAME}_PHY_HEADERS physics/*.hpp)
 file(GLOB ${NAME}_PHY_SOURCES physics/*.cpp)
 file(GLOB ${NAME}_MEM_HEADERS memory/*.hpp)
 file(GLOB ${NAME}_MEM_SOURCES memory/*.cpp)
+file(GLOB ${NAME}_UTL_HEADERS utility/*.hpp)
+file(GLOB ${NAME}_UTL_SOURCES utility/*.cpp)
 
 # Target
 add_library(
@@ -60,6 +62,7 @@ add_library(
 	${${NAME}_GL_HEADERS} ${${NAME}_GL_SOURCES}
 	${${NAME}_PHY_HEADERS} ${${NAME}_PHY_SOURCES}
 	${${NAME}_MEM_HEADERS} ${${NAME}_MEM_SOURCES}
+	${${NAME}_UTL_HEADERS} ${${NAME}_UTL_SOURCES}
 	)
 
 source_group("core\\Headers"	FILES	${${NAME}_HEADERS})
@@ -70,5 +73,7 @@ source_group("physics\\Headers"	FILES	${${NAME}_PHY_HEADERS})
 source_group("physics\\Sources"	FILES	${${NAME}_PHY_SOURCES})
 source_group("memory\\Headers"	FILES	${${NAME}_MEM_HEADERS})
 source_group("memory\\Sources"	FILES	${${NAME}_MEM_SOURCES})
+source_group("utility\\Headers"	FILES	${${NAME}_UTL_HEADERS})
+source_group("utility\\Sources"	FILES	${${NAME}_UTL_SOURCES})
 
 target_link_libraries(${NAME} ${FREETYPE_LIBRARY})
