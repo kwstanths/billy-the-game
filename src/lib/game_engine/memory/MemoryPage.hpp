@@ -28,6 +28,11 @@ namespace memory_subsystem {
         */
         ~MemoryPage();
 
+        MemoryPage(const MemoryPage& other) = delete;
+        MemoryPage(const MemoryPage&& other) = delete;
+        MemoryPage& operator=(const MemoryPage& other) = delete;
+        MemoryPage& operator=(MemoryPage&& other) = delete;
+
         /**
             Get a memory address from a byte index
             @param byte_index The first byte of the address

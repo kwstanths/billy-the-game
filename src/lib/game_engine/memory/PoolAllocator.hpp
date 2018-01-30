@@ -11,21 +11,42 @@ namespace memory_subsystem {
 
         ~PoolAllocator();
 
-        bool Init(size_t block_size, size_t number_of_blocks);
+        PoolAllocator(const PoolAllocator& other) = delete;
+        PoolAllocator(const PoolAllocator&& other) = delete;
+        PoolAllocator& operator=(const PoolAllocator& other) = delete;
+        PoolAllocator& operator=(PoolAllocator&& other) = delete;
+
+        bool Init(size_t block_size_bytes, size_t number_of_blocks);
 
         bool Destroy();
 
         BYTE * Allocate();
 
-        bool Deallocate();
+        template<typename T> T * Allocate() {
+            if (!is_inited_) return nullptr;
 
-        size_t GetBytesAllocate();
+            BYTE * address = Allocate();
+
+            return reinterpret_cast<T *>(address);
+        }
+
+        bool Deallocate(void * address);
+
+        size_t GetBytesAllocated();
         
         size_t GetBytesUsed();
 
     private:
+        typedef struct node {
+            struct node * next_;
+        } node_t ;
+
         bool is_inited_;
+        size_t block_size_bytes_;
+        size_t number_of_blocks_;
+
         MemoryPage * page_;
+        node_t * freelist_;
 
     };
 

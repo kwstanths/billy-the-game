@@ -9,6 +9,7 @@
 
 #include "game_engine/memory/MemoryPage.hpp"
 #include "game_engine/memory/ArrayAllocator.hpp"
+#include "game_engine/memory/PoolAllocator.hpp"
 
 
 namespace dt = debug_tools;
@@ -217,13 +218,64 @@ void CheckArrayAllocator() {
     
 }
 
+void CheckPoolAllocator() {
+    ms::PoolAllocator mpool;
+    mpool.Init(16, 5);
+
+    {
+        dt::Console("Checking element allocation");
+        int * mem_1 = mpool.Allocate<int>();
+        *mem_1 = 42;
+        dt::Console(*mem_1);
+        dt::Console(&(*mem_1));
+
+        int * mem_2 = mpool.Allocate<int>();
+        *mem_2 = 43;
+        dt::Console(*mem_2);
+        dt::Console(mem_2);
+
+        int * mem_3 = mpool.Allocate<int>();
+        *mem_3 = 44;
+        dt::Console(*mem_3);
+        dt::Console(mem_3);
+
+        int * mem_4 = mpool.Allocate<int>();
+        *mem_4 = 45;
+        dt::Console(*mem_4);
+        dt::Console(mem_4);
+
+        int * mem_5 = mpool.Allocate<int>();
+        *mem_5 = 45;
+        dt::Console(*mem_5);
+        dt::Console(mem_5);
+
+        int * mem_6 = mpool.Allocate<int>();
+        if (mem_6 != nullptr) {
+            *mem_6 = 46;
+            dt::Console(*mem_6);
+            dt::Console(mem_6);
+        }
+
+        dt::Console("Checking element deallocation");
+        mpool.Deallocate(mem_1);
+        mpool.Deallocate(mem_4);
+        mpool.Deallocate(mem_5);
+        mpool.Deallocate(mem_3);
+        mpool.Deallocate(mem_2);
+        mpool.Deallocate(mem_2);
+        
+    }
+
+}
+
 int main(int argc, char ** argv) {
 
     dt::Console(dt::INFO, "Checking Memory page...", dt::DARK_CYAN);
     CheckMemoryPage();
     dt::Console(dt::INFO, "Checking Array allocator...", dt::DARK_CYAN);
     CheckArrayAllocator();
-
+    dt::Console(dt::INFO, "Checking Pool allocator...", dt::DARK_CYAN);
+    CheckPoolAllocator();
     
 #ifdef _WIN32
     system("pause");
