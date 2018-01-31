@@ -38,6 +38,7 @@ namespace memory_subsystem {
             current->next_ = page_->Get<node_t>(block_size_bytes * (i + 1));
         }
         freelist_ = page_->Get<node_t>(0);
+        free_blocks_ = number_of_blocks;
 
         is_inited_ = true;
         return is_inited_;
@@ -49,6 +50,7 @@ namespace memory_subsystem {
         delete page_;
         page_ = nullptr;
         freelist_ = nullptr;
+        free_blocks_ = 0;
 
         is_inited_ = false;
         return true;
@@ -67,6 +69,7 @@ namespace memory_subsystem {
 
         /* Update free list head */
         freelist_ = freelist_->next_;
+        free_blocks_--;
 
         /* Initialize memory */
         BYTE * address = reinterpret_cast<BYTE *>(memory_block);
@@ -84,16 +87,17 @@ namespace memory_subsystem {
         node_t * new_freelist_node = reinterpret_cast<node_t *>(address);
         new_freelist_node->next_ = freelist_;
         freelist_ = new_freelist_node;
+        free_blocks_++;
 
         return true;
     }
 
     size_t PoolAllocator::GetBytesAllocated() {
-        return 0;
+        return block_size_bytes_ * number_of_blocks_;
     }
 
     size_t PoolAllocator::GetBytesUsed() {
-        return 0;
+        return (number_of_blocks_ - free_blocks_) * block_size_bytes_;
     }
 
 }

@@ -10,6 +10,7 @@ namespace memory_subsystem {
 
     /**
         Holds a continuous chunk of memory. Should be allocated normally through the constructor
+        Is thread safe
     */
     class MemoryPage {
     private:

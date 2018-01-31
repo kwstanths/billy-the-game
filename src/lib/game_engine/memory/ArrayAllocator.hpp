@@ -12,6 +12,7 @@ namespace memory_subsystem {
 
     /**
         Allocate memory in a sequential manner for different sized objects
+        IS NOT thread safe
     */
     class ArrayAllocator {
     public:
@@ -24,6 +25,12 @@ namespace memory_subsystem {
             Calls Destroy()
         */
         ~ArrayAllocator();
+
+        /* Delete all other constuctors available */
+        ArrayAllocator(const ArrayAllocator& other) = delete;
+        ArrayAllocator(const ArrayAllocator&& other) = delete;
+        ArrayAllocator& operator=(const ArrayAllocator& other) = delete;
+        ArrayAllocator& operator=(ArrayAllocator&& other) = delete;
 
         /**
             Initializes an array of pointers to MemoryPage objects of size PAGE_SIZE,

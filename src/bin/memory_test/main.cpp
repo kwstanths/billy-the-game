@@ -45,6 +45,7 @@ public:
     void Init() {
         arg_3 = 1;
         arg_4 = 2;
+        DummyClass::Init();
     }
     void SetThree(int a) { arg_3 = a; }
     void SetFour(int a) { arg_4 = a; }
@@ -220,7 +221,7 @@ void CheckArrayAllocator() {
 
 void CheckPoolAllocator() {
     ms::PoolAllocator mpool;
-    mpool.Init(16, 5);
+    mpool.Init(20, 5);
 
     {
         dt::Console("Checking element allocation");
@@ -257,13 +258,39 @@ void CheckPoolAllocator() {
         }
 
         dt::Console("Checking element deallocation");
+        
         mpool.Deallocate(mem_1);
         mpool.Deallocate(mem_4);
         mpool.Deallocate(mem_5);
         mpool.Deallocate(mem_3);
         mpool.Deallocate(mem_2);
-        mpool.Deallocate(mem_2);
-        
+
+        dt::Console("Checking custom types");
+
+        DummyClass * t_1 = mpool.Allocate<DummyClass>();
+        t_1->Init();
+        dt::Console(t_1->GetOne());
+        dt::Console(t_1->GetTwo());
+        t_1->PrintVector();
+        DummyClass_2 * t_2 = mpool.Allocate<DummyClass_2>();
+        if (t_2 != nullptr) {
+            t_2->Init();
+            dt::Console(t_2->GetOne());
+            dt::Console(t_2->GetTwo());
+            dt::Console(t_2->GetThree());
+            dt::Console(t_2->GetFour());
+            t_2->PrintVector();
+            t_2->SetOne(33);
+            dt::Console(t_2->GetOne());
+        }
+
+        DummyClass_2 * t_3 = mpool.Allocate<DummyClass_2>();
+        t_3->Init();
+
+        mpool.Deallocate(t_2);
+        mpool.Deallocate(t_1);
+        mpool.Deallocate(t_3);
+
     }
 
 }
