@@ -58,9 +58,9 @@ namespace game_engine {
         return std::sqrt(x_diff * x_diff + y_diff * y_diff);
     }
 
-    bool IntersectCircleLine(Circle2D_t circle, Line2D_t line) {
+    bool IntersectCircle_Line(Circle2D_t circle, Line2D_t line) {
         if (Equal(line.A_, 0.0f) && Equal(line.B_, 0.0f)) {
-            debug_tools::Console(debug_tools::CRITICAL, "IntersectCircleLine(): line.A_ and line.B_ are zero");
+            debug_tools::Console(debug_tools::CRITICAL, "IntersectCircle_Line(): line.A_ and line.B_ are zero");
         }
 
         float distance = GetDistance(circle.c_, line);
@@ -69,7 +69,7 @@ namespace game_engine {
         return false;
     }
 
-    bool IntersectCircleLineSegment(Circle2D_t circle, Point2D_t point_a, Point2D_t point_b) {
+    bool IntersectCircle_LineSegment(Circle2D_t circle, Point2D_t point_a, Point2D_t point_b) {
 
         Line2D_t points_line(point_a.x_, point_a.y_, point_b.x_, point_b.y_);
         /* Check if we intersect at all */
@@ -92,7 +92,7 @@ namespace game_engine {
             perpendicular_points_line = Line2D_t(circle.c_.x_, circle.c_.y_, perpendicular_grad);
         }
 
-        Point2D_t intersection_point = LinesIntersection(points_line, perpendicular_points_line);
+        Point2D_t intersection_point = IntersecLine_Line(points_line, perpendicular_points_line);
 
         Point2D_t vector_from_a_to_intersect(intersection_point.x_ - point_a.x_, intersection_point.y_ - point_a.y_);
         Point2D_t vector_from_b_to_intersect(intersection_point.x_ - point_b.x_, intersection_point.y_ - point_b.y_);
@@ -105,20 +105,20 @@ namespace game_engine {
         return false;
     }
 
-    Point2D_t LinesIntersection(Line2D_t line_a, Line2D_t line_b) {
+    Point2D_t IntersecLine_Line(Line2D_t line_a, Line2D_t line_b) {
         float gradient_a = line_a.GetGradient();
         float gradient_b = line_b.GetGradient();
         float yinter_a = line_a.GetYIntercept();
         float yinter_b = line_b.GetYIntercept();
 
         if (Equal(gradient_a, gradient_b)) {
-            debug_tools::Console(debug_tools::CRITICAL, "LinesIntersection(): gradients are almost equal");
+            debug_tools::Console(debug_tools::CRITICAL, "IntersecLine_Line(): gradients are almost equal");
         }        
         if (isinf(gradient_a) && isinf(yinter_a)) {
-            debug_tools::Console(debug_tools::CRITICAL, "LinesIntersection(): impossible or not initialised line, a");
+            debug_tools::Console(debug_tools::CRITICAL, "IntersecLine_Line(): impossible or not initialised line, a");
         }
         if (isinf(gradient_b) && isinf(yinter_b)) {
-            debug_tools::Console(debug_tools::CRITICAL, "LinesIntersection(): impossible or not initialised line, b");
+            debug_tools::Console(debug_tools::CRITICAL, "IntersecLine_Line(): impossible or not initialised line, b");
         }
         if (isinf(gradient_a) && isinf(yinter_b)) {
             return Point2D_t(-line_a.C_ / line_a.A_, -line_b.C_ / line_b.B_);
@@ -131,7 +131,34 @@ namespace game_engine {
         float y = gradient_a * x + yinter_a;
 
         return Point2D_t(x, y);
+    }
+
+    bool IntersectRect_Rect(Rectangle2D_t rect_a, Rectangle2D_t rect_b) {
         
+        if (PointInside(rect_a.A_, rect_b)) return true;
+        if (PointInside(rect_a.B_, rect_b)) return true;
+        if (PointInside(rect_a.C_, rect_b)) return true;
+        if (PointInside(rect_a.D_, rect_b)) return true;
+        if (PointInside(rect_b.A_, rect_a)) return true;
+        if (PointInside(rect_b.B_, rect_a)) return true;
+        if (PointInside(rect_b.C_, rect_a)) return true;
+        if (PointInside(rect_b.D_, rect_a)) return true;
+
+        return false;
+    }
+
+    bool IntersectRect_Circle(Rectangle2D_t rect, Circle2D_t circle) {
+        
+        if (PointInside(rect.A_, circle)) return true;
+        if (PointInside(rect.B_, circle)) return true;
+        if (PointInside(rect.C_, circle)) return true;
+        if (PointInside(rect.D_, circle)) return true;
+        if (IntersectCircle_LineSegment(circle, rect.A_, rect.B_)) return true;
+        if (IntersectCircle_LineSegment(circle, rect.B_, rect.C_)) return true;
+        if (IntersectCircle_LineSegment(circle, rect.C_, rect.D_)) return true;
+        if (IntersectCircle_LineSegment(circle, rect.D_, rect.A_)) return true;
+
+        return false;
     }
 
 }

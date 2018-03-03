@@ -51,7 +51,7 @@ namespace game_engine {
         @param line The line
         @return true = intersects, false = Does not intersect
     */
-    bool IntersectCircleLine(Circle2D_t circle, Line2D_t line);
+    bool IntersectCircle_Line(Circle2D_t circle, Line2D_t line);
 
     /**
         Check whether a line segment intersects with a circle, the line is contained
@@ -61,7 +61,7 @@ namespace game_engine {
         @param point_b The line segment second point
         @return true = intersects, false = Does not intersect
     */
-    bool IntersectCircleLineSegment(Circle2D_t circle, Point2D_t point_a, Point2D_t point_b);
+    bool IntersectCircle_LineSegment(Circle2D_t circle, Point2D_t point_a, Point2D_t point_b);
 
     /**
         Get the point of intersection between two lines
@@ -69,7 +69,23 @@ namespace game_engine {
         @param line_b The second line
         @return The intersection point, infs will be returned in parallel lines
     */
-    Point2D_t LinesIntersection(Line2D_t line_a, Line2D_t line_b);
+    Point2D_t IntersecLine_Line(Line2D_t line_a, Line2D_t line_b);
+
+    /**
+        Check for collision between a circle and a rectangle
+        @param rect The rectangle
+        @param circle The circle
+        @return true = Collide, false = do not collide
+    */
+    bool IntersectRect_Rect(Rectangle2D_t rect_a, Rectangle2D_t rect_b);
+
+    /**
+        Check for collision betwwen two circles
+        @param circ_a The first circle
+        @param circ_b The second circle
+        @return true = Collide, false = do not collide
+    */
+    bool IntersectRect_Circle(Rectangle2D_t rect, Circle2D_t circle);
 
 }
 
