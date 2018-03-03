@@ -2,6 +2,7 @@
 #define __OpenGLObject_hpp__
 
 #include <string>
+#include <cstring>
 #include <vector>
 
 #include "OpenGLIncludes.hpp"

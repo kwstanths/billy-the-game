@@ -2,6 +2,7 @@
 #define __HelpFunctions_hpp__
 
 #include <cstdlib>
+#include <cmath>
 #include <limits>
 
 namespace game_engine {

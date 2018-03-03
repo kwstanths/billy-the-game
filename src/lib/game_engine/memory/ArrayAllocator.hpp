@@ -5,6 +5,9 @@
 
 #include "MemoryPage.hpp"
 
+#include "debug_tools/Console.hpp"
+namespace dt = debug_tools;
+
 namespace memory_subsystem {
 
     /* Page size to be used in bytes */

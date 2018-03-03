@@ -1,3 +1,5 @@
+set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../)
+
 ### GLFW ###
 
 add_subdirectory (glfw-3.1.2)
