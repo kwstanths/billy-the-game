@@ -28,7 +28,7 @@ namespace game_engine {
         return 0;
     }
 
-    int OpenGLTexture::Destory() {
+    int OpenGLTexture::Destroy() {
 
         glDeleteTextures(1, &texture_);
 

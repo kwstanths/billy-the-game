@@ -285,7 +285,7 @@ void CheckPoolAllocator() {
         }
 
         DummyClass_2 * t_3 = mpool.Allocate<DummyClass_2>();
-        t_3->Init();
+        if (t_3 != nullptr) t_3->Init();
 
         mpool.Deallocate(t_2);
         mpool.Deallocate(t_1);

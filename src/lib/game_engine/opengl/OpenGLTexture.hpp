@@ -30,7 +30,7 @@ namespace game_engine {
             Deletes allocated objects, needs Init to be called again. Never fails
             @return 0 = OK
         */
-        int Destory();
+        int Destroy();
 
         /**
             Return whether the object is initialised

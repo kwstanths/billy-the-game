@@ -27,7 +27,7 @@ namespace game_engine {
         @param circle The circle
         @return true = inside, false = not inside
     */
-    bool PointInside(Point2D point, Circle2D_t circle);
+    bool PointInside(Point2D_t point, Circle2D_t circle);
 
     /**
         Get the distance between a point and line in a 2D pane

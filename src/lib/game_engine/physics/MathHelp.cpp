@@ -27,7 +27,7 @@ namespace game_engine {
         return false;
     }
 
-    bool PointInside(Point2D point, Circle2D_t circle) {
+    bool PointInside(Point2D_t point, Circle2D_t circle) {
 
         float distance_to_center = GetDistance(point, circle.c_);        
 
