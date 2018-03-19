@@ -21,8 +21,8 @@ namespace game_engine {
         float dot_product_AM_AB = DotProduct(AM, AB);
         float dot_product_AM_AD = DotProduct(AM, AD);
 
-        if (0 <= dot_product_AM_AB && dot_product_AM_AB < DotProduct(AB, AB) &&
-            0 <= dot_product_AM_AD && dot_product_AM_AD < DotProduct(AD, AD)) return true;
+        if (0 <= dot_product_AM_AB && dot_product_AM_AB <= DotProduct(AB, AB) &&
+            0 <= dot_product_AM_AD && dot_product_AM_AD <= DotProduct(AD, AD)) return true;
 
         return false;
     }

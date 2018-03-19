@@ -18,6 +18,8 @@
     else {  \
         debug_tools::Console(debug_tools::FATAL, "Assertion failed: " + std::string(#expr) + ", " + std::string(__FILE__) + ":" + std::to_string(__LINE__));   \
         /* debug_break(); */  \
+        debug_tools::WaitInput(); \
+        exit(-1); \
     }
 
 #else

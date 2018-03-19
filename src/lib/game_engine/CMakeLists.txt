@@ -51,3 +51,4 @@ source_group("utility\\Headers"	FILES	${${NAME}_UTL_HEADERS})
 source_group("utility\\Sources"	FILES	${${NAME}_UTL_SOURCES})
 
 target_link_libraries(${NAME} ${FREETYPE_LIBRARY})
+target_link_libraries(${NAME} debug_tools)

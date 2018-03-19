@@ -42,7 +42,7 @@ void displayFPS(double frame_time_ms) {
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Pool allocator");
+    CodeReminder("Move HelpFunctions to MathHelp in physics folder")
     CodeReminder("Create shader class");
     CodeReminder("Deal with ObjLoad files")
     CodeReminder("FrameRateRegulator sleep function");
