@@ -78,6 +78,12 @@ namespace memory_subsystem {
         bool Deallocate(void * address);
 
         /**
+            Check if the object is initialised
+            @return true = initialised, false = not initialised
+        */
+        bool IsInited();
+
+        /**
             Get the number of bytes allocated, not the ones used, but the whole memory allocated
             @return Memory allocated
         */

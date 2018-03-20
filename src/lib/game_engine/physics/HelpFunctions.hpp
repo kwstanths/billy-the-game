@@ -2,8 +2,11 @@
 #define __HelpFunctions_hpp__
 
 #include <cstdlib>
-#include <cmath>
 #include <limits>
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
+#include <cmath>
 
 namespace game_engine {
     
@@ -35,6 +38,7 @@ namespace game_engine {
         @return radians
     */
     float GetRadians(float degrees);
+    
 }
 
 #endif

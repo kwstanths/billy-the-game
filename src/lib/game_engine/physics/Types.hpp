@@ -1,7 +1,7 @@
 #ifndef __Types_hpp__
 #define __Types_hpp__
 
-#include "../HelpFunctions.hpp"
+#include "HelpFunctions.hpp"
 
 namespace game_engine {
     
@@ -20,6 +20,12 @@ namespace game_engine {
             x_ = y_ = 0.0f;
         }
         Point2D_t(float x, float y) : x_(x), y_(y) {};
+
+        bool operator==(Point2D_t a) const {
+            if (Equal(a.x_, x_) && Equal(a.y_, y_)) return true;
+            else return false;
+        }
+
     };
 
     /**

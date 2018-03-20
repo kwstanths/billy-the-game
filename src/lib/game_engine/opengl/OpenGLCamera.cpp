@@ -2,7 +2,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "../HelpFunctions.hpp"
+#include "../physics/HelpFunctions.hpp"
 
 #include "debug_tools/Console.hpp"
 

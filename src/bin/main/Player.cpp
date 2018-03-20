@@ -2,7 +2,8 @@
 
 #include "debug_tools/Console.hpp"
 
-#include "game_engine/HelpFunctions.hpp"
+#include "game_engine/physics/HelpFunctions.hpp"
+#include "game_engine/physics/Geometry.hpp"
 
 namespace dt = debug_tools;
 

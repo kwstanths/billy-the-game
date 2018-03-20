@@ -3,7 +3,7 @@
 #include "debug_tools/CodeReminder.hpp"
 
 #include "Collision.hpp"
-#include "HelpFunctions.hpp"
+#include "physics/HelpFunctions.hpp"
 #include "physics/Types.hpp"
 
 namespace dt = debug_tools;

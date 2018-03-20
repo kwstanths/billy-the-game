@@ -42,7 +42,7 @@ void displayFPS(double frame_time_ms) {
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Move HelpFunctions to MathHelp in physics folder")
+    CodeReminder("Create something for random numbers");
     CodeReminder("Create shader class");
     CodeReminder("Deal with ObjLoad files")
     CodeReminder("FrameRateRegulator sleep function");
