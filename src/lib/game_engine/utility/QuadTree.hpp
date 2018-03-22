@@ -33,12 +33,12 @@ namespace game_engine {
         bool is_inited_;
         /* Holds the region that this quad tree node holds elements for */
         Rectangle2D_t brect_;
-        /* Each quad tree node holds on element */
+        /* Each quad tree node holds one element */
         QuadTreeData_t node_data_;
         /* Each quad tree node has four children */
         QuadTree<T> * child_nw_, * child_ne_, * child_sw_, * child_se_;
         
-        /* The pool allocator to store the elements */
+        /* The pool allocator to store the elements sequentially */
         ms::PoolAllocator * pool_;
 
         /**
@@ -110,6 +110,40 @@ namespace game_engine {
                 child_sw_->QueryRangePrivate(rect, objects, index);
                 child_se_->QueryRangePrivate(rect, objects, index);
             }
+        }
+
+        /**
+            Update the position of an element from position p to new_p
+            @param p The point position of the element
+            @param data The element itself
+            @param new_p The new position of the element
+            @param root The root of the quad tree
+            @return true = Updated, false = Element not found
+        */
+        bool UpdatePrivate(Point2D_t p, T * data, Point2D_t new_p, QuadTree * root){
+            if (!PointInside(p, brect_)) return false;
+
+            /* If this node has the point update here */
+            if (node_data_.data_ == data && node_data_.p_ == p){
+                /* If new position is within bounding rectangle dont move */
+                if (PointInside(new_p, brect_)) node_data_.p_ = new_p;
+                else {
+                    /* else remove it and insert from the beginning */
+                    node_data_.data_ = nullptr;
+                    root->Insert(new_p, data);
+                    return true;
+                }
+            }
+            
+            /* Recursively search in children */
+            if(child_nw_ != nullptr){
+                if (child_nw_->UpdatePrivate(p, data, new_p, root)) return true;
+                if (child_ne_->UpdatePrivate(p, data, new_p, root)) return true;
+                if (child_sw_->UpdatePrivate(p, data, new_p, root)) return true;
+                if (child_se_->UpdatePrivate(p, data, new_p, root)) return true;
+            }
+
+            return false;
         }
 
     public:
@@ -246,6 +280,19 @@ namespace game_engine {
         }
 
         /**
+            Update the position of element data from position p to new_p
+            @param p The point position of the element
+            @param data The element itself
+            @param new_p The new position of the element
+            @return true = Updated, false = Element not found            
+        */
+        bool Update(Point2D_t p, T * data, Point2D_t new_p){
+            if (!is_inited_) return 0;
+
+            return UpdatePrivate(p, data, new_p, this);
+        }
+
+        /**
             Remove an element from the tree
             @param p The point of the element
             @param data The element itself
@@ -284,8 +331,10 @@ namespace game_engine {
             if (!is_inited_) return;
 
             for(size_t i=0; i<level; i++) dt::CustomPrint(std::cout, "-");
-            if (node_data_.data_ != nullptr) dt::Console(*node_data_.data_ );
-            else dt::Console("null");
+            if (node_data_.data_ != nullptr) {
+                std::cout << "(" << std::to_string(node_data_.p_.x_) << "," << std::to_string(node_data_.p_.y_)  << "): " 
+                    << *node_data_.data_ << std::endl;
+            } else dt::Console("null");
 
             if (child_nw_ != nullptr){
                 child_nw_->PrettyPrint(level+1);

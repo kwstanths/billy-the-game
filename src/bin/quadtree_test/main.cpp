@@ -1,7 +1,3 @@
-#ifdef _WIN32
-#include <Windows.h>
-#endif
-
 #include <iostream>
 #include <vector>
 
@@ -169,11 +165,32 @@ int main(int argc, char ** argv) {
         a[i].d = new int(i);
     }
     
-    dt::Console("Inserting...");
-    for(size_t i=0; i<1000000; i++) tree.Insert({a[i].x, a[i].y}, a[i].d);
-    dt::Console("Deleting...");
-    for(int i=999999; i>=0; i--) tree.Remove({a[i].x, a[i].y}, a[i].d);
+    // dt::Console("Inserting...");
+    // for(size_t i=0; i<1000000; i++) tree.Insert({a[i].x, a[i].y}, a[i].d);
+    // dt::Console("Deleting...");
+    // for(int i=999999; i>=0; i--) tree.Remove({a[i].x, a[i].y}, a[i].d);
+    
+    dt::Console("---------------------------");
 
+    tree.Destroy();
+    tree.Init(ge::Rectangle2D_t(
+        ge::Point2D_t(0, 0), 
+        ge::Point2D_t(200, 0), 
+        ge::Point2D_t(200, 200), 
+        ge::Point2D_t(0, 200)),
+        &pool);
+    tree.Insert({0,0}, &data);
+    tree.Insert({0,1}, &data_1);
+    tree.PrettyPrint();
+    tree.Update({0,1}, &data_1, {155,0});
+    tree.PrettyPrint();
+
+    dt::Console("---------------------------");
+
+    tree.Insert({156, 0}, &data_2);
+    tree.PrettyPrint();
+    tree.Update({156, 0}, &data_2, {155, 5});
+    tree.PrettyPrint();
 
 
 #ifdef _WIN32
