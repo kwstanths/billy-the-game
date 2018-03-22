@@ -1,5 +1,5 @@
-#ifndef __ObjLoad_hpp__
-#define __ObjLoad_hpp__
+#ifndef __FileIO_hpp__
+#define __FileIO_hpp__
 
 #include <vector>
 

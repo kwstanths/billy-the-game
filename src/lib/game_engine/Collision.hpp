@@ -54,6 +54,61 @@ namespace game_engine {
     bool CollisionCheck(Circle2D_t circ_a, Circle2D_t circ_b);
 
     
+    class Collision {
+    public:
+
+        virtual bool Check (Collision * other) = 0;
+
+    };
+
+    class CollisionNone;
+    class CollisionBoundingRectangle;
+    class CollisionBoundingCircle;
+
+    class CollisionNone : public Collision {
+    public:
+        bool Check(Collision * other) {
+            return false;
+        }
+    };
+
+    class CollisionBoundingRectangle : public Collision {
+    public:
+        CollisionBoundingRectangle(Rectangle2D_t brect): brect_(brect) {};
+
+        void SetBoundingRectangle(Rectangle2D_t brect);
+
+        Rectangle2D_t GetBoundingRectangle();
+
+        bool Check(CollisionNone * other);
+
+        bool Check(CollisionBoundingRectangle * other);
+
+        bool Check(CollisionBoundingCircle * other);
+
+    private:
+        Rectangle2D_t brect_;
+    };
+
+    class CollisionBoundingCircle : public Collision {
+    public:
+        CollisionBoundingCircle(Circle2D_t bcircle): bcircle_(bcircle) {};
+
+        void SetBoundingCircle(Circle2D_t bcircle);
+
+        Circle2D_t GetBoundingCircle();
+
+        bool Check(CollisionNone * other);
+
+        bool Check(CollisionBoundingRectangle * other);
+
+        bool Check(CollisionBoundingCircle * other);
+
+    private:
+        Circle2D_t bcircle_;
+    };
+
+
 }
 
 

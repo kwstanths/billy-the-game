@@ -11,5 +11,8 @@ namespace game_engine {
         return M_PI / 180.0f * degrees;
     }
 
+    int GetRand(int min, int max){
+        return rand() % (max - min + 1) + min;
+    }
 
 }

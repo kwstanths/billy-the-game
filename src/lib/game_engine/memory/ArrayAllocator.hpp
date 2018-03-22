@@ -14,7 +14,7 @@ namespace memory_subsystem {
     static const size_t PAGE_SIZE = 8192;
 
     /**
-        Allocate memory in a sequential manner for different sized objects
+        Allocate memory in a sequential manner for differently sized objects
         IS NOT thread safe
     */
     class ArrayAllocator {

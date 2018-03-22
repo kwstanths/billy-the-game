@@ -136,7 +136,7 @@ namespace game_engine {
         }
 
         static void operator delete(void * ptr, ms::PoolAllocator * pool) throw() {
-            dt::Console(dt::FATAL, "QuadTree initialization failed");
+            dt::Console(dt::FATAL, "QuadTree pool allocation failed");
         }
 
         /**

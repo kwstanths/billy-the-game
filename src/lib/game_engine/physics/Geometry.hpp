@@ -1,5 +1,5 @@
-#ifndef __MathHelp_hpp__
-#define __MathHelp_hpp__
+#ifndef __Geometry_hpp__
+#define __Geometry_hpp__
 
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES

@@ -6,7 +6,7 @@
 namespace memory_subsystem {
 
     /**
-        Allocate in memory in blocks stored sequentially on the heap
+        Allocate memory in blocks stored sequentially on the heap
         IS NOT thread safe
     */
     class PoolAllocator {
@@ -82,6 +82,12 @@ namespace memory_subsystem {
             @return true = initialised, false = not initialised
         */
         bool IsInited();
+
+        /**
+            Get the size of the block
+            @return The block size
+        */
+        size_t GetBlockSize();
 
         /**
             Get the number of bytes allocated, not the ones used, but the whole memory allocated

@@ -56,6 +56,9 @@ namespace game_engine {
 
         CodeReminder("Support key remapping");
 
+        /* Init random numbers generator */
+        srand(time(NULL));       
+
         is_inited_ = true;
         last_error_ = 0;
         return last_error_;

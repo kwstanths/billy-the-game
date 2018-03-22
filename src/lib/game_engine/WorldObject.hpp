@@ -8,6 +8,7 @@
 #include "opengl/OpenGLRenderer.hpp"
 #include "physics/Types.hpp"
 #include "memory/ArrayAllocator.hpp"
+#include "memory/PoolAllocator.hpp"
 #include "debug_tools/Console.hpp"
 
 #include "Collision.hpp"   
@@ -28,13 +29,27 @@ namespace game_engine {
         */
         WorldObject();
 
-        static void * operator new(size_t size, memory_subsystem::ArrayAllocator * array_objects) {
+        static void * operator new(size_t size, memory_subsystem::ArrayAllocator * array_objects) throw() {
             void * address = array_objects->Allocate(size);
             return address;
         }
 
+        static void * operator new(size_t size, memory_subsystem::PoolAllocator * pool_objects) throw() {
+            
+            if (pool_objects->GetBlockSize() < size) throw std::bad_alloc();
+
+            void * address = pool_objects->Allocate();
+            if (address == nullptr) throw std::bad_alloc();
+
+            return address;
+        }
+
         static void operator delete(void * ptr, memory_subsystem::ArrayAllocator * array_objects) {
-            debug_tools::Console(debug_tools::FATAL, "WorldObject initialization failed");
+            debug_tools::Console(debug_tools::FATAL, "WorldObject array allocation failed");
+        }
+
+        static void operator delete(void * ptr, memory_subsystem::PoolAllocator * pool_objects) {
+            debug_tools::Console(debug_tools::FATAL, "WorldObject pool allocation failed");
         }
 
         /**

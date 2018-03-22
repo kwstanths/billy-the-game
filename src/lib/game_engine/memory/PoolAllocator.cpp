@@ -96,6 +96,10 @@ namespace memory_subsystem {
         return is_inited_;
     }
 
+    size_t PoolAllocator::GetBlockSize(){
+        return block_size_bytes_;
+    }
+
     size_t PoolAllocator::GetBytesAllocated() {
         return block_size_bytes_ * number_of_blocks_;
     }

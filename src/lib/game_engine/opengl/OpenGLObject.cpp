@@ -1,7 +1,7 @@
 #include "OpenGLObject.hpp"
 
 #include "../physics/Matrices.hpp"
-#include "../ObjLoad.hpp"
+#include "../FileIO.hpp"
 
 #include "debug_tools/Console.hpp"
 

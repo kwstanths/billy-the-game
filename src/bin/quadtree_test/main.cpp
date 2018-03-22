@@ -164,8 +164,8 @@ int main(int argc, char ** argv) {
     };
     std::vector<test_t> a(1000000);
     for(size_t i=0; i<1000000; i++) {
-        a[i].x = rand() % 500000;
-        a[i].y = rand() % 500000;
+        a[i].x = ge::GetRand(0, 500000);
+        a[i].y = ge::GetRand(0, 500000);
         a[i].d = new int(i);
     }
     

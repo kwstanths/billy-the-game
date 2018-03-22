@@ -23,4 +23,45 @@ namespace game_engine {
         return false;
     }
 
+    void CollisionBoundingRectangle::SetBoundingRectangle(Rectangle2D_t brect){
+        brect_ = brect;
+    }
+
+    Rectangle2D_t CollisionBoundingRectangle::GetBoundingRectangle(){
+        return brect_;
+    }
+
+    bool CollisionBoundingRectangle::Check(CollisionNone * other){
+        return false;
+    }
+
+    bool CollisionBoundingRectangle::Check(CollisionBoundingRectangle * other){
+        return CollisionCheck(brect_, other->GetBoundingRectangle());
+    }
+    
+    bool CollisionBoundingRectangle::Check(CollisionBoundingCircle * other){
+        return CollisionCheck(brect_, other->GetBoundingCircle());
+    }
+
+    void CollisionBoundingCircle::SetBoundingCircle(Circle2D_t bcircle){
+        bcircle_ = bcircle;
+    }
+
+    Circle2D_t CollisionBoundingCircle::GetBoundingCircle(){
+        return bcircle_;
+    }
+
+    bool CollisionBoundingCircle::Check(CollisionNone * other){
+        return false;
+    }
+    
+    bool CollisionBoundingCircle::Check(CollisionBoundingRectangle * other){
+        return CollisionCheck(other->GetBoundingRectangle(), bcircle_);
+    }
+    
+    bool CollisionBoundingCircle::Check(CollisionBoundingCircle * other){
+        return CollisionCheck(bcircle_, other->GetBoundingCircle());
+    }
+
+
 }

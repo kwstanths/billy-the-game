@@ -39,6 +39,11 @@ namespace game_engine {
     */
     float GetRadians(float degrees);
     
+    /**
+        Get an integer random number between two numbers
+    */
+    int GetRand(int min, int max);
+
 }
 
 #endif
