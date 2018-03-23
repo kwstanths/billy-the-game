@@ -26,6 +26,35 @@ namespace game_engine {
             else return false;
         }
 
+        /*
+            Translate the point
+            @param x Horizontal movement
+            @param y Vertical movement
+        */
+        void Translate(float x, float y){
+            x_ += x;
+            y_ += y;
+        }
+
+        /**
+            Rotate the point clockwise around another point
+            @param th The rotation angle
+            @param axis The point to rotate around
+        */
+        void Rotate(float th, Point2D_t axis) {
+            float c = cos(GetRadians(th));
+            float s = sin(GetRadians(th));
+            
+            float x = x_ - axis.x_;
+            float y = y_ - axis.y_;
+
+            x_ = x * c + y * s;
+            y_ = -x * s + y * c;
+
+            x_ += axis.x_;
+            y_ += axis.y_;
+        }
+
     };
 
     /**
@@ -121,6 +150,26 @@ namespace game_engine {
             B_ = Point2D_t(center_x + xmar, center_y - ymar);
             C_ = Point2D_t(center_x + xmar, center_y + ymar);
             D_ = Point2D_t(center_x - xmar, center_y + ymar);
+        }
+
+        void Translate(float x, float y){
+            A_.Translate(x, y);
+            B_.Translate(x, y);
+            C_.Translate(x, y);
+            D_.Translate(x, y);
+        }
+
+        /**
+            Rotate the rectangle clockwise around its center
+            @param th The rotation angle
+        */
+        void Rotate(float th){
+            Point2D_t center((B_.x_ + D_.x_) / 2.0f, (B_.y_ + D_.y_) / 2.0f);
+
+            A_.Rotate(th, center);
+            B_.Rotate(th, center);
+            C_.Rotate(th, center);
+            D_.Rotate(th, center);
         }
 
     };

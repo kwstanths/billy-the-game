@@ -23,32 +23,16 @@ namespace game_engine {
         return false;
     }
 
-    void CollisionBoundingRectangle::SetBoundingRectangle(Rectangle2D_t brect){
-        brect_ = brect;
-    }
-
-    Rectangle2D_t CollisionBoundingRectangle::GetBoundingRectangle(){
-        return brect_;
-    }
-
     bool CollisionBoundingRectangle::Check(CollisionNone * other){
         return false;
     }
 
     bool CollisionBoundingRectangle::Check(CollisionBoundingRectangle * other){
-        return CollisionCheck(brect_, other->GetBoundingRectangle());
+        return CollisionCheck(brect_, other->brect_);
     }
     
     bool CollisionBoundingRectangle::Check(CollisionBoundingCircle * other){
-        return CollisionCheck(brect_, other->GetBoundingCircle());
-    }
-
-    void CollisionBoundingCircle::SetBoundingCircle(Circle2D_t bcircle){
-        bcircle_ = bcircle;
-    }
-
-    Circle2D_t CollisionBoundingCircle::GetBoundingCircle(){
-        return bcircle_;
+        return CollisionCheck(brect_, other->bcircle_);
     }
 
     bool CollisionBoundingCircle::Check(CollisionNone * other){
@@ -56,11 +40,11 @@ namespace game_engine {
     }
     
     bool CollisionBoundingCircle::Check(CollisionBoundingRectangle * other){
-        return CollisionCheck(other->GetBoundingRectangle(), bcircle_);
+        return CollisionCheck(other->brect_, bcircle_);
     }
     
     bool CollisionBoundingCircle::Check(CollisionBoundingCircle * other){
-        return CollisionCheck(bcircle_, other->GetBoundingCircle());
+        return CollisionCheck(bcircle_, other->bcircle_);
     }
 
 

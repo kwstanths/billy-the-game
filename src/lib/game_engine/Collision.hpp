@@ -61,10 +61,6 @@ namespace game_engine {
 
     };
 
-    class CollisionNone;
-    class CollisionBoundingRectangle;
-    class CollisionBoundingCircle;
-
     class CollisionNone : public Collision {
     public:
         bool Check(Collision * other) {
@@ -72,13 +68,14 @@ namespace game_engine {
         }
     };
 
+    class CollisionBoundingRectangle;
+    class CollisionBoundingCircle;
+
     class CollisionBoundingRectangle : public Collision {
     public:
         CollisionBoundingRectangle(Rectangle2D_t brect): brect_(brect) {};
 
-        void SetBoundingRectangle(Rectangle2D_t brect);
-
-        Rectangle2D_t GetBoundingRectangle();
+        Rectangle2D_t brect_;
 
         bool Check(CollisionNone * other);
 
@@ -86,17 +83,13 @@ namespace game_engine {
 
         bool Check(CollisionBoundingCircle * other);
 
-    private:
-        Rectangle2D_t brect_;
     };
 
     class CollisionBoundingCircle : public Collision {
     public:
         CollisionBoundingCircle(Circle2D_t bcircle): bcircle_(bcircle) {};
 
-        void SetBoundingCircle(Circle2D_t bcircle);
-
-        Circle2D_t GetBoundingCircle();
+        Circle2D_t bcircle_;
 
         bool Check(CollisionNone * other);
 
@@ -104,8 +97,6 @@ namespace game_engine {
 
         bool Check(CollisionBoundingCircle * other);
 
-    private:
-        Circle2D_t bcircle_;
     };
 
 

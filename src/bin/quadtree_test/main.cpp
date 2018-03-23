@@ -192,7 +192,6 @@ int main(int argc, char ** argv) {
     tree.Update({156, 0}, &data_2, {155, 5});
     tree.PrettyPrint();
 
-
 #ifdef _WIN32
     system("pause");
 #endif
