@@ -8,20 +8,28 @@ namespace game_engine {
     /* Shows a direction in degrees: 0 = top, 90 = left, 180 = bottom, 270 = right */
     typedef float Direction;
 
+
+    class Shape2D {
+        virtual void Translate(float x, float y) = 0;
+        virtual void Rotate(float th) = 0;
+    };
+
+
     /**
         A point in a 2D pane 
         (x,y) : point coordinates
     */
-    struct Point2D_t {
+    class Point2D {
+    public:
         float x_;
         float y_;
 
-        Point2D_t() {
+        Point2D() {
             x_ = y_ = 0.0f;
         }
-        Point2D_t(float x, float y) : x_(x), y_(y) {};
+        Point2D(float x, float y) : x_(x), y_(y) {};
 
-        bool operator==(Point2D_t a) const {
+        bool operator==(Point2D a) const {
             if (Equal(a.x_, x_) && Equal(a.y_, y_)) return true;
             else return false;
         }
@@ -41,7 +49,7 @@ namespace game_engine {
             @param th The rotation angle
             @param axis The point to rotate around
         */
-        void Rotate(float th, Point2D_t axis) {
+        void Rotate(float th, Point2D axis) {
             float c = cos(GetRadians(th));
             float s = sin(GetRadians(th));
             
@@ -62,35 +70,107 @@ namespace game_engine {
         c : center point
         r : radius
     */
-    struct Circle2D_t {
-        Point2D_t c_;
+    class Circle2D : public Shape2D {
+    public:
+        Point2D c_;
         float r_;
 
 
-        Circle2D_t() {};
-        Circle2D_t(float x, float y, float r) {
+        Circle2D() {};
+        Circle2D(float x, float y, float r) {
             c_.x_ = x;
             c_.y_ = y;
             r_ = r;
         };
+
+        /*
+            Translate the circle
+            @param x Horizontal movement
+            @param y Vertical movement
+        */
+        void Translate(float x, float y){
+            c_.Translate(x, y);
+        }
+
+        /**
+            Rotate the circle clockwise around its center
+            @param th The rotation angle
+        */
+        void Rotate(float th){
+            /* Do nothing */
+        }
+    };
+
+    /**
+        A rectangle in a 2D pane defined by four points
+        D   C
+        A   B
+    */
+    class Rectangle2D : public Shape2D {
+    public:
+        Point2D A_;
+        Point2D B_;
+        Point2D C_;
+        Point2D D_;
+
+        Rectangle2D() {};
+
+        Rectangle2D(Point2D A, Point2D B, Point2D C, Point2D D): A_(A), B_(B), C_(C), D_(D) {};
+        
+        Rectangle2D(float center_x, float center_y, float x_width, float y_height) {
+            float xmar = x_width / 2.0f;
+            float ymar = y_height / 2.0f;
+
+            A_ = Point2D(center_x - xmar, center_y - ymar);
+            B_ = Point2D(center_x + xmar, center_y - ymar);
+            C_ = Point2D(center_x + xmar, center_y + ymar);
+            D_ = Point2D(center_x - xmar, center_y + ymar);
+        }
+
+        /*
+            Translate the rectangle
+            @param x Horizontal movement
+            @param y Vertical movement
+        */
+        void Translate(float x, float y){
+            A_.Translate(x, y);
+            B_.Translate(x, y);
+            C_.Translate(x, y);
+            D_.Translate(x, y);
+        }
+
+        /**
+            Rotate the rectangle clockwise around its center
+            @param th The rotation angle
+        */
+        void Rotate(float th){
+            Point2D center((B_.x_ + D_.x_) / 2.0f, (B_.y_ + D_.y_) / 2.0f);
+
+            A_.Rotate(th, center);
+            B_.Rotate(th, center);
+            C_.Rotate(th, center);
+            D_.Rotate(th, center);
+        }
+
     };
 
     /**
         A line in a 2D pane 
         [A*x + B*y + C = 0]
     */
-    struct Line2D_t {
+    class Line2D {
+    public:
         float A_;
         float B_;
         float C_;
 
-        Line2D_t() {
+        Line2D() {
             A_ = B_ = C_ = 0.0f;
         }
         /**
             Create a line from two points
         */
-        Line2D_t(float a_x, float a_y, float b_x, float b_y) {
+        Line2D(float a_x, float a_y, float b_x, float b_y) {
             if (Equal(b_x, a_x)) {
                 A_ = 1.0f;
                 B_ = 0.0f;
@@ -105,7 +185,7 @@ namespace game_engine {
         /**
             Create a line from a point and a slope
         */
-        Line2D_t(float a_x, float a_y, float gradient) {
+        Line2D(float a_x, float a_y, float gradient) {
             A_ = gradient;
             B_ = -1.0f;
             C_ = a_y - gradient*a_x;
@@ -123,53 +203,6 @@ namespace game_engine {
         */
         float GetYIntercept() {
             return -C_ / A_;
-        }
-
-    };
-
-    /**
-        A rectangle in a 2D pane defined by four points
-        D   C
-        A   B
-    */
-    struct Rectangle2D_t {
-        Point2D_t A_;
-        Point2D_t B_;
-        Point2D_t C_;
-        Point2D_t D_;
-
-        Rectangle2D_t() {};
-
-        Rectangle2D_t(Point2D_t A, Point2D_t B, Point2D_t C, Point2D_t D): A_(A), B_(B), C_(C), D_(D) {};
-        
-        Rectangle2D_t(float center_x, float center_y, float x_width, float y_height) {
-            float xmar = x_width / 2.0f;
-            float ymar = y_height / 2.0f;
-
-            A_ = Point2D_t(center_x - xmar, center_y - ymar);
-            B_ = Point2D_t(center_x + xmar, center_y - ymar);
-            C_ = Point2D_t(center_x + xmar, center_y + ymar);
-            D_ = Point2D_t(center_x - xmar, center_y + ymar);
-        }
-
-        void Translate(float x, float y){
-            A_.Translate(x, y);
-            B_.Translate(x, y);
-            C_.Translate(x, y);
-            D_.Translate(x, y);
-        }
-
-        /**
-            Rotate the rectangle clockwise around its center
-            @param th The rotation angle
-        */
-        void Rotate(float th){
-            Point2D_t center((B_.x_ + D_.x_) / 2.0f, (B_.y_ + D_.y_) / 2.0f);
-
-            A_.Rotate(th, center);
-            B_.Rotate(th, center);
-            C_.Rotate(th, center);
-            D_.Rotate(th, center);
         }
 
     };

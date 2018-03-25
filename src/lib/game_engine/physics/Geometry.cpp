@@ -6,15 +6,15 @@ namespace dt = debug_tools;
 
 namespace game_engine {
 
-    float DotProduct(Point2D_t vector_a, Point2D_t vector_b) {
+    float DotProduct(Point2D vector_a, Point2D vector_b) {
         return vector_a.x_* vector_b.x_ + vector_a.y_ * vector_b.y_;
     }
 
-    bool PointInside(Point2D_t point, Rectangle2D_t rect){
+    bool PointInside(Point2D point, Rectangle2D rect){
         
-        Point2D_t AM(point.x_ - rect.A_.x_, point.y_ - rect.A_.y_);
-        Point2D_t AB(rect.B_.x_ - rect.A_.x_, rect.B_.y_ - rect.A_.y_);
-        Point2D_t AD(rect.D_.x_ - rect.A_.x_, rect.D_.y_ - rect.A_.y_);
+        Point2D AM(point.x_ - rect.A_.x_, point.y_ - rect.A_.y_);
+        Point2D AB(rect.B_.x_ - rect.A_.x_, rect.B_.y_ - rect.A_.y_);
+        Point2D AD(rect.D_.x_ - rect.A_.x_, rect.D_.y_ - rect.A_.y_);
 
         float dot_product_AM_AB = DotProduct(AM, AB);
         float dot_product_AM_AD = DotProduct(AM, AD);
@@ -25,7 +25,7 @@ namespace game_engine {
         return false;
     }
 
-    bool PointInside(Point2D_t point, Circle2D_t circle) {
+    bool PointInside(Point2D point, Circle2D circle) {
 
         float distance_to_center = GetDistance(point, circle.c_);        
 
@@ -36,7 +36,7 @@ namespace game_engine {
         return false;
     }
 
-    float GetDistance(Point2D_t point, Line2D_t line) {
+    float GetDistance(Point2D point, Line2D line) {
         if (Equal(line.A_, 0.0f) && Equal(line.B_, 0.0f)) {
             debug_tools::Console(debug_tools::CRITICAL, "GetDistancePointToLine(): line.A_ and line.B_ are zero");
             return -1.0f;
@@ -48,7 +48,7 @@ namespace game_engine {
         return 0.0f;
     }
 
-    float GetDistance(Point2D_t p_a, Point2D_t p_b) {
+    float GetDistance(Point2D p_a, Point2D p_b) {
 
         float x_diff = p_b.x_ - p_a.x_;
         float y_diff = p_b.y_ - p_a.y_;
@@ -56,7 +56,7 @@ namespace game_engine {
         return std::sqrt(x_diff * x_diff + y_diff * y_diff);
     }
 
-    bool IntersectCircle_Line(Circle2D_t circle, Line2D_t line) {
+    bool IntersectCircle_Line(Circle2D circle, Line2D line) {
         if (Equal(line.A_, 0.0f) && Equal(line.B_, 0.0f)) {
             debug_tools::Console(debug_tools::CRITICAL, "IntersectCircle_Line(): line.A_ and line.B_ are zero");
         }
@@ -67,16 +67,16 @@ namespace game_engine {
         return false;
     }
 
-    bool IntersectCircle_LineSegment(Circle2D_t circle, Point2D_t point_a, Point2D_t point_b) {
+    bool IntersectCircle_LineSegment(Circle2D circle, Point2D point_a, Point2D point_b) {
 
-        Line2D_t points_line(point_a.x_, point_a.y_, point_b.x_, point_b.y_);
+        Line2D points_line(point_a.x_, point_a.y_, point_b.x_, point_b.y_);
         /* Check if we intersect at all */
         float distance = GetDistance(circle.c_, points_line);
         if (distance >= circle.r_) return false;
         /* If we do intersect, check the specific line segment */
         float points_line_grad = points_line.GetGradient();
 
-        Line2D_t perpendicular_points_line;
+        Line2D perpendicular_points_line;
         if (Equal(points_line_grad, 0.0f)) {
             perpendicular_points_line.A_ = 1.0f;
             perpendicular_points_line.B_ = 0.0f;
@@ -87,13 +87,13 @@ namespace game_engine {
             perpendicular_points_line.C_ = -circle.c_.y_;
         } else {
             float perpendicular_grad = -1.0f / points_line_grad;
-            perpendicular_points_line = Line2D_t(circle.c_.x_, circle.c_.y_, perpendicular_grad);
+            perpendicular_points_line = Line2D(circle.c_.x_, circle.c_.y_, perpendicular_grad);
         }
 
-        Point2D_t intersection_point = IntersecLine_Line(points_line, perpendicular_points_line);
+        Point2D intersection_point = IntersecLine_Line(points_line, perpendicular_points_line);
 
-        Point2D_t vector_from_a_to_intersect(intersection_point.x_ - point_a.x_, intersection_point.y_ - point_a.y_);
-        Point2D_t vector_from_b_to_intersect(intersection_point.x_ - point_b.x_, intersection_point.y_ - point_b.y_);
+        Point2D vector_from_a_to_intersect(intersection_point.x_ - point_a.x_, intersection_point.y_ - point_a.y_);
+        Point2D vector_from_b_to_intersect(intersection_point.x_ - point_b.x_, intersection_point.y_ - point_b.y_);
 
         float inner_product = vector_from_a_to_intersect.x_ * vector_from_b_to_intersect.x_ +
             vector_from_a_to_intersect.y_ * vector_from_b_to_intersect.y_;
@@ -103,7 +103,7 @@ namespace game_engine {
         return false;
     }
 
-    Point2D_t IntersecLine_Line(Line2D_t line_a, Line2D_t line_b) {
+    Point2D IntersecLine_Line(Line2D line_a, Line2D line_b) {
         float gradient_a = line_a.GetGradient();
         float gradient_b = line_b.GetGradient();
         float yinter_a = line_a.GetYIntercept();
@@ -119,19 +119,19 @@ namespace game_engine {
             debug_tools::Console(debug_tools::CRITICAL, "IntersecLine_Line(): impossible or not initialised line, b");
         }
         if (isinf(gradient_a) && isinf(yinter_b)) {
-            return Point2D_t(-line_a.C_ / line_a.A_, -line_b.C_ / line_b.B_);
+            return Point2D(-line_a.C_ / line_a.A_, -line_b.C_ / line_b.B_);
         }
         if (isinf(gradient_b) && isinf(yinter_a)) {
-            return Point2D_t(-line_b.C_ / line_b.A_, -line_a.C_ / line_a.B_);
+            return Point2D(-line_b.C_ / line_b.A_, -line_a.C_ / line_a.B_);
         }
 
         float x = (yinter_b - yinter_a) / (gradient_a - gradient_b);
         float y = gradient_a * x + yinter_a;
 
-        return Point2D_t(x, y);
+        return Point2D(x, y);
     }
 
-    bool IntersectRect_Rect(Rectangle2D_t rect_a, Rectangle2D_t rect_b) {
+    bool IntersectRect_Rect(Rectangle2D rect_a, Rectangle2D rect_b) {
         
         if (PointInside(rect_a.A_, rect_b)) return true;
         if (PointInside(rect_a.B_, rect_b)) return true;
@@ -145,7 +145,7 @@ namespace game_engine {
         return false;
     }
 
-    bool IntersectRect_Circle(Rectangle2D_t rect, Circle2D_t circle) {
+    bool IntersectRect_Circle(Rectangle2D rect, Circle2D circle) {
         
         if (PointInside(rect.A_, circle)) return true;
         if (PointInside(rect.B_, circle)) return true;

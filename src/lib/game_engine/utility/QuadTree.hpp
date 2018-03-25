@@ -24,7 +24,7 @@ namespace game_engine {
         /* Internal struct to hold a saved element */
         struct QuadTreeData_t {
             /* Position in space */
-            Point2D_t p_;
+            Point2D p_;
             /* Pointer to element */
             T * data_;
         };
@@ -32,7 +32,7 @@ namespace game_engine {
         /* Objects needs to be initialised first */
         bool is_inited_;
         /* Holds the region that this quad tree node holds elements for */
-        Rectangle2D_t brect_;
+        Rectangle2D brect_;
         /* Each quad tree node holds one element */
         QuadTreeData_t node_data_;
         /* Each quad tree node has four children */
@@ -59,29 +59,29 @@ namespace game_engine {
             float y_middle = (brect_.A_.y_ + brect_.D_.y_) / 2.0f;
             float y_north = brect_.D_.y_;
 
-            child_nw_->Init(Rectangle2D_t(
-                Point2D_t(x_west, y_middle),
-                Point2D_t(x_middle, y_middle),
-                Point2D_t(x_middle, y_north),
-                Point2D_t(x_west, y_north)),
+            child_nw_->Init(Rectangle2D(
+                Point2D(x_west, y_middle),
+                Point2D(x_middle, y_middle),
+                Point2D(x_middle, y_north),
+                Point2D(x_west, y_north)),
                 pool_);
-            child_ne_->Init(Rectangle2D_t(
-                Point2D_t(x_middle, y_middle),
-                Point2D_t(x_east, y_middle),
-                Point2D_t(x_east, y_north),
-                Point2D_t(x_middle, y_north)),
+            child_ne_->Init(Rectangle2D(
+                Point2D(x_middle, y_middle),
+                Point2D(x_east, y_middle),
+                Point2D(x_east, y_north),
+                Point2D(x_middle, y_north)),
                 pool_);
-            child_sw_->Init(Rectangle2D_t(
-                Point2D_t(x_west, y_south),
-                Point2D_t(x_middle, y_south),
-                Point2D_t(x_middle, y_middle),
-                Point2D_t(x_west, y_middle)),
+            child_sw_->Init(Rectangle2D(
+                Point2D(x_west, y_south),
+                Point2D(x_middle, y_south),
+                Point2D(x_middle, y_middle),
+                Point2D(x_west, y_middle)),
                 pool_);
-            child_se_->Init(Rectangle2D_t(
-                Point2D_t(x_middle, y_south),
-                Point2D_t(x_east, y_south),
-                Point2D_t(x_east, y_middle),
-                Point2D_t(x_middle, y_middle)),
+            child_se_->Init(Rectangle2D(
+                Point2D(x_middle, y_south),
+                Point2D(x_east, y_south),
+                Point2D(x_east, y_middle),
+                Point2D(x_middle, y_middle)),
                 pool_);
         } 
 
@@ -91,7 +91,7 @@ namespace game_engine {
             @param[out] objects The objects found
             @param[out] index The number of the last object found and stored inside objects
         */
-        void QueryRangePrivate(Rectangle2D_t rect, std::vector<T *>& objects, size_t& index){
+        void QueryRangePrivate(Rectangle2D rect, std::vector<T *>& objects, size_t& index){
             if (!IntersectRect_Rect(brect_, rect)) return;
 
             /* Check this node's object */
@@ -120,7 +120,7 @@ namespace game_engine {
             @param root The root of the quad tree
             @return true = Updated, false = Element not found
         */
-        bool UpdatePrivate(Point2D_t p, T * data, Point2D_t new_p, QuadTree * root){
+        bool UpdatePrivate(Point2D p, T * data, Point2D new_p, QuadTree * root){
             if (!PointInside(p, brect_)) return false;
 
             /* If this node has the point update here */
@@ -179,7 +179,7 @@ namespace game_engine {
             @param pool The pool allocator to store elements
             @return true = OK, false = Already initialised
         */
-        bool Init(Rectangle2D_t brect, ms::PoolAllocator * pool) {
+        bool Init(Rectangle2D brect, ms::PoolAllocator * pool) {
             if (is_inited_) return false;
 
             brect_ = brect;
@@ -236,7 +236,7 @@ namespace game_engine {
             @param data The actual data
             @return true = OK, false = Out of region
         */
-        bool Insert(Point2D_t p, T * data) {
+        bool Insert(Point2D p, T * data) {
             if (!is_inited_) return false;
 
             _assert(data != nullptr);
@@ -270,7 +270,7 @@ namespace game_engine {
             @param[out] objects The elements
             @return The number of elements found
         */
-        size_t QueryRange(Rectangle2D_t rect, std::vector<T *>& objects){
+        size_t QueryRange(Rectangle2D rect, std::vector<T *>& objects){
             if (!is_inited_) return 0;
 
             size_t number_of_objects = 0;
@@ -286,7 +286,7 @@ namespace game_engine {
             @param new_p The new position of the element
             @return true = Updated, false = Element not found            
         */
-        bool Update(Point2D_t p, T * data, Point2D_t new_p){
+        bool Update(Point2D p, T * data, Point2D new_p){
             if (!is_inited_) return 0;
 
             return UpdatePrivate(p, data, new_p, this);
@@ -298,7 +298,7 @@ namespace game_engine {
             @param data The element itself
             @return true = OK, false = Not found
         */
-        bool Remove(Point2D_t p, T * data){
+        bool Remove(Point2D p, T * data){
             if (!is_inited_) return false;
 
             _assert(data != nullptr);

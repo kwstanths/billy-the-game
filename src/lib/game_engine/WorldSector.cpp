@@ -98,7 +98,7 @@ namespace game_engine {
         bool moving_left = (direction > 0 && direction < 180.0f);
         bool moving_right = (direction > 180.0f && direction < 360.0f);
 
-        Point2D_t moving_object_new_position(moving_object->GetXPosition(), moving_object->GetYPosition());
+        Point2D moving_object_new_position(moving_object->GetXPosition(), moving_object->GetYPosition());
         if (moving_top) {
             moving_object_new_position.y_ += move_offset;
             collision_res.up_ = CollisionGetDistance(moving_object, moving_object_new_position).first;
@@ -135,7 +135,7 @@ namespace game_engine {
         return static_cast<size_t>(index);
     }
 
-    std::pair<float, float> WorldSector::CollisionGetDistance(WorldObject * moving_object, Point2D_t new_position) {
+    std::pair<float, float> WorldSector::CollisionGetDistance(WorldObject * moving_object, Point2D new_position) {
         /* Get neighbours */
         std::vector<WorldObject *> neighbours(50);
         size_t nof = GetObjectsWindow(moving_object->GetXPosition(), moving_object->GetYPosition(), 1, neighbours);

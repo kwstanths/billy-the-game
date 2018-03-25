@@ -15,11 +15,11 @@ int main(int argc, char ** argv) {
     dt::Console(pool.Init(sizeof(ge::QuadTree<int>), 2000000));
     
     ge::QuadTree<int> tree;
-    tree.Init(ge::Rectangle2D_t(
-        ge::Point2D_t(-200,-200), 
-        ge::Point2D_t(200,-200), 
-        ge::Point2D_t(200, 200), 
-        ge::Point2D_t(-200, 200)),
+    tree.Init(ge::Rectangle2D(
+        ge::Point2D(-200,-200), 
+        ge::Point2D(200,-200), 
+        ge::Point2D(200, 200), 
+        ge::Point2D(-200, 200)),
         &pool
     );
     
@@ -66,11 +66,11 @@ int main(int argc, char ** argv) {
     dt::Console("---------------------------");
 
     std::vector<int *> objects(15);
-    size_t noo = tree.QueryRange(ge::Rectangle2D_t(
-        ge::Point2D_t(0,0), 
-        ge::Point2D_t(200,0), 
-        ge::Point2D_t(200, 200), 
-        ge::Point2D_t(0, 200)), objects);
+    size_t noo = tree.QueryRange(ge::Rectangle2D(
+        ge::Point2D(0,0), 
+        ge::Point2D(200,0), 
+        ge::Point2D(200, 200), 
+        ge::Point2D(0, 200)), objects);
 
     dt::Console("Elements: " + std::to_string(noo));
     for(size_t i =0; i<noo; i++) dt::Console(*objects.at(i));
@@ -78,11 +78,11 @@ int main(int argc, char ** argv) {
     dt::Console("---------------------------");
 
     tree.Remove({150, 150}, &data_5);
-    noo = tree.QueryRange(ge::Rectangle2D_t(
-        ge::Point2D_t(0,0), 
-        ge::Point2D_t(200,0), 
-        ge::Point2D_t(200, 200), 
-        ge::Point2D_t(0, 200)), objects);
+    noo = tree.QueryRange(ge::Rectangle2D(
+        ge::Point2D(0,0), 
+        ge::Point2D(200,0), 
+        ge::Point2D(200, 200), 
+        ge::Point2D(0, 200)), objects);
 
     dt::Console("Elements: " + std::to_string(noo));
     for(size_t i =0; i<noo; i++) dt::Console(*objects.at(i));
@@ -95,11 +95,11 @@ int main(int argc, char ** argv) {
 
     dt::Console("---------------------------");
 
-    noo = tree.QueryRange(ge::Rectangle2D_t(
-        ge::Point2D_t(-200,200), 
-        ge::Point2D_t(200,-200), 
-        ge::Point2D_t(200, 200), 
-        ge::Point2D_t(-200, 200)), objects);
+    noo = tree.QueryRange(ge::Rectangle2D(
+        ge::Point2D(-200,200), 
+        ge::Point2D(200,-200), 
+        ge::Point2D(200, 200), 
+        ge::Point2D(-200, 200)), objects);
 
     dt::Console("Elements: " + std::to_string(noo));
     for(size_t i =0; i<noo; i++) dt::Console(*objects.at(i));
@@ -108,11 +108,11 @@ int main(int argc, char ** argv) {
     tree.Remove({-50, 50}, &data_3);
     tree.Remove({-50, -50}, &data_4);
 
-    noo = tree.QueryRange(ge::Rectangle2D_t(
-        ge::Point2D_t(-200,200), 
-        ge::Point2D_t(200,-200), 
-        ge::Point2D_t(200, 200), 
-        ge::Point2D_t(-200, 200)), objects);
+    noo = tree.QueryRange(ge::Rectangle2D(
+        ge::Point2D(-200,200), 
+        ge::Point2D(200,-200), 
+        ge::Point2D(200, 200), 
+        ge::Point2D(-200, 200)), objects);
 
     dt::Console("Elements: " + std::to_string(noo));
     for(size_t i =0; i<noo; i++) dt::Console(*objects.at(i));
@@ -131,11 +131,11 @@ int main(int argc, char ** argv) {
     tree.Insert({-10, 56}, new int (5));
     tree.Insert({-184, 56}, new int(6));
 
-    noo = tree.QueryRange(ge::Rectangle2D_t(
-        ge::Point2D_t(-200,200), 
-        ge::Point2D_t(200,-200), 
-        ge::Point2D_t(200, 200), 
-        ge::Point2D_t(-200, 200)), objects);
+    noo = tree.QueryRange(ge::Rectangle2D(
+        ge::Point2D(-200,200), 
+        ge::Point2D(200,-200), 
+        ge::Point2D(200, 200), 
+        ge::Point2D(-200, 200)), objects);
 
     dt::Console("Elements: " + std::to_string(noo));
     for(size_t i =0; i<noo; i++) dt::Console(*objects.at(i));
@@ -147,11 +147,11 @@ int main(int argc, char ** argv) {
     
     dt::Console("---------------------------");
 
-    tree.Init(ge::Rectangle2D_t(
-        ge::Point2D_t(0, 0), 
-        ge::Point2D_t(500000, 0), 
-        ge::Point2D_t(500000, 500000), 
-        ge::Point2D_t(0, 500000)),
+    tree.Init(ge::Rectangle2D(
+        ge::Point2D(0, 0), 
+        ge::Point2D(500000, 0), 
+        ge::Point2D(500000, 500000), 
+        ge::Point2D(0, 500000)),
         &pool);
 
     struct test_t{
@@ -173,11 +173,11 @@ int main(int argc, char ** argv) {
     dt::Console("---------------------------");
 
     tree.Destroy();
-    tree.Init(ge::Rectangle2D_t(
-        ge::Point2D_t(0, 0), 
-        ge::Point2D_t(200, 0), 
-        ge::Point2D_t(200, 200), 
-        ge::Point2D_t(0, 200)),
+    tree.Init(ge::Rectangle2D(
+        ge::Point2D(0, 0), 
+        ge::Point2D(200, 0), 
+        ge::Point2D(200, 200), 
+        ge::Point2D(0, 200)),
         &pool);
     tree.Insert({0,0}, &data);
     tree.Insert({0,1}, &data_1);

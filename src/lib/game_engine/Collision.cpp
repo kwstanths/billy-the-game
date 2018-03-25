@@ -8,15 +8,15 @@
 
 namespace game_engine {
 
-    bool CollisionCheck(Rectangle2D_t rect_a, Rectangle2D_t rect_b) {
+    bool CollisionCheck(Rectangle2D rect_a, Rectangle2D rect_b) {
         return IntersectRect_Rect(rect_a, rect_b);
     }
 
-    bool CollisionCheck(Rectangle2D_t rect, Circle2D_t circle) {
+    bool CollisionCheck(Rectangle2D rect, Circle2D circle) {
         return IntersectRect_Circle(rect, circle);
     }
 
-    bool CollisionCheck(Circle2D_t a, Circle2D_t b) {
+    bool CollisionCheck(Circle2D a, Circle2D b) {
         
         if (GetDistance(a.c_, b.c_) <= a.r_ + b.r_) return true;
 

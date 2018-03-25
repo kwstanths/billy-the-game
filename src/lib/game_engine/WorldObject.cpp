@@ -125,7 +125,7 @@ namespace game_engine {
         return collision_type_;
     }
 
-    bool WorldObject::Collides(Point2D_t new_position, WorldObject * other) {
+    bool WorldObject::Collides(Point2D new_position, WorldObject * other) {
 
         if (!is_inited_) return false;
         
@@ -137,24 +137,24 @@ namespace game_engine {
         if (moving_object_collision_type == CollisionType::COLLISION_NONE) return false;
 
         if (moving_object_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
-            Rectangle2D_t mo_br(new_position.x_, new_position.y_, size_x_, size_y_);
+            Rectangle2D mo_br(new_position.x_, new_position.y_, size_x_, size_y_);
             
             if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
-                Circle2D_t n_bc(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth() / 2.0f);
+                Circle2D n_bc(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth() / 2.0f);
                 return CollisionCheck(mo_br, n_bc);
             } else if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
-                Rectangle2D_t n_br(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth(), other->GetObjectHeight());
+                Rectangle2D n_br(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth(), other->GetObjectHeight());
                 return CollisionCheck(mo_br, n_br);
             }
 
         } else if (moving_object_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
-            Circle2D_t mo_bc(new_position.x_, new_position.y_, size_x_ / 2.0f);
+            Circle2D mo_bc(new_position.x_, new_position.y_, size_x_ / 2.0f);
             
             if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_CIRCLE) {
-                Circle2D_t n_bc(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth() / 2.0f);
+                Circle2D n_bc(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth() / 2.0f);
                 return CollisionCheck(mo_bc, n_bc);
             } else if (neighbour_collision_type == CollisionType::COLLISION_BOUNDING_RECTANGLE) {
-                Rectangle2D_t n_br(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth(), other->GetObjectHeight());
+                Rectangle2D n_br(other->GetXPosition(), other->GetYPosition(), other->GetObjectWidth(), other->GetObjectHeight());
                 return CollisionCheck(n_br, mo_bc);
             }
         }

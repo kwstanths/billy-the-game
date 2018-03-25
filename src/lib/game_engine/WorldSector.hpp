@@ -103,7 +103,7 @@ namespace game_engine {
             @param new_position The new center position
             @return <vertical, horizontal>
         */
-        std::pair<float, float> CollisionGetDistance(WorldObject * moving_object, Point2D_t new_position);
+        std::pair<float, float> CollisionGetDistance(WorldObject * moving_object, Point2D new_position);
     };
 
 }

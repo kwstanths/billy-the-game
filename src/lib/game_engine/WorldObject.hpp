@@ -151,7 +151,7 @@ namespace game_engine {
             @param new_position The new position
             @param other The other object
         */
-        bool Collides(Point2D_t new_position, WorldObject * other);
+        bool Collides(Point2D new_position, WorldObject * other);
 
     protected:
         float pos_x_, pos_y_, pos_z_;

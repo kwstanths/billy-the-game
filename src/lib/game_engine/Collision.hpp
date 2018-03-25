@@ -35,7 +35,7 @@ namespace game_engine {
         @param rect_b The second rectangle
         @return true = Collide, false = do not collide
     */
-    bool CollisionCheck(Rectangle2D_t rect_a, Rectangle2D_t rect_b);
+    bool CollisionCheck(Rectangle2D rect_a, Rectangle2D rect_b);
 
     /**
         Check for collision between a circle and a rectangle
@@ -43,7 +43,7 @@ namespace game_engine {
         @param circle The circle
         @return true = Collide, false = do not collide
     */
-    bool CollisionCheck(Rectangle2D_t rect, Circle2D_t circle);
+    bool CollisionCheck(Rectangle2D rect, Circle2D circle);
 
     /**
         Check for collision betwwen two circles
@@ -51,7 +51,7 @@ namespace game_engine {
         @param circ_b The second circle
         @return true = Collide, false = do not collide
     */
-    bool CollisionCheck(Circle2D_t circ_a, Circle2D_t circ_b);
+    bool CollisionCheck(Circle2D circ_a, Circle2D circ_b);
 
     
     class Collision {
@@ -73,9 +73,9 @@ namespace game_engine {
 
     class CollisionBoundingRectangle : public Collision {
     public:
-        CollisionBoundingRectangle(Rectangle2D_t brect): brect_(brect) {};
+        CollisionBoundingRectangle(Rectangle2D brect): brect_(brect) {};
 
-        Rectangle2D_t brect_;
+        Rectangle2D brect_;
 
         bool Check(CollisionNone * other);
 
@@ -87,9 +87,9 @@ namespace game_engine {
 
     class CollisionBoundingCircle : public Collision {
     public:
-        CollisionBoundingCircle(Circle2D_t bcircle): bcircle_(bcircle) {};
+        CollisionBoundingCircle(Circle2D bcircle): bcircle_(bcircle) {};
 
-        Circle2D_t bcircle_;
+        Circle2D bcircle_;
 
         bool Check(CollisionNone * other);
 
