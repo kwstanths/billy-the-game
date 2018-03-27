@@ -17,10 +17,7 @@ namespace game_engine {
     }
 
     bool CollisionCheck(Circle2D a, Circle2D b) {
-        
-        if (GetDistance(a.c_, b.c_) <= a.r_ + b.r_) return true;
-
-        return false;
+        return IntersectCircle_Circle(a, b);
     }
 
     bool CollisionBoundingRectangle::Check(CollisionNone * other){

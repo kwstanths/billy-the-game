@@ -159,4 +159,10 @@ namespace game_engine {
         return false;
     }
 
+    bool IntersectCircle_Circle(Circle2D circ_a, Circle2D circ_b){
+        float r = circ_a.r_ + circ_b.r_;
+        r *= r;
+        return r < std::pow(circ_a.c_.x_ + circ_b.c_.x_, 2) + std::pow(circ_a.c_.y_ + circ_b.c_.y_, 2);
+    }
+
 }

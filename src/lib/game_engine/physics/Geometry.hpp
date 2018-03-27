@@ -77,20 +77,28 @@ namespace game_engine {
     Point2D IntersecLine_Line(Line2D line_a, Line2D line_b);
 
     /**
-        Check for collision between a circle and a rectangle
-        @param rect The rectangle
-        @param circle The circle
+        Check for intersection between two rectangles
+        @param rect The first rectangle
+        @param circle The second rectnalge
         @return true = Collide, false = do not collide
     */
     bool IntersectRect_Rect(Rectangle2D rect_a, Rectangle2D rect_b);
 
     /**
-        Check for collision betwwen two circles
+        Check for intersection between a rectangle and a circle
+        @param circ_a The rectangle
+        @param circ_b The circle
+        @return true = Collide, false = do not collide
+    */
+    bool IntersectRect_Circle(Rectangle2D rect, Circle2D circle);
+
+    /**
+        Check for intersection between two circles
         @param circ_a The first circle
         @param circ_b The second circle
         @return true = Collide, false = do not collide
     */
-    bool IntersectRect_Circle(Rectangle2D rect, Circle2D circle);
+    bool IntersectCircle_Circle(Circle2D circ_a, Circle2D circ_b);
 
 }
 
