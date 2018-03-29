@@ -29,12 +29,12 @@ namespace game_engine {
         */
         WorldObject();
 
-        static void * operator new(size_t size, memory_subsystem::ArrayAllocator * array_objects) throw() {
+        static void * operator new(size_t size, memory_subsystem::ArrayAllocator * array_objects) {
             void * address = array_objects->Allocate(size);
             return address;
         }
 
-        static void * operator new(size_t size, memory_subsystem::PoolAllocator * pool_objects) throw() {
+        static void * operator new(size_t size, memory_subsystem::PoolAllocator * pool_objects) {
             
             if (pool_objects->GetBlockSize() < size) throw std::bad_alloc();
 
@@ -97,18 +97,6 @@ namespace game_engine {
         float GetZPosition();
 
         /**
-            Get the horizontal width of the object
-            @return The horizontal width
-        */
-        float GetObjectWidth();
-
-        /**
-            Get the vertical height of the object
-            @return The vertical height
-        */
-        float GetObjectHeight();
-
-        /**
             Set the model matrix for the object
             @param pos_x The model's position x
             @param pos_y The model's position y
@@ -147,19 +135,23 @@ namespace game_engine {
         CollisionType GetCollisionType();
 
         /**
+        
+        */
+        Collision * GetCollision();
+
+        /**
             Check if this object in new_position collides with another object
             @param new_position The new position
             @param other The other object
         */
         bool Collides(Point2D new_position, WorldObject * other);
 
-    protected:
-        float pos_x_, pos_y_, pos_z_;
-        float size_x_, size_y_, size_z_;
-        float rotated_angle_;
-
     private:
         bool is_inited_;
+        float pos_x_, pos_y_, pos_z_;
+        float rotated_angle_;
+        Collision * collision_;
+
 
         OpenGLObject * object_;
         OpenGLTexture * texture_;

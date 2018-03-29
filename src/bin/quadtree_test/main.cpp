@@ -155,7 +155,7 @@ int main(int argc, char ** argv) {
         &pool);
 
     struct test_t{
-        float x,y;
+        int x,y;
         int * d;
     };
     std::vector<test_t> a(1000000);

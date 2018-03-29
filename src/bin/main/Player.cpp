@@ -37,11 +37,14 @@ void Player::Move(float move_offset, ControlInput control_input, game_engine::Co
     bool moving_right = !game_engine::Equal(collision_input.right_, 0.0f);
 
     /* Move player */
-    if (moving_left) pos_x_ -= collision_input.left_;
-    if (moving_right) pos_x_ += collision_input.right_;
-    if (moving_up) pos_y_ += collision_input.up_;
-    if (moving_down) pos_y_ += -collision_input.down_;
-    SetPosition(pos_x_, pos_y_, pos_z_);
+    float pos_x = GetXPosition();
+    float pos_y = GetYPosition();
+    float pos_z = GetZPosition();
+    if (moving_left) pos_x -= collision_input.left_;
+    if (moving_right) pos_x += collision_input.right_;
+    if (moving_up) pos_y += collision_input.up_;
+    if (moving_down) pos_y += -collision_input.down_;
+    SetPosition(pos_x, pos_y, pos_z);
 
     /* Rotate player if we are moving */
     if (moving_left && moving_up) Rotate(game_engine::GetRadians(45.0f), 2);
