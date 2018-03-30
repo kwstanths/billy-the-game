@@ -40,7 +40,7 @@ namespace game_engine {
         double actual_delta = frame_stop_time_ - frame_start_time_;
         if (actual_delta < frame_time_required_) {
 #ifdef _WIN32
-            Sleep(1000 * (frame_time_required_ - actual_delta));
+            //Sleep(1000 * (frame_time_required_ - actual_delta));
 #elif __linux__
             usleep(1000 * 1000 * (frame_time_required_ - actual_delta));
 #endif

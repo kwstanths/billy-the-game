@@ -138,14 +138,16 @@ namespace game_engine {
         if (moving_object_collision_type == CollisionType::COLLISION_NONE) return false;
         
         /* Move the collision object to new position */
-        collision_->Translate(new_position.x_ - pos_x_, new_position.y_ - pos_y_);
+        float x_offset = new_position.x_ - pos_x_;
+        float y_offset = new_position.y_ - pos_y_;
+        collision_->Translate(x_offset, y_offset);
         Collision * neighbour_collision = other->GetCollision();
 
         /* Check collision */
         bool collides = neighbour_collision->Check(collision_);
         
         /* Move collision object back */
-        collision_->Translate(-(new_position.x_ - pos_x_), -(new_position.y_ - pos_y_));
+        collision_->Translate(-x_offset, -y_offset);
         
         return collides;
     }

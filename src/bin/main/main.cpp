@@ -79,13 +79,16 @@ int main(int argc, char ** argv) {
     /* Objects */
     ge::OpenGLObject * object_tile = new ge::OpenGLObject();
     object_tile->Init("assets/tile.obj");
+    ge::OpenGLObject * object_circle = new ge::OpenGLObject();
+    object_circle->Init("assets/circle.obj");
     /* Textures */
     ge::OpenGLTexture * texture_grass = new ge::OpenGLTexture();
     ge::OpenGLTexture * texture_treasure = new ge::OpenGLTexture();
     ge::OpenGLTexture * texture_player = new ge::OpenGLTexture();
+    ge::OpenGLTexture * texture_circle = new ge::OpenGLTexture();
     texture_grass->Init("assets/grass.bmp", ge::OpenGLTexture::TEXTURE_BMP);
     texture_treasure->Init("assets/treasure.bmp", ge::OpenGLTexture::TEXTURE_BMP);
-    texture_player->Init("assets/player.bmp", ge::OpenGLTexture::TEXTURE_BMP);
+    texture_circle->Init("assets/circle.bmp", ge::OpenGLTexture::TEXTURE_BMP);
 
     /* Create a dummy world */
     engine.AddWorldObject<Grass>(object_tile, texture_grass, -1.0f, 1.0f);
@@ -103,14 +106,14 @@ int main(int argc, char ** argv) {
     Treasure * tres_1 = engine.AddWorldObject<Treasure>(object_tile, texture_treasure, -2.4f, 1.5f, 0.1f);
     if (tres_1 != nullptr) tres_1->SetCollision(1.0f, 1.0f);
     Treasure * tres_2 = engine.AddWorldObject<Treasure>(object_tile, texture_treasure, 5.0f, 5.0f, 0.1f);
-    tres_2->SetCollision(0.5f);
+    if (tres_2 != nullptr) tres_2->SetCollision(1.0f, 1.0f);
 
     /* Create a main player */
     Player player;
     player.Init();
-    player.SetPosition(0.0f, 0.0f, 0.1f);
-    player.SetCollision(1.0f, 1.0f);
-    engine.AddMainActor(&player, object_tile, texture_player);
+    player.SetPosition(0.0f, 0.0f, 0.2f);
+    player.SetCollision(0.5f);
+    engine.AddMainActor(&player, object_circle, texture_circle);
 
     ge::FrameRateRegulator frame_regulator;
     frame_regulator.Init(100);
