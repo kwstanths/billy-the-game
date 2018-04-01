@@ -61,7 +61,6 @@ namespace game_engine {
         if (!object->IsInited()) return -1;
         if (!texture->IsInited()) return -1;
 
-        glUseProgram(shader_vars_.program_id_);
         glBindVertexArray(VAO_);
 
         /* */
@@ -136,8 +135,11 @@ namespace game_engine {
             x += (ch.advance_ >> 6) * scale;
         }
 
-        glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
+        glBindVertexArray(0);
+
+        glUseProgram(shader_vars_.program_id_);
+
         return 0;
     }
 

@@ -89,6 +89,7 @@ namespace game_engine {
 
         /* Set camera's view */
         camera_->SetView();
+        
 
         /* Draw visible world */
         for (size_t i = 0; i < nof; i++) {
@@ -96,12 +97,14 @@ namespace game_engine {
             visible_world_[i]->Draw();
         }
 
-        renderer_->Draw2DText("Welcome!", 100, 100, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
 
         /* Draw main actors */
         main_actor_->Step(delta_time);
         main_actor_->Draw();
 
+        /* Render text overlay */
+        renderer_->Draw2DText("Welcome!", 100, 100, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
+        
         context_->SwapBuffers();
     }
 
