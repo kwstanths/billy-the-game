@@ -1,15 +1,19 @@
-#ifndef __GameWorld_hpp__
-#define __GameWorld_hpp__
+#ifndef __WorldSector_hpp__
+#define __WorldSector_hpp__
 
 #include <vector>
 #include <deque>
 
 #include "WorldObject.hpp"
+#include "opengl/OpenGLObject.hpp"
+#include "opengl/OpenGLTexture.hpp"
 #include "physics/Types.hpp"
 #include "memory/ArrayAllocator.hpp"
 
 namespace game_engine {
     
+    class GameEngine;
+
     /**
         A class to store world objects in a 2d manner
     */
@@ -27,18 +31,30 @@ namespace game_engine {
         int Init(size_t width, size_t height, 
             float x_margin_start, float x_margin_end,
             float y_margin_start, float y_margin_end, 
-            size_t elements);
+            size_t elements, GameEngine * engine);
 
+        /**
+            Clear the world, DOES NOT destroy the item themselves
+            @return true = OK
+        */
         int Destroy();
+
+        /**
+            Check whether the object is initialised
+            @return Is initialised
+        */
+        bool IsInited();
 
         /**
             Add a new object T to the sector. The T object should be a subclass of WorldObject
             @param x Position x
             @param y Position y
             @param z Position z
+            @param object The opengl model
+            @param texture The opengl model texture
             @return A pointer to the object
         */
-        template<typename T> T * NewObj(float x, float y, float z) {
+        template<typename T> T * NewObj(float x, float y, float z, OpenGLObject * object, OpenGLTexture * texture) {
             if (!is_inited_) {
                 dt::Console(dt::CRITICAL, "World sector is not initialised");
                 return nullptr;
@@ -51,6 +67,7 @@ namespace game_engine {
             size_t index_col = GetRow(x);
 
             world_[index_row][index_col].push_back(the_new_object);
+            the_new_object->WorldObject::Init(object, texture, engine_->GetRenderer());
 
             return the_new_object;
         }
@@ -78,6 +95,7 @@ namespace game_engine {
         
         bool is_inited_;
         float x_margin_start_, x_margin_end_, y_margin_start_, y_margin_end_;
+        GameEngine * engine_;
         
         /* 
             A struct that resembles the world. Holds pointers to actual objects that are stored 

@@ -8,16 +8,15 @@
 #include "OpenGLShaders.hpp"
 #include "../ControlInput.hpp"
 
+#define OPENGL_VERSION_MAJOR 3
+#define OPENGL_VERSION_MINOR 3
+
 namespace game_engine {
 
     /**
         Values necessary to initialize the OpenGLContext object
     */
     typedef struct {
-        /* The maximum OpenGL major version required */
-        size_t opengl_version_major_;
-        /* The minimum OpenGL minor version required */
-        size_t opengl_version_minor_;
         /* The width of the window to create in pixels */
         size_t window_width_;
         /* The height of the window to create in pixels */

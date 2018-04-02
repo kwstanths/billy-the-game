@@ -1,7 +1,9 @@
 #include "WorldSector.hpp"
+#include "GameEngine.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 
+#include "ErrorCodes.hpp"
 #include "Collision.hpp"
 #include "physics/HelpFunctions.hpp"
 #include "physics/Types.hpp"
@@ -18,7 +20,7 @@ namespace game_engine {
     int WorldSector::Init(size_t width, size_t height, 
         float x_margin_start, float x_margin_end,
         float y_margin_start, float y_margin_end,
-        size_t elements) 
+        size_t elements, GameEngine * engine) 
     {
         world_ = std::vector<std::vector<std::deque<WorldObject *> > >(height, std::vector<std::deque<WorldObject *> >(width));
         array_objects_ = new ms::ArrayAllocator();
@@ -29,6 +31,10 @@ namespace game_engine {
         y_margin_start_ = y_margin_start;
         y_margin_end_ = y_margin_end;
 
+        if (engine == nullptr) return Error::ERROR_ENGINE_NOT_INIT;
+        if (!engine->IsInited()) return Error::ERROR_ENGINE_NOT_INIT;
+        engine_ = engine;
+
         is_inited_ = true;
         return 0;
     }
@@ -38,6 +44,10 @@ namespace game_engine {
          
         is_inited_ = false;
         return 0;
+    }
+
+    bool WorldSector::IsInited() {
+        return is_inited_;
     }
 
     size_t WorldSector::GetObjectsWindow(float center_x, float center_y, float margin, 

@@ -6,6 +6,7 @@
 #include "game_engine/physics/Geometry.hpp"
 
 namespace dt = debug_tools;
+namespace ge = game_engine;
 
 Player::Player(): WorldObject() {
     speed_regular_ = 4.0f;
@@ -14,7 +15,9 @@ Player::Player(): WorldObject() {
     is_inited_ = false;
 }
 
-int Player::Init() {
+int Player::Init(ge::GameEngine * engine) {
+
+    engine_ = engine;
 
     is_inited_ = true;
     return 0;
@@ -64,12 +67,23 @@ void Player::Move(float move_offset, ControlInput control_input, game_engine::Co
 }
 
 void Player::Step(double delta_time) {
+    /* TODO Remove these checks maybe */
+    if (!is_inited_) return;
 
-    //dt::ConsoleInfoL(dt::INFO, "Player info",
-    //    "delta time", delta_time,
-    //    "x", pos_x_,
-    //    "y", pos_y_,
-    //    "z", pos_z_);
+    if (!WorldObject::IsInited())
+        dt::Console(dt::WARNING, "Player::Move(): WorldObject is not initialised");
+
+    /* Get input */
+    ControlInput input = engine_->GetControlsInput();
+
+    /* Move player and camera */
+    float move_offset = (1.0f * GetSpeed(input.KEY_RUN)) * delta_time;
+    ge::CollisionResult_t can_move = engine_->CheckCollision(this, move_offset, input);
+    Move(move_offset, input, can_move);
+    if (can_move.left_) engine_->CameraMove2D(-can_move.left_, 0);
+    if (can_move.right_) engine_->CameraMove2D(can_move.right_, 0);
+    if (can_move.up_) engine_->CameraMove2D(0, can_move.up_);
+    if (can_move.down_) engine_->CameraMove2D(0, -can_move.down_);
 
 }
 

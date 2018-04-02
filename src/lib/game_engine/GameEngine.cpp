@@ -19,7 +19,6 @@ namespace game_engine {
         context_ = new OpenGLContext(context_params);
         camera_ = new OpenGLCamera(camera_params);
         renderer_ = new OpenGLRenderer();
-        sector_ = new WorldSector();
     }
 
     GameEngine::~GameEngine() {
@@ -49,8 +48,6 @@ namespace game_engine {
         
         renderer_->Init(context_);
 
-        sector_->Init(500, 500, -500.0f, 500.0f, -500.0f, 500.0f, 500 * 500);
-
         CodeReminder("Find the size and margin of the visible world based on the camera");
         visible_world_ = std::vector<WorldObject *>(200);
 
@@ -78,6 +75,10 @@ namespace game_engine {
         return last_error_;
     }
 
+    bool GameEngine::IsInited() {
+        return is_inited_;
+    }
+
     void GameEngine::Step(double delta_time) {
         context_->ClearColor();
 
@@ -85,22 +86,17 @@ namespace game_engine {
         float center_x, center_y, center_z;
         camera_->GetPosition(&center_x, &center_y, &center_z);
 
+        /* TODO Check whether  sector_ is set */
         size_t nof = sector_->GetObjectsWindow(center_x, center_y, 10, visible_world_);
 
         /* Set camera's view */
         camera_->SetView();
-        
 
         /* Draw visible world */
         for (size_t i = 0; i < nof; i++) {
             visible_world_[i]->Step(delta_time);
             visible_world_[i]->Draw();
         }
-
-
-        /* Draw main actors */
-        main_actor_->Step(delta_time);
-        main_actor_->Draw();
 
         /* Render text overlay */
         renderer_->Draw2DText("Welcome!", 100, 100, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -120,9 +116,23 @@ namespace game_engine {
         camera_->Zoom(factor);
     }
 
-    int GameEngine::AddMainActor(WorldObject * object, OpenGLObject * globject, OpenGLTexture * gltexture) {
-        object->Init(globject, gltexture, renderer_);
-        main_actor_ = object;
+    OpenGLRenderer * GameEngine::GetRenderer() {
+        return renderer_;
+    }
+
+    int GameEngine::SetWorld(WorldSector * world) {
+        if (world == nullptr) {
+            last_error_ = Error::ERROR_WORLD_NOT_INIT;
+            PrintError(last_error_);
+            return last_error_;
+        }
+
+        if (!world->IsInited()) {
+            last_error_ = Error::ERROR_WORLD_NOT_INIT;
+            PrintError(last_error_);
+            return last_error_;
+        }
+        sector_ = world;
         return 0;
     }
 

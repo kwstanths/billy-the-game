@@ -31,6 +31,14 @@ namespace game_engine {
             level = debug_tools::FATAL;
             text = "Shader compilation error";
             break;
+        case ERROR_ENGINE_NOT_INIT:
+            level = debug_tools::FATAL;
+            text = "Engine is not initialised";
+            break;
+        case ERROR_WORLD_NOT_INIT:
+            level = debug_tools::FATAL;
+            text = "World sector is not initialised";
+            break;
         case ERROR_ASSET_NOT_FOUND:
             level = debug_tools::CRITICAL;
             text = "Asset not found";

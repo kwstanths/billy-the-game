@@ -23,8 +23,8 @@ namespace game_engine {
         }
 
         glfwWindowHint(GLFW_SAMPLES, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, config_.opengl_version_major_);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, config_.opengl_version_minor_);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OPENGL_VERSION_MAJOR);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_VERSION_MINOR);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);                /* To make MacOS happy; should not be needed */
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);      /* We don't want old OpenGL */
 

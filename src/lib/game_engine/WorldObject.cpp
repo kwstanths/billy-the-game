@@ -97,25 +97,16 @@ namespace game_engine {
     void WorldObject::SetCollision() {
         collision_type_ = CollisionType::COLLISION_NONE;
         collision_ = new CollisionNone();
-        /*size_x_ = 0.0f;
-        size_y_ = 0.0f;
-        size_z_ = 0.0f;*/
     }
 
     void WorldObject::SetCollision(float x_size, float y_size, float z_size) {
         collision_type_ = CollisionType::COLLISION_BOUNDING_RECTANGLE;
         collision_ = new CollisionBoundingRectangle(Rectangle2D(pos_x_, pos_y_, x_size, y_size));
-        /*size_x_ = x_size;
-        size_y_ = y_size;
-        size_z_ = z_size;*/
     }
 
     void WorldObject::SetCollision(float radius) {
         collision_type_ = CollisionType::COLLISION_BOUNDING_CIRCLE;
         collision_ = new CollisionBoundingCircle(Circle2D(pos_x_, pos_y_, radius));
-        /*size_x_ = 2.0f*radius;
-        size_y_ = 2.0f*radius;
-        size_z_ = 2.0f*radius;*/
     }
 
     CollisionType WorldObject::GetCollisionType() {
@@ -133,6 +124,9 @@ namespace game_engine {
         /* Apply rotations if applicable */
         CollisionType neighbour_collision_type = other->GetCollisionType();
         CollisionType moving_object_collision_type = collision_type_;
+
+        /* We do not collide with ourselves */
+        if (other == this) return false;
 
         if (neighbour_collision_type == CollisionType::COLLISION_NONE) return false;
         if (moving_object_collision_type == CollisionType::COLLISION_NONE) return false;

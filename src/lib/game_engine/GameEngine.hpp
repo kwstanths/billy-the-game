@@ -45,6 +45,12 @@ namespace game_engine {
         int Destroy();
 
         /**
+            Check whether the game engine has been initialised
+            @return is initialised
+        */
+        bool IsInited();
+
+        /**
             A single engine step, Should be called inside the main loop
         */
         void Step(double delta_time);
@@ -71,51 +77,16 @@ namespace game_engine {
         void CameraZoom2D(float zoom_factor);
 
         /**
-            Add an object T to the world. The T object should be a subclass of WorldObject
-            @param globject The object's model
-            @param gltexture The object's texture
-            @param x The x coordinate
-            @param y The y coordinate
-            @param z The z coordiante
-            @return A pointer to the new object
+            Get the renderer used
+            @return The renderer
         */
-        template<typename T> T * AddWorldObject(OpenGLObject * globject, OpenGLTexture * gltexture, float x, float y, float z = 0.0f) {
-            if (!is_inited_) {
-                last_error_ = -1;
-                return nullptr;
-            }
-
-            if (globject == nullptr) {
-                last_error_ = Error::ERROR_OBJECT_NOT_INIT;
-                PrintError(last_error_);
-                return nullptr;
-            }
-            if (!globject->IsInited()) {
-                last_error_ = Error::ERROR_OBJECT_NOT_INIT;
-                PrintError(last_error_);
-                return nullptr;
-            }
-            if (gltexture == nullptr) {
-                last_error_ = Error::ERROR_TEXTURE_NOT_INIT;
-                PrintError(last_error_);
-                return nullptr;
-            }
-            if (!gltexture->IsInited()) {
-                last_error_ = Error::ERROR_TEXTURE_NOT_INIT;
-                PrintError(last_error_);
-                return nullptr;
-            }
-            T * temp = sector_->NewObj<T>(x, y, z);
-            last_error_ = temp->Init(globject, gltexture, renderer_);
-
-            if (last_error_ != 0) return nullptr;
-            else return temp;
-        }
+        OpenGLRenderer * GetRenderer();
 
         /**
-            
+            Set a world sector to be used
+            @return 0 = OK, Else see ErrorCodes.hpp
         */
-        int AddMainActor(WorldObject * object, OpenGLObject * globject, OpenGLTexture * gltexture);
+        int SetWorld(WorldSector * world);
 
         /**
             Check for collision of the moving_object based on the input and the moving_offset
@@ -146,7 +117,6 @@ namespace game_engine {
         OpenGLRenderer * renderer_ = nullptr;
 
         WorldSector * sector_;
-        WorldObject * main_actor_ = nullptr;
         std::vector<WorldObject *> visible_world_;
 
     };
