@@ -6,6 +6,9 @@
 #include "debug_tools/Assert.hpp"
 namespace dt = debug_tools;
 
+
+namespace game_engine{
+
 namespace memory_subsystem {
     
     ArrayAllocator::ArrayAllocator() {  
@@ -86,6 +89,8 @@ namespace memory_subsystem {
     }
 
 
+
+}
 
 }
 

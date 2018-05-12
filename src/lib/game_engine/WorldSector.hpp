@@ -4,16 +4,17 @@
 #include <vector>
 #include <deque>
 
-#include "WorldObject.hpp"
 #include "opengl/OpenGLObject.hpp"
 #include "opengl/OpenGLTexture.hpp"
 #include "physics/Types.hpp"
 #include "memory/ArrayAllocator.hpp"
 
+#include "GameEngine.hpp"
+#include "WorldObject.hpp"
+
+
 namespace game_engine {
     
-    class GameEngine;
-
     /**
         A class to store world objects in a 2d manner
     */

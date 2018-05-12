@@ -5,7 +5,7 @@ set (PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../)
 include(${PROJECT_ROOT}/src/lib/external/Modules/SetupEnvironment.cmake)
 SetupEnvironment()
 
-set (NAME "quadtree_test")
+set (NAME "utility_test")
 project (${NAME})
 
 include_directories(${PROJECT_ROOT}/src/lib/)

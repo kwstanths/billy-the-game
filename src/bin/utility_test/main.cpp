@@ -7,14 +7,19 @@ namespace dt = debug_tools;
 #include "game_engine/physics/Types.hpp"
 #include "game_engine/physics/Geometry.hpp"
 #include "game_engine/utility/QuadTree.hpp"
+#include "game_engine/utility/List.hpp"
+#include "game_engine/utility/HashTable.hpp"
+
 namespace ge = game_engine;
+namespace utl = game_engine::utility;
 
 int main(int argc, char ** argv) {
 
+    /* quadtree check */
     ms::PoolAllocator pool;
-    dt::Console(pool.Init(sizeof(ge::QuadTree<int>), 2000000));
+    dt::Console(pool.Init(sizeof(utl::QuadTree<int>), 2000000));
     
-    ge::QuadTree<int> tree;
+    utl::QuadTree<int> tree;
     tree.Init(ge::Rectangle2D(
         ge::Point2D(-200,-200), 
         ge::Point2D(200,-200), 
@@ -191,6 +196,32 @@ int main(int argc, char ** argv) {
     tree.PrettyPrint();
     tree.Update({156, 0}, &data_2, {155, 5});
     tree.PrettyPrint();
+
+    /* Simple list check */
+    utl::list::list<int> listexample;
+    listexample.PushTop(3);
+    listexample.PushBottom(4);
+    listexample.Insert(0, 1);
+    listexample.InsertAfter(1, 2);
+    listexample.InsertBefore(1, 0);
+    listexample.PrintForward();
+    listexample.Remove(2);
+    listexample.RemoveIndex(2);
+    listexample.PrintForward();    
+    listexample.FindForward(3);
+    listexample.FindBackward(4);
+
+    /* Simple hash table check */
+    utl::HashTable<int> testhash(10);
+    testhash.Insert(5);
+    testhash.Insert(6);
+    testhash.Insert(7);
+    testhash.Insert(11);
+    testhash.Insert(15);
+    testhash.Remove(4);
+    testhash.Find(11);
+    testhash.PrettyPrint();
+    
 
 #ifdef _WIN32
     system("pause");

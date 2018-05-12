@@ -12,12 +12,13 @@
 
 #include "ControlInput.hpp"
 #include "WorldObject.hpp"
-#include "WorldSector.hpp"
 #include "Collision.hpp"
 #include "ErrorCodes.hpp"
 
 
 namespace game_engine {
+
+    class WorldSector;
 
     class GameEngine {
     public:

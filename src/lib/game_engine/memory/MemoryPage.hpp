@@ -3,6 +3,9 @@
 
 #include "debug_tools/Assert.hpp"
 
+
+namespace game_engine{
+
 namespace memory_subsystem {
 
     /* Base type */
@@ -67,5 +70,6 @@ namespace memory_subsystem {
 
 }
 
+}
 
 #endif

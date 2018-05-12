@@ -1,6 +1,9 @@
 #include "FIFOWorker.hpp"
 
+
 namespace game_engine {
+
+namespace utility {
 
     FIFOWorker::FIFOWorker() {
         is_inited_ = false;
@@ -60,4 +63,5 @@ namespace game_engine {
         }
     }
 
+}
 }

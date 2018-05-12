@@ -9,7 +9,10 @@
 
 #include "Task.hpp"
 
+
 namespace game_engine {
+
+namespace utility {
 
     class FIFOWorker {
     public:
@@ -52,6 +55,7 @@ namespace game_engine {
         void run();
     };
 
+}
 }
 
 #endif

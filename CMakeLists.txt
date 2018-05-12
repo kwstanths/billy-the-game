@@ -6,5 +6,5 @@ PROJECT(${NAME})
 
 add_subdirectory(src/bin/main/)
 add_subdirectory(src/bin/memory_test)
-add_subdirectory(src/bin/quadtree_test)
+add_subdirectory(src/bin/utility_test)
 add_subdirectory(src/lib/)

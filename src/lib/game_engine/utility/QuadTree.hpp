@@ -7,13 +7,16 @@
 #include "game_engine/physics/Geometry.hpp"
 
 #include "game_engine/memory/PoolAllocator.hpp"
-namespace ms = memory_subsystem;
+namespace ms = game_engine::memory_subsystem;
 
 #include "debug_tools/Assert.hpp"
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
 
+
 namespace game_engine {
+
+namespace utility {
 
     /* 
         A Point region quad tree to insert elements in points, remove items from points 
@@ -345,6 +348,7 @@ namespace game_engine {
         }
     };
 
+}
 }
 
 #endif

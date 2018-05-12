@@ -3,7 +3,10 @@
 
 #include <functional>
 
+
 namespace game_engine {
+
+namespace utility {
 
     class Task {
     private:
@@ -18,6 +21,7 @@ namespace game_engine {
 
     };
 
+}
 }
 
 

@@ -3,6 +3,9 @@
 
 #include "MemoryPage.hpp"
 
+
+namespace game_engine{
+
 namespace memory_subsystem {
 
     /**
@@ -114,6 +117,8 @@ namespace memory_subsystem {
         size_t free_blocks_;
 
     };
+
+}
 
 }
 

@@ -3,6 +3,8 @@
 #include "ErrorCodes.hpp"
 #include "physics/Types.hpp"
 
+#include "WorldSector.hpp"
+
 #include "debug_tools/Console.hpp"
 #include "debug_tools/CodeReminder.hpp"
 

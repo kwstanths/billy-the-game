@@ -8,6 +8,9 @@
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
 
+
+namespace game_engine {
+
 namespace memory_subsystem {
 
     /* Page size to be used in bytes */
@@ -117,6 +120,8 @@ namespace memory_subsystem {
         size_t current_page_;
 
     };
+
+}
 
 }
 

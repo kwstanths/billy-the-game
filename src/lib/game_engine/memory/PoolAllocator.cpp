@@ -4,6 +4,9 @@
 #include "debug_tools/Assert.hpp"
 namespace dt = debug_tools;
 
+
+namespace game_engine{
+
 namespace memory_subsystem {
 
     PoolAllocator::PoolAllocator() {
@@ -107,5 +110,7 @@ namespace memory_subsystem {
     size_t PoolAllocator::GetBytesUsed() {
         return (number_of_blocks_ - free_blocks_) * block_size_bytes_;
     }
+
+}
 
 }

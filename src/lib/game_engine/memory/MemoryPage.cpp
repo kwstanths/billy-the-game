@@ -3,6 +3,8 @@
 #include <string>
 
 
+namespace game_engine {
+
 namespace memory_subsystem {
 
     MemoryPage::MemoryPage(size_t bytes_size) {
@@ -30,5 +32,7 @@ namespace memory_subsystem {
 
         return &mem_[byte_index];
     }
+
+}
 
 }
