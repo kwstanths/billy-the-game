@@ -198,7 +198,7 @@ int main(int argc, char ** argv) {
     tree.PrettyPrint();
 
     /* Simple list check */
-    utl::list::list<int> listexample;
+    utl::List<int> listexample;
     listexample.PushTop(3);
     listexample.PushBottom(4);
     listexample.Insert(0, 1);
@@ -212,15 +212,15 @@ int main(int argc, char ** argv) {
     listexample.FindBackward(4);
 
     /* Simple hash table check */
-    utl::HashTable<int> testhash(10);
-    testhash.Insert(5);
-    testhash.Insert(6);
-    testhash.Insert(7);
-    testhash.Insert(11);
-    testhash.Insert(15);
-    testhash.Remove(4);
-    testhash.Find(11);
+    utl::HashTable<std::string, int> testhash(20);
+    testhash.Insert("hello",5);
+    testhash.Insert("from",6);
+    testhash.Insert("the",7);
+    testhash.Insert("other",11);
+    testhash.Insert("side",15);
     testhash.PrettyPrint();
+    // testhash.Remove(4);
+    // testhash.Find(11);
     
 
 #ifdef _WIN32

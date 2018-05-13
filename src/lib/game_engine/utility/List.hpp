@@ -8,49 +8,81 @@ namespace game_engine {
 
 namespace utility {
 
-namespace list {
+	/**
+		list container
+		TODO FindAndRemove(...)
+		TODO Backwards iteration
+	*/
+	template <typename T> class List {
+	private:
 
-	template <typename T> class list;
-
-	template <typename T> class list_iterator;
-
-	template <typename T> class list_node{
-		friend class list<T>;
-		friend class list_iterator<T>;
+		class ListNode {
+			friend class List;
 		private:
-			list_node(const T& _value, list_node<T> * _next, list_node<T> * _previous): value(_value), next(_next), previous(_previous){}
+			ListNode(T _value, ListNode * _next, ListNode * _previous): value(_value), next(_next), previous(_previous){}
 			T value;
-			list_node<T> * next;
-			list_node<T> * previous;
+			ListNode * next;
+			ListNode * previous;
 		public:
-			T getValue(){
+			T& getValue(){
 				return value;
 			}
-	};
+		};
 
-	template <class T> class list{
-	private:
-		list_node<T> * top, * bot;
+		class ListIterator : public std::iterator<std::forward_iterator_tag, T> {
+			friend class List;
+			friend class ListNode;
+		private:
+			ListNode * pointed_;
+			ListIterator(ListNode * pointed): pointed_(pointed){ }
+
+		public:
+			T& operator*(){
+				return pointed_->value;
+			}
+
+			const ListIterator& operator++(){
+				pointed_ = pointed_->next;
+				return *this;
+			}
+
+			const ListIterator& operator+=(int amount){
+				int i = 0;
+				while(i++ < amount) {
+					pointed_ = pointed_->next;
+				}
+			}
+
+			bool operator!=(const ListIterator& other) const {
+				return this->pointed_ != other.pointed_;
+			}
+
+			bool operator==(const ListIterator& other) const {
+				return this->pointed_ == other.pointed_;
+			}
+		};
+
+		ListNode * top, * bot;
 
 	public:
 		/*
 			list's iterator
 		*/
-		typedef list_iterator<T> iterator;
+		typedef ListIterator iterator;
 
 
 		/*
 			Default constructor. Initializes an empty list
 		*/
-		list(): top(NULL), bot(NULL){ }
+		List(): top(NULL), bot(NULL){ }
 
 
 		/*
 			Initializes a list with a single element
 			@param _value The initial value
 		*/
-		list(T _value){
-			list_node<T> * new_node = new list_node<T>(_value, NULL, NULL);
+		List(T _value){
+			ListNode * new_node = new ListNode(_value, NULL, NULL);
 			top = new_node;
 			bot = new_node;
 		}
@@ -59,7 +91,7 @@ namespace list {
 		/*
 			Destroys the list
 		*/
-		~list(){
+		~List(){
 			Clear();
 		}
 
@@ -78,7 +110,7 @@ namespace list {
 			@return the size of the list
 		*/
 		int Size(){
-			list_node<T> * temp_node = top;
+			ListNode * temp_node = top;
 			int sum = 0;
 			while(temp_node != NULL){
 				sum++;
@@ -92,7 +124,7 @@ namespace list {
 			Removes every element in the list
 		*/
 		void Clear(){
-			list_node<T> * temp_node;
+			ListNode * temp_node;
 			while(top != NULL){
 				temp_node = top;
 				top = top->next;
@@ -107,17 +139,16 @@ namespace list {
 			@param _value the element to find
 			@return index of the element if found, otherwise -1
 		*/
-		int FindForward(T _value){
-			if (IsEmpty()) return -1;
-			int index = 0;
-			list_node<T> * temp_node = top;
-			do{
-				if (temp_node->value == _value) return index;
+		ListIterator FindForward(T _value){
+			if (IsEmpty()) return end();
+			
+			ListNode * temp_node = top;
+			do {
+				if (temp_node->value == _value) return ListIterator(temp_node);
 				temp_node = temp_node->next;
-				index++;
-			}while(temp_node != NULL);
+			} while (temp_node != NULL);
 
-			return -1;
+			return end();
 		}
 
 
@@ -126,17 +157,17 @@ namespace list {
 			@param _value the element to find
 			@return index of the element if found, otherwide -1
 		*/
-		int FindBackward(T _value){
-			if (IsEmpty()) return -1;
-			int index = 0;
-			list_node<T> * temp_node = bot;
-			do{
-				if (temp_node->value == _value) return index;
+		ListIterator FindBackward(T _value){
+			if (IsEmpty()) return end();
+			
+			ListNode * temp_node = bot;
+			do {
+				if (temp_node->value == _value) return ListIterator(temp_node);
 				temp_node = temp_node->previous;
-				index++;
-			}while(temp_node!=NULL);
+				
+			} while(temp_node!=NULL);
 
-			return -1;
+			return end();
 		}
 
 
@@ -146,7 +177,7 @@ namespace list {
 		*/
 		void PushTop(T _value){
 
-			list_node<T> * new_node = new list_node<T>(_value, top, NULL);
+			ListNode * new_node = new ListNode(_value, top, NULL);
 			top = new_node;
 			if (top->next != NULL) (top->next)->previous = new_node;
 			if (bot == NULL) bot = new_node;
@@ -158,7 +189,7 @@ namespace list {
 			@param _value the element to insert
 		*/
 		void PushBottom(T _value){
-			list_node<T> * new_node = new list_node<T>(_value,NULL, bot);
+			ListNode * new_node = new ListNode(_value,NULL, bot);
 			if (top == NULL) {
 				top = new_node;
 				bot = new_node;
@@ -169,6 +200,9 @@ namespace list {
 			return;
 		}
 
+		/**
+		
+		*/
 
 		/*
 			Removes an element from the top of the list. If none exists, the default T() element 
@@ -178,7 +212,7 @@ namespace list {
 		T PopTop(){
 			if (IsEmpty()) return T();
 
-			list_node<T> * temp_node = top;
+			ListNode * temp_node = top;
 			T temp_value = temp_node->value;
 			top = top->next;
 			if (top != NULL) top->previous = NULL;
@@ -198,7 +232,7 @@ namespace list {
 		T PopBottom(){
 			if (IsEmpty()) return T();
 
-			list_node<T> * temp_node = bot;
+			ListNode * temp_node = bot;
 			T temp_value = temp_node->value;
 
 			bot = bot->previous;
@@ -223,7 +257,7 @@ namespace list {
 				return true;
 			}
 			int index = 1;
-			list_node<T> * current;
+			ListNode * current;
 			current = top->next;
 			while((index < _position) && (current != NULL)){
 				index++;
@@ -236,7 +270,7 @@ namespace list {
 				return true;
 			}
 			if((current != NULL) && (index == _position)){
-				list_node<T> * temp_node = new list_node<T>(_value,current,current->previous);
+				ListNode * temp_node = new ListNode(_value,current,current->previous);
 				(current->previous)->next = temp_node;
 				current->previous = temp_node;
 				return true;
@@ -257,12 +291,12 @@ namespace list {
 				PushBottom(_value);
 				return true;
 			}
-			list_node<T> * previous, * temp_node;
+			ListNode * previous, * temp_node;
 
 			previous = top;
 			while(previous != NULL){
 				if (previous->value == _previous_value) {
-					temp_node = new list_node<T>(_value, previous->next, previous);
+					temp_node = new ListNode(_value, previous->next, previous);
 					previous->next = temp_node;
 					(previous->next)->previous = temp_node;
 					return true;
@@ -287,12 +321,12 @@ namespace list {
 				PushTop(_value);
 				return true;
 			}
-			list_node<T> * previous, * current, * temp_node;
+			ListNode * previous, * current, * temp_node;
 			previous = top;
 			current = top->next;
 			while(current != NULL){
 				if (current->value == _next_value){
-					temp_node = new list_node<T>(_value,current, previous);
+					temp_node = new ListNode(_value,current, previous);
 					current->previous = temp_node;
 					previous->next = temp_node;
 					return true;
@@ -306,7 +340,7 @@ namespace list {
 
 
 		/*
-			Remove an element from the list_node
+			Remove an element from the ListNode
 			@param _value the element to remove
 			@return true if removed, false if not
 		*/
@@ -322,7 +356,7 @@ namespace list {
 				return true;
 			}
 
-			list_node<T> * previous, * current, * temp_node;
+			ListNode * previous, * current, * temp_node;
 			previous = top;
 			current = top->next;
 			while(current != NULL){
@@ -354,7 +388,7 @@ namespace list {
 				return true;
 			}
 
-			list_node<T> * current, * temp_node;
+			ListNode * current, * temp_node;
 			int i = 1;
 			current = top;
 			while(current != NULL && i <= _index){
@@ -378,7 +412,7 @@ namespace list {
 			Get an iterator to the start of the list
 		*/
 		iterator begin() {
-			return list_iterator<T>(top);
+			return ListIterator(top);
 		}
 
 
@@ -386,43 +420,44 @@ namespace list {
 			Get an iterator to the end of the list
 		*/
 		iterator end(){
-			return list_iterator<T>(NULL);
+			return ListIterator(NULL);
 		}
 
 
 		/*
-			Returns a pointer the top node
+			Returns a raw pointer the top element. If list is empty you get nullptr
+			@return A pointer to the first data in the list
 		*/
-		auto PeekTop() -> list_node<T> * {
-			return top;
+		T * PeekTop() {
+			return &top->value;
 		}
 
 
 		/*
-			Returns a pointer to the last node
+			Returns a raw pointer to the last element. If list is empty you get nullptr
+			@return A pointer to the last data in the list
 		*/
-		auto PeekBottom() ->list_node<T> * {
-			return bot;
+		T * PeekBottom() {
+			return &bot->value;
 		}
 
-
 		/*
-			Returns a pointer to the index list node or NULL
+			Returns a raw pointer to the element in the list index or NULL if such does not exist
 		*/
-		auto PeekIndex(int _index) -> list_node<T> * {
+		T * PeekIndex(int _index) {
 
 			if (IsEmpty()) return NULL;
 
-			if (_index == 0) return top;
+			if (_index == 0) return &top->getValue();
 
-			list_node<T> * current;
+			ListNode * current;
 			int i = 1;
 			current = top->next;
 			while(current != NULL && i < _index){
 				current = current->next;
 				i++;
 			}
-			return current;
+			return &current->getValue();
 		}
 
 
@@ -430,7 +465,7 @@ namespace list {
 			Forward print of the elements in the list
 		*/
 		void PrintForward(){
-			list_node<T> * temp = top;
+			ListNode * temp = top;
 			std::cout << "Forwards - List: ";
 			while(temp != NULL){
 				std::cout << temp->value << " " ;
@@ -444,7 +479,7 @@ namespace list {
 			Backward print of the elements in the list
 		*/
 		void PrintBackward(){
-			list_node<T> * temp = bot;
+			ListNode * temp = bot;
 			std::cout << "Backwards - List: ";
 			while(temp != NULL){
 				std::cout << temp->value << " " ;
@@ -454,37 +489,6 @@ namespace list {
 		}
 
 	};
-
-	template <typename T> class list_iterator : public std::iterator<std::forward_iterator_tag, T>{
-		friend class list<T>;
-	private:
-		list_node<T> *pointed;
-		list_iterator(list_node<T> * _pointed): pointed(_pointed){ }
-
-	public:
-		T& operator*(){
-			return pointed->value;
-		}
-
-		const list_iterator<T>& operator++(){
-			pointed = pointed->next;
-			return *this;
-		}
-
-		const list_iterator<T>& operator+=(int amount){
-			int i = 0;
-			while(i++ < amount) {
-				pointed = pointed->next;
-			}
-		}
-
-		bool operator!=(const list_iterator<T>& other) const {
-			return this->pointed != other.pointed;
-		}
-
-	};
-
-} /* list namespace */
 
 } /* utility namespace */
 
