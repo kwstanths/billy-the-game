@@ -219,9 +219,22 @@ int main(int argc, char ** argv) {
     testhash.Insert("other",11);
     testhash.Insert("side",15);
     testhash.PrettyPrint();
-    // testhash.Remove(4);
-    // testhash.Find(11);
+
+    utl::HashTable<std::string, int>::iterator testitr = testhash.Find("hello");
+    std::cout << testitr.GetKey() << " " << testitr.GetValue() << std::endl;
+    testitr = testhash.Find("side");
+    std::cout << testitr.GetKey() << " " << testitr.GetValue() << std::endl;
+    testitr = testhash.Find("the");
+    std::cout << testitr.GetKey() << " " << testitr.GetValue() << std::endl;
+    testitr = testhash.Find("from");
+    std::cout << testitr.GetKey() << " " << testitr.GetValue() << std::endl;
+    testitr = testhash.Find("other");
+    std::cout << testitr.GetKey() << " " << testitr.GetValue() << std::endl;
     
+    testhash.Remove("other");
+    testhash.PrettyPrint();
+    
+
 
 #ifdef _WIN32
     system("pause");

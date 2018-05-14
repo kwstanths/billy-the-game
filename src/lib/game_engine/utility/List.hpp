@@ -205,12 +205,10 @@ namespace utility {
 		*/
 
 		/*
-			Removes an element from the top of the list. If none exists, the default T() element 
-			will be returned.
-			@return The value removed
+			Removes the element on the top of the list
 		*/
-		T PopTop(){
-			if (IsEmpty()) return T();
+		void PopTop() {
+			if (IsEmpty()) return;
 
 			ListNode * temp_node = top;
 			T temp_value = temp_node->value;
@@ -219,18 +217,14 @@ namespace utility {
 			if (top == NULL) bot = NULL;
 
 			delete temp_node;
-			return temp_value;
-
 		}
 
 
 		/*
-			Removes an element from the bottom of the list. If none exists, the default T() element
-			will be returned
-			@return The value removed
+			Removes the element from the bottom of the list
 		*/
-		T PopBottom(){
-			if (IsEmpty()) return T();
+		void PopBottom() {
+			if (IsEmpty()) return;
 
 			ListNode * temp_node = bot;
 			T temp_value = temp_node->value;
@@ -239,7 +233,7 @@ namespace utility {
 			if (bot!=NULL) bot->next = NULL;
 			if (bot == NULL) top = NULL;
 
-			return temp_value;
+			delete temp_node;
 		}
 
 
@@ -411,7 +405,7 @@ namespace utility {
 		/*
 			Get an iterator to the start of the list
 		*/
-		iterator begin() {
+		ListIterator begin() {
 			return ListIterator(top);
 		}
 
@@ -419,7 +413,7 @@ namespace utility {
 		/*
 			Get an iterator to the end of the list
 		*/
-		iterator end(){
+		ListIterator end(){
 			return ListIterator(NULL);
 		}
 
@@ -429,6 +423,7 @@ namespace utility {
 			@return A pointer to the first data in the list
 		*/
 		T * PeekTop() {
+			if (IsEmpty()) return nullptr;
 			return &top->value;
 		}
 
@@ -438,6 +433,7 @@ namespace utility {
 			@return A pointer to the last data in the list
 		*/
 		T * PeekBottom() {
+			if (IsEmpty()) return nullptr;
 			return &bot->value;
 		}
 
