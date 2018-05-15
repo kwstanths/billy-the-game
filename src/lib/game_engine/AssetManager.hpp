@@ -6,32 +6,74 @@
 #include "opengl/OpenGLObject.hpp"
 #include "opengl/OpenGLTexture.hpp"
 
-//#include "utility/HashTable.hpp"
-//namespace utl = utility;
+#include "ErrorCodes.hpp"
+
+#include "utility/HashTable.hpp"
+namespace utl = game_engine::utility;
 
 
 namespace game_engine {
 
-    // class AssetManager {
-    // public:
-    //     AssetManager();
+    /**
+        Object to manage assets to only keep one copy for each and easy
+        searching among them
+        TODO Sequential memory allocation via the memory_subsystem
+    */
+    class AssetManager {
+    public:
+        /**
+            Does nothing in particular. Call Init()
+        */
+        AssetManager();
 
-    //     ~AssetManager();
+        /**
+            Calls Destroy()
+        */
+        ~AssetManager();
 
-    //     bool Init(size_t number_of_objects, size_t number_of_textures);
+        /**
+            Initializes the required structures 
+            @param number_of_objects The number of objects to hold, roughly
+            @param number_of_textures The number of textures to hold, roughly
+            @return true = OK, false = NOT OK
+        */
+        bool Init(size_t number_of_objects, size_t number_of_textures);
 
-    //     bool Destroy();
+        /**
+            Deallocates all the objects held. TODO
+            @return true = OK, false = NOT OK
+        */
+        bool Destroy();
 
-    //     OpenGLObject * GetObject(std::string object_name);
+        /**
+            Get wether the object is initialised already
+            @return true = OK, false = NOT OK
+        */
+        bool IsInited();
 
-    //     OpenGLTexture * GetTexture(std::string texture_name);
+        /**
+            Search an object
+            @param object_name The file path of the object
+            @param[out] object A pointer to the initialised object
+            @return 0 = OK, -1 = Object not initialised, else see ErrorCodes.hpp
+        */
+        int GetObject(std::string object_name, OpenGLObject * object);
 
-    // private:
-    //     bool is_inited_;
+        /**
+            Search a texture
+            @param texture_name The file path of the object
+            @param type The type of the texture file
+            @param[out] A pointer to the initialised object
+            @return 0 = OK, -1 = Object not initialised, else see ErrorCodes.hpp
+        */
+        int GetTexture(std::string texture_name, OpenGLTexture::OpenGLTextureType type, OpenGLTexture * texture);
 
-    //     utl::HashTable<OpenGLObject *> objects_;
-    //     utl::HashTable<OpenGLTexture *> textures_;
-    // };
+    private:
+        bool is_inited_;
+
+        utl::HashTable<std::string, OpenGLObject *> * objects_ = nullptr;
+        utl::HashTable<std::string, OpenGLTexture *> * textures_ = nullptr;
+    };
 
 }
 

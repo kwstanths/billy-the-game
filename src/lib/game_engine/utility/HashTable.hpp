@@ -138,7 +138,7 @@ namespace utility {
                   then this operation might take more time then expected in some cases.
                   @param key The key of the value to be inserted
                   @param value The value to be inserted
-                  @return true = Ok
+                  @return true = Ok, false = Already inserted
             */
             bool Insert(Key key, Value value) {
                   size_t hash_value = GetHash(key);

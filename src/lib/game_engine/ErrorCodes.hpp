@@ -6,7 +6,10 @@
 namespace game_engine {
     
     enum Error {
-        ERROR_GLFW_INIT = 1,
+        ERROR_GEN_NOT_INIT = -1,
+        ERROR_NO_ERROR,
+
+        ERROR_GLFW_INIT,
         ERROR_GLFW_WINDOW,
         ERROR_GLEW_INIT,
 

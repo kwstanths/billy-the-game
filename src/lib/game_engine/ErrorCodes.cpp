@@ -7,6 +7,14 @@ namespace game_engine {
         std::string text;
         switch (error)
         {
+        case ERROR_GEN_NOT_INIT:
+            level = debug_tools::CRITICAL;
+            text = "Object is not initialised";
+            break;
+        case ERROR_NO_ERROR:
+            level = debug_tools::INFO;
+            text = "No error";
+            break;
         case ERROR_GLFW_INIT:
             level = debug_tools::FATAL;
             text = "Cannot initialize GLFW";
