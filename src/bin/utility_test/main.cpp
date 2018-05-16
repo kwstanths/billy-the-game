@@ -233,8 +233,25 @@ int main(int argc, char ** argv) {
     
     testhash.Remove("other");
     testhash.PrettyPrint();
-    
 
+    testhash.Clear();
+    testhash.PrettyPrint();
+    testhash.Insert("hello",1);
+    testhash.Insert("from",2);
+    testhash.Insert("the",3);
+    testhash.Insert("other",4);
+    testhash.Insert("side",5);
+    testhash.Insert("I",6);
+    testhash.Insert("must",7);
+    testhash.Insert("'ve",8);
+    testhash.Insert("called",9);
+    testhash.Insert("a",10);
+    testhash.Insert("thousand",11);
+    testhash.Insert("times",12);
+    testhash.PrettyPrint();
+    
+    for(typename utl::HashTable<std::string, int>::iterator itr = testhash.begin(); itr != testhash.end(); ++itr)
+        std::cout << itr.GetValue() << std::endl;
 
 #ifdef _WIN32
     system("pause");

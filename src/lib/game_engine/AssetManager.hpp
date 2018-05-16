@@ -40,7 +40,7 @@ namespace game_engine {
         bool Init(size_t number_of_objects, size_t number_of_textures);
 
         /**
-            Deallocates all the objects held. TODO
+            Deallocates all the objects held.
             @return true = OK, false = NOT OK
         */
         bool Destroy();

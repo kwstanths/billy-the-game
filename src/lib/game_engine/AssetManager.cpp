@@ -22,7 +22,18 @@ namespace game_engine {
 
     bool AssetManager::Destroy() {
         if (!IsInited()) return false;
-        /* TODO Destroy all objects */
+    
+        /* Destroy objects */
+        for(typename utl::HashTable<std::string, OpenGLObject *>::iterator itr = objects_->begin(); itr != objects_->end(); ++itr){
+            itr.GetValue()->Destroy();
+        }
+        objects_->Clear();
+
+        /* Destroy textures */
+        for(typename utl::HashTable<std::string, OpenGLTexture *>::iterator itr = textures_->begin(); itr != textures_->end(); ++itr){
+            itr.GetValue()->Destroy();
+        }
+        textures_->Clear();
 
         is_inited_ = false;
     }

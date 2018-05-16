@@ -1,5 +1,5 @@
-#ifndef __HASHTABLE_HPP__
-#define __HASHTABLE_HPP__
+#ifndef __HashTable_HPP__
+#define __HashTable_HPP__
 
 #include <iostream>
 #include <vector>
@@ -35,8 +35,11 @@ namespace utility {
 			friend class HashElement;
 		private:
 			HashElement * pointed_;
+                  const std::vector<List<HashElement> * > * hashtable_;
                   size_t pointed_index_;
-			HashIterator(HashElement * pointed, size_t index): pointed_(pointed), pointed_index_(index) { }
+			HashIterator(HashElement * pointed, 
+                        const std::vector<List<HashElement> * > * hashtable, 
+                        size_t index): pointed_(pointed), pointed_index_(index), hashtable_(hashtable) { };
 
 		public:
                   Key& GetKey() {
@@ -47,10 +50,34 @@ namespace utility {
 				return pointed_->value_;
 			}
 
-			// const HashIterator& operator++(){
-			// 	pointed_ = pointed_->next;
-			// 	return *this;
-			// }
+			const HashIterator& operator++(){
+
+                        /* Find the next in the current bucket list */
+                        List<HashElement> * current_bucket_list = hashtable_->at(pointed_index_);
+                        typename List<HashElement>::iterator next = current_bucket_list->FindForward(*pointed_);
+                        ++next;
+                        if (next == current_bucket_list->end()){
+                              /* Find the next bucket list */
+                              pointed_index_ ++;
+                              while(pointed_index_ < hashtable_->size() && hashtable_->at(pointed_index_) == nullptr) 
+                                    pointed_index_++;
+
+                              /* If none exists return the iterator end */
+                              if (pointed_index_ == hashtable_->size()) {
+                                    pointed_ = nullptr;
+                                    return *this;
+                              }
+
+                              /* if not, return the first from the new list */
+                              pointed_ = hashtable_->at(pointed_index_)->PeekTop();
+				      return *this;
+                        }
+                        
+                        pointed_ = &(*next);
+                        return *this;
+
+                        
+			}
 
 			// const HashIterator& operator+=(int amount){
 			// 	int i = 0;
@@ -170,11 +197,11 @@ namespace utility {
             */
             HashIterator begin() {
                   size_t i = 0;
-                  while(hashtable_.at(i) == nullptr && i < hashtable_.size()) i++;
-                  if (i == hashtable_.size()) return HashIterator(nullptr, 0);
+                  while(i < hashtable_.size() && hashtable_.at(i) == nullptr) i++;
+                  if (i == hashtable_.size()) return HashIterator(nullptr, &hashtable_, hashtable_.size());
 
                   HashElement * first = hashtable_.at(i)->PeekTop();
-                  return HashIterator(first, i);
+                  return HashIterator(first, &hashtable_, i);
             }
 
             /**
@@ -182,7 +209,7 @@ namespace utility {
                   expect for comparison, is not recommended            
             */
             HashIterator end() {
-                  return HashIterator(nullptr, 0);
+                  return HashIterator(nullptr, &hashtable_, hashtable_.size());
             }
 
             /*
@@ -194,15 +221,15 @@ namespace utility {
             HashIterator Find(Key key) const {
                   size_t hash_value = GetHash(key);
 
-                  if (hashtable_.at(hash_value) == nullptr) return HashIterator(nullptr, 0);
+                  if (hashtable_.at(hash_value) == nullptr) return HashIterator(nullptr, &hashtable_, hashtable_.size());
 
                   List<HashElement> * hashed_elems = hashtable_.at(hash_value);
                   typename List<HashElement>::iterator itr = hashed_elems->FindForward(HashElement(key, Value()));
                   if (itr != hashed_elems->end()) {
-                        return HashIterator(&(*itr), hash_value);
+                        return HashIterator(&(*itr), &hashtable_, hash_value);
                   }
 
-                  return HashIterator(nullptr, 0);
+                  return HashIterator(nullptr, &hashtable_, hashtable_.size());
             }
 
             /*
