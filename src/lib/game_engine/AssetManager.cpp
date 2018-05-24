@@ -36,6 +36,7 @@ namespace game_engine {
         textures_->Clear();
 
         is_inited_ = false;
+        return true;
     }
 
     bool AssetManager::IsInited() {

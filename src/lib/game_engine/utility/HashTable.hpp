@@ -190,6 +190,7 @@ namespace utility {
                   if (ret) elements_++;
 
                   if ((max_load_ > 0) && (GetLoad() >= max_load_)) Rehash();
+                  return ret;
             }
 
             /**
