@@ -18,7 +18,7 @@ namespace game_engine {
         is_inited_ = false;
     }
 
-    int WorldObject::Init(OpenGLObject * object, OpenGLTexture * texture, OpenGLRenderer * renderer) {
+    int WorldObject::Init(OpenGLObject * object, OpenGLTexture * texture) {
          
         if (!object->IsInited()) {
             PrintError(Error::ERROR_OBJECT_NOT_INIT);
@@ -31,7 +31,6 @@ namespace game_engine {
 
         object_ = object;
         texture_ = texture;
-        renderer_ = renderer;
         
         is_inited_ = true;
         return 0;
@@ -48,11 +47,11 @@ namespace game_engine {
         return is_inited_;
     }
 
-    void WorldObject::Draw() {
+    void WorldObject::Draw(OpenGLRenderer * renderer) {
         if (!is_inited_) return;
 
         model_ = translation_matrix_ * rotation_matrix_;
-        renderer_->Draw(object_, texture_, model_);
+        renderer->Draw(object_, texture_, model_);
     }
 
     void WorldObject::Step(double delta_time) {

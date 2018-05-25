@@ -58,7 +58,7 @@ namespace memory_subsystem {
             }
 
             address = pages_[current_page_]->Get(page_offset_, bytes);
-            _assert(address != nullptr);
+            /* If address is nullptr here, then the MEMORY_PAGE used is not big enough to hold the bytes */
         } 
         page_offset_ += bytes;
        

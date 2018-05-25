@@ -1,6 +1,9 @@
 #ifndef __Player_hpp__
 #define __Player_hpp__
 
+#include "game_engine/opengl/OpenGLObject.hpp"
+#include "game_engine/opengl/OpenGLTexture.hpp"
+
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/WorldObject.hpp"
 #include "game_engine/ControlInput.hpp"
@@ -10,7 +13,7 @@ class Player : public game_engine::WorldObject{
 public:
     Player();
 
-    int Init(game_engine::GameEngine * engine);
+    int Init(game_engine::OpenGLObject * object, game_engine::OpenGLTexture * texture, game_engine::GameEngine * engine);
 
     int Destroy();
 

@@ -15,12 +15,14 @@ Player::Player(): WorldObject() {
     is_inited_ = false;
 }
 
-int Player::Init(ge::GameEngine * engine) {
+int Player::Init(ge::OpenGLObject * object, ge::OpenGLTexture * texture, ge::GameEngine * engine) {
+
+    int ret = WorldObject::Init(object, texture);
 
     engine_ = engine;
 
     is_inited_ = true;
-    return 0;
+    return ret == 0;
 }
 
 int Player::Destroy() {

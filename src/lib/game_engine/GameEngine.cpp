@@ -50,6 +50,8 @@ namespace game_engine {
         
         renderer_->Init(context_);
 
+        //asset_manager_->Init(200, 200);
+
         CodeReminder("Find the size and margin of the visible world based on the camera");
         visible_world_ = std::vector<WorldObject *>(200);
 
@@ -97,7 +99,7 @@ namespace game_engine {
         /* Draw visible world */
         for (size_t i = 0; i < nof; i++) {
             visible_world_[i]->Step(delta_time);
-            visible_world_[i]->Draw();
+            visible_world_[i]->Draw(renderer_);
         }
 
         /* Render text overlay */
@@ -116,10 +118,6 @@ namespace game_engine {
 
     void GameEngine::CameraZoom2D(float factor) {
         camera_->Zoom(factor);
-    }
-
-    OpenGLRenderer * GameEngine::GetRenderer() {
-        return renderer_;
     }
 
     int GameEngine::SetWorld(WorldSector * world) {

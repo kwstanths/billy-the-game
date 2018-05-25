@@ -53,9 +53,9 @@ namespace game_engine {
             @param z Position z
             @param object The opengl model
             @param texture The opengl model texture
-            @return A pointer to the object
+            @return A pointer to the object. If nullptr, then allocation failed
         */
-        template<typename T> T * NewObj(float x, float y, float z, OpenGLObject * object, OpenGLTexture * texture) {
+        template<typename T> T * NewObj(float x, float y, float z) {
             if (!is_inited_) {
                 dt::Console(dt::CRITICAL, "World sector is not initialised");
                 return nullptr;
@@ -68,7 +68,6 @@ namespace game_engine {
             size_t index_col = GetRow(x);
 
             world_[index_row][index_col].push_back(the_new_object);
-            the_new_object->WorldObject::Init(object, texture, engine_->GetRenderer());
 
             return the_new_object;
         }

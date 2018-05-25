@@ -1,9 +1,9 @@
 #include "World.hpp"
 
-#include "debug_tools/Console.hpp"
-
 #include "game_engine/opengl/OpenGLObject.hpp"
 #include "game_engine/opengl/OpenGLTexture.hpp"
+
+#include "debug_tools/Console.hpp"
 
 #include "Grass.hpp"
 #include "Treasure.hpp"
@@ -42,34 +42,38 @@ int World::Init(ge::GameEngine * engine) {
     if (ret) return ret;
 
     /* Create grass */
-    NewObj<Grass>(-1.0f, 1.0f, 0.0f, object_tile, texture_grass);
-    NewObj<Grass>(0.0f, 1.0f, 0.0f, object_tile, texture_grass);
-    NewObj<Grass>(1.0f, 1.0f, 0.0f, object_tile, texture_grass);
-    NewObj<Grass>(-1.0f, 0.0f, 0.0f, object_tile, texture_grass);
-    NewObj<Grass>(0.0f, 0.0f, 0.0f, object_tile, texture_grass);
-    NewObj<Grass>(1.0f, 0.0f, 0.0f, object_tile, texture_grass);
-    NewObj<Grass>(-1.0f, -1.0f, 0.0f, object_tile, texture_grass);
-    NewObj<Grass>(0.0f, -1.0f, 0.0f, object_tile, texture_grass);
-    NewObj<Grass>(1.0f, -1.0f, 0.0f, object_tile, texture_grass);
-    NewObj<Grass>(-1.0f, 2.0f, 0.0f, object_tile, texture_grass);
+    /* We should probably check the return value of NewObj */
+    NewObj<Grass>(-1.0f, 1.0f, 0.0f)->Init(object_tile, texture_grass);
+    NewObj<Grass>(0.0f, 1.0f, 0.0f)->Init(object_tile, texture_grass);
+    NewObj<Grass>(1.0f, 1.0f, 0.0f)->Init(object_tile, texture_grass);
+    NewObj<Grass>(-1.0f, 0.0f, 0.0f)->Init(object_tile, texture_grass);
+    NewObj<Grass>(0.0f, 0.0f, 0.0f)->Init(object_tile, texture_grass);
+    NewObj<Grass>(1.0f, 0.0f, 0.0)->Init(object_tile, texture_grass);
+    NewObj<Grass>(-1.0f, -1.0f, 0.0f)->Init(object_tile, texture_grass);
+    NewObj<Grass>(0.0f, -1.0f, 0.0f)->Init(object_tile, texture_grass);
+    NewObj<Grass>(1.0f, -1.0f, 0.0f)->Init(object_tile, texture_grass);
+    NewObj<Grass>(-1.0f, 2.0f, 0.0f)->Init(object_tile, texture_grass);
  
     /* Create some collidable treasures */
-    Treasure * tres = NewObj<Treasure>(0.0f, 1.5f, 0.1f, object_tile, texture_treasure);
+    Treasure * tres = NewObj<Treasure>(0.0f, 1.5f, 0.1f);
+    tres->Init(object_tile, texture_treasure);
     if (tres == nullptr) -1;
     tres->SetCollision(1.0f, 1.0f);
     
-    tres = NewObj<Treasure>(-2.4f, 1.5f, 0.1f, object_tile, texture_treasure);
+    tres = NewObj<Treasure>(-2.4f, 1.5f, 0.1f);
+    tres->Init(object_tile, texture_treasure);
     if (tres == nullptr) -1;
     tres->SetCollision(1.0f, 1.0f);
 
-    tres = NewObj<Treasure>(5.0f, 5.0f, 0.1f, object_tile, texture_treasure);
+    tres = NewObj<Treasure>(5.0f, 5.0f, 0.1f);
+    tres->Init(object_tile, texture_treasure);
     if (tres == nullptr) return -1;
     tres->SetCollision(1.0f, 1.0f);
 
     /* Create a main player */
-    Player * player = NewObj<Player>(0.0f, 0.0f, 0.2f, object_circle, texture_circle);
+    Player * player = NewObj<Player>(0.0f, 0.0f, 0.2f);
     if (player == nullptr) return -1;
-    player->Init(engine);
+    player->Init(object_circle, texture_circle, engine);
     player->SetCollision(0.5f);
 
     is_inited_ = true;

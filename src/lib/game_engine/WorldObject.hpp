@@ -2,6 +2,8 @@
 #define __WorldObject_hpp__
 
 #include <functional>
+#include <string>
+#include <exception>
 
 #include "opengl/OpenGLObject.hpp"
 #include "opengl/OpenGLTexture.hpp"
@@ -31,6 +33,14 @@ namespace game_engine {
 
         static void * operator new(size_t size, memory_subsystem::ArrayAllocator * array_objects) {
             void * address = array_objects->Allocate(size);
+            if (address == nullptr) {
+
+                debug_tools::ConsoleInfoL(debug_tools::FATAL,
+                    "ArrayAllocator::Allocate(size): size does not fit inside the memory page used",
+                    "Requested size: ", size);
+                
+                throw std::bad_alloc();
+            }
             return address;
         }
 
@@ -56,7 +66,7 @@ namespace game_engine {
             Sets the OpenGL model and texture to the object. Also sets the renderer to be used
             @return 0=OK, else see ErrorCodes.hpp
         */
-        int Init(OpenGLObject * object, OpenGLTexture * texture, OpenGLRenderer * renderer);
+        int Init(OpenGLObject * object, OpenGLTexture * texture);
 
         /**
             Does nothing in particular
@@ -71,7 +81,7 @@ namespace game_engine {
         /**
             Draw the object using the variables set in Init(...);
         */
-        void Draw();
+        void Draw(OpenGLRenderer * renderer);
 
         /**
             Function that should be overriden
@@ -155,7 +165,6 @@ namespace game_engine {
 
         OpenGLObject * object_;
         OpenGLTexture * texture_;
-        OpenGLRenderer * renderer_;
         CollisionType collision_type_;
 
         glm::mat4 translation_matrix_;

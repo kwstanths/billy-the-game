@@ -43,6 +43,7 @@ void displayFPS(double frame_time_ms) {
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Fix the Frame rate regulator Sleep function");
     CodeReminder("WorldObject, collision in SetPosition");
     CodeReminder("WorldSector, remove array add quad tree")
     CodeReminder("Create something for random numbers");

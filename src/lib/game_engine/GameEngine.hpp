@@ -13,6 +13,7 @@
 #include "ControlInput.hpp"
 #include "WorldObject.hpp"
 #include "Collision.hpp"
+#include "AssetManager.hpp"
 #include "ErrorCodes.hpp"
 
 
@@ -78,12 +79,6 @@ namespace game_engine {
         void CameraZoom2D(float zoom_factor);
 
         /**
-            Get the renderer used
-            @return The renderer
-        */
-        OpenGLRenderer * GetRenderer();
-
-        /**
             Set a world sector to be used
             @return 0 = OK, Else see ErrorCodes.hpp
         */
@@ -116,7 +111,7 @@ namespace game_engine {
         OpenGLContext * context_ = nullptr;
         OpenGLCamera * camera_ = nullptr;
         OpenGLRenderer * renderer_ = nullptr;
-
+        
         WorldSector * sector_;
         std::vector<WorldObject *> visible_world_;
 
