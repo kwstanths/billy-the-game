@@ -3,6 +3,8 @@
 #include "game_engine/opengl/OpenGLObject.hpp"
 #include "game_engine/opengl/OpenGLTexture.hpp"
 
+#include "game_engine/AssetManager.hpp"
+
 #include "debug_tools/Console.hpp"
 
 #include "Grass.hpp"
@@ -21,25 +23,24 @@ int World::Init(ge::GameEngine * engine) {
     if (ret) return ret;
 
     /* Initialize the world */
-    /* Initialize assets */
-    /* Objects */
-    ge::OpenGLObject * object_tile = new ge::OpenGLObject();
-    object_tile->Init("assets/tile.obj");
-    if (ret) return ret;
-    ge::OpenGLObject * object_circle = new ge::OpenGLObject();
-    ret = object_circle->Init("assets/circle.obj");
-    if (ret) return ret;
+    ge::AssetManager * asset_manager = engine->GetAssetManager();
+    if (asset_manager == nullptr) return -1;
+    
+    /* Find oobjects */
+    ge::OpenGLObject * object_tile = nullptr, * object_circle = nullptr;
+    object_tile = asset_manager->FindObject("assets/tile.obj", &ret);
+    if (ret != ge::Error::ERROR_NO_ERROR)  dt::ConsoleInfoL(dt::CRITICAL, "Asset not found", "name", "assets/tile.obj");
+    object_circle = asset_manager->FindObject("assets/circle.obj", &ret);
+    if (ret != ge::Error::ERROR_NO_ERROR) dt::ConsoleInfoL(dt::CRITICAL, "Asset not found", "name", "assets/circle.obj");
 
-    /* Textures */
-    ge::OpenGLTexture * texture_grass = new ge::OpenGLTexture();
-    ret = texture_grass->Init("assets/grass.bmp", ge::OpenGLTexture::TEXTURE_BMP);
-    if (ret) return ret;
-    ge::OpenGLTexture * texture_treasure = new ge::OpenGLTexture();
-    ret = texture_treasure->Init("assets/treasure.bmp", ge::OpenGLTexture::TEXTURE_BMP);
-    if (ret) return ret;
-    ge::OpenGLTexture * texture_circle = new ge::OpenGLTexture();
-    ret = texture_circle->Init("assets/circle.bmp", ge::OpenGLTexture::TEXTURE_BMP);
-    if (ret) return ret;
+    /* Find textures */
+    ge::OpenGLTexture * texture_grass = nullptr, * texture_treasure = nullptr, * texture_circle = nullptr;
+    texture_grass = asset_manager->FindTexture("assets/grass.bmp", ge::OpenGLTexture::TEXTURE_BMP, &ret);
+    if (ret != ge::Error::ERROR_NO_ERROR) dt::ConsoleInfoL(dt::CRITICAL, "Asset not found", "name", "assets/grass.bmp");
+    texture_treasure = asset_manager->FindTexture("assets/treasure.bmp", ge::OpenGLTexture::TEXTURE_BMP, &ret);
+    if (ret != ge::Error::ERROR_NO_ERROR) dt::ConsoleInfoL(dt::CRITICAL, "Asset not found", "name", "assets/treasure.bmp");
+    texture_circle = asset_manager->FindTexture("assets/circle.bmp", ge::OpenGLTexture::TEXTURE_BMP, &ret);
+    if (ret != ge::Error::ERROR_NO_ERROR) dt::ConsoleInfoL(dt::CRITICAL, "Asset not found", "name", "assets/circle.bmp");
 
     /* Create grass */
     /* We should probably check the return value of NewObj */

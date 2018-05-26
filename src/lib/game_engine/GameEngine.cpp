@@ -21,16 +21,19 @@ namespace game_engine {
         context_ = new OpenGLContext(context_params);
         camera_ = new OpenGLCamera(camera_params);
         renderer_ = new OpenGLRenderer();
+        asset_manager_ = new AssetManager();
     }
 
     GameEngine::~GameEngine() {
         if (renderer_ != nullptr) delete renderer_;
         if (camera_ != nullptr) delete camera_;
         if (context_ != nullptr) delete context_;
-        
+        if (asset_manager_ != nullptr) delete asset_manager_;
+
         renderer_ = nullptr;
         camera_ = nullptr;
         context_ = nullptr;
+        asset_manager_ = nullptr;
     }
 
     int GameEngine::Init() {
@@ -50,7 +53,7 @@ namespace game_engine {
         
         renderer_->Init(context_);
 
-        //asset_manager_->Init(200, 200);
+        asset_manager_->Init(200, 200);
 
         CodeReminder("Find the size and margin of the visible world based on the camera");
         visible_world_ = std::vector<WorldObject *>(200);
@@ -73,6 +76,8 @@ namespace game_engine {
 
         camera_->Destroy();
         context_->Destroy();
+        /* TODO Implement renderer Destroy() which depends on OpenGLContext */
+        asset_manager_->Destroy();
 
         is_inited_ = false;
         last_error_ = 0;
@@ -151,8 +156,11 @@ namespace game_engine {
         else if (input.KEY_DOWN) direction = 180.0f;
         else return collision;
 
-        /* TODO find the appropriate sector */
         return sector_->CheckCollision(moving_object, move_offset, direction);
+    }
+
+    AssetManager * GameEngine::GetAssetManager() {
+        return asset_manager_;
     }
 
     int GameEngine::GetLastError() {

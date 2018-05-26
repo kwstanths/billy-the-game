@@ -20,6 +20,16 @@ namespace game_engine {
 
     int WorldObject::Init(OpenGLObject * object, OpenGLTexture * texture) {
          
+        if (object == nullptr) {
+            PrintError(Error::ERROR_OBJECT_NOT_INIT);
+            return Error::ERROR_OBJECT_NOT_INIT;
+        }
+
+        if (texture == nullptr) {
+            PrintError(Error::ERROR_TEXTURE_NOT_INIT);
+            return Error::ERROR_TEXTURE_NOT_INIT;
+        }
+
         if (!object->IsInited()) {
             PrintError(Error::ERROR_OBJECT_NOT_INIT);
             return Error::ERROR_OBJECT_NOT_INIT;

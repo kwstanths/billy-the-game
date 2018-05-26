@@ -57,7 +57,7 @@ namespace game_engine {
             @param[out] object A pointer to the initialised object
             @return 0 = OK, -1 = Object not initialised, else see ErrorCodes.hpp
         */
-        int GetObject(std::string object_name, OpenGLObject * object);
+        OpenGLObject * FindObject(std::string object_name, int * ret_code);
 
         /**
             Search a texture
@@ -66,7 +66,7 @@ namespace game_engine {
             @param[out] A pointer to the initialised object
             @return 0 = OK, -1 = Object not initialised, else see ErrorCodes.hpp
         */
-        int GetTexture(std::string texture_name, OpenGLTexture::OpenGLTextureType type, OpenGLTexture * texture);
+        OpenGLTexture * FindTexture(std::string texture_name, OpenGLTexture::OpenGLTextureType type, int * ret_code);
 
     private:
         bool is_inited_;

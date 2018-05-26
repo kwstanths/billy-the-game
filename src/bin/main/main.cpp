@@ -81,7 +81,7 @@ int main(int argc, char ** argv) {
     engine.SetWorld(&world);
 
     ge::FrameRateRegulator frame_regulator;
-    frame_regulator.Init(100);
+    frame_regulator.Init(300);
 
     do {
         frame_regulator.FrameStart();

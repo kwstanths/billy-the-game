@@ -9,6 +9,8 @@
 class Grass : public game_engine::WorldObject {
 public:
 
+    bool Init(game_engine::OpenGLObject * object, game_engine::OpenGLTexture * texture);
+
     virtual void Step(double delta_time) override;
 
 private:

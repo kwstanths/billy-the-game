@@ -94,6 +94,12 @@ namespace game_engine {
         CollisionResult_t CheckCollision(WorldObject * moving_object, float move_offset, ControlInput input);
 
         /**
+            Get the asset manager
+            @return The asset manager. nullptr is returned if Init() error
+        */
+        AssetManager * GetAssetManager();
+
+        /**
             Get the last error occured, 0 = No error
             @return The last error
         */
@@ -111,7 +117,8 @@ namespace game_engine {
         OpenGLContext * context_ = nullptr;
         OpenGLCamera * camera_ = nullptr;
         OpenGLRenderer * renderer_ = nullptr;
-        
+        AssetManager * asset_manager_ = nullptr;
+
         WorldSector * sector_;
         std::vector<WorldObject *> visible_world_;
 

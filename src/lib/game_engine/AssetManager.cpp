@@ -43,48 +43,62 @@ namespace game_engine {
         return is_inited_;
     }
 
-    int AssetManager::GetObject(std::string object_name, OpenGLObject * object) {
-        if (!IsInited()) return Error::ERROR_GEN_NOT_INIT;
+    OpenGLObject * AssetManager::FindObject(std::string object_name, int * ret_code) {
+        if (!IsInited()) {
+            *ret_code = Error::ERROR_GEN_NOT_INIT;
+            return nullptr;
+        }
 
         /* Search among the already created objects */
         utl::HashTable<std::string, OpenGLObject *>::iterator itr = objects_->Find(object_name);
         if (itr != objects_->end()) {
-            object = itr.GetValue();
-            return Error::ERROR_NO_ERROR;
+            *ret_code = Error::ERROR_NO_ERROR;
+             return itr.GetValue();
         }
 
         /* If not found, create it and insert it in the table */
-        object = new OpenGLObject();
+        OpenGLObject * object = new OpenGLObject();
         int ret = object->Init(object_name);
         if (ret != 0) {
             delete object;
-            return ret;
+            
+            *ret_code = ret;
+            return nullptr;
         }
         
         objects_->Insert(object_name, object);
-        return Error::ERROR_NO_ERROR;
+
+        *ret_code = 0;
+        return object;
     }
 
-    int AssetManager::GetTexture(std::string texture_name, OpenGLTexture::OpenGLTextureType type, OpenGLTexture * texture) {
-        if (!IsInited()) return Error::ERROR_GEN_NOT_INIT;
+    OpenGLTexture * AssetManager::FindTexture(std::string texture_name, OpenGLTexture::OpenGLTextureType type, int * ret_code) {
+        if (!IsInited()) {
+            *ret_code = Error::ERROR_GEN_NOT_INIT;
+            return nullptr;
+        }
 
         /* Search among the already created objects */
         utl::HashTable<std::string, OpenGLTexture *>::iterator itr = textures_->Find(texture_name);
         if (itr != textures_->end()) {
-            texture = itr.GetValue();
-            return Error::ERROR_NO_ERROR;
+            *ret_code = Error::ERROR_NO_ERROR;
+            return itr.GetValue();
         }
 
         /* If not found, create it and insert it in the table */
-        texture = new OpenGLTexture();
+        OpenGLTexture * texture = new OpenGLTexture();
         int ret = texture->Init(texture_name, type);
         if (ret != 0) {
             delete texture;
-            return ret;
+
+            *ret_code = ret;
+            return nullptr;
         }
 
         textures_->Insert(texture_name, texture);
-        return Error::ERROR_NO_ERROR;
+        
+        *ret_code = Error::ERROR_NO_ERROR;
+        return texture;
     }
 
 
