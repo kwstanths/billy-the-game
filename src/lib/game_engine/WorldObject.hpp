@@ -19,15 +19,18 @@
 
 namespace game_engine {
 
+    class WorldSector;
+
     /**
-        A world object is an entity in the world. Override this class, call the function
+        A WorldObject is an entity inside a WorldSector. Override this class, call the function
         Init(... , ...), and provide your custom behaviour in the Step() function
     */
     class WorldObject {
+        friend WorldSector;
     public:
 
         /**
-            Does nothing in particular. Sets the position to (0,0,0)
+            Does nothing in particular. Call Init()
         */
         WorldObject();
 
@@ -64,6 +67,7 @@ namespace game_engine {
 
         /**
             Sets the OpenGL model and texture to the object. Also sets the renderer to be used
+            Initial position is at (0,0,0), scaling is at (1,1,1) and rotation at 0 degrees
             @return 0=OK, else see ErrorCodes.hpp
         */
         int Init(OpenGLObject * object, OpenGLTexture * texture);
@@ -107,12 +111,20 @@ namespace game_engine {
         float GetZPosition();
 
         /**
-            Set the model matrix for the object
-            @param pos_x The model's position x
-            @param pos_y The model's position y
-            @param pos_z The model's position z
+            Set the position for the object, sets translation matrix
+            @param pos_x Position x coordinate
+            @param pos_y Position y coordinate
+            @param pos_z Position z coordinate
         */
         void SetPosition(float pos_x, float pos_y, float pos_z);
+
+        /**
+            Scale the object, sets the scale matrix
+            @param Scale amount in axis x
+            @param Scale amount in axis y
+            @param Scale amount in axis z
+        */
+        void Scale(float scale_x, float scale_y, float scale_z);
 
         /**
             Rotate the object
@@ -166,9 +178,11 @@ namespace game_engine {
         OpenGLObject * object_;
         OpenGLTexture * texture_;
         CollisionType collision_type_;
+        WorldSector * world_sector_;
 
         glm::mat4 translation_matrix_;
         glm::mat4 rotation_matrix_;
+        glm::mat4 scale_matrix_;
         glm::mat4 model_;
     };
 

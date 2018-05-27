@@ -43,12 +43,10 @@ void displayFPS(double frame_time_ms) {
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Fix the Frame rate regulator Sleep function");
+    CodeReminder("Find an accurate Sleep function or some sort of accurate delay");
     CodeReminder("WorldObject, collision in SetPosition");
     CodeReminder("WorldSector, remove array add quad tree")
-    CodeReminder("Create something for random numbers");
     CodeReminder("GameEngine, Create shader class");
-    CodeReminder("FrameRateRegulator, sleep function");
     CodeReminder("See: stbi_load to read textures from files");
 
     ge::OpenGLContextConfig_t context_params;
@@ -65,7 +63,7 @@ int main(int argc, char ** argv) {
     camera_params.pos_y_ = 0;
     camera_params.pos_z_ = 10;
     camera_params.dir_x_ = 0;
-    camera_params.dir_y_ = 0;
+    camera_params.dir_y_ = 1;
     camera_params.dir_z_ = 0;
     camera_params.up_x_ = 0;
     camera_params.up_y_ = 1;
@@ -81,23 +79,27 @@ int main(int argc, char ** argv) {
     engine.SetWorld(&world);
 
     ge::FrameRateRegulator frame_regulator;
-    frame_regulator.Init(300);
+    frame_regulator.Init(140);
 
     do {
         frame_regulator.FrameStart();
         float delta_time = frame_regulator.GetDelta();
-
+        /*dt::ConsoleInfo("DELTA TIME", delta_time * 1000.0f);
+        */
         ControlInput_t input = engine.GetControlsInput();
         if (input.KEY_ESC) {
             break;
         }
 
-        if (input.KEY_PAGE_UP) engine.CameraZoom2D(20 * delta_time);
-        if (input.KEY_PAGE_DOWN) engine.CameraZoom2D(-20 * delta_time);
+        if (input.KEY_PAGE_UP) engine.CameraZoom2D(10 * delta_time);
+        if (input.KEY_PAGE_DOWN) engine.CameraZoom2D(-10 * delta_time);
 
         engine.Step(delta_time);
 
+        //dt::ConsoleInfo("Timestamp before", dt::GetMSecondsSinceEpoch());
         frame_regulator.FrameEnd();
+        //dt::ConsoleInfo("Timestamp after", dt::GetMSecondsSinceEpoch());
+
         displayFPS(frame_regulator.GetDelta() * 1000.0);
     } while (1);
 

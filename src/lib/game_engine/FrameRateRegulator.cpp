@@ -1,12 +1,18 @@
 #include "FrameRateRegulator.hpp"
 
-#ifdef __linux__
+#ifdef _WIN32
+#include "Windows.h"
+#elif __linux__
 #include <unistd.h> 
 #endif
 
 #include <iostream>
+#include <chrono>
+#include <thread>
 
-#include "debug_tools/CodeReminder.hpp" 
+#include "debug_tools/CodeReminder.hpp"
+#include "debug_tools/Console.hpp"
+namespace dt = debug_tools;
 
 namespace game_engine {
 
@@ -38,9 +44,15 @@ namespace game_engine {
         frame_stop_time_ = glfwGetTime();
 
         double actual_delta = frame_stop_time_ - frame_start_time_;
+        
+        //dt::ConsoleInfo("acutal delta", actual_delta * 1000.0f);
+        
         if (actual_delta < frame_time_required_) {
+            int msec_sleep = (frame_time_required_ - actual_delta) * 1000.0f ;
+            //dt::ConsoleInfo("Sleep time", msec_sleep);
 #ifdef _WIN32
-            Sleep(1000 * (frame_time_required_ - actual_delta));
+            while(glfwGetTime()- frame_stop_time_ < frame_time_required_)
+                std::this_thread::sleep_for(std::chrono::microseconds(1000));
 #elif __linux__
             usleep(1000 * 1000 * (frame_time_required_ - actual_delta));
 #endif

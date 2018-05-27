@@ -70,7 +70,10 @@ namespace game_engine {
     }
 
     void OpenGLCamera::Zoom(float factor) {
-        if (!config_.orthographic_) return;
+        if (!config_.orthographic_) {
+            Move(0, 0, factor);
+            return;
+        }
 
         config_.zoom_factor_ += factor;
 

@@ -50,7 +50,33 @@ namespace game_engine {
         return is_inited_;
     }
 
-    size_t WorldSector::GetObjectsWindow(float center_x, float center_y, float margin, 
+    void WorldSector::UpdateObjectPosition(WorldObject * object, float new_pos_x, float new_pos_y) {
+        
+        /* TODO Do some checkig on th object */
+        
+        /* Find the old and new position */
+        size_t old_pos_index_row = GetColumn(object->GetYPosition());
+        size_t old_pos_index_col = GetRow(object->GetXPosition());
+        size_t new_pos_index_row = GetColumn(new_pos_y);
+        size_t new_pos_index_col = GetRow(new_pos_x);
+        /* If not moving is required then leave */
+        
+        if ((old_pos_index_row == new_pos_index_row) && (old_pos_index_col == new_pos_index_col)) return;
+
+        /* Remove from the old position */
+        std::deque<WorldObject *> & objects = world_[old_pos_index_row][old_pos_index_col];
+        for (std::deque<WorldObject *>::iterator itr = objects.begin(); itr != objects.end(); ++itr) {
+            if (*itr == object) {
+                objects.erase(itr);
+                break;
+            }
+        }
+        
+        /* Add to new position */
+        world_[new_pos_index_row][new_pos_index_col].push_back(object);
+    }
+
+    size_t WorldSector::GetObjectsWindow(float center_x, float center_y, float margin,
         std::vector<WorldObject*> & visible_world) 
     {
         if (!is_inited_) {

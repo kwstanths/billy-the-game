@@ -62,15 +62,18 @@ namespace game_engine {
             }
 
             T * the_new_object = new (array_objects_) T();
-            the_new_object->SetPosition(x, y, z);
 
             size_t index_row = GetColumn(y);
             size_t index_col = GetRow(x);
-
             world_[index_row][index_col].push_back(the_new_object);
+            the_new_object->world_sector_ = this;
 
+            the_new_object->SetPosition(x, y, z);
+            
             return the_new_object;
         }
+
+        void UpdateObjectPosition(WorldObject * object, float new_pos_x, float new_pos_y);
 
         /**
             Get a window of object in the world. Objects are assigned sequentially to the visible world 

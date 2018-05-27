@@ -79,13 +79,15 @@ void Player::Step(double delta_time) {
     ControlInput input = engine_->GetControlsInput();
 
     /* Move player and camera */
-    float move_offset = (1.0f * GetSpeed(input.KEY_RUN)) * delta_time;
-    ge::CollisionResult_t can_move = engine_->CheckCollision(this, move_offset, input);
-    Move(move_offset, input, can_move);
-    if (can_move.left_) engine_->CameraMove2D(-can_move.left_, 0);
-    if (can_move.right_) engine_->CameraMove2D(can_move.right_, 0);
-    if (can_move.up_) engine_->CameraMove2D(0, can_move.up_);
-    if (can_move.down_) engine_->CameraMove2D(0, -can_move.down_);
+    if (input.KEY_UP || input.KEY_DOWN || input.KEY_LEFT || input.KEY_RIGHT) {
+        float move_offset = (1.0f * GetSpeed(input.KEY_RUN)) * delta_time;
+        ge::CollisionResult_t can_move = engine_->CheckCollision(this, move_offset, input);
+        Move(move_offset, input, can_move);
+        if (can_move.left_) engine_->CameraMove2D(-can_move.left_, 0);
+        if (can_move.right_) engine_->CameraMove2D(can_move.right_, 0);
+        if (can_move.up_) engine_->CameraMove2D(0, can_move.up_);
+        if (can_move.down_) engine_->CameraMove2D(0, -can_move.down_);
+    }
 
 }
 

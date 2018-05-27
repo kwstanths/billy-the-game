@@ -1,6 +1,7 @@
 #include "WorldObject.hpp"
 
 #include "physics/Matrices.hpp"
+#include "WorldSector.hpp"
 #include "ErrorCodes.hpp"
 
 #include "debug_tools/Console.hpp"
@@ -10,10 +11,13 @@ namespace game_engine {
 
     WorldObject::WorldObject() {
 
+        /* Set at position 0 with no collision */
         SetCollision();
-        SetPosition(0.0f, 0.0f, 0.0f);
-
-        rotated_angle_ = 0.0f;
+        
+        pos_x_ = 0;
+        pos_y_ = 0;
+        pos_z_ = 0;
+        translation_matrix_ = GetTranslateMatrix(pos_x_, pos_y_, pos_z_);
 
         is_inited_ = false;
     }
@@ -39,9 +43,12 @@ namespace game_engine {
             return Error::ERROR_TEXTURE_NOT_INIT;
         }
 
+        scale_matrix_ = GetScaleMatrix(1.0f, 1.0f, 1.0f);
+        rotated_angle_ = 0.0f;
+
         object_ = object;
         texture_ = texture;
-        
+
         is_inited_ = true;
         return 0;
     }
@@ -60,7 +67,7 @@ namespace game_engine {
     void WorldObject::Draw(OpenGLRenderer * renderer) {
         if (!is_inited_) return;
 
-        model_ = translation_matrix_ * rotation_matrix_;
+        model_ = translation_matrix_ * rotation_matrix_ * scale_matrix_;
         renderer->Draw(object_, texture_, model_);
     }
 
@@ -84,21 +91,29 @@ namespace game_engine {
         
         collision_->Translate(pos_x - pos_x_, pos_y - pos_y_);
 
+        /* 
+            This order matters since UpdateObjectPosition will ask this object fro it's old position
+            If the assignment is done before the call, then new_pos and old_pos will have the same values
+        */
+        world_sector_->UpdateObjectPosition(this, pos_x, pos_y);
         pos_x_ = pos_x;
         pos_y_ = pos_y;
         pos_z_ = pos_z;
 
-        translation_matrix_= GetTranslateMatrix(glm::vec3(pos_x_, pos_y_, pos_z_));
+        translation_matrix_= GetTranslateMatrix(pos_x_, pos_y_, pos_z_);
+
+    }
+
+    void WorldObject::Scale(float scale_x, float scale_y, float scale_z) {
+        scale_matrix_ = GetScaleMatrix(scale_x, scale_y, scale_z);
     }
 
     void WorldObject::Rotate(float angle, size_t axis) {        
         glm::vec3 rotation_axis;
 
-        if (axis == 0) rotation_axis = glm::vec3(1, 0, 0);
-        else if (axis == 1) rotation_axis = glm::vec3(0, 1, 0);
-        else if (axis == 2) rotation_axis = glm::vec3(0, 0, 1);
-        
-        rotation_matrix_ = GetRotateMatrix(angle, rotation_axis);
+        if (axis == 0) rotation_matrix_ = GetRotateMatrix(angle, 1, 0, 0);
+        else if (axis == 1) rotation_matrix_ = GetRotateMatrix(angle, 0, 1, 0);
+        else if (axis == 2) rotation_matrix_ = GetRotateMatrix(angle, 0, 0, 1);
         
         rotated_angle_ = angle;
     }

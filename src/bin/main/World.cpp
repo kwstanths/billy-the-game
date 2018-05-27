@@ -43,18 +43,10 @@ int World::Init(ge::GameEngine * engine) {
     if (ret != ge::Error::ERROR_NO_ERROR) dt::ConsoleInfoL(dt::CRITICAL, "Asset not found", "name", "assets/circle.bmp");
 
     /* Create grass */
-    /* We should probably check the return value of NewObj */
-    NewObj<Grass>(-1.0f, 1.0f, 0.0f)->Init(object_tile, texture_grass);
-    NewObj<Grass>(0.0f, 1.0f, 0.0f)->Init(object_tile, texture_grass);
-    NewObj<Grass>(1.0f, 1.0f, 0.0f)->Init(object_tile, texture_grass);
-    NewObj<Grass>(-1.0f, 0.0f, 0.0f)->Init(object_tile, texture_grass);
-    NewObj<Grass>(0.0f, 0.0f, 0.0f)->Init(object_tile, texture_grass);
-    NewObj<Grass>(1.0f, 0.0f, 0.0)->Init(object_tile, texture_grass);
-    NewObj<Grass>(-1.0f, -1.0f, 0.0f)->Init(object_tile, texture_grass);
-    NewObj<Grass>(0.0f, -1.0f, 0.0f)->Init(object_tile, texture_grass);
-    NewObj<Grass>(1.0f, -1.0f, 0.0f)->Init(object_tile, texture_grass);
-    NewObj<Grass>(-1.0f, 2.0f, 0.0f)->Init(object_tile, texture_grass);
- 
+    Grass * floor = NewObj<Grass>(0.0f, 0.0f, 0.0f);
+    floor->Init(object_tile, texture_grass);
+    floor->Scale(4, 4, 1);
+
     /* Create some collidable treasures */
     Treasure * tres = NewObj<Treasure>(0.0f, 1.5f, 0.1f);
     tres->Init(object_tile, texture_treasure);
@@ -75,7 +67,8 @@ int World::Init(ge::GameEngine * engine) {
     Player * player = NewObj<Player>(0.0f, 0.0f, 0.2f);
     if (player == nullptr) return -1;
     player->Init(object_circle, texture_circle, engine);
-    player->SetCollision(0.5f);
+    player->Scale(1.4, 1.4, 1.0);
+    player->SetCollision(1.4 / 2.0);
 
     is_inited_ = true;
     return 0;
