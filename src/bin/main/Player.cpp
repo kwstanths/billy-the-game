@@ -19,6 +19,9 @@ int Player::Init(ge::OpenGLObject * object, ge::OpenGLTexture * texture, ge::Gam
 
     int ret = WorldObject::Init(object, texture);
 
+    Scale(1.4, 1.4, 1.0);
+    SetCollision(1.4 / 2.0);
+
     engine_ = engine;
 
     is_inited_ = true;

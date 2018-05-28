@@ -34,41 +34,74 @@ int World::Init(ge::GameEngine * engine) {
     if (ret != ge::Error::ERROR_NO_ERROR) dt::ConsoleInfoL(dt::CRITICAL, "Asset not found", "name", "assets/circle.obj");
 
     /* Find textures */
-    ge::OpenGLTexture * texture_grass = nullptr, * texture_treasure = nullptr, * texture_circle = nullptr;
+    ge::OpenGLTexture * texture_grass = nullptr,
+        *texture_treasure = nullptr,
+        *texture_circle = nullptr,
+        *texture_path = nullptr,
+        *texture_wall = nullptr;
     texture_grass = asset_manager->FindTexture("assets/grass.bmp", ge::OpenGLTexture::TEXTURE_BMP, &ret);
-    if (ret != ge::Error::ERROR_NO_ERROR) dt::ConsoleInfoL(dt::CRITICAL, "Asset not found", "name", "assets/grass.bmp");
+    texture_path = asset_manager->FindTexture("assets/path.bmp", ge::OpenGLTexture::TEXTURE_BMP, &ret);
+    texture_wall = asset_manager->FindTexture("assets/wall.bmp", ge::OpenGLTexture::TEXTURE_BMP, &ret);
     texture_treasure = asset_manager->FindTexture("assets/treasure.bmp", ge::OpenGLTexture::TEXTURE_BMP, &ret);
-    if (ret != ge::Error::ERROR_NO_ERROR) dt::ConsoleInfoL(dt::CRITICAL, "Asset not found", "name", "assets/treasure.bmp");
     texture_circle = asset_manager->FindTexture("assets/circle.bmp", ge::OpenGLTexture::TEXTURE_BMP, &ret);
-    if (ret != ge::Error::ERROR_NO_ERROR) dt::ConsoleInfoL(dt::CRITICAL, "Asset not found", "name", "assets/circle.bmp");
+
 
     /* Create grass */
     Grass * floor = NewObj<Grass>(0.0f, 0.0f, 0.0f);
     floor->Init(object_tile, texture_grass);
     floor->Scale(4, 4, 1);
 
+    floor = NewObj<Grass>(4.0f, 0.0f, 0.0f);
+    floor->Init(object_tile, texture_grass);
+    floor->Scale(4, 4, 1);
+
+    floor = NewObj<Grass>(0.0f, 4.0f, 0.0f);
+    floor->Init(object_tile, texture_grass);
+    floor->Scale(4, 4, 1);
+
+    floor = NewObj<Grass>(4.0f, 4.0f, 0.0f);
+    floor->Init(object_tile, texture_grass);
+    floor->Scale(4, 4, 1);
+
+    /* Create a path */
+    floor = NewObj<Grass>(6.0f, 0.0f, 0.0f);
+    floor->Init(object_tile, texture_path);
+    floor->Scale(3, 4, 1);
+
+    /* Create a wall */
+    floor = NewObj<Grass>(0.0f, 6.5f, 0.0f);
+    floor->Init(object_tile, texture_wall);
+    floor->SetCollision(1.0f, 1.0f);
+
+    floor = NewObj<Grass>(1.0f, 6.5f, 0.0f);
+    floor->Init(object_tile, texture_wall);
+    floor->SetCollision(1.0f, 1.0f);
+
+    floor = NewObj<Grass>(2.0f, 6.5f, 0.0f);
+    floor->Init(object_tile, texture_wall);
+    floor->SetCollision(1.0f, 1.0f);
+
+    floor = NewObj<Grass>(3.0f, 6.5f, 0.0f);
+    floor->Init(object_tile, texture_wall);
+    floor->SetCollision(1.0f, 1.0f);
+
     /* Create some collidable treasures */
     Treasure * tres = NewObj<Treasure>(0.0f, 1.5f, 0.1f);
     tres->Init(object_tile, texture_treasure);
-    if (tres == nullptr) -1;
-    tres->SetCollision(1.0f, 1.0f);
     
     tres = NewObj<Treasure>(-2.4f, 1.5f, 0.1f);
     tres->Init(object_tile, texture_treasure);
-    if (tres == nullptr) -1;
-    tres->SetCollision(1.0f, 1.0f);
-
+    
     tres = NewObj<Treasure>(5.0f, 5.0f, 0.1f);
     tres->Init(object_tile, texture_treasure);
-    if (tres == nullptr) return -1;
-    tres->SetCollision(1.0f, 1.0f);
+    
+    tres = NewObj<Treasure>(5.0f, -5.0f, 0.1f);
+    tres->Init(object_tile, texture_treasure);
 
     /* Create a main player */
     Player * player = NewObj<Player>(0.0f, 0.0f, 0.2f);
     if (player == nullptr) return -1;
     player->Init(object_circle, texture_circle, engine);
-    player->Scale(1.4, 1.4, 1.0);
-    player->SetCollision(1.4 / 2.0);
 
     is_inited_ = true;
     return 0;

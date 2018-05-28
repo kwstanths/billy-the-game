@@ -51,6 +51,10 @@ namespace game_engine {
         double frame_start_time_, frame_stop_time_, delta_;
         double frame_time_required_;
 
+#ifdef _WIN32
+        HANDLE timer_;
+#endif
+
     };
 
 }

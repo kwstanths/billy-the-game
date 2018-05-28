@@ -79,13 +79,12 @@ int main(int argc, char ** argv) {
     engine.SetWorld(&world);
 
     ge::FrameRateRegulator frame_regulator;
-    frame_regulator.Init(140);
+    frame_regulator.Init(150);
 
     do {
         frame_regulator.FrameStart();
         float delta_time = frame_regulator.GetDelta();
-        /*dt::ConsoleInfo("DELTA TIME", delta_time * 1000.0f);
-        */
+        
         ControlInput_t input = engine.GetControlsInput();
         if (input.KEY_ESC) {
             break;
@@ -96,9 +95,7 @@ int main(int argc, char ** argv) {
 
         engine.Step(delta_time);
 
-        //dt::ConsoleInfo("Timestamp before", dt::GetMSecondsSinceEpoch());
         frame_regulator.FrameEnd();
-        //dt::ConsoleInfo("Timestamp after", dt::GetMSecondsSinceEpoch());
 
         displayFPS(frame_regulator.GetDelta() * 1000.0);
     } while (1);

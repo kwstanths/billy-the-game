@@ -23,6 +23,11 @@ namespace game_engine {
 
         delta_ = frame_time_required_;
 
+#ifdef _WIN32
+        timer_ = CreateWaitableTimer(NULL, TRUE, NULL);
+        if (timer_ == NULL) return;
+#endif
+
         is_inited_ = true;
     }
 
@@ -45,14 +50,14 @@ namespace game_engine {
 
         double actual_delta = frame_stop_time_ - frame_start_time_;
         
-        //dt::ConsoleInfo("acutal delta", actual_delta * 1000.0f);
         
         if (actual_delta < frame_time_required_) {
-            int msec_sleep = (frame_time_required_ - actual_delta) * 1000.0f ;
-            //dt::ConsoleInfo("Sleep time", msec_sleep);
+            int msec_sleep = 1000 * (frame_time_required_ - actual_delta);
 #ifdef _WIN32
-            while(glfwGetTime()- frame_stop_time_ < frame_time_required_)
-                std::this_thread::sleep_for(std::chrono::microseconds(1000));
+            LARGE_INTEGER timer_interval;
+            timer_interval.QuadPart = -(10000LL * msec_sleep);
+            SetWaitableTimer(timer_, &timer_interval, 0, NULL, 0, NULL);
+            WaitForSingleObject(timer_, INFINITE);
 #elif __linux__
             usleep(1000 * 1000 * (frame_time_required_ - actual_delta));
 #endif

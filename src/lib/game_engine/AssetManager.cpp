@@ -1,5 +1,8 @@
 #include "AssetManager.hpp"
 
+#include "debug_tools/Console.hpp"
+namespace dt = debug_tools;
+
 namespace game_engine {
 
     AssetManager::AssetManager() {
@@ -75,6 +78,7 @@ namespace game_engine {
     OpenGLTexture * AssetManager::FindTexture(std::string texture_name, OpenGLTexture::OpenGLTextureType type, int * ret_code) {
         if (!IsInited()) {
             *ret_code = Error::ERROR_GEN_NOT_INIT;
+            PrintError(*ret_code);
             return nullptr;
         }
 
@@ -90,8 +94,12 @@ namespace game_engine {
         int ret = texture->Init(texture_name, type);
         if (ret != 0) {
             delete texture;
-
             *ret_code = ret;
+
+            dt::ConsoleInfoL(dt::CRITICAL, "Texture not found", 
+                "name", texture_name,
+                "type", type);
+
             return nullptr;
         }
 
