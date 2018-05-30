@@ -2,6 +2,9 @@
 
 #include "debug_tools/Console.hpp"
 
+#include "game_engine/opengl/OpenGLObject.hpp"
+#include "game_engine/opengl/OpenGLTexture.hpp"
+
 #include "game_engine/physics/HelpFunctions.hpp"
 #include "game_engine/physics/Geometry.hpp"
 
@@ -15,9 +18,13 @@ Player::Player(): WorldObject() {
     is_inited_ = false;
 }
 
-int Player::Init(ge::OpenGLObject * object, ge::OpenGLTexture * texture, ge::GameEngine * engine) {
+int Player::Init(ge::GameEngine * engine) {
 
-    int ret = WorldObject::Init(object, texture);
+    int ret;
+    ge::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
+    ge::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/player.bmp", ge::OpenGLTexture::TEXTURE_BMP, &ret);
+
+    ret = WorldObject::Init(object, texture);
 
     Scale(1.4, 1.4, 1.0);
     SetCollision(1.4 / 2.0);

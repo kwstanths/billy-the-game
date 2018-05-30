@@ -51,9 +51,9 @@ namespace game_engine {
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
         int ret;
-        ret = OpenGLLoadShaders(config_.shader_vertex_file_path_, config_.shader_fragment_file_path_, &shader_vars_);
+        ret = shader_main_.Init(config_.shader_vertex_file_path_, config_.shader_fragment_file_path_);
         if (ret != 0) return ret;
-        ret = OpenGLLoadShaders(config_.shader_vertex_text_file_path, config_.shader_fragment_text_file_path, &shader_text_vars_);
+        ret = shader_text_.Init(config_.shader_vertex_text_file_path, config_.shader_fragment_text_file_path);
         if (ret != 0) return ret;
 
         is_inited_ = true;
@@ -111,16 +111,16 @@ namespace game_engine {
         return input;
     }
 
-    OpenGLShaderVariables_t OpenGLContext::GetShaderVariables() {
-        if (!is_inited_) return OpenGLShaderVariables_t();
+    OpenGLShaderMain OpenGLContext::GetShaderVariables() {
+        if (!is_inited_) return OpenGLShaderMain();
 
-        return shader_vars_;
+        return shader_main_;
     }
 
-    OpenGLShaderTextVariables_t OpenGLContext::GetShaderTextVariables() {
-        if (!is_inited_) return OpenGLShaderTextVariables_t();
+    OpenGLShaderText OpenGLContext::GetShaderTextVariables() {
+        if (!is_inited_) return OpenGLShaderText();
 
-        return shader_text_vars_;
+        return shader_text_;
     }
 
     std::string OpenGLContext::GetFontLocation() {

@@ -90,7 +90,7 @@ namespace game_engine {
         bool is_inited_;
         OpenGLContext * context_;
         OpenGLCameraConfig_t config_;
-        OpenGLShaderVariables_t shader_vars_;
+        OpenGLShaderMain shader_main_;
 
         glm::mat4 view_matrix_;
         glm::mat4 projection_matrix_;

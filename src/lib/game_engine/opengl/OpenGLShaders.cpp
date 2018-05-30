@@ -14,48 +14,36 @@
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
+namespace dt = debug_tools;
 
 namespace game_engine {
 
-    int OpenGLLoadShaders(std::string vertex_shader_path, std::string fragment_shader_path, OpenGLShaderVariables_t * shader_vars) {
-        
-        int ret = OpenGLCompileShaders(vertex_shader_path.c_str(), fragment_shader_path.c_str(), &(shader_vars->program_id_));
-        if (ret != 0) return ret;
+    OpenGLShader::OpenGLShader() {
+        is_inited_ = false;
+    }
 
-        if ((shader_vars->attr_vertex_position_ = glGetAttribLocation(shader_vars->program_id_, shader_name_vertex_position)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars->attr_vertex_uv_ = glGetAttribLocation(shader_vars->program_id_, shader_name_vertex_uv)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars->uni_Model_ = glGetUniformLocation(shader_vars->program_id_, shader_name_uni_model)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars->uni_View_ = glGetUniformLocation(shader_vars->program_id_, shader_name_uni_view)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars->uni_Projection_ = glGetUniformLocation(shader_vars->program_id_, shader_name_uni_projection)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars->uni_Texture_ = glGetUniformLocation(shader_vars->program_id_, shader_name_uni_texture)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
+    int OpenGLShader::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
+        if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
+        int ret = CompileShaders(vertex_shader_path.c_str(), fragment_shader_path.c_str());
+
+        is_inited_ = true;
+        return ret;
+    }
+
+    int OpenGLShader::Destroy() {
+        if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
+        /* TODO Properly destroy() */
+
+        is_inited_ = false;
         return 0;
     }
 
-    int OpenGLLoadShaders(std::string vertex_shader_path, std::string fragment_shader_path, OpenGLShaderTextVariables_t * shader_vars) {
-
-        int ret = OpenGLCompileShaders(vertex_shader_path.c_str(), fragment_shader_path.c_str(), &(shader_vars->program_id_));
-        if (ret != 0) return ret;
-
-        if ((shader_vars->attr_vertex_ = glGetAttribLocation(shader_vars->program_id_, shader_text_name_vertex)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars->uni_Projection_ = glGetUniformLocation(shader_vars->program_id_, shader_text_name_uni_projection)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars->uni_Texture_ = glGetUniformLocation(shader_vars->program_id_, shader_text_name_uni_texture)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((shader_vars->uni_Texture_color_ = glGetUniformLocation(shader_vars->program_id_, shader_text_name_uni_texture_color)) == -1)
-            return Error::ERROR_SHADER_RES_NOT_FOUND;
-
-        return 0;
+    bool OpenGLShader::IsInited() {
+        return is_inited_;
     }
 
-    int OpenGLCompileShaders(const char * vertex_file_path, const char * fragment_file_path, GLuint * program_id) {
+    int OpenGLShader::CompileShaders(std::string vertex_file_path, std::string fragment_file_path) {
         /* Create the shaders */
         GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
         GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -140,7 +128,69 @@ namespace game_engine {
         glDeleteShader(VertexShaderID);
         glDeleteShader(FragmentShaderID);
 
-        *program_id = ProgramID;
+        program_id_ = ProgramID;
+        return 0;
+    }
+
+    bool OpenGLShader::Use() {
+        if (!is_inited_) return false;
+        glUseProgram(program_id_);
+        return true;
+    }
+
+    GLint OpenGLShader::GetAttributeLocation(std::string attribute_name) {
+        if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
+
+        GLint ret = glGetAttribLocation(program_id_, attribute_name.c_str());
+#ifdef _DEBUG
+        if (ret == -1) dt::ConsoleInfoL(dt::CRITICAL, "Shader attribute not found", "name", attribute_name);
+#endif
+        return ret;
+    }
+
+    GLint OpenGLShader::GetUniformLocation(std::string uniform_name) {
+        if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
+
+        GLint ret = glGetUniformLocation(program_id_, uniform_name.c_str());
+#ifdef _DEBUG
+        if (ret == -1) dt::ConsoleInfoL(dt::CRITICAL, "Shader uniform not found", "name", uniform_name);
+#endif
+        return ret;
+    }
+
+    OpenGLShaderMain::OpenGLShaderMain() : OpenGLShader() {
+
+    }
+
+    int OpenGLShaderMain::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
+
+        int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
+        if (ret != 0) return ret;
+
+        if ((attr_vertex_position_ = GetAttributeLocation(shader_name_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_uv_ = GetAttributeLocation(shader_name_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Model_ = GetUniformLocation(shader_name_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_View_ = GetUniformLocation(shader_name_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Projection_ = GetUniformLocation(shader_name_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Texture_ = GetUniformLocation(shader_name_uni_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+
+        return 0;
+    }
+
+    OpenGLShaderText::OpenGLShaderText() :OpenGLShader() {
+
+    }
+
+    int OpenGLShaderText::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
+        
+        int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
+        if (ret != 0) return ret;
+        
+        if ((attr_vertex_ = GetAttributeLocation(shader_text_name_vertex)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Projection_ = GetUniformLocation(shader_text_name_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Texture_ = GetUniformLocation(shader_text_name_uni_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Texture_color_ = GetUniformLocation(shader_text_name_uni_texture_color)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+
         return 0;
     }
 

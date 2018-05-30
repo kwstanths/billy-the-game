@@ -80,12 +80,12 @@ namespace game_engine {
         /**
             Get main shader variables
         */
-        OpenGLShaderVariables_t GetShaderVariables();
+        OpenGLShaderMain GetShaderVariables();
 
         /**
             Get shader variables for 2d text
         */
-        OpenGLShaderTextVariables_t GetShaderTextVariables();
+        OpenGLShaderText GetShaderTextVariables();
 
         /**
             Get the font file location
@@ -107,9 +107,12 @@ namespace game_engine {
     private:
         bool is_inited_;
         OpenGLContextConfig_t config_;
-        OpenGLShaderVariables_t shader_vars_;
-        OpenGLShaderTextVariables_t shader_text_vars_;
 
+        OpenGLShaderMain shader_main_;
+        OpenGLShaderText shader_text_;
+        /*OpenGLShaderVariables_t shader_vars_;
+        OpenGLShaderTextVariables_t shader_text_vars_;
+*/
         GLFWwindow * glfw_window_ = nullptr;
     };
 

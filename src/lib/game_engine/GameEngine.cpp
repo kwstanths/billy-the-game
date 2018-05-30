@@ -96,7 +96,7 @@ namespace game_engine {
         camera_->GetPosition(&center_x, &center_y, &center_z);
 
         /* TODO Check whether  sector_ is set */
-        size_t nof = sector_->GetObjectsWindow(center_x, center_y, 3, visible_world_);
+        size_t nof = sector_->GetObjectsWindow(center_x, center_y, 4, visible_world_);
 
         /* Set camera's view */
         camera_->SetView();

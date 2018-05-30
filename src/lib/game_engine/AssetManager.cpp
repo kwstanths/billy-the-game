@@ -64,8 +64,11 @@ namespace game_engine {
         int ret = object->Init(object_name);
         if (ret != 0) {
             delete object;
-            
             *ret_code = ret;
+
+            dt::ConsoleInfoL(dt::CRITICAL, "OpenGL object not found",
+                "name", object_name);
+
             return nullptr;
         }
         
@@ -96,7 +99,7 @@ namespace game_engine {
             delete texture;
             *ret_code = ret;
 
-            dt::ConsoleInfoL(dt::CRITICAL, "Texture not found", 
+            dt::ConsoleInfoL(dt::CRITICAL, "OpenGL Texture not found", 
                 "name", texture_name,
                 "type", type);
 

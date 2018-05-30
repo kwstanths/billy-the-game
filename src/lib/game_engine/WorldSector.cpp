@@ -92,7 +92,7 @@ namespace game_engine {
         size_t rows_start = (center_row - border >= 0) ? (center_row - border) : 0;
         size_t rows_end = (center_row + border < world_.size()) ? (center_row + border) : (world_.size() - 1);
         size_t col_start = (center_col - border >= 0) ? (center_col - border) : 0;
-        size_t col_end = (center_col + border < world_[0].size()) ? (center_col + border) : (world_[0].size());
+        size_t col_end = (center_col + border < world_[0].size()) ? (center_col + border) : (world_[0].size() -1);
 
         for (size_t i = rows_start; i <= rows_end; i++) {
             for (size_t j = col_start - border; j <= col_end; j++) {

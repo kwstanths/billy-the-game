@@ -19,7 +19,7 @@ namespace game_engine {
     int OpenGLCamera::Init(OpenGLContext * context)  {
         context_ = context;
 
-        shader_vars_ = context->GetShaderVariables();
+        shader_main_ = context->GetShaderVariables();
 
         glm::vec3 position = glm::vec3(config_.pos_x_, config_.pos_y_, config_.pos_z_);
         glm::vec3 direction = glm::vec3(config_.dir_x_, config_.dir_y_, config_.dir_z_);
@@ -86,8 +86,8 @@ namespace game_engine {
     int OpenGLCamera::SetView() {
         if (!is_inited_) return false;
 
-        glUniformMatrix4fv(shader_vars_.uni_View_, 1, GL_FALSE, &(view_matrix_[0][0]));
-        glUniformMatrix4fv(shader_vars_.uni_Projection_, 1, GL_FALSE, &(projection_matrix_[0][0]));
+        glUniformMatrix4fv(shader_main_.uni_View_, 1, GL_FALSE, &(view_matrix_[0][0]));
+        glUniformMatrix4fv(shader_main_.uni_Projection_, 1, GL_FALSE, &(projection_matrix_[0][0]));
 
         return 0;
     }

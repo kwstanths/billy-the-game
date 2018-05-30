@@ -65,12 +65,12 @@ namespace game_engine {
 
         /* Main shaders */
         GLuint VAO_;
-        OpenGLShaderVariables_t shader_vars_;
+        OpenGLShaderMain shader_main_;
         
         /* Text shaders */
         GLuint VAO2DText_, VBO2DText_;
         glm::mat4 text_projection_matrix_;
-        OpenGLShaderTextVariables_t shader_text_vars_;
+        OpenGLShaderText shader_text_;
     };
 
 }

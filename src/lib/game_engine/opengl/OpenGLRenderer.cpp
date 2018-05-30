@@ -21,8 +21,8 @@ namespace game_engine {
             debug_tools::ConsoleInfoL(debug_tools::CRITICAL, "Font not found", "name", font_location);
 
         /* Get shader variables */
-        shader_vars_ = context_->GetShaderVariables();
-        shader_text_vars_ = context_->GetShaderTextVariables();
+        shader_main_ = context_->GetShaderVariables();
+        shader_text_ = context_->GetShaderTextVariables();
 
         /* Configure a VAO for main shader */
         glGenVertexArrays(1, &VAO_);
@@ -64,19 +64,19 @@ namespace game_engine {
         glBindVertexArray(VAO_);
 
         /* */
-        glUniformMatrix4fv(shader_vars_.uni_Model_, 1, GL_FALSE, &model[0][0]);
+        glUniformMatrix4fv(shader_main_.uni_Model_, 1, GL_FALSE, &model[0][0]);
 
         /* */
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture->GetID());
-        glUniform1i(shader_vars_.uni_Texture_, 0);
+        glUniform1i(shader_main_.uni_Texture_, 0);
 
         /* Attribute number 0 is the cube model vertices */
         glBindBuffer(GL_ARRAY_BUFFER, object->GetVertexBufferID());
-        glVertexAttribPointer(shader_vars_.attr_vertex_position_, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glVertexAttribPointer(shader_main_.attr_vertex_position_, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
         /* Attribute number 1 is the cube's uv coordinates */
         glBindBuffer(GL_ARRAY_BUFFER, object->GetUVBufferID());
-        glVertexAttribPointer(shader_vars_.attr_vertex_uv_, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glVertexAttribPointer(shader_main_.attr_vertex_uv_, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         /* Draw with index buffer */
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object->GetElementBufferID());
@@ -90,11 +90,11 @@ namespace game_engine {
     int OpenGLRenderer::Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
         if (!font_->IsInited()) return -1;
 
-        glUseProgram(shader_text_vars_.program_id_);
+        shader_text_.Use();
         glBindVertexArray(VAO2DText_);
 
-        glUniform3f(shader_text_vars_.uni_Texture_color_, color.x, color.y, color.z);
-        glUniformMatrix4fv(shader_text_vars_.uni_Projection_, 1, GL_FALSE, &(text_projection_matrix_[0][0]));
+        glUniform3f(shader_text_.uni_Texture_color_, color.x, color.y, color.z);
+        glUniformMatrix4fv(shader_text_.uni_Projection_, 1, GL_FALSE, &(text_projection_matrix_[0][0]));
         glActiveTexture(GL_TEXTURE0);
         
         /* Iterate through the text characters */
@@ -138,7 +138,7 @@ namespace game_engine {
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
 
-        glUseProgram(shader_vars_.program_id_);
+        shader_main_.Use();
 
         return 0;
     }

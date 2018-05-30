@@ -43,10 +43,8 @@ void displayFPS(double frame_time_ms) {
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Find an accurate Sleep function or some sort of accurate delay");
     CodeReminder("WorldObject, collision in SetPosition");
     CodeReminder("WorldSector, remove array add quad tree")
-    CodeReminder("GameEngine, Create shader class");
     CodeReminder("See: stbi_load to read textures from files");
 
     ge::OpenGLContextConfig_t context_params;
@@ -71,7 +69,7 @@ int main(int argc, char ** argv) {
     camera_params.orthographic_ = false;
     camera_params.zoom_factor_ = 75;
     ge::GameEngine engine(context_params, camera_params);
-    engine.Init();
+    if (engine.Init()) return false;
     
     World world;
     world.Init(&engine);
@@ -79,7 +77,7 @@ int main(int argc, char ** argv) {
     engine.SetWorld(&world);
 
     ge::FrameRateRegulator frame_regulator;
-    frame_regulator.Init(150);
+    frame_regulator.Init(100);
 
     do {
         frame_regulator.FrameStart();

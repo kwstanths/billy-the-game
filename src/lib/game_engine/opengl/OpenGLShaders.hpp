@@ -7,6 +7,7 @@
 
 namespace game_engine {
 
+    /* Names of the shader variables used */
     static const char shader_name_vertex_position[] = "vertex_position_modelspace";
     static const char shader_name_vertex_uv[] = "vertex_uv";
     static const char shader_name_uni_model[] = "matrix_model";
@@ -19,50 +20,120 @@ namespace game_engine {
     static const char shader_text_name_uni_texture[] = "sampler_texture";
     static const char shader_text_name_uni_texture_color[] = "texture_color";
 
-    typedef struct {
-        GLuint program_id_;
+    /**
+        A shader class the encapsulates shader fuctionality
+    */
+    class OpenGLShader {
+    public:
+        OpenGLShader();
 
+        /**
+            Initialize a vertex and a fragment shader, compile and link them
+            @param vertex_shader_path The path to a vertex shader file
+            @param fragment_shader_path The path to a fragment shader file
+            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+        */
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+        /**
+            Destroys and deallocates. Currently does nothing
+            @return -1 = Not initialised, 0 = OK
+        */
+        int Destroy();
+
+        /**
+            Ask wether the object is initialised
+            @return true = YES, false = NO
+        */
+        bool IsInited();
+
+        /**
+            Opengl call to use this shader program
+            @return false = not initialised, true = OK
+        */
+        bool Use();
+
+        /**
+            Get the location in the shader of an attribute variable
+            @param attribute_name The name of the attribute
+            @return -1 = Not initialised, or not found, else the location
+        */
+        GLint GetAttributeLocation(std::string attribute_name);
+
+        /**
+            Get the location in the shader of a uniform variable
+            @param uniform_name The name of the uniform
+            @return -1 = Not initialised, or not found, else the location
+        */
+        GLint GetUniformLocation(std::string uniform_name);
+
+    protected:
+        GLuint program_id_;
+    private:
+        bool is_inited_;
+
+        /**
+            Compile and link a shader program
+            @param vertex_shader_path The path to a vertex shader file
+            @param fragment_shader_path The path to a fragment shader file
+            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+
+        */
+        int CompileShaders(std::string vertex_file_path, std::string fragment_file_path);
+    };
+
+
+    /**
+        Shader object for the main shader
+    */
+    class OpenGLShaderMain : public OpenGLShader {
+    public:
+        /**
+            Does nothing in particular. Call Init()
+        */
+        OpenGLShaderMain();
+
+        /**
+            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+            @param vertex_shader_path The path to a vertex shader file
+            @param fragment_shader_path The path to a fragment shader file
+            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+        */
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+        /* Varialbe locations for the shader varialbes used */
+        /* Attributes */
         GLuint attr_vertex_position_;
         GLuint attr_vertex_uv_;
 
+        /* Uniforms */
         GLuint uni_Model_;
         GLuint uni_View_;
         GLuint uni_Projection_;
         GLuint uni_Texture_;
+    };
 
-    } OpenGLShaderVariables_t;
+    class OpenGLShaderText : public OpenGLShader {
+    public:
+        OpenGLShaderText();
 
-    typedef struct {
-        GLuint program_id_;
+        /**
+            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+            @param vertex_shader_path The path to a vertex shader file
+            @param fragment_shader_path The path to a fragment shader file
+            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+        */
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
 
+        /* Varialbe locations for the shader varialbes used */
+        /* Attributes */
         GLuint attr_vertex_;
 
+        /* Uniforms */
         GLuint uni_Projection_;
         GLuint uni_Texture_;
         GLuint uni_Texture_color_;
-    } OpenGLShaderTextVariables_t;
-
-    /**
-        Compile and link vertex and fragment shaders. Find and set the ids for the shader variables
-        @param vertex_shader_path The disk file path for the vertex shader
-        @param fragment_shader_path The disk file path for the fragment shader
-        @param[out] shader_vars A struct with the necessary shader variables ids
-    */
-    int OpenGLLoadShaders(std::string vertex_shader_path, std::string fragment_shader_path, OpenGLShaderVariables_t * shader_vars);
-
-    /**
-    
-    */
-    int OpenGLLoadShaders(std::string vertex_shader_path, std::string fragment_shader_path, OpenGLShaderTextVariables_t * shader_vars);
-
-    /**
-        Parse, compile and link vertex and fragment shaders
-        @param vertex_file_path Disk file path for vertex_shader
-        @param fragment_file_path Disk file path for fragment shader
-        @param[out] program_id The compiled program id
-    */
-    int OpenGLCompileShaders(const char * vertex_file_path, const char * fragment_file_path, GLuint * program_id);
-
+    };
 
 }
 

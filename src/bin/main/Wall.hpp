@@ -1,11 +1,10 @@
-#ifndef __Treasure_hpp__
-#define __Treasure_hpp__
+#ifndef __Wall_hpp__
+#define __Wall_hpp__
 
 #include "game_engine/GameEngine.hpp"
-
 #include "game_engine/WorldObject.hpp"
 
-class Treasure : public game_engine::WorldObject {
+class Wall : public game_engine::WorldObject {
 public:
 
     bool Init(game_engine::GameEngine * engine);
