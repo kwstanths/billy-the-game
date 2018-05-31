@@ -63,18 +63,18 @@ namespace game_engine {
 
         glBindVertexArray(VAO_);
 
-        /* */
+        /* Set the model uniform */
         glUniformMatrix4fv(shader_main_.uni_Model_, 1, GL_FALSE, &model[0][0]);
 
-        /* */
+        /* Set the texture uniform */
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture->GetID());
         glUniform1i(shader_main_.uni_Texture_, 0);
 
-        /* Attribute number 0 is the cube model vertices */
+        /* Attribute number 0 is the object vertices */
         glBindBuffer(GL_ARRAY_BUFFER, object->GetVertexBufferID());
         glVertexAttribPointer(shader_main_.attr_vertex_position_, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        /* Attribute number 1 is the cube's uv coordinates */
+        /* Attribute number 1 is the object's uv coordinates */
         glBindBuffer(GL_ARRAY_BUFFER, object->GetUVBufferID());
         glVertexAttribPointer(shader_main_.attr_vertex_uv_, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 

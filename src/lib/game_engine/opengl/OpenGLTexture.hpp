@@ -10,7 +10,7 @@ namespace game_engine {
     class OpenGLTexture {
     public:
         enum OpenGLTextureType {
-            TEXTURE_BMP,
+            TEXTURE_STB,
             TEXTURE_DDS,
         };
 
@@ -55,9 +55,9 @@ namespace game_engine {
         int LoadDDS(const char * imagepath, GLuint * texture_id);
 
         /**
-            Load a BMP texture and get an OpenGL texture id
+            Load a BMP, JPG, PNG image and others, see proper documentation here https://github.com/nothings/stb/blob/master/stb_image.h
         */
-        int LoadBMP(const char * imagepath, GLuint * texture_id);
+        int LoadSTB(const char * imagepath, GLuint * texture_id);
     };
 }
 

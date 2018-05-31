@@ -3,6 +3,9 @@
 #include <cstdio>
 #include <cstring>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "external/stb_image/stb_image.h"
+
 #include "../ErrorCodes.hpp"
 
 #define FOURCC_DXT1 0x31545844 // Equivalent to "DXT1" in ASCII
@@ -19,7 +22,7 @@ namespace game_engine {
         if (is_inited_) return -1;
 
         int ret;
-        if (type == OpenGLTextureType::TEXTURE_BMP) ret = LoadBMP(file_path.c_str(), &texture_);
+        if (type == OpenGLTextureType::TEXTURE_STB) ret = LoadSTB(file_path.c_str(), &texture_);
         else ret = LoadDDS(file_path.c_str(), &texture_);
 
         if (ret != 0) return ret;
@@ -135,91 +138,29 @@ namespace game_engine {
         return 0;
     }
 
-    int OpenGLTexture::LoadBMP(const char * imagepath, GLuint * texture_id) {
+    int OpenGLTexture::LoadSTB(const char * imagepath, GLuint * texture_id) {
 
-	    // Data read from the header of the BMP file
-	    unsigned char header[54];
-	    unsigned int dataPos;
-	    unsigned int imageSize;
-	    unsigned int width, height;
-	    // Actual RGB data
-	    unsigned char * data;
+        int width, height, channels;
+        unsigned char * data = stbi_load(imagepath, &width, &height, &channels, 0);
+        if (!data) return Error::ERROR_ASSET_NOT_FOUND;
 
-	    // Open the file
-	    FILE * file = fopen(imagepath,"rb");
-	    if (!file){
-            return Error::ERROR_ASSET_NOT_FOUND;
-	    }
+        GLuint textureID;
+        glGenTextures(1, &textureID);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
-	    // Read the header, i.e. the 54 first bytes
+        /* Configure wrapping and zooming behaviour */
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        /* Generate the mipmaps */
+        glGenerateMipmap(GL_TEXTURE_2D);
 
-	    // If less than 54 bytes are read, problem
-	    if ( fread(header, 1, 54, file)!=54 ){ 
-	    	fclose(file);
-            return Error::ERROR_ASSET_BMP_ERROR;
-	    }
-	    // A BMP files always begins with "BM"
-	    if ( header[0]!='B' || header[1]!='M' ){
-	    	fclose(file);
-            return Error::ERROR_ASSET_BMP_ERROR;
-	    }
-	    // Make sure this is a 24bpp file
-	    if ( *(int*)&(header[0x1E])!=0  ){
-            fclose(file);
-            return Error::ERROR_ASSET_BMP_ERROR;
-        }
-	    if ( *(int*)&(header[0x1C])!=24 ){
-            fclose(file); 
-            return Error::ERROR_ASSET_BMP_ERROR;
-        }
+        stbi_image_free(data);
 
-	    // Read the information about the image
-	    dataPos    = *(int*)&(header[0x0A]);
-	    imageSize  = *(int*)&(header[0x22]);
-	    width      = *(int*)&(header[0x12]);
-	    height     = *(int*)&(header[0x16]);
-
-	    // Some BMP files are misformatted, guess missing information
-	    if (imageSize==0)    imageSize=width*height*3; // 3 : one byte for each Red, Green and Blue component
-	    if (dataPos==0)      dataPos=54; // The BMP header is done that way
-
-	    // Create a buffer
-	    data = new unsigned char [imageSize];
-
-	    // Read the actual data from the file into the buffer
-	    fread(data,1,imageSize,file);
-
-	    // Everything is in memory now, the file can be closed.
-	    fclose (file);
-
-	    // Create one OpenGL texture
-	    GLuint textureID;
-	    glGenTextures(1, &textureID);
-	    
-	    // "Bind" the newly created texture : all future texture functions will modify this texture
-	    glBindTexture(GL_TEXTURE_2D, textureID);
-
-	    // Give the image to OpenGL
-	    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-
-	    // OpenGL has now copied the data. Free our own version
-	    delete [] data;
-
-	    // Poor filtering, or ...
-	    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
-
-	    // ... nice trilinear filtering ...
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	    // ... which requires mipmaps. Generate them automatically.
-	    glGenerateMipmap(GL_TEXTURE_2D);
-
-	    // Return the ID of the texture we just created
         *texture_id = textureID;
-        
+
         return 0;
     }
 

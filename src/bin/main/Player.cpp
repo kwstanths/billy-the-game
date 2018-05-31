@@ -22,12 +22,11 @@ int Player::Init(ge::GameEngine * engine) {
 
     int ret;
     ge::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
-    ge::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/player.bmp", ge::OpenGLTexture::TEXTURE_BMP, &ret);
+    ge::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/player.bmp", ge::OpenGLTexture::TEXTURE_STB, &ret);
 
     ret = WorldObject::Init(object, texture);
 
-    Scale(1.4, 1.4, 1.0);
-    SetCollision(1.4 / 2.0);
+    SetCollision(0.5);
 
     engine_ = engine;
 

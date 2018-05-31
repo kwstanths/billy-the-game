@@ -38,6 +38,7 @@ namespace game_engine {
 
     int  FrameRateRegulator::FrameStart() {
         if (!is_inited_) return -1;
+        frame_start_time_ = glfwGetTime();
 
 #ifdef _WIN32
         LARGE_INTEGER timer_interval;
@@ -45,7 +46,6 @@ namespace game_engine {
         SetWaitableTimer(timer_, &timer_interval, 0, NULL, 0, NULL);
 #endif
 
-        frame_start_time_ = glfwGetTime();
         return 0;
     }
 
@@ -56,10 +56,9 @@ namespace game_engine {
 
         double actual_delta = frame_stop_time_ - frame_start_time_;
 
-        if (actual_delta < frame_time_required_) {
-            int msec_sleep = 1000 * (frame_time_required_ - actual_delta);
+        if (actual_delta < frame_time_required_ - 0.004) {
 #ifdef _WIN32
-            WaitForSingleObject(timer_, frame_time_required_ * 1000);
+            WaitForSingleObject(timer_, (frame_time_required_ - actual_delta) * 1000);
 #elif __linux__
             usleep(1000 * 1000 * (frame_time_required_ - actual_delta));
 #endif

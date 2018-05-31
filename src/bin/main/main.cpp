@@ -43,9 +43,9 @@ void displayFPS(double frame_time_ms) {
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("FrameRegulator fix");
     CodeReminder("WorldObject, collision in SetPosition");
     CodeReminder("WorldSector, remove array add quad tree")
-    CodeReminder("See: stbi_load to read textures from files");
 
     ge::OpenGLContextConfig_t context_params;
     context_params.window_width_ = 1024;
@@ -77,8 +77,7 @@ int main(int argc, char ** argv) {
     engine.SetWorld(&world);
 
     ge::FrameRateRegulator frame_regulator;
-    frame_regulator.Init(100);
-
+    frame_regulator.Init(140);
     do {
         frame_regulator.FrameStart();
         float delta_time = frame_regulator.GetDelta();

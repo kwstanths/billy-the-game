@@ -11,7 +11,7 @@ bool Treasure::Init(ge::GameEngine * engine) {
     
     int ret;
     ge::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/tile.obj", &ret);
-    ge::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/treasure.bmp",ge::OpenGLTexture::TEXTURE_BMP, &ret);
+    ge::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/wood.jpg",ge::OpenGLTexture::TEXTURE_STB, &ret);
 
     ret = WorldObject::Init(object, texture);
 
