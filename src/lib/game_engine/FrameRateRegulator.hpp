@@ -12,7 +12,7 @@
 namespace game_engine {
 
     /**
-        Class to measure frame deltas, and regulate to certain frame rate
+        Class to measure frame deltas, and try to maintain a certain frame rate
     */
     class FrameRateRegulator {
     public:
@@ -21,7 +21,7 @@ namespace game_engine {
             Initialize the class. Private values initialization
             @param frame_rate The frame rate to try to maintain
         */
-        void Init(size_t frame_rate = 0);
+        void Init(size_t frame_rate = 0, size_t frame_averages = 5);
 
         /**
             Destroy the object. Private values clearing
@@ -35,21 +35,30 @@ namespace game_engine {
         int FrameStart();
 
         /**
-            Stores the frame end time, Sleeps if needed to achieve the required frame rate, calculates the delta
+            Signals the end of the frame, calulates the frame time
             @return 0=OK, -1=Not initialized
         */
         int FrameEnd();
 
         /**
-            Get the last frame's delta time in seconds, First frame will be 1/frame_rate requested
+            Get the frame time in seconds using a running average, First frame will be 1/frame_rate requested
             @return The difference between frame_end_time - frame_start_time
         */
         float GetDelta();
 
+        /**
+            Writes the frame rate in the console. Just pass the frame time in milliseconds
+            @param frame_rate_ms The frame rate in milliseconds
+        */
+        void DisplayFPS(double frame_rate_ms);
+
     private:
         bool is_inited_;
-        double frame_start_time_, frame_stop_time_, delta_;
+        double frame_start_time_, frame_stop_time_;
         double frame_time_required_;
+
+        /* Holds the frame times for the latest frames. Used to calulcate the running average */
+        std::vector<double> deltas_;
 
 #ifdef _WIN32
         HANDLE timer_;

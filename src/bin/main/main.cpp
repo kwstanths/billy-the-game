@@ -22,24 +22,6 @@
 namespace ge = game_engine;
 namespace dt = debug_tools;
 
-void displayFPS(double frame_time_ms) {
-
-    /* That's so nasty */
-    static double start;
-    static unsigned int frames;
-
-    start += frame_time_ms;
-    frames++;
-    if (start >= 1000.0f) {
-       
-        std::cout << "FPS: " << frames << std::endl;
-
-        start = 0.0;
-        frames = 0;
-    }
-
-}
-
 
 int main(int argc, char ** argv) {
 
@@ -77,7 +59,7 @@ int main(int argc, char ** argv) {
     engine.SetWorld(&world);
 
     ge::FrameRateRegulator frame_regulator;
-    frame_regulator.Init(140);
+    frame_regulator.Init(100, 10);
     do {
         frame_regulator.FrameStart();
         float delta_time = frame_regulator.GetDelta();
@@ -93,8 +75,6 @@ int main(int argc, char ** argv) {
         engine.Step(delta_time);
 
         frame_regulator.FrameEnd();
-
-        displayFPS(frame_regulator.GetDelta() * 1000.0);
     } while (1);
 
     frame_regulator.Destroy();

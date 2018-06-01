@@ -15,6 +15,8 @@ Player::Player(): WorldObject() {
     speed_regular_ = 4.0f;
     speed_running_ = 9.0f;
     
+    engine_ = nullptr;
+
     is_inited_ = false;
 }
 
@@ -35,6 +37,8 @@ int Player::Init(ge::GameEngine * engine) {
 }
 
 int Player::Destroy() {
+
+    /* TODO */
 
     return 0;
 }
