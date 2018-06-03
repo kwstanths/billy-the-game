@@ -85,15 +85,6 @@ namespace game_engine {
         int SetWorld(WorldSector * world);
 
         /**
-            Check for collision of the moving_object based on the input and the moving_offset
-            @param moving_object The object to check for collision
-            @param move_offset The amount of moving done
-            @param input The direction of the movement
-            @return The result of the collision detection
-        */
-        CollisionResult_t CheckCollision(WorldObject * moving_object, float move_offset, ControlInput input);
-
-        /**
             Get the asset manager
             @return The asset manager. nullptr is returned if Init() error
         */

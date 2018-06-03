@@ -55,13 +55,13 @@ void Player::Move(float move_offset, ControlInput control_input, game_engine::Co
     bool moving_right = !game_engine::Equal(collision_input.right_, 0.0f);
 
     /* Move player */
-    float pos_x = GetXPosition();
-    float pos_y = GetYPosition();
-    float pos_z = GetZPosition();
-    if (moving_left) pos_x -= collision_input.left_;
-    if (moving_right) pos_x += collision_input.right_;
-    if (moving_up) pos_y += collision_input.up_;
-    if (moving_down) pos_y += -collision_input.down_;
+    float pos_x = GetX();
+    float pos_y = GetY();
+    float pos_z = GetZ();
+    pos_x -= collision_input.left_;
+    pos_x += collision_input.right_;
+    pos_y += collision_input.up_;
+    pos_y += -collision_input.down_;
     SetPosition(pos_x, pos_y, pos_z);
 
     /* Rotate player if we are moving */
@@ -92,16 +92,19 @@ void Player::Step(double delta_time) {
     ControlInput input = engine_->GetControlsInput();
 
     /* Move player and camera */
-    if (input.KEY_UP || input.KEY_DOWN || input.KEY_LEFT || input.KEY_RIGHT) {
-        float move_offset = (1.0f * GetSpeed(input.KEY_RUN)) * delta_time;
-        ge::CollisionResult_t can_move = engine_->CheckCollision(this, move_offset, input);
-        Move(move_offset, input, can_move);
-        if (can_move.left_) engine_->CameraMove2D(-can_move.left_, 0);
-        if (can_move.right_) engine_->CameraMove2D(can_move.right_, 0);
-        if (can_move.up_) engine_->CameraMove2D(0, can_move.up_);
-        if (can_move.down_) engine_->CameraMove2D(0, -can_move.down_);
-    }
-
+    float move_offset = (1.0f * GetSpeed(input.KEY_RUN)) * delta_time;
+    /* Find the moving direction based on the input */
+    size_t lookup_index = input.KEY_UP * 8 + input.KEY_DOWN * 4 + input.KEY_LEFT * 2 + input.KEY_RIGHT * 1;
+    float direction_array_[16] = { -1, 270, 90, -1, 180, 225, 135, -1, 0, 345, 45, -1, -1, -1, -1, -1 };
+    ge::Direction direction = direction_array_[lookup_index];
+    if (ge::Equal(direction, -1.0f)) return;
+    /* Check for collision and move */
+    ge::CollisionResult_t can_move = CheckCollision(move_offset, direction);
+    Move(move_offset, input, can_move);
+    if (can_move.left_) engine_->CameraMove2D(-can_move.left_, 0);
+    if (can_move.right_) engine_->CameraMove2D(can_move.right_, 0);
+    if (can_move.up_) engine_->CameraMove2D(0, can_move.up_);
+    if (can_move.down_) engine_->CameraMove2D(0, -can_move.down_);
 }
 
 float Player::GetSpeed(bool running) {

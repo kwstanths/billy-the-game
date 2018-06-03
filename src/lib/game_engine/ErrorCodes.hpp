@@ -32,6 +32,8 @@ namespace game_engine {
         ERROR_FREETYPE_LIB,
         ERROR_FREETYPE_FONT,
         ERROR_FREETYPE_GLYPH,
+
+        ERROR_PHYSICS_INIT,
     };
 
     void PrintError(int error);

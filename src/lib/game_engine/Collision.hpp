@@ -65,6 +65,8 @@ namespace game_engine {
         virtual bool Check(CollisionBoundingCircle * other) = 0;
         virtual bool Check(CollisionBoundingRectangle * other) = 0;
 
+        virtual CollisionType GetType() = 0;
+
         virtual void Translate(float x, float y) = 0;
         virtual void Rotate(float th) = 0;
     };
@@ -83,8 +85,8 @@ namespace game_engine {
         bool Check(CollisionBoundingRectangle * other) {
             return false;
         }
-        void SetPosition(float x, float y) {
-            return;
+        CollisionType GetType() {
+            return CollisionType::COLLISION_NONE;
         }
         void Translate(float x, float y) {
             return;
@@ -109,7 +111,9 @@ namespace game_engine {
         bool Check(CollisionBoundingRectangle * other);
 
         bool Check(CollisionBoundingCircle * other);
-
+        
+        CollisionType GetType();
+        
         void Translate(float x, float y) {
             brect_.Translate(x, y);
         }
@@ -135,6 +139,8 @@ namespace game_engine {
 
         bool Check(CollisionBoundingCircle * other);
         
+        CollisionType GetType();
+
         void Translate(float x, float y) {
             bcircle_.Translate(x, y);
         }

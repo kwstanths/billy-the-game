@@ -7,6 +7,7 @@
 #include "opengl/OpenGLObject.hpp"
 #include "opengl/OpenGLTexture.hpp"
 #include "physics/Types.hpp"
+#include "physics/PhysicsEngine.hpp"
 #include "memory/ArrayAllocator.hpp"
 
 #include "GameEngine.hpp"
@@ -61,19 +62,24 @@ namespace game_engine {
                 return nullptr;
             }
 
+            /* Spawn new object */
             T * the_new_object = new (array_objects_) T();
 
+            /* Insert it into the world */
             size_t index_row = GetColumn(y);
             size_t index_col = GetRow(x);
             world_[index_row][index_col].push_back(the_new_object);
             the_new_object->world_sector_ = this;
 
+            /* Insert it into the physics engine */
+            the_new_object->PhysicsObject::Init(x, y, z, physics_engine_);
             the_new_object->SetPosition(x, y, z);
+            physics_engine_->Insert(the_new_object);
             
             return the_new_object;
         }
 
-        void UpdateObjectPosition(WorldObject * object, float new_pos_x, float new_pos_y);
+        void UpdateObjectPosition(WorldObject * object, float old_pos_x, float old_pos_y, float new_pos_x, float new_pos_y);
 
         /**
             Get a window of object in the world. Objects are assigned sequentially to the visible world 
@@ -86,14 +92,6 @@ namespace game_engine {
         */
         size_t GetObjectsWindow(float center_x, float center_y, float margin, std::vector<WorldObject *> & visible_world);
 
-        /**
-            Check for collision inside the world sector, provided the direction of the moving object
-            @param moving_object The object to check for collision with the world. Should have SetCollision() used
-            @param move_offset The amount of moving required
-            @param direction The direction of the movement, 0=Up, 1=Bottom, 2=Left, 3=Right 
-        */
-        CollisionResult_t CheckCollision(WorldObject * moving_object, float move_offset, Direction direction);
-
     private:
         
         bool is_inited_;
@@ -104,6 +102,7 @@ namespace game_engine {
             A struct that resembles the world. Holds pointers to actual objects that are stored 
             sequentially
         */
+        physics::PhysicsEngine * physics_engine_;
         std::vector<std::vector<std::deque<WorldObject *> > >world_;
         memory_subsystem::ArrayAllocator * array_objects_;
 
@@ -117,14 +116,6 @@ namespace game_engine {
         */
         size_t GetColumn(float y);
 
-        /**
-            Get the vertical and horizontal distance from the first colliding object in the world, if the
-            moving object is moved to the new_position
-            @param moving_object The object to be moved
-            @param new_position The new center position
-            @return <vertical, horizontal>
-        */
-        std::pair<float, float> CollisionGetDistance(WorldObject * moving_object, Point2D new_position);
     };
 
 }

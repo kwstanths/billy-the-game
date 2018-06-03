@@ -25,7 +25,7 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("FrameRegulator fix");
+    CodeReminder("Tidy up the NewObj function in the WorldSector. Put some order in there, add some comments");
     CodeReminder("WorldObject, collision in SetPosition");
     CodeReminder("WorldSector, remove array add quad tree")
 

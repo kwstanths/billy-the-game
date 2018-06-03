@@ -87,6 +87,10 @@ namespace game_engine {
             text = "Error loading font character";
             level = debug_tools::CRITICAL;
             break;
+        case ERROR_PHYSICS_INIT:
+            text = "Physics engine initialization failed";
+            level = debug_tools::FATAL;
+            break;
         default:
             text = "Unkown error";
             level = debug_tools::WARNING;

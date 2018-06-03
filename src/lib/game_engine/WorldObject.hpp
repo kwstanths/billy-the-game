@@ -9,11 +9,10 @@
 #include "opengl/OpenGLTexture.hpp"
 #include "opengl/OpenGLRenderer.hpp"
 #include "physics/Types.hpp"
+#include "physics/PhysicsObject.hpp"
 #include "memory/ArrayAllocator.hpp"
 #include "memory/PoolAllocator.hpp"
 #include "debug_tools/Console.hpp"
-
-#include "Collision.hpp"   
 
 #include "glm/glm.hpp"
 
@@ -25,7 +24,7 @@ namespace game_engine {
         A WorldObject is an entity inside a WorldSector. Override this class, call the function
         Init(... , ...), and provide your custom behaviour in the Step() function
     */
-    class WorldObject {
+    class WorldObject : public physics::PhysicsObject {
         friend WorldSector;
     public:
 
@@ -93,24 +92,6 @@ namespace game_engine {
         virtual void Step(double delta_time);
 
         /**
-            Get the x coordinate of the object's position
-            @return The x coordinate
-        */
-        float GetXPosition();
-
-        /**
-            Get the y coordinate of the object's position
-            @return The y coordinate
-        */
-        float GetYPosition();
-
-        /**
-            Get the z coordinate of the object's position
-            @return The z coordinate
-        */
-        float GetZPosition();
-
-        /**
             Set the position for the object, sets translation matrix
             @param pos_x Position x coordinate
             @param pos_y Position y coordinate
@@ -133,51 +114,12 @@ namespace game_engine {
         */
         void Rotate(float angle, size_t axis);
 
-        /**
-            Sets collision to NONE
-        */
-        void SetCollision();
-        
-        /**
-            Sets collision to Bounding rectangle
-            @param x_size Rectangle horizontal width
-            @param y_size Rectangle vertical width
-        */
-        void SetCollision(float x_size, float y_size, float z_size = 0.0f);
-
-        /**
-            Sets collision to Bounding circle
-            @param radius The circle radius
-        */
-        void SetCollision(float radius);
-
-        /**
-            Get the type of collision this object has set
-        */
-        CollisionType GetCollisionType();
-
-        /**
-        
-        */
-        Collision * GetCollision();
-
-        /**
-            Check if this object in new_position collides with another object
-            @param new_position The new position
-            @param other The other object
-        */
-        bool Collides(Point2D new_position, WorldObject * other);
-
     private:
         bool is_inited_;
-        float pos_x_, pos_y_, pos_z_;
         float rotated_angle_;
-        Collision * collision_;
-
 
         OpenGLObject * object_;
         OpenGLTexture * texture_;
-        CollisionType collision_type_;
         WorldSector * world_sector_;
 
         glm::mat4 translation_matrix_;

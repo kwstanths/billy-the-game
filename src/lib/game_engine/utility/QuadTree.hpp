@@ -5,6 +5,7 @@
 
 #include "game_engine/physics/Types.hpp"
 #include "game_engine/physics/Geometry.hpp"
+namespace ph = game_engine::physics;
 
 #include "game_engine/memory/PoolAllocator.hpp"
 namespace ms = game_engine::memory_subsystem;
@@ -95,10 +96,10 @@ namespace utility {
             @param[out] index The number of the last object found and stored inside objects
         */
         void QueryRangePrivate(Rectangle2D rect, std::vector<T *>& objects, size_t& index){
-            if (!IntersectRect_Rect(brect_, rect)) return;
+            if (!ph::IntersectRect_Rect(brect_, rect)) return;
 
             /* Check this node's object */
-            if (node_data_.data_ != nullptr && PointInside(node_data_.p_, rect)) {
+            if (node_data_.data_ != nullptr && ph::PointInside(node_data_.p_, rect)) {
                 if (index > objects.size() - 1) {
                     dt::Console(dt::CRITICAL, "QuadTree::QueryRange() Objects overflow");
                     return;
@@ -124,12 +125,12 @@ namespace utility {
             @return true = Updated, false = Element not found
         */
         bool UpdatePrivate(Point2D p, T * data, Point2D new_p, QuadTree * root){
-            if (!PointInside(p, brect_)) return false;
+            if (!ph::PointInside(p, brect_)) return false;
 
             /* If this node has the point update here */
             if (node_data_.data_ == data && node_data_.p_ == p){
                 /* If new position is within bounding rectangle dont move */
-                if (PointInside(new_p, brect_)) node_data_.p_ = new_p;
+                if (ph::PointInside(new_p, brect_)) node_data_.p_ = new_p;
                 else {
                     /* else remove it and insert from the beginning */
                     node_data_.data_ = nullptr;
@@ -245,7 +246,7 @@ namespace utility {
             _assert(data != nullptr);
             
             /* If point to be inserted is not inside the current quad tree rectangle, return */
-            if (!PointInside(p, brect_)) return false;
+            if (!ph::PointInside(p, brect_)) return false;
             
             /* If the current node does not hold anything, insert here */
             if (node_data_.data_ == nullptr) {
@@ -307,7 +308,7 @@ namespace utility {
             _assert(data != nullptr);
 
             /* If point to be removed is not inside the current quad tree rectangle, return */
-            if (!PointInside(p, brect_)) return false;
+            if (!ph::PointInside(p, brect_)) return false;
 
             /* If the current node has the element, remove it from here */
             if (node_data_.data_ == data && node_data_.p_ == p) {

@@ -9,7 +9,7 @@
 #include "game_engine/ControlInput.hpp"
 #include "game_engine/Collision.hpp"
 
-class Player : public game_engine::WorldObject{
+class Player : public game_engine::WorldObject {
 public:
     Player();
 

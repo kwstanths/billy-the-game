@@ -141,24 +141,6 @@ namespace game_engine {
         return 0;
     }
 
-    CollisionResult_t GameEngine::CheckCollision(WorldObject * moving_object, float move_offset, ControlInput input) {
-        CollisionResult_t collision;
-
-        /* Find the moving direction based on the input */
-        Direction direction;
-        if (input.KEY_UP && input.KEY_LEFT) direction = 45.0f;
-        else if (input.KEY_LEFT && input.KEY_DOWN) direction = 135.0f;
-        else if (input.KEY_RIGHT && input.KEY_UP) direction = 345.0f;
-        else if (input.KEY_RIGHT && input.KEY_DOWN) direction = 225.0f;
-        else if (input.KEY_UP) direction = 0.0f;
-        else if (input.KEY_LEFT) direction = 90.0f;
-        else if (input.KEY_RIGHT) direction = 270.0f;
-        else if (input.KEY_DOWN) direction = 180.0f;
-        else return collision;
-
-        return sector_->CheckCollision(moving_object, move_offset, direction);
-    }
-
     AssetManager * GameEngine::GetAssetManager() {
         return asset_manager_;
     }

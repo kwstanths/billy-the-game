@@ -9,15 +9,15 @@
 namespace game_engine {
 
     bool CollisionCheck(Rectangle2D rect_a, Rectangle2D rect_b) {
-        return IntersectRect_Rect(rect_a, rect_b);
+        return physics::IntersectRect_Rect(rect_a, rect_b);
     }
 
     bool CollisionCheck(Rectangle2D rect, Circle2D circle) {
-        return IntersectRect_Circle(rect, circle);
+        return physics::IntersectRect_Circle(rect, circle);
     }
 
     bool CollisionCheck(Circle2D a, Circle2D b) {
-        return IntersectCircle_Circle(a, b);
+        return physics::IntersectCircle_Circle(a, b);
     }
 
     bool CollisionBoundingRectangle::Check(CollisionNone * other){
@@ -32,6 +32,11 @@ namespace game_engine {
         return CollisionCheck(brect_, other->bcircle_);
     }
 
+    CollisionType CollisionBoundingRectangle::GetType()
+    {
+        return CollisionType::COLLISION_BOUNDING_RECTANGLE;
+    }
+
     bool CollisionBoundingCircle::Check(CollisionNone * other){
         return false;
     }
@@ -42,6 +47,11 @@ namespace game_engine {
     
     bool CollisionBoundingCircle::Check(CollisionBoundingCircle * other){
         return CollisionCheck(bcircle_, other->bcircle_);
+    }
+
+    CollisionType CollisionBoundingCircle::GetType()
+    {
+        return CollisionType::COLLISION_BOUNDING_CIRCLE;
     }
 
 
