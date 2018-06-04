@@ -8,13 +8,13 @@ namespace ge = game_engine;
 namespace dt = debug_tools;
 
 
-bool Path::Init(game_engine::GameEngine * engine) {
+bool Path::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
     int ret;
     ge::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/tile.obj", &ret);
     ge::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/path.bmp", ge::OpenGLTexture::TEXTURE_STB, &ret);
 
-    ret = WorldObject::Init(object, texture);
+    ret = WorldObject::Init(object, texture, x, y, z);
 
     return ret == 0;
 }

@@ -17,8 +17,16 @@ namespace game_engine {
         is_inited_ = false;
     }
 
-    int WorldObject::Init(OpenGLObject * object, OpenGLTexture * texture) {
-         
+    int WorldObject::Init(OpenGLObject * object, OpenGLTexture * texture, float x, float y, float z) {
+        
+        if (WorldObject::is_inited_) return Error::ERROR_GEN_NOT_INIT;
+
+        int ret = PhysicsObject::Init(x, y, z, world_sector_->GetPhysicsEngine());
+        if (ret) {
+            PrintError(ret);
+            return ret;
+        }
+
         if (object == nullptr) {
             PrintError(Error::ERROR_OBJECT_NOT_INIT);
             return Error::ERROR_OBJECT_NOT_INIT;
@@ -38,6 +46,9 @@ namespace game_engine {
             return Error::ERROR_TEXTURE_NOT_INIT;
         }
 
+        if (world_sector_ != nullptr) world_sector_->Insert(this, x, y, z);
+        translation_matrix_ = GetTranslateMatrix(GetX(), GetY(), GetZ());
+
         scale_matrix_ = GetScaleMatrix(1.0f, 1.0f, 1.0f);
         rotated_angle_ = 0.0f;
 
@@ -50,6 +61,7 @@ namespace game_engine {
 
     int WorldObject::Destroy() {
         
+        /* TODO should call the PhysicsObject::Destroy() */
 
         is_inited_ = false;
         return 0;

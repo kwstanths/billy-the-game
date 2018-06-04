@@ -16,19 +16,24 @@ namespace physics {
         is_inited_ = false;
     }
 
-    int PhysicsObject::Init(float pos_x, float pos_y, float pos_z, PhysicsEngine * engine_) {
+    int PhysicsObject::Init(float pos_x, float pos_y, float pos_z, PhysicsEngine * engine) {
 
+        collision_->Translate(pos_x - pos_x_, pos_y - pos_y_);
         pos_x_ = pos_x;
         pos_y_ = pos_y;
         pos_z_ = pos_z;
 
-        physics_engine_ = engine_;
+        physics_engine_ = engine;
+        int ret = physics_engine_->Insert(this);
+        if (ret) return ret;
 
         is_inited_ = true;
         return 0;
     }
 
     int PhysicsObject::Destroy() {
+
+        /* TODO Remove from the engine */
 
         is_inited_ = false;
         return 0;
@@ -82,8 +87,6 @@ namespace physics {
     CollisionResult_t PhysicsObject::CheckCollision(float move_offset, Direction direction) {
         return physics_engine_->CheckCollision(this, move_offset, direction);
     }
-
-
 
     bool PhysicsObject::Collides(Point2D new_position, PhysicsObject * other) {
 

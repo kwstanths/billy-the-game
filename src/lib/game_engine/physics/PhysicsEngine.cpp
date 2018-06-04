@@ -18,6 +18,8 @@ namespace physics {
 
     int PhysicsEngine::Init(Rectangle2D world_size, size_t number_of_objects) {
 
+        if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
+
         if (!pool_quad_tree_.Init(sizeof(utility::QuadTree<PhysicsObject>), number_of_objects)) {
             dt::Console(dt::FATAL, "PhysicsEngine::Init(): PoolAllocato::Init() failed");
             return Error::ERROR_PHYSICS_INIT;
@@ -44,12 +46,13 @@ namespace physics {
     }
 
     int PhysicsEngine::Insert(PhysicsObject * object) {
-        world_.Insert(Point2D(object->GetX(), object->GetY()), object);
-        return 0;
+        return !world_.Insert(Point2D(object->GetX(), object->GetY()), object);
     }
 
     int PhysicsEngine::Update(PhysicsObject * object, float new_pos_x, float new_pos_y) {
-        world_.Update(Point2D(object->GetX(), object->GetY()), object, Point2D(new_pos_x, new_pos_y));
+        bool ret = world_.Update(Point2D(object->GetX(), object->GetY()), object, Point2D(new_pos_x, new_pos_y));
+        if (!ret) dt::Console(dt::WARNING, "PhysicsEngine::Update(): object not found");
+        
         return 0;
     }
 
@@ -57,19 +60,19 @@ namespace physics {
         CollisionResult_t collision_res;
 
         if (!is_inited_) {
-            dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): World sector is not initialised");
+            dt::Console(dt::CRITICAL, "PhysicsEngine::CheckCollision(): World sector is not initialised");
             return collision_res;
         }
         if (object == nullptr) {
-            dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): moving objectis null");
+            dt::Console(dt::CRITICAL, "PhysicsEngine::CheckCollision(): moving object is null");
             return collision_res;
         }
         if (!object->IsInited()) {
-            dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): moving objectis not initialised");
+            dt::Console(dt::CRITICAL, "PhysicsEngine::CheckCollision(): moving object is not initialised");
             return collision_res;
         }
         if (direction < 0 || direction >= 360.0f) {
-            dt::Console(dt::CRITICAL, "WorldSector::CheckCollision(): direction is out of the allowed values");
+            dt::Console(dt::CRITICAL, "PhysicsEngine::CheckCollision(): direction is out of the allowed values");
             return collision_res;
         }
 

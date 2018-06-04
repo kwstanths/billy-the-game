@@ -21,55 +21,57 @@ World::World() : WorldSector() {
 }
 
 int World::Init(ge::GameEngine * engine) {
-    int ret = WorldSector::Init(500, 500, -500.0f, 500.0f, -500.0f, 500.0f, 500 * 500, engine);
+    int ret = WorldSector::Init(500, 500, -500.0f, 500.0f, -500.0f, 500.0f, 500 * 500);
     if (ret) return ret;
 
     /* Initialize the world */
     /* Create grass */
-    Grass * floor = NewObj<Grass>(0.0f, 0.0f, 0.0f);
-    floor->Init(engine);
-    floor = NewObj<Grass>(5.0f, 0.0f, 0.0f);
-    floor->Init(engine);
-    floor = NewObj<Grass>(0.0f, 5.0f, 0.0f);
-    floor->Init(engine);
-    floor = NewObj<Grass>(5.0f, 5.0f, 0.0f);
-    floor->Init(engine);
+    Grass * floor = NewObj<Grass>();
+    floor->Init(0.0f, 0.0f, 0.0f, engine);
+    floor = NewObj<Grass>();
+    floor->Init(5.0f, 0.0f, 0.0f, engine);
+    floor = NewObj<Grass>();
+    floor->Init(0.0f, 5.0f, 0.0f, engine);
+    floor = NewObj<Grass>();
+    floor->Init(5.0f, 5.0f, 0.0f, engine);
 
     /* Create a path */
-    Path * path = NewObj<Path>(9.0f, 0.0f, 0.0f);
-    path->Init(engine);
+    Path * path = NewObj<Path>();
+    path->Init(9.0f, 0.0f, 0.0f, engine);
     path->Scale(3, 4, 1);
-    path = NewObj<Path>(9.0f, 4.0f, 0.0f);
-    path->Init(engine);
+    path = NewObj<Path>();
+    path->Init(9.0f, 4.0f, 0.0f, engine);
     path->Scale(3, 4, 1);
 
     /* Create a wall */
-    Wall * wall = NewObj<Wall>(-1.0f, 6.5f, 0.1f);
-    wall->Init(engine);
-    wall = NewObj<Wall>(0.0f, 6.5f, 0.1f);
-    wall->Init(engine);
-    wall = NewObj<Wall>(1.0f, 6.5f, 0.1f);
-    wall->Init(engine);
-    wall = NewObj<Wall>(2.0f, 6.5f, 0.1f);
-    wall->Init(engine);
-    wall = NewObj<Wall>(3.0f, 6.5f, 0.1f);
-    wall->Init(engine);
-    wall = NewObj<Wall>(4.0f, 6.5f, 0.1f);
-    wall->Init(engine);
+    Wall * wall = NewObj<Wall>();
+    wall->Init(-1.0f, 6.5f, 0.1f, engine);
+    wall = NewObj<Wall>();
+    wall->Init(0.0f, 6.5f, 0.1f, engine);
+    wall = NewObj<Wall>();
+    wall->Init(1.0f, 6.5f, 0.1f, engine);
+    wall = NewObj<Wall>();
+    wall->Init(2.0f, 6.5f, 0.1f, engine);
+    wall = NewObj<Wall>();
+    wall->Init(3.0f, 6.5f, 0.1f, engine);
+    wall = NewObj<Wall>();
+    wall->Init(4.0f, 6.5f, 0.1f, engine);
 
     /* Create some collidable treasures */
-    Treasure * tres = NewObj<Treasure>(0.0f, 1.5f, 0.1f);
-    tres->Init(engine);
-    tres = NewObj<Treasure>(-2.4f, 1.5f, 0.1f);
-    tres->Init(engine);
-    tres = NewObj<Treasure>(5.0f, 5.0f, 0.1f);
-    tres->Init(engine);
-    tres = NewObj<Treasure>(5.0f, -5.0f, 0.1f);
-    tres->Init(engine);
+    Treasure * tres = NewObj<Treasure>();
+    tres->Init(0.0f, 1.5f, 0.1f, engine);
+    tres = NewObj<Treasure>();
+    tres->Init(-2.4f, 1.5f, 0.1f, engine);
+    tres = NewObj<Treasure>();
+    tres->Init(5.0f, 5.0f, 0.1f, engine);
+    tres = NewObj<Treasure>();
+    tres->Init(5.0f, -5.0f, 0.1f, engine);
+    tres = NewObj<Treasure>();
+    tres->Init(0.0f, 30.0f, 0.1f, engine); /* Put something far up */
 
     /* Create a main player */
-    Player * player = NewObj<Player>(0.0f, 0.0f, 0.2f);
-    player->Init(engine);
+    Player * player = NewObj<Player>();
+    player->Init(0.0f, 0.0f, 0.2f, engine);
 
     is_inited_ = true;
     return 0;

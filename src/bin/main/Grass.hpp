@@ -7,7 +7,7 @@
 class Grass : public game_engine::WorldObject {
 public:
 
-    bool Init(game_engine::GameEngine * engine);
+    bool Init(float x, float y, float z, game_engine::GameEngine * engine);
 
     virtual void Step(double delta_time) override;
 

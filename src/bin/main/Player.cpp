@@ -20,13 +20,13 @@ Player::Player(): WorldObject() {
     is_inited_ = false;
 }
 
-int Player::Init(ge::GameEngine * engine) {
+int Player::Init(float x, float y, float z, ge::GameEngine * engine) {
 
     int ret;
     ge::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
     ge::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/player.bmp", ge::OpenGLTexture::TEXTURE_STB, &ret);
 
-    ret = WorldObject::Init(object, texture);
+    ret = WorldObject::Init(object, texture, x, y, z);
 
     SetCollision(0.5);
 

@@ -1,10 +1,8 @@
 #include "WorldSector.hpp"
-#include "GameEngine.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 
 #include "ErrorCodes.hpp"
-#include "Collision.hpp"
 #include "physics/HelpFunctions.hpp"
 #include "physics/Types.hpp"
 
@@ -22,22 +20,23 @@ namespace game_engine {
     int WorldSector::Init(size_t width, size_t height, 
         float x_margin_start, float x_margin_end,
         float y_margin_start, float y_margin_end,
-        size_t elements, GameEngine * engine) 
+        size_t elements) 
     {
+        if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
+
+        /* Initialize the world structure */
         world_ = std::vector<std::vector<std::deque<WorldObject *> > >(height, std::vector<std::deque<WorldObject *> >(width));
         array_objects_ = new ms::ArrayAllocator();
         array_objects_->Init(500 * 500);
 
+        /* Initialize the physics engine used */
         physics_engine_->Init(Rectangle2D(0, 0, 250, 250), elements);
 
+        /* Set the margins */
         x_margin_start_ = x_margin_start;
         x_margin_end_ = x_margin_end;
         y_margin_start_ = y_margin_start;
         y_margin_end_ = y_margin_end;
-
-        if (engine == nullptr) return Error::ERROR_ENGINE_NOT_INIT;
-        if (!engine->IsInited()) return Error::ERROR_ENGINE_NOT_INIT;
-        engine_ = engine;
 
         is_inited_ = true;
         return 0;
@@ -54,15 +53,26 @@ namespace game_engine {
         return is_inited_;
     }
 
+    int WorldSector::Insert(WorldObject * object, float x, float y, float z) {
+        if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
+
+        size_t index_row = GetRow(y);
+        size_t index_col = GetColumn(x);
+        world_[index_row][index_col].push_back(object);
+        /* This is probably obsolete */
+        object->world_sector_ = this;
+        return 0;
+    }
+
     void WorldSector::UpdateObjectPosition(WorldObject * object, float old_pos_x, float old_pos_y, float new_pos_x, float new_pos_y) {
         
         /* TODO Do some checkig on th object */
         
         /* Find the old and new position */
-        size_t old_pos_index_row = GetColumn(old_pos_y);
-        size_t old_pos_index_col = GetRow(old_pos_x);
-        size_t new_pos_index_row = GetColumn(new_pos_y);
-        size_t new_pos_index_col = GetRow(new_pos_x);
+        size_t old_pos_index_row = GetRow(old_pos_y);
+        size_t old_pos_index_col = GetColumn(old_pos_x);
+        size_t new_pos_index_row = GetRow(new_pos_y);
+        size_t new_pos_index_col = GetColumn(new_pos_x);
         /* If no moving is required then leave */
         
         if ((old_pos_index_row == new_pos_index_row) && (old_pos_index_col == new_pos_index_col)) return;
@@ -113,13 +123,17 @@ namespace game_engine {
         return index;
     }
 
-    size_t WorldSector::GetRow(float x) {
-        float index = 0.0f + (world_[0].size() - 1 - 0.0f) * (x - x_margin_start_) / (x_margin_end_ - x_margin_start_);
+    ph::PhysicsEngine * WorldSector::GetPhysicsEngine() {
+        return physics_engine_;
+    }
+
+    size_t WorldSector::GetRow(float vertical_coordinate) {
+        float index = 0.0f + (world_.size() - 1 - 0.0f) * (vertical_coordinate - y_margin_start_) / (y_margin_end_ - y_margin_start_);
         return static_cast<size_t>(index);
     }
 
-    size_t WorldSector::GetColumn(float y) {
-        float index = 0.0f + (world_.size() - 1 - 0.0f) * (y - y_margin_start_) / (y_margin_end_ - y_margin_start_);
+    size_t WorldSector::GetColumn(float horizontal_coordinate) {
+        float index = 0.0f + (world_[0].size() - 1 - 0.0f) * (horizontal_coordinate - x_margin_start_) / (x_margin_end_ - x_margin_start_);
         return static_cast<size_t>(index);
     }
 

@@ -135,8 +135,8 @@ namespace utility {
                     /* else remove it and insert from the beginning */
                     node_data_.data_ = nullptr;
                     root->Insert(new_p, data);
-                    return true;
                 }
+                return true;
             }
             
             /* Recursively search in children */

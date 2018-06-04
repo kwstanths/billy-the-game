@@ -3,7 +3,7 @@
 
 #include <cstdlib>
 
-#include "physics/Types.hpp"
+#include "Types.hpp"
 
 #include "debug_tools/Console.hpp"
 

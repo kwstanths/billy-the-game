@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-#include "physics/Geometry.hpp"
+#include "Geometry.hpp"
 
 #include "debug_tools/Console.hpp"
 

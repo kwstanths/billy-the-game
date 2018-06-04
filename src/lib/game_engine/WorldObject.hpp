@@ -65,14 +65,13 @@ namespace game_engine {
         }
 
         /**
-            Sets the OpenGL model and texture to the object. Also sets the renderer to be used
-            Initial position is at (0,0,0), scaling is at (1,1,1) and rotation at 0 degrees
+            Initialize the object. Sets the OpenGL model and texture of the object. Sets the initial position
             @return 0=OK, else see ErrorCodes.hpp
         */
-        int Init(OpenGLObject * object, OpenGLTexture * texture);
+        int Init(OpenGLObject * object, OpenGLTexture * texture, float x, float y, float z);
 
         /**
-            Does nothing in particular
+            Does nothing in particular yet
         */
         int Destroy();
 
@@ -83,16 +82,17 @@ namespace game_engine {
 
         /**
             Draw the object using the variables set in Init(...);
+            @param renderer The renderer
         */
         void Draw(OpenGLRenderer * renderer);
 
         /**
-            Function that should be overriden
+            Function that should be overriden for custom step behaviour
         */
         virtual void Step(double delta_time);
 
         /**
-            Set the position for the object, sets translation matrix
+            Set the position for the object
             @param pos_x Position x coordinate
             @param pos_y Position y coordinate
             @param pos_z Position z coordinate
