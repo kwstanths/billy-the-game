@@ -2,6 +2,7 @@
 
 #include "game_engine/ErrorCodes.hpp"
 
+#include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
 
@@ -14,6 +15,10 @@ namespace physics {
     
     PhysicsEngine::PhysicsEngine() {
         is_inited_ = false;
+    }
+
+    PhysicsEngine::~PhysicsEngine() {
+        Destroy();
     }
 
     int PhysicsEngine::Init(Rectangle2D world_size, size_t number_of_objects) {
@@ -35,6 +40,14 @@ namespace physics {
 
     int PhysicsEngine::Destroy() {
 
+        if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
+
+        /* 
+            TODO We have to iterate through all the PhysicsObjects held, and call their Destroy(),
+            because Collision objects will be leaked
+            Or else, we could offer custom allocation to such objects, and delete them alltogether here,
+            like we do below for the quad tree
+        */
         pool_quad_tree_.Destroy();
 
         is_inited_ = false;

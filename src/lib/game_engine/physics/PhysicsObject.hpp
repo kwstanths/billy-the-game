@@ -31,7 +31,7 @@ namespace physics {
         int Init(float pos_x, float pos_y, float pos_z, PhysicsEngine * engine);
 
         /**
-            Destroys the object
+            Removes from the pgysics engine, TODO
             @return 0=OK
         */
         int Destroy();
@@ -114,6 +114,13 @@ namespace physics {
             @return true = collides, false =  not collides
         */
         bool Collides(Point2D new_position, PhysicsObject * other);
+
+        /**
+            Rotate the physics object clockwise in the 2d pane
+            @angle angle The rotation angle in radians
+            @param axis The axis to rotate around
+        */
+        void Rotate(float angle);
 
     private:
         bool is_inited_;

@@ -43,7 +43,11 @@ namespace game_engine {
     }
 
     int WorldSector::Destroy() {
+        
+        CodeReminder("Iterate through the world objects, and call their Destroy()");
+        
         world_.clear();
+        array_objects_->Destroy();
          
         is_inited_ = false;
         return 0;

@@ -1,13 +1,16 @@
 #include "PhysicsObject.hpp"
 #include "PhysicsEngine.hpp"
 
+#include "game_engine/ErrorCodes.hpp"
+
+#include "debug_tools/CodeReminder.hpp"
+
 namespace game_engine {
 
 namespace physics {
 
     PhysicsObject::PhysicsObject() {
         
-        SetCollision();
 
         pos_x_ = 0.0f;
         pos_y_ = 0.0f;
@@ -17,12 +20,18 @@ namespace physics {
     }
 
     int PhysicsObject::Init(float pos_x, float pos_y, float pos_z, PhysicsEngine * engine) {
+        
+        if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
-        collision_->Translate(pos_x - pos_x_, pos_y - pos_y_);
+        /* Set the initial collision to none */
+        SetCollision();
+
+        /* Set position */
         pos_x_ = pos_x;
         pos_y_ = pos_y;
         pos_z_ = pos_z;
 
+        /* Insert into the world */
         physics_engine_ = engine;
         int ret = physics_engine_->Insert(this);
         if (ret) return ret;
@@ -33,8 +42,11 @@ namespace physics {
 
     int PhysicsObject::Destroy() {
 
-        /* TODO Remove from the engine */
+        if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
+        CodeReminder("TODO Remove object from the engine");
+        CodeReminder("TODO Delete collision object");
+        
         is_inited_ = false;
         return 0;
     }
@@ -115,6 +127,10 @@ namespace physics {
         collision_->Translate(-x_offset, -y_offset);
 
         return collides;
+    }
+
+    void PhysicsObject::Rotate(float angle) {
+        collision_->Rotate(angle);
     }
 
 }

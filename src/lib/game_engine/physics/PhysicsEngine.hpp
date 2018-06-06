@@ -18,6 +18,11 @@ namespace physics {
     public:
         /* Does nothing, Call Init() */
         PhysicsEngine();
+
+        /**
+            Calls Destroy()
+        */
+        ~PhysicsEngine();
     
         /**
             Initializes the object
@@ -28,7 +33,7 @@ namespace physics {
         int Init(Rectangle2D world_size, size_t number_of_objects);
 
         /**
-            Destroys the engine
+            Destroys the engine. Deallocates memory used. Not the objects themselves
             @return 0=OK, Never fails, if it does, run for the hills
         */
         int Destroy();

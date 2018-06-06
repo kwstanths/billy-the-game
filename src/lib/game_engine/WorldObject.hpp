@@ -109,8 +109,8 @@ namespace game_engine {
 
         /**
             Rotate the object
-            @param angle The angle of rotation, Can be negative
-            @param axis The axis to rotate arounf, 0=X-axis, 1=Y-axis, 2=Z-axis
+            @param angle The angle of rotation in radians, can be negative
+            @param axis The axis to rotate around, 0=X-axis, 1=Y-axis, 2=Z-axis
         */
         void Rotate(float angle, size_t axis);
 

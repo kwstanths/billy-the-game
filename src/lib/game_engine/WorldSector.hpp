@@ -42,7 +42,7 @@ namespace game_engine {
             size_t elements);
 
         /**
-            Clear the world, DOES NOT destroy the item themselves
+            Clears the world, DOES NOT destroy the items themselves
             @return true = OK
         */
         int Destroy();

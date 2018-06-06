@@ -95,15 +95,22 @@ namespace game_engine {
         float center_x, center_y, center_z;
         camera_->GetPosition(&center_x, &center_y, &center_z);
 
-        /* TODO Check whether  sector_ is set */
+        /* TODO Check whether sector_ is set */
+        /* TODO Find the visible items based on the z of the camera */
         size_t nof = sector_->GetObjectsWindow(center_x, center_y, 4, visible_world_);
 
-        /* Set camera's view */
+        /* Step all the objects one frame */
+        for (size_t i = 0; i < nof; i++) {
+            visible_world_[i]->Step(delta_time);
+        }
+
+        /* 
+            Set camera's view before drawing, because Step() might have tempered with the camera position
+        */
         camera_->SetView();
 
         /* Draw visible world */
         for (size_t i = 0; i < nof; i++) {
-            visible_world_[i]->Step(delta_time);
             visible_world_[i]->Draw(renderer_);
         }
 

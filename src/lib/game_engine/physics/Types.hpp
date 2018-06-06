@@ -3,6 +3,9 @@
 
 #include "HelpFunctions.hpp"
 
+#include "debug_tools/Console.hpp"
+namespace dt = debug_tools;
+
 namespace game_engine {
     
     /* Shows a direction in degrees: 0 = top, 90 = left, 180 = bottom, 270 = right */
@@ -46,12 +49,12 @@ namespace game_engine {
 
         /**
             Rotate the point clockwise around another point
-            @param th The rotation angle
+            @param th The rotation angle in radians
             @param axis The point to rotate around
         */
         void Rotate(float th, Point2D axis) {
-            float c = cos(GetRadians(th));
-            float s = sin(GetRadians(th));
+            float c = cos(th);
+            float s = sin(th);
             
             float x = x_ - axis.x_;
             float y = y_ - axis.y_;
@@ -83,7 +86,7 @@ namespace game_engine {
             r_ = r;
         };
 
-        /*
+        /**
             Translate the circle
             @param x Horizontal movement
             @param y Vertical movement
@@ -93,8 +96,16 @@ namespace game_engine {
         }
 
         /**
+            Scale the circle
+            @param s The scaling amount
+        */
+        void Scale(float s) {
+            r_ = r_ * s;
+        }
+
+        /**
             Rotate the circle clockwise around its center
-            @param th The rotation angle
+            @param th The rotation angle in radians
         */
         void Rotate(float th){
             /* Do nothing */
@@ -140,8 +151,16 @@ namespace game_engine {
         }
 
         /**
+            Scale the rectangle
+            @param s The scaling amount
+        */
+        void Scale(float s) {
+            dt::Console(dt::CRITICAL, "Rectangle2D::Scale(): This function is not implemented");
+        }
+
+        /**
             Rotate the rectangle clockwise around its center
-            @param th The rotation angle
+            @param th The rotation angle in radians
         */
         void Rotate(float th){
             Point2D center((B_.x_ + D_.x_) / 2.0f, (B_.y_ + D_.y_) / 2.0f);
@@ -180,7 +199,7 @@ namespace game_engine {
             float gradient = (b_y - a_y) / (b_x - a_x);
             A_ = gradient;
             B_ = -1.0f;
-            C_ = a_y - gradient*a_x;
+            C_ = a_y - gradient * a_x;
         };
         /**
             Create a line from a point and a slope
@@ -188,7 +207,7 @@ namespace game_engine {
         Line2D(float a_x, float a_y, float gradient) {
             A_ = gradient;
             B_ = -1.0f;
-            C_ = a_y - gradient*a_x;
+            C_ = a_y - gradient * a_x;
         }
 
         /**
@@ -202,7 +221,7 @@ namespace game_engine {
             Get the line y-intercept
         */
         float GetYIntercept() {
-            return -C_ / A_;
+            return -C_ / B_;
         }
 
     };

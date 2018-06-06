@@ -25,7 +25,7 @@ int World::Init(ge::GameEngine * engine) {
     if (ret) return ret;
 
     /* Initialize the world */
-    /* Create grass */
+    /* Create some grass */
     Grass * floor = NewObj<Grass>();
     floor->Init(0.0f, 0.0f, 0.0f, engine);
     floor = NewObj<Grass>();
@@ -34,14 +34,24 @@ int World::Init(ge::GameEngine * engine) {
     floor->Init(0.0f, 5.0f, 0.0f, engine);
     floor = NewObj<Grass>();
     floor->Init(5.0f, 5.0f, 0.0f, engine);
+    floor = NewObj<Grass>();
+    floor->Init(-5.0f, 0.0f, 0.0f, engine);
+    floor = NewObj<Grass>();
+    floor->Init(0.0f, -5.0f, 0.0f, engine);
+    floor = NewObj<Grass>();
+    floor->Init(-5.0f, -5.0f, 0.0f, engine);
+    floor = NewObj<Grass>();
+    floor->Init(5.0f, -5.0f, 0.0f, engine);
+    floor = NewObj<Grass>();
+    floor->Init(-5.0f, 5.0f, 0.0f, engine);
 
     /* Create a path */
     Path * path = NewObj<Path>();
-    path->Init(9.0f, 0.0f, 0.0f, engine);
-    path->Scale(3, 4, 1);
+    path->Init(9.5f, 0.0f, 0.0f, engine);
+    path->Scale(4, 4, 1);
     path = NewObj<Path>();
-    path->Init(9.0f, 4.0f, 0.0f, engine);
-    path->Scale(3, 4, 1);
+    path->Init(9.5f, 4.0f, 0.0f, engine);
+    path->Scale(4, 4, 1);
 
     /* Create a wall */
     Wall * wall = NewObj<Wall>();
@@ -63,9 +73,14 @@ int World::Init(ge::GameEngine * engine) {
     tres = NewObj<Treasure>();
     tres->Init(-2.4f, 1.5f, 0.1f, engine);
     tres = NewObj<Treasure>();
-    tres->Init(5.0f, 5.0f, 0.1f, engine);
-    tres = NewObj<Treasure>();
     tres->Init(5.0f, -5.0f, 0.1f, engine);
+    tres = NewObj<Treasure>();
+    tres->Init(5.0f, 4.94f, 0.1f, engine);
+    tres = NewObj<Treasure>();
+    tres->Init(6.1f, 6.0f, 0.1f, engine);
+    tres = NewObj<Treasure>();
+    tres->Init(7.0, 7.0f, 0.1f, engine);
+    tres->Rotate(ge::GetRadians(15.0f), 2);
     tres = NewObj<Treasure>();
     tres->Init(0.0f, 30.0f, 0.1f, engine); /* Put something far up */
 

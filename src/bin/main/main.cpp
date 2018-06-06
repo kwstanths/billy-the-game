@@ -41,7 +41,7 @@ int main(int argc, char ** argv) {
     ge::OpenGLCameraConfig_t camera_params;
     camera_params.pos_x_ = 0;
     camera_params.pos_y_ = 0;
-    camera_params.pos_z_ = 10;
+    camera_params.pos_z_ = 8;
     camera_params.dir_x_ = 0;
     camera_params.dir_y_ = 1;
     camera_params.dir_z_ = 0;
@@ -59,7 +59,7 @@ int main(int argc, char ** argv) {
     engine.SetWorld(&world);
 
     ge::FrameRateRegulator frame_regulator;
-    frame_regulator.Init(100, 10);
+    frame_regulator.Init(100, 5);
     do {
         frame_regulator.FrameStart();
         float delta_time = frame_regulator.GetDelta();

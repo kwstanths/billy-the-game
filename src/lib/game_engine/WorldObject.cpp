@@ -4,6 +4,7 @@
 #include "WorldSector.hpp"
 #include "ErrorCodes.hpp"
 
+#include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
 namespace ph = game_engine::physics;
@@ -61,7 +62,16 @@ namespace game_engine {
 
     int WorldObject::Destroy() {
         
-        /* TODO should call the PhysicsObject::Destroy() */
+        if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
+
+        CodeReminder("TODO Remove from the world sector");
+        CodeReminder("TODO Call the PhysicsObject::Destroy()");
+        
+        /* 
+            DON'T delete OpenGLObject and OpenGLTexture pointers !!! 
+            They might be used by other WorldObjects
+        */
+        CodeReminder("TODO Change These pointers into something else, like shared_ptr for example");
 
         is_inited_ = false;
         return 0;
@@ -102,6 +112,14 @@ namespace game_engine {
         else if (axis == 2) rotation_matrix_ = GetRotateMatrix(angle, 0, 0, 1);
         
         rotated_angle_ = angle;
+
+        /* 
+            Currently, rotation is done in a 2d manner only in the xy pane clockwise, i.e along the z-axis
+            This means that positive angle will actually rotate along the -z axis, and 
+            negative angle will rotate along the z-axis. That's why we pass the opositve of the angle, since
+            the GetRotateMatrix has opposite behaviour 
+        */
+        PhysicsObject::Rotate(-angle);
     }
 
 }

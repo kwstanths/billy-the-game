@@ -116,23 +116,31 @@ namespace physics {
         if (Equal(gradient_a, gradient_b)) {
             debug_tools::Console(debug_tools::CRITICAL, "IntersecLine_Line(): gradients are almost equal");
         }
-        if (isinf(gradient_a) && isinf(yinter_a)) {
-            debug_tools::Console(debug_tools::CRITICAL, "IntersecLine_Line(): impossible or not initialised line, a");
+
+        /* Calculate general solution */
+        float x_coord, y_coord;
+        x_coord = (yinter_b - yinter_a) / (gradient_a - gradient_b);
+        y_coord = gradient_a * x_coord + yinter_a;
+
+        /* Special cases */
+        if (Equal(line_a.B_, 0.0f)) {
+            /* Line a is perpendicular to the x-axis */
+            x_coord = -line_a.C_ / line_a.A_;
+        } else if (Equal(line_b.B_, 0.0f)) {
+            /* Line b is perpendicular to the x-axis */
+            x_coord = -line_b.C_ / line_b.A_;
         }
-        if (isinf(gradient_b) && isinf(yinter_b)) {
-            debug_tools::Console(debug_tools::CRITICAL, "IntersecLine_Line(): impossible or not initialised line, b");
+
+        if (Equal(gradient_a, 0.0f)) {
+            /* Line a is perpendicular to the y-axis */
+            y_coord = -line_a.C_ / line_a.B_;
         }
-        if (isinf(gradient_a) && isinf(yinter_b)) {
-            return Point2D(-line_a.C_ / line_a.A_, -line_b.C_ / line_b.B_);
+        if (Equal(gradient_b, 0.0f)) {
+            /* line b is perpendicular to the y-axis */
+            y_coord = -line_b.C_ / line_b.B_;
         }
-        if (isinf(gradient_b) && isinf(yinter_a)) {
-            return Point2D(-line_b.C_ / line_b.A_, -line_a.C_ / line_a.B_);
-        }
-    
-        float x = (yinter_b - yinter_a) / (gradient_a - gradient_b);
-        float y = gradient_a * x + yinter_a;
-    
-        return Point2D(x, y);
+
+        return Point2D(x_coord, y_coord);
     }
     
     bool IntersectRect_Rect(Rectangle2D rect_a, Rectangle2D rect_b) {
