@@ -16,12 +16,11 @@ namespace game_engine {
         is_inited_ = false;
         last_error_ = 0;
 
-        CodeReminder("Game engine FPS");
-
         context_ = new OpenGLContext(context_params);
         camera_ = new OpenGLCamera(camera_params);
         renderer_ = new OpenGLRenderer();
         asset_manager_ = new AssetManager();
+        debugger_ = new Debugger();
     }
 
     GameEngine::~GameEngine() {
@@ -29,11 +28,14 @@ namespace game_engine {
         if (camera_ != nullptr) delete camera_;
         if (context_ != nullptr) delete context_;
         if (asset_manager_ != nullptr) delete asset_manager_;
+        if (debugger_!= nullptr) delete debugger_;
+
 
         renderer_ = nullptr;
         camera_ = nullptr;
         context_ = nullptr;
         asset_manager_ = nullptr;
+        debugger_ = nullptr;
     }
 
     int GameEngine::Init() {
@@ -54,6 +56,8 @@ namespace game_engine {
         renderer_->Init(context_);
 
         asset_manager_->Init(200, 200);
+
+        debugger_->Init(asset_manager_, renderer_);
 
         CodeReminder("Find the size and margin of the visible world based on the camera");
         visible_world_ = std::vector<WorldObject *>(200);
@@ -78,6 +82,7 @@ namespace game_engine {
         context_->Destroy();
         /* TODO Implement renderer Destroy() which depends on OpenGLContext */
         asset_manager_->Destroy();
+        debugger_->Destroy();
 
         is_inited_ = false;
         last_error_ = 0;
@@ -150,6 +155,10 @@ namespace game_engine {
 
     AssetManager * GameEngine::GetAssetManager() {
         return asset_manager_;
+    }
+
+    Debugger * GameEngine::GetDebugger() {
+        return debugger_;
     }
 
     int GameEngine::GetLastError() {

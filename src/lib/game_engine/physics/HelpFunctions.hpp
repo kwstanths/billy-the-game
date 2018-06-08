@@ -38,9 +38,19 @@ namespace game_engine {
         @return radians
     */
     float GetRadians(float degrees);
+
+    /**
+        Get degrees from radians
+        @param radians
+        @return degrees
+    */
+    float GetDegrees(float radians);
     
     /**
         Get an integer random number between two numbers
+        @param min The lower bound
+        @param max The upper bound
+        @return Random number between
     */
     int GetRand(int min, int max);
 

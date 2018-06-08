@@ -8,12 +8,14 @@
 class Treasure : public game_engine::WorldObject {
 public:
 
-    bool Init(float x, float y, float z, game_engine::GameEngine * engine);
+    bool Init(float x, float y, float z, game_engine::GameEngine * engine, size_t id);
 
     virtual void Step(double delta_time) override;
 
-private:
+    virtual void Interact() override;
 
+private:
+    size_t id_;
 };
 
 #endif

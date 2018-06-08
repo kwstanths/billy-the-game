@@ -24,3 +24,7 @@ bool Wall::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 void Wall::Step(double delta_time) {
 
 }
+
+void Wall::Interact() {
+    dt::Console(dt::INFO, "Hello? Yes? This is wall speaking");
+}

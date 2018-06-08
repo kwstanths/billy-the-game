@@ -22,7 +22,7 @@ namespace game_engine {
 
     /**
         A WorldObject is an entity inside a WorldSector. Override this class, call the function
-        Init(... , ...), and provide your custom behaviour in the Step() function
+        Init(... , ...), and provide your custom behaviour in the Step() and Interact function
     */
     class WorldObject : public physics::PhysicsObject {
         friend WorldSector;
@@ -33,6 +33,9 @@ namespace game_engine {
         */
         WorldObject();
 
+        /**
+            Custom sequential alloction without single remove and delete
+        */
         static void * operator new(size_t size, memory_subsystem::ArrayAllocator * array_objects) {
             void * address = array_objects->Allocate(size);
             if (address == nullptr) {
@@ -46,6 +49,9 @@ namespace game_engine {
             return address;
         }
 
+        /**
+            Custom sequential allocation without remove and delete
+        */
         static void * operator new(size_t size, memory_subsystem::PoolAllocator * pool_objects) {
             
             if (pool_objects->GetBlockSize() < size) throw std::bad_alloc();
@@ -81,15 +87,22 @@ namespace game_engine {
         bool IsInited();
 
         /**
-            Draw the object using the variables set in Init(...);
+            Draw the object during every frame, after calling the step function
             @param renderer The renderer
         */
         void Draw(OpenGLRenderer * renderer);
 
         /**
-            Function that should be overriden for custom step behaviour
+            Function that should be overriden for custom step behaviour. Step() is called,
+            and then Draw() is called
         */
         virtual void Step(double delta_time);
+
+        /**
+            Function that can be overriden for custom interaction. It's not called during 
+            frames. Call it yourself for another object
+        */
+        virtual void Interact();
 
         /**
             Set the position for the object
@@ -100,7 +113,7 @@ namespace game_engine {
         void SetPosition(float pos_x, float pos_y, float pos_z);
 
         /**
-            Scale the object, sets the scale matrix
+            Scale the object, sets the scale matrix. Collision detection is NOT changed TODO
             @param Scale amount in axis x
             @param Scale amount in axis y
             @param Scale amount in axis z
@@ -108,11 +121,21 @@ namespace game_engine {
         void Scale(float scale_x, float scale_y, float scale_z);
 
         /**
-            Rotate the object
+            Rotate the object. Changes collision detection as well
             @param angle The angle of rotation in radians, can be negative
             @param axis The axis to rotate around, 0=X-axis, 1=Y-axis, 2=Z-axis
         */
         void Rotate(float angle, size_t axis);
+
+        /**
+            Get the diercton at which the object is "looking". The initial direction is "top" 
+            which is zero degrees angle
+            @return The direction of the object in RADIANS
+        */
+        Direction GetLookingDirection();
+
+    protected:
+        WorldSector * world_sector_ = nullptr;
 
     private:
         bool is_inited_;
@@ -120,7 +143,6 @@ namespace game_engine {
 
         OpenGLObject * object_;
         OpenGLTexture * texture_;
-        WorldSector * world_sector_;
 
         glm::mat4 translation_matrix_;
         glm::mat4 rotation_matrix_;

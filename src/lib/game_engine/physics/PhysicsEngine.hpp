@@ -60,6 +60,16 @@ namespace physics {
         int Update(PhysicsObject * object, float new_pos_x, float new_pos_y);
 
         /**
+            Finds the neighbour with the highest z inside the search area. Currently pos_x, and pos_y 
+            are not used. The idea is to find the one that is also closest to pos_x and pos_y
+            @param search_area The aread to search
+            @param pos_x The x coordinate of the object that we want to find the closest neighbour
+            @param pos_y The y coordinate of the object that we want to find the closest neighbour
+            @return A pointer to the closest neighbour, or nullptr if none is found
+        */
+        PhysicsObject * FindNeighbour(Rectangle2D search_area, float pos_x, float pos_y);
+
+        /**
             Check for collision inside.
             @param object The object to check
             @param move_offset The amount of moving done
@@ -72,7 +82,7 @@ namespace physics {
         bool is_inited_;
         /* Memory to hold the objects */
         memory_subsystem::PoolAllocator pool_quad_tree_;
-        /* Holds the objects */
+        /* Data structure to hold the objects */
         utility::QuadTree<PhysicsObject> world_;
 
         /**

@@ -27,9 +27,14 @@ int Player::Init(float x, float y, float z, ge::GameEngine * engine) {
     ge::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/player.bmp", ge::OpenGLTexture::TEXTURE_STB, &ret);
 
     ret = WorldObject::Init(object, texture, x, y, z);
+    radius_ = 0.5f;
+    interact_fov_ = ge::GetRadians(50.0f);
+    interact_margin_ = 0.2f;
 
+    /* Scale object down to half */
     Scale(0.5f, 0.5f, 1.0f);
-    SetCollision(0.25f);
+    radius_ = radius_ * 0.5f;
+    SetCollision(radius_);
 
     engine_ = engine;
 
@@ -64,22 +69,6 @@ void Player::Move(float move_offset, ControlInput control_input, game_engine::Co
     pos_y += collision_input.up_;
     pos_y += -collision_input.down_;
     SetPosition(pos_x, pos_y, pos_z);
-
-    /* Rotate player if we are moving */
-    if (moving_left && moving_up) Rotate(game_engine::GetRadians(45.0f), 2);
-    else if (moving_left && moving_down) Rotate(game_engine::GetRadians(135.0f), 2);
-    else if (moving_right && moving_up) Rotate(game_engine::GetRadians(-45.0f), 2);
-    else if (moving_right && moving_down) Rotate(game_engine::GetRadians(-135.0f), 2);
-    else if (moving_up) Rotate(game_engine::GetRadians(0), 2);
-    else if (moving_left) Rotate(game_engine::GetRadians(90.0f), 2);
-    else if (moving_right) Rotate(game_engine::GetRadians(-90.0f), 2);
-    else if (moving_down) Rotate(game_engine::GetRadians(180.0f), 2);
-
-    /* Rotate player if we cannot move but we must rotate */
-    if (control_input.KEY_UP && !moving_up) Rotate(game_engine::GetRadians(0), 2);
-    else if (control_input.KEY_LEFT && !moving_left) Rotate(game_engine::GetRadians(90.0f), 2);
-    else if (control_input.KEY_RIGHT && !moving_right) Rotate(game_engine::GetRadians(-90.0f), 2);
-    else if (control_input.KEY_DOWN && !moving_down) Rotate(game_engine::GetRadians(180.0f), 2);
 }
 
 void Player::Step(double delta_time) {
@@ -92,27 +81,64 @@ void Player::Step(double delta_time) {
     /* Get input */
     ControlInput input = engine_->GetControlsInput();
 
+    /* Interact with objects */
+    {
+        if (input.KEY_ACT) {
+            ge::Direction direction = GetLookingDirection();
+            float x1 = GetX() - (radius_ + interact_margin_) * sin(direction + interact_fov_);
+            float y1 = GetY() + (radius_ + interact_margin_) * cos(direction + interact_fov_);
+            ge::Point2D A(x1, y1);
+
+            float x2 = GetX() - (radius_ + interact_margin_) * sin(direction - interact_fov_);
+            float y2 = GetY() + (radius_ + interact_margin_) * cos(direction - interact_fov_);
+            ge::Point2D B(x2, y2);
+
+            float side_size = 1.5f * (radius_ + interact_margin_) * tan(interact_fov_);
+
+            float x3 = x2 - side_size * sin(direction);
+            float y3 = y2 + side_size * cos(direction);
+            ge::Point2D C(x3, y3);
+
+            float x4 = x1 - side_size * sin(direction);
+            float y4 = y1 + side_size * cos(direction);
+            ge::Point2D D(x4, y4);
+
+            engine_->GetDebugger()->DrawPoint(x1, y1, 0.5f, 0.08f);
+            engine_->GetDebugger()->DrawPoint(x2, y2, 0.5f, 0.08f);
+            engine_->GetDebugger()->DrawPoint(x3, y3, 0.5f, 0.08f);
+            engine_->GetDebugger()->DrawPoint(x4, y4, 0.5f, 0.08f);
+
+
+
+            ge::Rectangle2D search_area(A, B, C, D);
+            WorldObject * neighbour = world_sector_->FindNeighbour(search_area, GetX(), GetY());
+            if (neighbour!= nullptr) neighbour->Interact();
+        }
+    }
+
     /* Move player and camera */
     {
         float move_offset = (1.0f * GetSpeed(input.KEY_RUN)) * delta_time;
         /* Find the moving direction based on the input */
         size_t lookup_index = input.KEY_UP * 8 + input.KEY_DOWN * 4 + input.KEY_LEFT * 2 + input.KEY_RIGHT * 1;
-        float direction_array_[16] = { -1, 270, 90, -1, 180, 225, 135, -1, 0, 345, 45, -1, -1, -1, -1, -1 };
         ge::Direction direction = direction_array_[lookup_index];
-        if (ge::Equal(direction, -1.0f)) return;
-        /* Check for collision and move */
-        ge::CollisionResult_t can_move = CheckCollision(move_offset, direction);
-        Move(move_offset, input, can_move);
-        if (can_move.left_) engine_->CameraMove2D(-can_move.left_, 0);
-        if (can_move.right_) engine_->CameraMove2D(can_move.right_, 0);
-        if (can_move.up_) engine_->CameraMove2D(0, can_move.up_);
-        if (can_move.down_) engine_->CameraMove2D(0, -can_move.down_);
+        if (!ge::Equal(direction, -1.0f)) {
+
+            /* Rotate*/
+            Rotate(ge::GetRadians(direction), 2);
+
+            /* Check for collision and Move */
+            ge::CollisionResult_t can_move = CheckCollision(move_offset, direction);
+            Move(move_offset, input, can_move);
+
+            /* Move camera as well */
+            if (can_move.left_) engine_->CameraMove2D(-can_move.left_, 0);
+            if (can_move.right_) engine_->CameraMove2D(can_move.right_, 0);
+            if (can_move.up_) engine_->CameraMove2D(0, can_move.up_);
+            if (can_move.down_) engine_->CameraMove2D(0, -can_move.down_);
+        }
     }
 
-    /* Interact with objects */
-    {
-    
-    }
 }
 
 float Player::GetSpeed(bool running) {

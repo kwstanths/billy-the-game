@@ -14,6 +14,7 @@
 #include "WorldObject.hpp"
 #include "WorldSector.hpp"
 #include "AssetManager.hpp"
+#include "Debugger.hpp"
 #include "ErrorCodes.hpp"
 
 
@@ -89,6 +90,12 @@ namespace game_engine {
         AssetManager * GetAssetManager();
 
         /**
+            Get the debugger object
+            @return The debugger. nullptr is returned if Init() error
+        */
+        Debugger * GetDebugger();
+
+        /**
             Get the last error occured, 0 = No error
             @return The last error
         */
@@ -107,6 +114,7 @@ namespace game_engine {
         OpenGLCamera * camera_ = nullptr;
         OpenGLRenderer * renderer_ = nullptr;
         AssetManager * asset_manager_ = nullptr;
+        Debugger * debugger_ = nullptr;
 
         WorldSector * sector_;
         std::vector<WorldObject *> visible_world_;

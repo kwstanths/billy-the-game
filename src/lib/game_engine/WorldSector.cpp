@@ -95,7 +95,7 @@ namespace game_engine {
     }
 
     size_t WorldSector::GetObjectsWindow(float center_x, float center_y, float margin,
-        std::vector<WorldObject*> & visible_world) 
+        std::vector<WorldObject*> & objects) 
     {
         if (!is_inited_) {
             dt::Console(dt::CRITICAL, "WorldSector::GetObjectsWindow() is not initialised");
@@ -115,11 +115,11 @@ namespace game_engine {
         for (size_t i = rows_start; i <= rows_end; i++) {
             for (size_t j = col_start - border; j <= col_end; j++) {
                 for (std::deque<WorldObject*>::iterator itr = world_[i][j].begin(); itr != world_[i][j].end(); ++itr) {
-                    if (index > visible_world.size() - 1) {
+                    if (index > objects.size() - 1) {
                         dt::Console(dt::WARNING, "WorldSector::GetObjetcsWindow() Objects overflow");
                         return index;
                     }
-                    visible_world[index++] = *itr;
+                    objects[index++] = *itr;
                 }
 
             }
@@ -127,7 +127,12 @@ namespace game_engine {
         return index;
     }
 
+    WorldObject * WorldSector::FindNeighbour(Rectangle2D search_area, float pos_x, float pos_y) {
+        return dynamic_cast<WorldObject *>(physics_engine_->FindNeighbour(search_area, pos_x, pos_y));
+    }
+
     ph::PhysicsEngine * WorldSector::GetPhysicsEngine() {
+
         return physics_engine_;
     }
 

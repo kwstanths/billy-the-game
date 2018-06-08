@@ -20,6 +20,8 @@ namespace physics {
         */
         PhysicsObject();
 
+        virtual ~PhysicsObject() {};
+
         /**
             Initializes the physics object
             @param pos_x The position x

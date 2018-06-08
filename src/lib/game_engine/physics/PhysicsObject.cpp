@@ -68,23 +68,30 @@ namespace physics {
     }
 
     void PhysicsObject::SetPosition(float pos_x, float pos_y, float pos_z) {
+        /* Update the collision detection objects */
         collision_->Translate(pos_x - pos_x_, pos_y - pos_y_);
+        
+        /* Update the object's position inside the physics engine */
         physics_engine_->Update(this, pos_x, pos_y);
 
+        /* Set the internal parameeters */
         pos_x_ = pos_x;
         pos_y_ = pos_y;
         pos_z_ = pos_z;
     }
 
     void PhysicsObject::SetCollision() {
+        delete collision_;
         collision_ = new CollisionNone();
     }
 
     void PhysicsObject::SetCollision(float x_size, float y_size, float z_size) {
+        delete collision_;
         collision_ = new CollisionBoundingRectangle(Rectangle2D(pos_x_, pos_y_, x_size, y_size));
     }
 
     void PhysicsObject::SetCollision(float radius) {
+        delete collision_;
         collision_ = new CollisionBoundingCircle(Circle2D(pos_x_, pos_y_, radius));
     }
 

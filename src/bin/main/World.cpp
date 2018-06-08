@@ -67,22 +67,23 @@ int World::Init(ge::GameEngine * engine) {
     wall = NewObj<Wall>();
     wall->Init(4.0f, 6.5f, 0.1f, engine);
 
-    /* Create some collidable treasures */
+    /* Create some collidable treasures with some random ids */
     Treasure * tres = NewObj<Treasure>();
-    tres->Init(0.0f, 1.5f, 0.1f, engine);
+    tres->Init(0.0f, 1.5f, 0.1f, engine, 1);
     tres = NewObj<Treasure>();
-    tres->Init(-2.4f, 1.5f, 0.1f, engine);
+    tres->Init(-2.4f, 1.5f, 0.1f, engine, 2);
     tres = NewObj<Treasure>();
-    tres->Init(5.0f, -5.0f, 0.1f, engine);
+    tres->Init(5.0f, -5.0f, 0.1f, engine, 3);
     tres = NewObj<Treasure>();
-    tres->Init(5.0f, 4.94f, 0.1f, engine);
+    tres->Init(5.0f, 4.94f, 0.1f, engine, 4);
     tres = NewObj<Treasure>();
-    tres->Init(6.1f, 6.0f, 0.1f, engine);
+    tres->Init(6.1f, 6.0f, 0.1f, engine, 5);
     tres = NewObj<Treasure>();
-    tres->Init(7.0, 7.0f, 0.1f, engine);
+    tres->Init(7.0, 7.0f, 0.1f, engine, 6);
     tres->Rotate(ge::GetRadians(15.0f), 2);
     tres = NewObj<Treasure>();
-    tres->Init(0.0f, 30.0f, 0.1f, engine); /* Put something far up */
+    tres->Init(0.0f, 30.0f, 0.1f, engine, 7); /* Put something far up */
+    tres->Rotate(ge::GetRadians(45.0f), 2);
 
     /* Create a main player */
     Player * player = NewObj<Player>();

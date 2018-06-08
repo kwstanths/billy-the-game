@@ -26,9 +26,12 @@ public:
 
 private:
     bool is_inited_;
+    float radius_;
+    float interact_fov_, interact_margin_;
     game_engine::GameEngine * engine_;
 
     float speed_regular_, speed_running_;
+    float direction_array_[16] = { -1, 270, 90, -1, 180, 225, 135, -1, 0, 315, 45, -1, -1, -1, -1, -1 };
 
 };
 

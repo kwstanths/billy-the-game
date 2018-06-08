@@ -3,20 +3,13 @@
 #endif
 
 #include "game_engine/GameEngine.hpp"
-#include "game_engine/ControlInput.hpp"
 #include "game_engine/FrameRateRegulator.hpp"
 #include "game_engine/WorldSector.hpp"
 #include "game_engine/ErrorCodes.hpp"
-#include "game_engine/WorldObject.hpp"
-#include "game_engine/opengl/OpenGLObject.hpp"
-#include "game_engine/opengl/OpenGLTexture.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
 
-#include "Player.hpp"
-#include "Grass.hpp"
-#include "Treasure.hpp"
 #include "World.hpp"
 
 namespace ge = game_engine;
@@ -25,6 +18,7 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Frame reate regulator inside the engine loop");
     CodeReminder("Implement the destruction of an object");
     CodeReminder("WorldObject, collision in SetPosition");
     CodeReminder("WorldSector, remove array add quad tree")

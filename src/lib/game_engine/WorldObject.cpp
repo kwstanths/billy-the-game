@@ -89,18 +89,26 @@ namespace game_engine {
     }
 
     void WorldObject::Step(double delta_time) {
-        
+        /* Re-implement this function for custom behaviour at every frame */
+    }
+
+    void WorldObject::Interact() {
+        /* Re-implement this function for custom interact behaviour */
     }
 
     void WorldObject::SetPosition(float pos_x, float pos_y, float pos_z) {
+        /* Update the object's position inside the world sector */
         world_sector_->UpdateObjectPosition(this, GetX(), GetY(), pos_x, pos_y);
         
+        /* Set the position in the physics layer */
         PhysicsObject::SetPosition(pos_x, pos_y, pos_z);
         
+        /* Set the translation matrix */
         translation_matrix_= GetTranslateMatrix(GetX(), GetY(), GetZ());
     }
 
     void WorldObject::Scale(float scale_x, float scale_y, float scale_z) {
+        /* TODO Maybe change collision detecton as well */
         scale_matrix_ = GetScaleMatrix(scale_x, scale_y, scale_z);
     }
 
@@ -113,6 +121,7 @@ namespace game_engine {
         
         rotated_angle_ = angle;
 
+        /* Update physics object */
         /* 
             Currently, rotation is done in a 2d manner only in the xy pane clockwise, i.e along the z-axis
             This means that positive angle will actually rotate along the -z axis, and 
@@ -120,6 +129,10 @@ namespace game_engine {
             the GetRotateMatrix has opposite behaviour 
         */
         PhysicsObject::Rotate(-angle);
+    }
+
+    Direction WorldObject::GetLookingDirection() {
+        return  rotated_angle_;
     }
 
 }

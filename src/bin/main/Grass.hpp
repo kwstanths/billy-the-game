@@ -11,6 +11,8 @@ public:
 
     virtual void Step(double delta_time) override;
 
+    virtual void Interact() override;
+
 private:
 
 };

@@ -4,9 +4,6 @@
 #include <vector>
 #include <deque>
 
-#include "opengl/OpenGLObject.hpp"
-#include "opengl/OpenGLTexture.hpp"
-#include "physics/Types.hpp"
 #include "physics/PhysicsEngine.hpp"
 #include "memory/ArrayAllocator.hpp"
 
@@ -99,7 +96,12 @@ namespace game_engine {
             @param[out] visible_world The vector with pointers to the objects window
             @return The number of objects assigned to the visible_world vector
         */
-        size_t GetObjectsWindow(float center_x, float center_y, float margin, std::vector<WorldObject *> & visible_world);
+        size_t GetObjectsWindow(float center_x, float center_y, float margin, std::vector<WorldObject *> & objects);
+
+        /**
+            Forwards the call the physics engine. See physics/PhysicsEngine::FindNeighbour()
+        */
+        WorldObject * FindNeighbour(Rectangle2D search_area, float pos_x, float pos_y);
 
         /**
             Get the physics engine used in this world

@@ -11,6 +11,10 @@ namespace game_engine {
         return M_PI / 180.0f * degrees;
     }
 
+    float GetDegrees(float radians) {
+        return radians * 180.0f / M_PI;
+    }
+
     int GetRand(int min, int max){
         return rand() % (max - min + 1) + min;
     }
