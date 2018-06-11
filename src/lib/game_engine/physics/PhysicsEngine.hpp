@@ -60,6 +60,12 @@ namespace physics {
         int Update(PhysicsObject * object, float new_pos_x, float new_pos_y);
 
         /**
+            Remove an object from the physics engine
+            @param object The object to remove
+        */
+        void Remove(PhysicsObject * object);
+
+        /**
             Finds the neighbour with the highest z inside the search area. Currently pos_x, and pos_y 
             are not used. The idea is to find the one that is also closest to pos_x and pos_y
             @param search_area The aread to search

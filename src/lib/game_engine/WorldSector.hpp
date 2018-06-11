@@ -16,6 +16,7 @@ namespace game_engine {
         A class to store world objects
     */
     class WorldSector {
+        friend class GameEngine;
     public:
         /**
             Does nothing in particular. Call Init()
@@ -52,17 +53,22 @@ namespace game_engine {
 
         /**
             Spawn a new object. Allocates the memory, and returns a pointer to it
+            @param removable If true, when the object is removed from the world no memory leak will occur
             @return A pointer to the object. If nullptr, then allocation failed
         */
-        template<typename T> T * NewObj() {
+        template<typename T> T * NewObj(bool removable = false) {
             if (!is_inited_) {
                 dt::Console(dt::CRITICAL, "World sector is not initialised");
                 return nullptr;
             }
 
-            /* Spawn new object */
-            T * the_new_object = new (array_objects_) T();
+            /* Allocate memory for new object */
+            T * the_new_object;
+            if (!removable) the_new_object = new (array_allocator_) T();
+            else the_new_object = new (pool_allocator_) T();
+            
             the_new_object->world_sector_ = this;
+            the_new_object->removable_ = removable;
             
             return the_new_object;
         }
@@ -86,6 +92,12 @@ namespace game_engine {
             @param new_pos_y The new position y coordinate
         */
         void UpdateObjectPosition(WorldObject * object, float old_pos_x, float old_pos_y, float new_pos_x, float new_pos_y);
+
+        /**
+            Remove the object from the world
+            @param object Object to remove
+        */
+        void Remove(WorldObject * object);
 
         /**
             Get a window of object in the world. Objects are assigned sequentially to the visible world 
@@ -120,8 +132,11 @@ namespace game_engine {
             sequentially
         */
         std::vector<std::vector<std::deque<WorldObject *> > >world_;
-        /* The real memory for the objects */
-        memory_subsystem::ArrayAllocator * array_objects_;
+        /* Holds objects that are removed from the world, whose memory needs deallocation */
+        std::deque<WorldObject *> delete_vector_;
+        /* Sequential allocators for objects */
+        memory_subsystem::ArrayAllocator * array_allocator_;
+        memory_subsystem::PoolAllocator * pool_allocator_;
 
         /**
             Get the row in the world based in the vertical coordiate
@@ -136,6 +151,11 @@ namespace game_engine {
             @return The column
         */
         size_t GetColumn(float horizontal_coordinate);
+
+        /**
+            Deallocate the removed objects
+        */
+        void DeleteRemovedObjects();
 
     };
 

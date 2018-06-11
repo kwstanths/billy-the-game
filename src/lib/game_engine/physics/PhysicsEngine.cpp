@@ -69,6 +69,13 @@ namespace physics {
         return 0;
     }
 
+    void PhysicsEngine::Remove(PhysicsObject * object) {
+        bool ret = world_.Remove(Point2D(object->GetX(), object->GetY()), object);
+        if (!ret) dt::Console(dt::WARNING, "PhysicsEngine::Remove(): object not found");
+
+        return;
+    }
+
     PhysicsObject * PhysicsEngine::FindNeighbour(Rectangle2D search_area, float pos_x, float pos_y) {
         /* Get neighbours */
         std::vector<PhysicsObject *> neighbours(10, nullptr);

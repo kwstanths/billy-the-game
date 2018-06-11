@@ -1,5 +1,6 @@
 #include "WorldSector.hpp"
 
+#include "debug_tools/Console.hpp"
 #include "debug_tools/CodeReminder.hpp"
 
 #include "ErrorCodes.hpp"
@@ -26,8 +27,10 @@ namespace game_engine {
 
         /* Initialize the world structure */
         world_ = std::vector<std::vector<std::deque<WorldObject *> > >(height, std::vector<std::deque<WorldObject *> >(width));
-        array_objects_ = new ms::ArrayAllocator();
-        array_objects_->Init(500 * 500);
+        array_allocator_ = new ms::ArrayAllocator();
+        array_allocator_->Init(500 * 500);
+        pool_allocator_ = new ms::PoolAllocator();
+        pool_allocator_->Init(sizeof(WorldObject), 1000);
 
         /* Initialize the physics engine used */
         physics_engine_->Init(Rectangle2D(0, 0, 250, 250), elements);
@@ -47,7 +50,8 @@ namespace game_engine {
         CodeReminder("Iterate through the world objects, and call their Destroy()");
         
         world_.clear();
-        array_objects_->Destroy();
+        array_allocator_->Destroy();
+        pool_allocator_->Destroy();
          
         is_inited_ = false;
         return 0;
@@ -92,6 +96,22 @@ namespace game_engine {
         
         /* Add to new position */
         world_[new_pos_index_row][new_pos_index_col].push_back(object);
+    }
+
+    void WorldSector::Remove(WorldObject * object) {
+        size_t index_row = GetRow(object->GetY());
+        size_t index_col = GetColumn(object->GetX());
+
+        std::deque<WorldObject *> & objects = world_[index_row][index_col];
+        for (std::deque<WorldObject *>::iterator itr = objects.begin(); itr != objects.end(); ++itr) {
+            if (*itr == object) {
+                objects.erase(itr);
+                break;
+            }
+        }
+
+        if (object->removable_) delete_vector_.push_back(object);
+        else dt::Console(dt::WARNING, "Memory leak: Removing object that was not made removable");
     }
 
     size_t WorldSector::GetObjectsWindow(float center_x, float center_y, float margin,
@@ -144,6 +164,13 @@ namespace game_engine {
     size_t WorldSector::GetColumn(float horizontal_coordinate) {
         float index = 0.0f + (world_[0].size() - 1 - 0.0f) * (horizontal_coordinate - x_margin_start_) / (x_margin_end_ - x_margin_start_);
         return static_cast<size_t>(index);
+    }
+
+    void WorldSector::DeleteRemovedObjects() {
+        for (std::deque<WorldObject *>::iterator itr = delete_vector_.begin(); itr != delete_vector_.end(); ++itr) {
+            pool_allocator_->Deallocate(*itr);
+        }
+        delete_vector_.clear();
     }
 
 }

@@ -44,9 +44,9 @@ namespace physics {
 
         if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
-        CodeReminder("TODO Remove object from the engine");
-        CodeReminder("TODO Delete collision object");
-        
+        physics_engine_->Remove(this);
+        delete collision_;
+
         is_inited_ = false;
         return 0;
     }

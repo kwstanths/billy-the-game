@@ -54,17 +54,17 @@ int World::Init(ge::GameEngine * engine) {
     path->Scale(4, 4, 1);
 
     /* Create a wall */
-    Wall * wall = NewObj<Wall>();
+    Wall * wall = NewObj<Wall>(true);
     wall->Init(-1.0f, 6.5f, 0.1f, engine);
-    wall = NewObj<Wall>();
+    wall = NewObj<Wall>(true);
     wall->Init(0.0f, 6.5f, 0.1f, engine);
-    wall = NewObj<Wall>();
+    wall = NewObj<Wall>(true);
     wall->Init(1.0f, 6.5f, 0.1f, engine);
-    wall = NewObj<Wall>();
+    wall = NewObj<Wall>(true);
     wall->Init(2.0f, 6.5f, 0.1f, engine);
-    wall = NewObj<Wall>();
+    wall = NewObj<Wall>(true);
     wall->Init(3.0f, 6.5f, 0.1f, engine);
-    wall = NewObj<Wall>();
+    wall = NewObj<Wall>(true);
     wall->Init(4.0f, 6.5f, 0.1f, engine);
 
     /* Create some collidable treasures with some random ids */

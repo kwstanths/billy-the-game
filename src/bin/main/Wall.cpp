@@ -26,5 +26,7 @@ void Wall::Step(double delta_time) {
 }
 
 void Wall::Interact() {
-    dt::Console(dt::INFO, "Hello? Yes? This is wall speaking");
+    dt::Console(dt::INFO, "Hello? Yes? This is wall speaking. Let's destroy ths object");
+
+    Destroy();
 }

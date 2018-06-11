@@ -10,6 +10,7 @@
 #include "opengl/OpenGLObject.hpp"
 #include "opengl/OpenGLTexture.hpp"
 
+#include "FrameRateRegulator.hpp"
 #include "ControlInput.hpp"
 #include "WorldObject.hpp"
 #include "WorldSector.hpp"
@@ -21,6 +22,7 @@
 namespace game_engine {
 
     class GameEngine {
+        friend class WorldSector;
     public:
         /**
             Does nothing in particular
@@ -61,6 +63,12 @@ namespace game_engine {
             @return A ControlInput_t struct
         */
         ControlInput_t GetControlsInput();
+
+        /**
+            Get the delta of the last frame in seconds
+            @return Frame delta in seconds
+        */
+        float GetFrameDelta();
 
         /**
             Moves the camera initilised in a 2D manner. Changes of the camera's position will be reflected to the
@@ -110,6 +118,7 @@ namespace game_engine {
         bool is_inited_;
         int last_error_;
 
+        FrameRateRegulator frame_regulator_;
         OpenGLContext * context_ = nullptr;
         OpenGLCamera * camera_ = nullptr;
         OpenGLRenderer * renderer_ = nullptr;

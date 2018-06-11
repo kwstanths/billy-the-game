@@ -3,9 +3,6 @@
 #endif
 
 #include "game_engine/GameEngine.hpp"
-#include "game_engine/FrameRateRegulator.hpp"
-#include "game_engine/WorldSector.hpp"
-#include "game_engine/ErrorCodes.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
@@ -18,7 +15,7 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Frame reate regulator inside the engine loop");
+    CodeReminder("Add frame rate settings into the game engine init");
     CodeReminder("Implement the destruction of an object");
     CodeReminder("WorldObject, collision in SetPosition");
     CodeReminder("WorldSector, remove array add quad tree")
@@ -52,11 +49,8 @@ int main(int argc, char ** argv) {
 
     engine.SetWorld(&world);
 
-    ge::FrameRateRegulator frame_regulator;
-    frame_regulator.Init(100, 5);
     do {
-        frame_regulator.FrameStart();
-        float delta_time = frame_regulator.GetDelta();
+        float delta_time = engine.GetFrameDelta();
         
         ControlInput_t input = engine.GetControlsInput();
         if (input.KEY_ESC) {
@@ -68,9 +62,7 @@ int main(int argc, char ** argv) {
 
         engine.Step(delta_time);
 
-        frame_regulator.FrameEnd();
     } while (1);
 
-    frame_regulator.Destroy();
     engine.Destroy();
 }

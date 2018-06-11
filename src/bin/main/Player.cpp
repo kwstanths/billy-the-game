@@ -8,6 +8,8 @@
 #include "game_engine/physics/HelpFunctions.hpp"
 #include "game_engine/physics/Geometry.hpp"
 
+#include "Wall.hpp"
+
 namespace dt = debug_tools;
 namespace ge = game_engine;
 

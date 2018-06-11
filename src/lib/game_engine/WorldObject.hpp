@@ -36,7 +36,7 @@ namespace game_engine {
         /**
             Custom sequential alloction without single remove and delete
         */
-        static void * operator new(size_t size, memory_subsystem::ArrayAllocator * array_objects) {
+        void * operator new(size_t size, memory_subsystem::ArrayAllocator * array_objects) {
             void * address = array_objects->Allocate(size);
             if (address == nullptr) {
 
@@ -52,7 +52,7 @@ namespace game_engine {
         /**
             Custom sequential allocation without remove and delete
         */
-        static void * operator new(size_t size, memory_subsystem::PoolAllocator * pool_objects) {
+        void * operator new(size_t size, memory_subsystem::PoolAllocator * pool_objects) {
             
             if (pool_objects->GetBlockSize() < size) throw std::bad_alloc();
 
@@ -62,11 +62,11 @@ namespace game_engine {
             return address;
         }
 
-        static void operator delete(void * ptr, memory_subsystem::ArrayAllocator * array_objects) {
+        void operator delete(void * ptr, memory_subsystem::ArrayAllocator * array_objects) {
             debug_tools::Console(debug_tools::FATAL, "WorldObject array allocation failed");
         }
 
-        static void operator delete(void * ptr, memory_subsystem::PoolAllocator * pool_objects) {
+        void operator delete(void * ptr, memory_subsystem::PoolAllocator * pool_objects) {
             debug_tools::Console(debug_tools::FATAL, "WorldObject pool allocation failed");
         }
 
@@ -140,6 +140,7 @@ namespace game_engine {
     private:
         bool is_inited_;
         float rotated_angle_;
+        bool removable_;
 
         OpenGLObject * object_;
         OpenGLTexture * texture_;

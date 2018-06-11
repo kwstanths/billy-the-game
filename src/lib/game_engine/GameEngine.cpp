@@ -30,7 +30,6 @@ namespace game_engine {
         if (asset_manager_ != nullptr) delete asset_manager_;
         if (debugger_!= nullptr) delete debugger_;
 
-
         renderer_ = nullptr;
         camera_ = nullptr;
         context_ = nullptr;
@@ -52,12 +51,10 @@ namespace game_engine {
         }
 
         camera_->Init(context_);
-        
         renderer_->Init(context_);
-
         asset_manager_->Init(200, 200);
-
         debugger_->Init(asset_manager_, renderer_);
+        frame_regulator_.Init(100, 5);
 
         CodeReminder("Find the size and margin of the visible world based on the camera");
         visible_world_ = std::vector<WorldObject *>(200);
@@ -83,6 +80,7 @@ namespace game_engine {
         /* TODO Implement renderer Destroy() which depends on OpenGLContext */
         asset_manager_->Destroy();
         debugger_->Destroy();
+        frame_regulator_.Destroy();
 
         is_inited_ = false;
         last_error_ = 0;
@@ -94,6 +92,10 @@ namespace game_engine {
     }
 
     void GameEngine::Step(double delta_time) {
+
+        /* Start the frame */
+        frame_regulator_.FrameStart();
+
         context_->ClearColor();
 
         /* Get visible items */
@@ -122,11 +124,21 @@ namespace game_engine {
         /* Render text overlay */
         renderer_->Draw2DText("Welcome!", 100, 100, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
         
+        /* Update world */
+        sector_->DeleteRemovedObjects();
+
         context_->SwapBuffers();
+
+        /* End the frame */
+        frame_regulator_.FrameEnd();
     }
 
     ControlInput_t GameEngine::GetControlsInput() {
         return context_->GetControlsInput();
+    }
+
+    float GameEngine::GetFrameDelta() {
+        return frame_regulator_.GetDelta();
     }
 
     void GameEngine::CameraMove2D(float move_x, float move_y) {

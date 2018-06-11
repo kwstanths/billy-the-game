@@ -63,15 +63,15 @@ namespace game_engine {
     int WorldObject::Destroy() {
         
         if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
-
-        CodeReminder("TODO Remove from the world sector");
-        CodeReminder("TODO Call the PhysicsObject::Destroy()");
         
+        PhysicsObject::Destroy();
+
+        world_sector_->Remove(this);
+
         /* 
             DON'T delete OpenGLObject and OpenGLTexture pointers !!! 
             They might be used by other WorldObjects
         */
-        CodeReminder("TODO Change These pointers into something else, like shared_ptr for example");
 
         is_inited_ = false;
         return 0;
