@@ -7,6 +7,7 @@
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
 
+#include "Input.hpp"
 #include "World.hpp"
 
 namespace ge = game_engine;
@@ -15,8 +16,6 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Add frame rate settings into the game engine init");
-    CodeReminder("Implement the destruction of an object");
     CodeReminder("WorldObject, collision in SetPosition");
     CodeReminder("WorldSector, remove array add quad tree")
 
@@ -41,24 +40,30 @@ int main(int argc, char ** argv) {
     camera_params.up_z_ = 0;
     camera_params.orthographic_ = false;
     camera_params.zoom_factor_ = 75;
-    ge::GameEngine engine(context_params, camera_params);
-    if (engine.Init()) return false;
+    ge::GameEngineConfig_t engine_params;
+    engine_params.context_params_ = context_params;
+    engine_params.camera_params_ = camera_params;
+    engine_params.frame_rate_ = 100;
+    ge::GameEngine engine;
+    if (engine.Init(engine_params)) return false;
     
+    Input input;
+    input.Init(&engine);
+
     World world;
-    world.Init(&engine);
+    world.Init(&input, &engine);
 
     engine.SetWorld(&world);
-
     do {
         float delta_time = engine.GetFrameDelta();
         
-        ControlInput_t input = engine.GetControlsInput();
-        if (input.KEY_ESC) {
+        ControlInput_t controls = input.GetControls();
+        if (controls.QUIT_) {
             break;
         }
 
-        if (input.KEY_PAGE_UP) engine.CameraZoom2D(10 * delta_time);
-        if (input.KEY_PAGE_DOWN) engine.CameraZoom2D(-10 * delta_time);
+        if (controls.ZOOM_IN_) engine.CameraZoom2D(10 * delta_time);
+        if (controls.ZOOM_OUT_) engine.CameraZoom2D(-10 * delta_time);
 
         engine.Step(delta_time);
 

@@ -4,11 +4,13 @@
 #include "game_engine/WorldSector.hpp"
 #include "game_engine/GameEngine.hpp"
 
+#include "Input.hpp"
+
 class World :public game_engine::WorldSector {
 public:
     World();
 
-    int Init(game_engine::GameEngine * engine);
+    int Init(Input * input, game_engine::GameEngine * engine);
 
     int Destroy();
 

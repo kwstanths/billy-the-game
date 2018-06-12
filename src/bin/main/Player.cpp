@@ -22,11 +22,14 @@ Player::Player(): WorldObject() {
     is_inited_ = false;
 }
 
-int Player::Init(float x, float y, float z, ge::GameEngine * engine) {
+int Player::Init(float x, float y, float z, Input * input, ge::GameEngine * engine) {
+
+    input_ = input;
+    engine_ = engine;
 
     int ret;
-    ge::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
-    ge::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/player.bmp", ge::OpenGLTexture::TEXTURE_STB, &ret);
+    ge::OpenGLObject * object = engine_->GetAssetManager()->FindObject("assets/circle.obj", &ret);
+    ge::OpenGLTexture * texture = engine_->GetAssetManager()->FindTexture("assets/player.bmp", ge::OpenGLTexture::TEXTURE_STB, &ret);
 
     ret = WorldObject::Init(object, texture, x, y, z);
     radius_ = 0.5f;
@@ -37,8 +40,6 @@ int Player::Init(float x, float y, float z, ge::GameEngine * engine) {
     Scale(0.5f, 0.5f, 1.0f);
     radius_ = radius_ * 0.5f;
     SetCollision(radius_);
-
-    engine_ = engine;
 
     is_inited_ = true;
     return ret == 0;
@@ -51,7 +52,7 @@ int Player::Destroy() {
     return 0;
 }
 
-void Player::Move(float move_offset, ControlInput control_input, game_engine::CollisionResult_t collision_input) {
+void Player::Move(float move_offset, game_engine::CollisionResult_t collision_input) {
     if (!is_inited_) return;
 
     if (!WorldObject::IsInited())
@@ -81,11 +82,11 @@ void Player::Step(double delta_time) {
         dt::Console(dt::WARNING, "Player::Move(): WorldObject is not initialised");
 
     /* Get input */
-    ControlInput input = engine_->GetControlsInput();
+    ControlInput_t controls = input_->GetControls();
 
     /* Interact with objects */
     {
-        if (input.KEY_ACT) {
+        if (controls.INTERACT_PRESSED || controls.INTERACT_) {
             ge::Direction direction = GetLookingDirection();
             float x1 = GetX() - (radius_ + interact_margin_) * sin(direction + interact_fov_);
             float y1 = GetY() + (radius_ + interact_margin_) * cos(direction + interact_fov_);
@@ -110,19 +111,23 @@ void Player::Step(double delta_time) {
             engine_->GetDebugger()->DrawPoint(x3, y3, 0.5f, 0.08f);
             engine_->GetDebugger()->DrawPoint(x4, y4, 0.5f, 0.08f);
 
-
-
-            ge::Rectangle2D search_area(A, B, C, D);
-            WorldObject * neighbour = world_sector_->FindNeighbour(search_area, GetX(), GetY());
-            if (neighbour!= nullptr) neighbour->Interact();
+            if (controls.INTERACT_) {
+                ge::Rectangle2D search_area(A, B, C, D);
+                WorldObject * neighbour = world_sector_->FindNeighbour(search_area, GetX(), GetY());
+                if (neighbour != nullptr) neighbour->Interact();
+                else {
+                    /* Spawn new wall! Just for fun! */
+                    world_sector_->NewObj<Wall>(true)->Init((x3 + x4) / 2, (y3 + y4) / 2, 0.1, engine_);
+                }
+            }
         }
     }
 
     /* Move player and camera */
     {
-        float move_offset = (1.0f * GetSpeed(input.KEY_RUN)) * delta_time;
+        float move_offset = (1.0f * GetSpeed(controls.RUN_)) * delta_time;
         /* Find the moving direction based on the input */
-        size_t lookup_index = input.KEY_UP * 8 + input.KEY_DOWN * 4 + input.KEY_LEFT * 2 + input.KEY_RIGHT * 1;
+        size_t lookup_index = controls.MOVE_UP_ * 8 + controls.MOVE_DOWN_ * 4 + controls.MOVE_LEFT_ * 2 + controls.MOVE_RIGHT_ * 1;
         ge::Direction direction = direction_array_[lookup_index];
         if (!ge::Equal(direction, -1.0f)) {
 
@@ -131,7 +136,7 @@ void Player::Step(double delta_time) {
 
             /* Check for collision and Move */
             ge::CollisionResult_t can_move = CheckCollision(move_offset, direction);
-            Move(move_offset, input, can_move);
+            Move(move_offset, can_move);
 
             /* Move camera as well */
             if (can_move.left_) engine_->CameraMove2D(-can_move.left_, 0);

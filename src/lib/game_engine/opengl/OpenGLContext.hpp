@@ -6,7 +6,7 @@
 #include "OpenGLIncludes.hpp"
 
 #include "OpenGLShaders.hpp"
-#include "../ControlInput.hpp"
+#include "../Controls.hpp"
 
 #define OPENGL_VERSION_MAJOR 3
 #define OPENGL_VERSION_MINOR 3
@@ -43,7 +43,7 @@ namespace game_engine {
             after this call
             @param param The necessary stuff when Init() is called
         */
-        OpenGLContext(OpenGLContextConfig_t params);
+        OpenGLContext();
 
         /**
             Uses the parameters set to initialise and OpenGL context. Initializes  the window, GLFW, GLEW, reads 
@@ -51,7 +51,7 @@ namespace game_engine {
             GetShaderVariables to get the shaders IDs
             @return 0=OK, -1=Already initialized, anything else see ErrorCodes
         */
-        int Init();
+        int Init(OpenGLContextConfig_t config);
 
         /**
             Get the window width set
@@ -75,7 +75,7 @@ namespace game_engine {
             Get a struct with input from the user. If init hasn't been called returns an all false  struct
             @return A ControlInput_t struct
         */
-        ControlInput_t GetControlsInput();
+        KeyControls_t GetControlsInput();
 
         /**
             Get main shader variables

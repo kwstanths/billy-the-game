@@ -10,13 +10,14 @@ namespace dt = debug_tools;
 
 namespace game_engine {
 
-    OpenGLCamera::OpenGLCamera(OpenGLCameraConfig_t config) {
+    OpenGLCamera::OpenGLCamera() {
         is_inited_ = false;
-
-        config_ = config;
     }
 
-    int OpenGLCamera::Init(OpenGLContext * context)  {
+    int OpenGLCamera::Init(OpenGLCameraConfig_t config, OpenGLContext * context)  {
+        
+        config_ = config;
+
         context_ = context;
 
         shader_main_ = context->GetShaderVariables();

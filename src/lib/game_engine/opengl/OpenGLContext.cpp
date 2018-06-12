@@ -6,15 +6,15 @@
 
 namespace game_engine {
 
-    OpenGLContext::OpenGLContext(OpenGLContextConfig_t config) {
+    OpenGLContext::OpenGLContext() {
         is_inited_ = false;
-
-        config_ = config;
     }
 
-    int OpenGLContext::Init() {
+    int OpenGLContext::Init(OpenGLContextConfig_t config) {
         if (is_inited_) return -1;
-        
+     
+        config_ = config;
+
         GLfloat window_ratio_ = (config_.window_width_ * 1.0f) / (config_.window_height_ * 1.0f);
 
         /* Initialise GLFW */
@@ -83,32 +83,32 @@ namespace game_engine {
         return 0;
     }
 
-    ControlInput_t OpenGLContext::GetControlsInput() {
-        if (!is_inited_) return ControlInput_t();
+    KeyControls_t OpenGLContext::GetControlsInput() {
+        if (!is_inited_) return KeyControls_t();
 
-        ControlInput_t input;
+        KeyControls_t key_controls;
 
-        if (glfwGetKey(glfw_window_, GLFW_KEY_ESCAPE) == GLFW_PRESS) input.KEY_ESC = true;
-        if (glfwGetKey(glfw_window_, GLFW_KEY_E) == GLFW_PRESS) input.KEY_ACT = true;
-        if (glfwGetKey(glfw_window_, GLFW_KEY_ENTER) == GLFW_PRESS) input.KEY_ENTER = true;
-        if (glfwGetKey(glfw_window_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) input.KEY_RUN = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_ESCAPE) == GLFW_PRESS) key_controls.KEY_ESC = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_ENTER) == GLFW_PRESS) key_controls.KEY_ENTER = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) key_controls.KEY_LSHIFT = true;
 
-        if (glfwGetKey(glfw_window_, GLFW_KEY_UP) == GLFW_PRESS) input.KEY_UP = true;
-        if (glfwGetKey(glfw_window_, GLFW_KEY_W) == GLFW_PRESS) input.KEY_UP = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_A) == GLFW_PRESS) key_controls.KEY_A = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_S) == GLFW_PRESS) key_controls.KEY_S = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_D) == GLFW_PRESS) key_controls.KEY_D = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_W) == GLFW_PRESS) key_controls.KEY_W = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_E) == GLFW_PRESS) key_controls.KEY_E = true;
 
-        if (glfwGetKey(glfw_window_, GLFW_KEY_DOWN) == GLFW_PRESS) input.KEY_DOWN = true;
-        if (glfwGetKey(glfw_window_, GLFW_KEY_S) == GLFW_PRESS) input.KEY_DOWN = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_UP) == GLFW_PRESS) key_controls.KEY_ARROW_UP = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_DOWN) == GLFW_PRESS) key_controls.KEY_ARROW_DOWN = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_LEFT) == GLFW_PRESS) key_controls.KEY_ARROW_LEFT = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_RIGHT) == GLFW_PRESS) key_controls.KEY_ARROW_RIGHT = true;
 
-        if (glfwGetKey(glfw_window_, GLFW_KEY_LEFT) == GLFW_PRESS) input.KEY_LEFT = true;
-        if (glfwGetKey(glfw_window_, GLFW_KEY_A) == GLFW_PRESS) input.KEY_LEFT = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS) key_controls.KEY_PAGE_DOWN = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_PAGE_UP) == GLFW_PRESS) key_controls.KEY_PAGE_UP = true;
 
-        if (glfwGetKey(glfw_window_, GLFW_KEY_RIGHT) == GLFW_PRESS) input.KEY_RIGHT = true;
-        if (glfwGetKey(glfw_window_, GLFW_KEY_D) == GLFW_PRESS) input.KEY_RIGHT = true;
+        key_controls.timestamp_ = glfwGetTime();
 
-        if (glfwGetKey(glfw_window_, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS) input.KEY_PAGE_DOWN = true;
-        if (glfwGetKey(glfw_window_, GLFW_KEY_PAGE_UP) == GLFW_PRESS) input.KEY_PAGE_UP = true;
-
-        return input;
+        return key_controls;
     }
 
     OpenGLShaderMain OpenGLContext::GetShaderVariables() {

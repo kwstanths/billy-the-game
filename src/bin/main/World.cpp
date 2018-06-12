@@ -20,7 +20,7 @@ World::World() : WorldSector() {
     is_inited_ = false;
 }
 
-int World::Init(ge::GameEngine * engine) {
+int World::Init(Input * input, ge::GameEngine * engine) {
     int ret = WorldSector::Init(500, 500, -500.0f, 500.0f, -500.0f, 500.0f, 500 * 500);
     if (ret) return ret;
 
@@ -87,7 +87,7 @@ int World::Init(ge::GameEngine * engine) {
 
     /* Create a main player */
     Player * player = NewObj<Player>();
-    player->Init(0.0f, 0.0f, 0.2f, engine);
+    player->Init(0.0f, 0.0f, 0.2f, input, engine);
 
     is_inited_ = true;
     return 0;

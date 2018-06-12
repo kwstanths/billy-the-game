@@ -11,7 +11,7 @@
 #include "opengl/OpenGLTexture.hpp"
 
 #include "FrameRateRegulator.hpp"
-#include "ControlInput.hpp"
+#include "Controls.hpp"
 #include "WorldObject.hpp"
 #include "WorldSector.hpp"
 #include "AssetManager.hpp"
@@ -21,13 +21,24 @@
 
 namespace game_engine {
 
+    /**
+        Values necessary to initialize a GameEngine object
+    */
+    typedef struct {
+        OpenGLContextConfig_t context_params_;
+        OpenGLCameraConfig_t camera_params_;
+
+        size_t frame_rate_;
+
+    } GameEngineConfig_t;
+
     class GameEngine {
         friend class WorldSector;
     public:
         /**
             Does nothing in particular
         */
-        GameEngine(OpenGLContextConfig_t & context_params, OpenGLCameraConfig_t & camera_params);
+        GameEngine();
 
         /**
             Deallocates the objects used. DOES NOT call their respective Destroy() method
@@ -39,7 +50,7 @@ namespace game_engine {
             Does Engine initialization using the configuration given in the constructor
             @return 0=OK, -1=Not initialzed, anything else from ErrorCodes.hpp
         */
-        int Init();
+        int Init(GameEngineConfig_t config);
 
         /**
             Terminates and deallocates the window
@@ -62,7 +73,7 @@ namespace game_engine {
             Get a struct with input from the user
             @return A ControlInput_t struct
         */
-        ControlInput_t GetControlsInput();
+        KeyControls_t GetControlsInput();
 
         /**
             Get the delta of the last frame in seconds
@@ -117,6 +128,8 @@ namespace game_engine {
     private:
         bool is_inited_;
         int last_error_;
+        GameEngineConfig_t config_;
+        KeyControls_t key_controls_;
 
         FrameRateRegulator frame_regulator_;
         OpenGLContext * context_ = nullptr;

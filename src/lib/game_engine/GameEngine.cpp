@@ -12,12 +12,12 @@ namespace dt = debug_tools;
 
 namespace game_engine {
 
-    GameEngine::GameEngine(OpenGLContextConfig_t & context_params, OpenGLCameraConfig_t & camera_params) {
+    GameEngine::GameEngine() {
         is_inited_ = false;
         last_error_ = 0;
 
-        context_ = new OpenGLContext(context_params);
-        camera_ = new OpenGLCamera(camera_params);
+        context_ = new OpenGLContext();
+        camera_ = new OpenGLCamera();
         renderer_ = new OpenGLRenderer();
         asset_manager_ = new AssetManager();
         debugger_ = new Debugger();
@@ -37,24 +37,26 @@ namespace game_engine {
         debugger_ = nullptr;
     }
 
-    int GameEngine::Init() {
+    int GameEngine::Init(GameEngineConfig_t config) {
         if (is_inited_) {
             last_error_ = -1;
             return -1;
         }
+
+        config_ = config;
         
-        int ret = context_->Init();
+        int ret = context_->Init(config.context_params_);
         if (ret != 0) {
             last_error_ = ret;
             PrintError(ret);
             Terminate();
         }
 
-        camera_->Init(context_);
+        camera_->Init(config.camera_params_, context_);
         renderer_->Init(context_);
         asset_manager_->Init(200, 200);
         debugger_->Init(asset_manager_, renderer_);
-        frame_regulator_.Init(100, 5);
+        frame_regulator_.Init(config_.frame_rate_, 5);
 
         CodeReminder("Find the size and margin of the visible world based on the camera");
         visible_world_ = std::vector<WorldObject *>(200);
@@ -96,6 +98,9 @@ namespace game_engine {
         /* Start the frame */
         frame_regulator_.FrameStart();
 
+        /* Get latest control values */
+        key_controls_ = context_->GetControlsInput();
+
         context_->ClearColor();
 
         /* Get visible items */
@@ -133,8 +138,8 @@ namespace game_engine {
         frame_regulator_.FrameEnd();
     }
 
-    ControlInput_t GameEngine::GetControlsInput() {
-        return context_->GetControlsInput();
+    KeyControls_t GameEngine::GetControlsInput() {
+        return key_controls_;
     }
 
     float GameEngine::GetFrameDelta() {

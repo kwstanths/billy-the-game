@@ -33,7 +33,7 @@ namespace game_engine {
             the config object after this call
             @param config The necessary stuff when Init() is called
         */
-        OpenGLCamera(OpenGLCameraConfig_t config);
+        OpenGLCamera();
 
         /**
             Uses the parameters set to initialise the View matrix, and the projection matrix.
@@ -43,7 +43,7 @@ namespace game_engine {
             @return 0=OK
                 
         */
-        int Init(OpenGLContext * context);
+        int Init(OpenGLCameraConfig_t config, OpenGLContext * context);
 
         /**
             Init allocates nothing, Destroy deallocates nothing
