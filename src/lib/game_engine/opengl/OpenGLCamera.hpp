@@ -14,11 +14,11 @@ namespace game_engine {
     */
     typedef struct {
         /* Camera position */
-        float pos_x_, pos_y_, pos_z_;
+        glm::vec3 position_;
         /* Camera view direction */
-        float dir_x_, dir_y_, dir_z_;
+        glm::vec3 direction_;
         /* Camera up vector */
-        float up_x_, up_y_, up_z_;
+        glm::vec3 up_;
         /* true: Orthographic-2D, false: Perspective-3D */
         bool orthographic_;
         /* If orthigraphic is applied, set the zoom factor */
@@ -27,6 +27,7 @@ namespace game_engine {
 
 
     class OpenGLCamera {
+        friend class OpenGLContext;
     public:
         /**
             Sets the parameters to the local variable, does nothing else. Feel free to discard 
@@ -51,45 +52,91 @@ namespace game_engine {
         int Destroy();
 
         /**
-            Sets a new position for the camera
-            @param params The necessary stuff to set the camera position
-        */
-        void SetPosition(OpenGLCameraConfig_t params);
-
-        /**
             Get camera's position
             @param[out] pos_x X
             @param[out] pos_y Y
             @param[out] pos_z Z
         */
-        void GetPosition(float * pos_x, float * pos_y, float * pos_z);
+        void GetPositionVector(float * pos_x, float * pos_y, float * pos_z);
 
         /**
-            Move the camera's position relative the parameters already set. The direction of where the
-            camera looks at is changed as well with the same value, in order to maintain the movement.
-            If orthographic projection is set, the move_z value must be zero
-            @param move_x Add to the camera position/direction x, the value move_x
-            @param move_y Add to the camera position/direction y, the value move_y
-            @param move_z Add to the camera position/direction z, the value move_z
+            Get camera's direction vector
+            @param[out] dir_x X
+            @param[out] dir_y Y
+            @param[out] dir_z Z
         */
-        void Move(float move_x, float move_y, float move_z);
+        void GetDirectionVector(float * dir_x, float * dir_y, float * dir_z);
 
         /**
-            If orthographic projection is set, zoom in/out of the scene
+            Get camera's up vector
+            @param[out] up_x X
+            @param[out] up_y Y
+            @param[out] up_z Z
+        */
+        void GetUpVector(float * up_x, float * up_y, float * up_z);
+
+        /**
+            Set camera's position vector
+            @param x x coordinate
+            @param y y coordinate
+            @param z z coordinate
+        */
+        void SetPositionVector(float x, float y, float z);
+
+        /**
+            Set camera's direction vector
+            @param x x coordinate
+            @param y y coordinate
+            @param z z coordinate
+        */
+        void SetDirectionVector(float x, float y, float z);
+
+        /**
+            Set camera's up vector
+            @param x x coordinate
+            @param y y coordinate
+            @param z z coordinate
+        */
+        void SetUpVector(float x, float y, float z);
+
+        /**
+            Move the camera's position
+            @param move_x Movement in x 
+            @param move_y Movement in y
+            @param move_z Movement in z
+        */
+        void MovePositionVector(float move_x, float move_y, float move_z);
+
+        /**
+            Move the camera's directon
+            @param move_x Movement in x
+            @param move_y Movement in y
+            @param move_z Movement in z
+        */
+        void MoveDirectionVector(float move_x, float move_y, float move_z);
+
+        /**
+            Zoom in/out of the scene
             @param factor Add to the camera zoom_factor already set
         */
         void Zoom(float factor);
 
         /**
-            Sets the view and projection matrix to the shaders
+        
+        */
+        int SetMouceCallback(void(*func)(GLFWwindow *, double, double));
+
+        /**
+            Sets the view and projection matrix to the shaders. Should be called at every step
             @return 0=OK, -1=Not initialised
         */
         int SetView();
 
     private:
         bool is_inited_;
-        OpenGLContext * context_;
         OpenGLCameraConfig_t config_;
+        
+        OpenGLContext * context_;
         OpenGLShaderMain shader_main_;
 
         glm::mat4 view_matrix_;
@@ -104,8 +151,8 @@ namespace game_engine {
             Set Perspective-3D projection matrix
         */
         void Project3D();
-
     };
+
 }
 
 #endif

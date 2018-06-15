@@ -17,7 +17,6 @@ namespace game_engine {
         last_error_ = 0;
 
         context_ = new OpenGLContext();
-        camera_ = new OpenGLCamera();
         renderer_ = new OpenGLRenderer();
         asset_manager_ = new AssetManager();
         debugger_ = new Debugger();
@@ -25,13 +24,11 @@ namespace game_engine {
 
     GameEngine::~GameEngine() {
         if (renderer_ != nullptr) delete renderer_;
-        if (camera_ != nullptr) delete camera_;
         if (context_ != nullptr) delete context_;
         if (asset_manager_ != nullptr) delete asset_manager_;
         if (debugger_!= nullptr) delete debugger_;
 
         renderer_ = nullptr;
-        camera_ = nullptr;
         context_ = nullptr;
         asset_manager_ = nullptr;
         debugger_ = nullptr;
@@ -52,7 +49,6 @@ namespace game_engine {
             Terminate();
         }
 
-        camera_->Init(config.camera_params_, context_);
         renderer_->Init(context_);
         asset_manager_->Init(200, 200);
         debugger_->Init(asset_manager_, renderer_);
@@ -60,8 +56,6 @@ namespace game_engine {
 
         CodeReminder("Find the size and margin of the visible world based on the camera");
         visible_world_ = std::vector<WorldObject *>(200);
-
-        CodeReminder("Support key remapping");
 
         /* Init random numbers generator */
         srand(time(NULL));       
@@ -77,7 +71,6 @@ namespace game_engine {
             return last_error_;
         }
 
-        camera_->Destroy();
         context_->Destroy();
         /* TODO Implement renderer Destroy() which depends on OpenGLContext */
         asset_manager_->Destroy();
@@ -105,7 +98,7 @@ namespace game_engine {
 
         /* Get visible items */
         float center_x, center_y, center_z;
-        camera_->GetPosition(&center_x, &center_y, &center_z);
+        camera_->GetPositionVector(&center_x, &center_y, &center_z);
 
         /* TODO Check whether sector_ is set */
         /* TODO Find the visible items based on the z of the camera */
@@ -138,20 +131,21 @@ namespace game_engine {
         frame_regulator_.FrameEnd();
     }
 
+    void GameEngine::SetCamera(OpenGLCamera * camera, OpenGLCameraConfig_t config) {
+        camera_ = camera;
+        camera->Init(config, context_);
+    }
+
+    OpenGLCamera * GameEngine::GetCamera() {
+        return camera_;
+    }
+
     KeyControls_t GameEngine::GetControlsInput() {
         return key_controls_;
     }
 
     float GameEngine::GetFrameDelta() {
         return frame_regulator_.GetDelta();
-    }
-
-    void GameEngine::CameraMove2D(float move_x, float move_y) {
-        camera_->Move(move_x, move_y, 0);
-    }
-
-    void GameEngine::CameraZoom2D(float factor) {
-        camera_->Zoom(factor);
     }
 
     int GameEngine::SetWorld(WorldSector * world) {

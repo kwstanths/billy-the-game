@@ -37,6 +37,7 @@ namespace game_engine {
 
 
     class OpenGLContext {
+        friend class OpenGLCamera;
     public:
         /**
             Sets the parameters to the local variable, does nothing else. Feel free to discard  the params object 

@@ -22,10 +22,12 @@ Player::Player(): WorldObject() {
     is_inited_ = false;
 }
 
-int Player::Init(float x, float y, float z, Input * input, ge::GameEngine * engine) {
+int Player::Init(float x, float y, float z, Input * input, Camera * camera, ge::GameEngine * engine) {
 
     input_ = input;
     engine_ = engine;
+    camera_ = camera;
+
 
     int ret;
     ge::OpenGLObject * object = engine_->GetAssetManager()->FindObject("assets/circle.obj", &ret);
@@ -56,7 +58,7 @@ void Player::Move(float move_offset, game_engine::CollisionResult_t collision_in
     if (!is_inited_) return;
 
     if (!WorldObject::IsInited())
-        dt::Console(dt::WARNING, "Player::Move(): WorldObject is not initialised");
+        dt::Console(dt::WARNING, "Player::MovePositionVector(): WorldObject is not initialised");
 
     bool moving_up = !game_engine::Equal(collision_input.up_, 0.0f);
     bool moving_down = !game_engine::Equal(collision_input.down_, 0.0f);
@@ -79,7 +81,7 @@ void Player::Step(double delta_time) {
     if (!is_inited_) return;
 
     if (!WorldObject::IsInited())
-        dt::Console(dt::WARNING, "Player::Move(): WorldObject is not initialised");
+        dt::Console(dt::WARNING, "Player::MovePositionVector(): WorldObject is not initialised");
 
     /* Get input */
     ControlInput_t controls = input_->GetControls();
@@ -117,7 +119,7 @@ void Player::Step(double delta_time) {
                 if (neighbour != nullptr) neighbour->Interact();
                 else {
                     /* Spawn new wall! Just for fun! */
-                    world_sector_->NewObj<Wall>(true)->Init((x3 + x4) / 2, (y3 + y4) / 2, 0.1, engine_);
+                    world_sector_->NewObj<Wall>(true)->Init((x3 + x4) / 2, (y3 + y4) / 2, 0.1f, engine_);
                 }
             }
         }
@@ -134,15 +136,11 @@ void Player::Step(double delta_time) {
             /* Rotate*/
             Rotate(ge::GetRadians(direction), 2);
 
-            /* Check for collision and Move */
+            /* Check for collision and Move player and camera */
             ge::CollisionResult_t can_move = CheckCollision(move_offset, direction);
             Move(move_offset, can_move);
 
-            /* Move camera as well */
-            if (can_move.left_) engine_->CameraMove2D(-can_move.left_, 0);
-            if (can_move.right_) engine_->CameraMove2D(can_move.right_, 0);
-            if (can_move.up_) engine_->CameraMove2D(0, can_move.up_);
-            if (can_move.down_) engine_->CameraMove2D(0, -can_move.down_);
+            camera_->KeyboardMove(can_move.right_ - can_move.left_, can_move.up_ - can_move.down_, 0);
         }
     }
 

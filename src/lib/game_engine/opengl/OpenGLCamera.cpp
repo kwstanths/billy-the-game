@@ -4,6 +4,8 @@
 
 #include "../physics/HelpFunctions.hpp"
 
+#include "..//ErrorCodes.hpp"
+
 #include "debug_tools/Console.hpp"
 
 namespace dt = debug_tools;
@@ -17,20 +19,12 @@ namespace game_engine {
     int OpenGLCamera::Init(OpenGLCameraConfig_t config, OpenGLContext * context)  {
         
         config_ = config;
-
         context_ = context;
-
         shader_main_ = context->GetShaderVariables();
 
-        glm::vec3 position = glm::vec3(config_.pos_x_, config_.pos_y_, config_.pos_z_);
-        glm::vec3 direction = glm::vec3(config_.dir_x_, config_.dir_y_, config_.dir_z_);
-        glm::vec3 up = glm::vec3(config_.up_x_, config_.up_y_, config_.up_z_);
-        
-        view_matrix_ = glm::lookAt(position, direction, up);
-
-        if (config_.orthographic_) Ortho2D(config_.zoom_factor_);
+        if (config.orthographic_) Ortho2D(config.zoom_factor_);
         else Project3D();
-        
+
         is_inited_ = true;
         return 0;
     }
@@ -39,40 +33,54 @@ namespace game_engine {
         return 0;
     }
 
-    void OpenGLCamera::SetPosition(OpenGLCameraConfig_t params) {
-        config_ = params;
-
-        glm::vec3 position = glm::vec3(config_.pos_x_, config_.pos_y_, config_.pos_z_);
-        glm::vec3 direction = glm::vec3(config_.dir_x_, config_.dir_y_, config_.dir_z_);
-        glm::vec3 up = glm::vec3(config_.up_x_, config_.up_y_, config_.up_z_);
-
-        view_matrix_ = glm::lookAt(position, direction, up);
+    void OpenGLCamera::GetPositionVector(float * pos_x, float * pos_y, float * pos_z) {
+        *pos_x = config_.position_.x;
+        *pos_y = config_.position_.y;
+        *pos_z = config_.position_.z;
     }
 
-    void OpenGLCamera::GetPosition(float * pos_x, float * pos_y, float * pos_z) {
-        *pos_x = config_.pos_x_;
-        *pos_y = config_.pos_y_;
-        *pos_z = config_.pos_z_;
+    void OpenGLCamera::GetDirectionVector(float * dir_x, float * dir_y, float * dir_z) {
+        *dir_x = config_.direction_.x;
+        *dir_y = config_.direction_.y;
+        *dir_z = config_.direction_.z;
     }
 
-    void OpenGLCamera::Move(float move_x, float move_y, float move_z) {
+    void OpenGLCamera::GetUpVector(float * up_x, float * up_y, float * up_z) {
+        *up_x = config_.up_.x;
+        *up_y = config_.up_.y;
+        *up_z = config_.up_.z;
+    }
+
+    void OpenGLCamera::SetPositionVector(float x, float y, float z) {
+        config_.position_ = glm::vec3(x, y, z);
+    }
+
+    void OpenGLCamera::SetDirectionVector(float x, float y, float z) {
+        config_.direction_ = glm::vec3(x, y, z);
+    }
+
+    void OpenGLCamera::SetUpVector(float x, float y, float z) {
+        config_.up_ = glm::vec3(x, y, z);
+    }
+
+    void OpenGLCamera::MovePositionVector(float move_x, float move_y, float move_z) {
         if (config_.orthographic_ && !Equal(move_z, 0.0f)) {
-            dt::Console(dt::WARNING, "OpenGLCamera::Move() : Called when orthgraphic projection is \
+            dt::Console(dt::WARNING, "OpenGLCamera::MovePositionVector() : Called when orthgraphic projection is \
                 set, and z movement factor is significant");
             
             return;
         }
 
-        glm::vec3 position = glm::vec3(config_.pos_x_ += move_x, config_.pos_y_ += move_y, config_.pos_z_ += move_z);
-        glm::vec3 direction = glm::vec3(config_.dir_x_ += move_x, config_.dir_y_ += move_y, config_.dir_z_ += move_z);
-        glm::vec3 up = glm::vec3(config_.up_x_, config_.up_y_, config_.up_z_);
+        config_.position_ += glm::vec3(move_x, move_y, move_z);
+    }
 
-        view_matrix_ = glm::lookAt(position, direction, up);
+    void OpenGLCamera::MoveDirectionVector(float move_x, float move_y, float move_z) {
+        config_.direction_ += glm::vec3(move_x, move_y, move_z);
     }
 
     void OpenGLCamera::Zoom(float factor) {
         if (!config_.orthographic_) {
-            Move(0, 0, factor);
+            MovePositionVector(0, 0, factor);
             return;
         }
 
@@ -84,8 +92,15 @@ namespace game_engine {
             -10.0f, 10.0f);
     }
 
+    int OpenGLCamera::SetMouceCallback(void(*func)(GLFWwindow *, double, double)) {
+        if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
+        glfwSetCursorPosCallback(context_->glfw_window_, func);
+    }
+
     int OpenGLCamera::SetView() {
         if (!is_inited_) return false;
+
+        view_matrix_ = glm::lookAt(config_.position_, config_.position_ + config_.direction_, config_.up_);
 
         glUniformMatrix4fv(shader_main_.uni_View_, 1, GL_FALSE, &(view_matrix_[0][0]));
         glUniformMatrix4fv(shader_main_.uni_Projection_, 1, GL_FALSE, &(projection_matrix_[0][0]));

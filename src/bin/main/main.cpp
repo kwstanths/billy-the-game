@@ -3,22 +3,30 @@
 #endif
 
 #include "game_engine/GameEngine.hpp"
+#include "game_engine/physics/Types.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
 
 #include "Input.hpp"
+#include "Camera.hpp"
 #include "World.hpp"
 
 namespace ge = game_engine;
 namespace dt = debug_tools;
 
+/* Camera needs to be global, since the mouse callback needs to be global */
+Camera * camera;
+
+void MouseCallback(GLFWwindow * w, double x, double y) {
+    camera->MouseMove(x, y);
+}
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("WorldObject, collision in SetPosition");
-    CodeReminder("WorldSector, remove array add quad tree")
+    CodeReminder("WorldObject, collision in SetPosition() maybe?");
 
+    /* Configuration parameters for the engine */
     ge::OpenGLContextConfig_t context_params;
     context_params.window_width_ = 1024;
     context_params.window_height_ = 768;
@@ -29,30 +37,31 @@ int main(int argc, char ** argv) {
     context_params.shader_vertex_text_file_path = "shaders/TextVertexShader.glsl";
     context_params.shader_fragment_text_file_path = "shaders/TextFragmentShader.glsl";
     ge::OpenGLCameraConfig_t camera_params;
-    camera_params.pos_x_ = 0;
-    camera_params.pos_y_ = 0;
-    camera_params.pos_z_ = 8;
-    camera_params.dir_x_ = 0;
-    camera_params.dir_y_ = 1;
-    camera_params.dir_z_ = 0;
-    camera_params.up_x_ = 0;
-    camera_params.up_y_ = 1;
-    camera_params.up_z_ = 0;
+    camera_params.position_ = glm::vec3(0, 0, 8);
+    camera_params.direction_ = glm::vec3(0, 0, -1);
+    camera_params.up_ = glm::vec3(0, 1, 0);
     camera_params.orthographic_ = false;
     camera_params.zoom_factor_ = 75;
     ge::GameEngineConfig_t engine_params;
     engine_params.context_params_ = context_params;
-    engine_params.camera_params_ = camera_params;
     engine_params.frame_rate_ = 100;
     ge::GameEngine engine;
     if (engine.Init(engine_params)) return false;
     
+    /* Create a camera */
+    camera = new Camera(context_params.window_width_, context_params.window_height_, 0.05f);
+    engine.SetCamera(camera, camera_params);
+    camera->SetMouceCallback(MouseCallback);
+    
+    /* Initialize the input class */
     Input input;
     input.Init(&engine);
 
+    /* Create a world */
     World world;
-    world.Init(&input, &engine);
+    world.Init(&input, camera, &engine);
 
+    /* Set the active world in the engine */
     engine.SetWorld(&world);
     do {
         float delta_time = engine.GetFrameDelta();
@@ -62,8 +71,8 @@ int main(int argc, char ** argv) {
             break;
         }
 
-        if (controls.ZOOM_IN_) engine.CameraZoom2D(10 * delta_time);
-        if (controls.ZOOM_OUT_) engine.CameraZoom2D(-10 * delta_time);
+        if (controls.ZOOM_IN_) camera->Zoom(-10 * delta_time);
+        if (controls.ZOOM_OUT_) camera->Zoom(10 * delta_time);
 
         engine.Step(delta_time);
 

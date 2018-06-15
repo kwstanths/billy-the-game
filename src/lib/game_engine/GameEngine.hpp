@@ -26,7 +26,6 @@ namespace game_engine {
     */
     typedef struct {
         OpenGLContextConfig_t context_params_;
-        OpenGLCameraConfig_t camera_params_;
 
         size_t frame_rate_;
 
@@ -70,6 +69,16 @@ namespace game_engine {
         void Step(double delta_time);
 
         /**
+        
+        */
+        void SetCamera(OpenGLCamera * camera, OpenGLCameraConfig_t config);
+
+        /**
+        
+        */
+        OpenGLCamera * GetCamera();
+
+        /**
             Get a struct with input from the user
             @return A ControlInput_t struct
         */
@@ -80,21 +89,6 @@ namespace game_engine {
             @return Frame delta in seconds
         */
         float GetFrameDelta();
-
-        /**
-            Moves the camera initilised in a 2D manner. Changes of the camera's position will be reflected to the
-            camera's direction as well. See OpenGLCamera::Move()
-            @param move_x Displacement in X axis
-            @param move_y Displacement in Y axis
-            @param move_z Displacement in Z axis
-        */
-        void CameraMove2D(float move_x, float move_y);
-
-        /**
-            Zooms into an orthographic camera
-            @param zoom_factor The zoom factor
-        */
-        void CameraZoom2D(float zoom_factor);
 
         /**
             Set a world sector to be used
@@ -128,7 +122,9 @@ namespace game_engine {
     private:
         bool is_inited_;
         int last_error_;
+        /* Engine configuration values */
         GameEngineConfig_t config_;
+        /* Latest keybaord values pressed. Updated at every engine step */
         KeyControls_t key_controls_;
 
         FrameRateRegulator frame_regulator_;

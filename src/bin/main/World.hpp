@@ -5,12 +5,13 @@
 #include "game_engine/GameEngine.hpp"
 
 #include "Input.hpp"
+#include "Camera.hpp"
 
 class World :public game_engine::WorldSector {
 public:
     World();
 
-    int Init(Input * input, game_engine::GameEngine * engine);
+    int Init(Input * input, Camera * camera, game_engine::GameEngine * engine);
 
     int Destroy();
 
