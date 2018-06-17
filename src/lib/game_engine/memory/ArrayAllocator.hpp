@@ -6,7 +6,6 @@
 #include "MemoryPage.hpp"
 
 #include "debug_tools/Console.hpp"
-namespace dt = debug_tools;
 
 
 namespace game_engine {

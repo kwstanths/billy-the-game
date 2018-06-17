@@ -1,14 +1,14 @@
 #ifndef __OpenGLRenderer_hpp__
 #define __OpenGLRenderer_hpp__
 
+#include "glm/glm.hpp"
+
 #include "OpenGLIncludes.hpp"
 #include "OpenGLContext.hpp"
 #include "OpenGLShaders.hpp"
 #include "OpenGLTexture.hpp"
 #include "OpenGLObject.hpp"
 #include "OpenGLFont.hpp"
-
-#include "glm/glm.hpp"
 
 namespace game_engine {
 
@@ -46,6 +46,11 @@ namespace game_engine {
         */
         int Draw(OpenGLObject * object, OpenGLTexture * texture, glm::mat4 model);
         
+        /**
+        
+        */
+        int SetLight(glm::vec3 position, glm::vec3 color);
+
         /**
             Draw a 2d text on a certain position on the screen, not in the world
             @param text The text to draw

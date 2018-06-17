@@ -21,10 +21,3 @@ bool Grass::Init(float x, float y, float z, game_engine::GameEngine * engine) {
     return ret == 0;
 }
 
-void Grass::Step(double delta_time) {
-    
-}
-
-void Grass::Interact() {
-    dt::Console(dt::INFO, "Hello? Yes? This is grass speaking");
-}

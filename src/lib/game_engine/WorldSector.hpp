@@ -6,6 +6,7 @@
 
 #include "physics/PhysicsEngine.hpp"
 #include "memory/ArrayAllocator.hpp"
+#include "memory/PoolAllocator.hpp"
 
 #include "WorldObject.hpp"
 
@@ -132,8 +133,10 @@ namespace game_engine {
             sequentially
         */
         std::vector<std::vector<std::deque<WorldObject *> > >world_;
+
         /* Holds objects that are removed from the world, whose memory needs deallocation */
         std::deque<WorldObject *> delete_vector_;
+
         /* Sequential allocators for objects */
         memory_subsystem::ArrayAllocator * array_allocator_;
         memory_subsystem::PoolAllocator * pool_allocator_;

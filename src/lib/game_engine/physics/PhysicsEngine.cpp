@@ -76,16 +76,11 @@ namespace physics {
         return;
     }
 
-    PhysicsObject * PhysicsEngine::FindNeighbour(Rectangle2D search_area, float pos_x, float pos_y) {
-        /* Get neighbours */
-        std::vector<PhysicsObject *> neighbours(10, nullptr);
-        size_t nof = world_.QueryRange(search_area, neighbours);
+    size_t PhysicsEngine::GetObjectsArea(Rectangle2D search_area, std::vector<PhysicsObject*>& objects) {
 
-        /* Find the one that's on top */
-        PhysicsObject * ret = neighbours[0];
-        for (size_t i = 0; i < nof; i++)if (neighbours[i]->GetZ() > ret->GetZ()) ret = neighbours[i];
+        size_t nof = world_.QueryRange(search_area, objects);
 
-        return ret;
+        return nof;
     }
 
     CollisionResult_t PhysicsEngine::CheckCollision(PhysicsObject * object, float move_offset, Direction direction) {

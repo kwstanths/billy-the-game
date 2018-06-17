@@ -12,6 +12,7 @@
 #include "Path.hpp"
 #include "Treasure.hpp"
 #include "Player.hpp"
+#include "Lamp.hpp"
 
 namespace dt = debug_tools;
 namespace ge = game_engine;
@@ -84,6 +85,10 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     tres = NewObj<Treasure>();
     tres->Init(0.0f, 30.0f, 0.1f, engine, 7); /* Put something far up */
     tres->Rotate(ge::GetRadians(45.0f), 2);
+
+    /* Create a lamp */
+    Lamp * lamp = NewObj<Lamp>();
+    lamp->Init(0, 0, 5, engine);
 
     /* Create a main player */
     Player * player = NewObj<Player>();

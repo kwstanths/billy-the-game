@@ -24,6 +24,9 @@ void MouseCallback(GLFWwindow * w, double x, double y) {
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Rendering order");
+    CodeReminder("Draw with different shader");
+    CodeReminder("Use the interactable property");
     CodeReminder("WorldObject, collision in SetPosition() maybe?");
 
     /* Configuration parameters for the engine */

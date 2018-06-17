@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "glm/glm.hpp"
+
 #include "OpenGLIncludes.hpp"
 
 namespace game_engine {
@@ -14,6 +16,7 @@ namespace game_engine {
     static const char shader_name_uni_view[] = "matrix_view";
     static const char shader_name_uni_projection[] = "matrix_projection";
     static const char shader_name_uni_texture[] = "sampler_texture";
+    static const char shader_name_uni_light_color[] = "light_color";
 
     static const char shader_text_name_vertex[] = "vertex";
     static const char shader_text_name_uni_projection[] = "matrix_projection";
@@ -67,6 +70,10 @@ namespace game_engine {
         */
         GLint GetUniformLocation(std::string uniform_name);
 
+        void SetUniformMat4(GLuint id, glm::mat4& model);
+
+        void SetUniformVec3(GLuint id, glm::vec3& vector);
+
     protected:
         GLuint program_id_;
     private:
@@ -111,6 +118,7 @@ namespace game_engine {
         GLuint uni_View_;
         GLuint uni_Projection_;
         GLuint uni_Texture_;
+        GLuint uni_light_color_;
     };
 
     class OpenGLShaderText : public OpenGLShader {

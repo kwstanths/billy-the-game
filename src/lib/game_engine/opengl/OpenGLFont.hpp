@@ -3,9 +3,9 @@
 
 #include <map>
 
-#include "glm/glm.hpp"
-
 #include "OpenGLIncludes.hpp"
+
+#include "glm/glm.hpp"
 
 namespace game_engine {
 

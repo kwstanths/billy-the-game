@@ -7,14 +7,13 @@
 
 #include "opengl/OpenGLObject.hpp"
 #include "opengl/OpenGLTexture.hpp"
-#include "opengl/OpenGLRenderer.hpp"
 #include "physics/Types.hpp"
 #include "physics/PhysicsObject.hpp"
 #include "memory/ArrayAllocator.hpp"
 #include "memory/PoolAllocator.hpp"
-#include "debug_tools/Console.hpp"
+#include "Renderer.hpp"
 
-#include "glm/glm.hpp"
+#include "debug_tools/Console.hpp"
 
 namespace game_engine {
 
@@ -74,7 +73,7 @@ namespace game_engine {
             Initialize the object. Sets the OpenGL model and texture of the object. Sets the initial position
             @return 0=OK, else see ErrorCodes.hpp
         */
-        int Init(OpenGLObject * object, OpenGLTexture * texture, float x, float y, float z);
+        int Init(OpenGLObject * object, OpenGLTexture * texture, float x, float y, float z, bool interactable = false);
 
         /**
             Does nothing in particular yet
@@ -87,10 +86,10 @@ namespace game_engine {
         bool IsInited();
 
         /**
-            Draw the object during every frame, after calling the step function
+            Draw the object during every frame, after calling the step function. Override for custom behaviour
             @param renderer The renderer
         */
-        void Draw(OpenGLRenderer * renderer);
+        virtual void Draw(Renderer * renderer);
 
         /**
             Function that should be overriden for custom step behaviour. Step() is called,
@@ -141,6 +140,7 @@ namespace game_engine {
         bool is_inited_;
         float rotated_angle_;
         bool removable_;
+        bool interactable_;
 
         OpenGLObject * object_;
         OpenGLTexture * texture_;

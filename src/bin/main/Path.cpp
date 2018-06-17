@@ -19,10 +19,3 @@ bool Path::Init(float x, float y, float z, game_engine::GameEngine * engine) {
     return ret == 0;
 }
 
-void Path::Step(double delta_time) {
-
-}
-
-void Path::Interact() {
-    dt::Console(dt::INFO, "Hello? Yes? This is path speaking");
-}

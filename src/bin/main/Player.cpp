@@ -28,7 +28,6 @@ int Player::Init(float x, float y, float z, Input * input, Camera * camera, ge::
     engine_ = engine;
     camera_ = camera;
 
-
     int ret;
     ge::OpenGLObject * object = engine_->GetAssetManager()->FindObject("assets/circle.obj", &ret);
     ge::OpenGLTexture * texture = engine_->GetAssetManager()->FindTexture("assets/player.bmp", ge::OpenGLTexture::TEXTURE_STB, &ret);

@@ -3,10 +3,11 @@
 
 #include <string>
 
-#include "OpenGLIncludes.hpp"
-
-#include "OpenGLShaders.hpp"
 #include "../Controls.hpp"
+
+#include "OpenGLIncludes.hpp"
+#include "OpenGLShaders.hpp"
+
 
 #define OPENGL_VERSION_MAJOR 3
 #define OPENGL_VERSION_MINOR 3

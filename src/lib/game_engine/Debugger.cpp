@@ -10,7 +10,7 @@ namespace game_engine {
         is_inited_ = false;
     }
 
-    int Debugger::Init(AssetManager * asset_manager, OpenGLRenderer * renderer) {
+    int Debugger::Init(AssetManager * asset_manager, Renderer * renderer) {
 
         renderer_ = renderer;
 

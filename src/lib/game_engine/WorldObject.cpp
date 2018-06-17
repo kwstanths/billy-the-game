@@ -1,6 +1,5 @@
 #include "WorldObject.hpp"
 
-#include "physics/Matrices.hpp"
 #include "WorldSector.hpp"
 #include "ErrorCodes.hpp"
 
@@ -18,7 +17,7 @@ namespace game_engine {
         is_inited_ = false;
     }
 
-    int WorldObject::Init(OpenGLObject * object, OpenGLTexture * texture, float x, float y, float z) {
+    int WorldObject::Init(OpenGLObject * object, OpenGLTexture * texture, float x, float y, float z, bool interactable) {
         
         if (WorldObject::is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
@@ -55,6 +54,7 @@ namespace game_engine {
 
         object_ = object;
         texture_ = texture;
+        interactable_ = interactable;
 
         is_inited_ = true;
         return 0;
@@ -81,7 +81,7 @@ namespace game_engine {
         return is_inited_;
     }
 
-    void WorldObject::Draw(OpenGLRenderer * renderer) {
+    void WorldObject::Draw(Renderer * renderer) {
         if (!is_inited_) return;
 
         model_ = translation_matrix_ * rotation_matrix_ * scale_matrix_;

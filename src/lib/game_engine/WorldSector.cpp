@@ -1,15 +1,15 @@
 #include "WorldSector.hpp"
 
-#include "debug_tools/Console.hpp"
-#include "debug_tools/CodeReminder.hpp"
-
-#include "ErrorCodes.hpp"
 #include "physics/HelpFunctions.hpp"
 #include "physics/Types.hpp"
-
-namespace dt = debug_tools;
-namespace ms = game_engine::memory_subsystem;
 namespace ph = game_engine::physics;
+
+#include "debug_tools/Console.hpp"
+#include "debug_tools/CodeReminder.hpp"
+namespace dt = debug_tools;
+
+#include "ErrorCodes.hpp"
+namespace ms = game_engine::memory_subsystem;
 
 namespace game_engine {
 
@@ -148,7 +148,17 @@ namespace game_engine {
     }
 
     WorldObject * WorldSector::FindNeighbour(Rectangle2D search_area, float pos_x, float pos_y) {
-        return dynamic_cast<WorldObject *>(physics_engine_->FindNeighbour(search_area, pos_x, pos_y));
+        std::vector<ph::PhysicsObject *> area_objects(10, nullptr);
+        size_t nof = physics_engine_->GetObjectsArea(search_area, area_objects);
+
+        /* Find the one that's on top of the other */
+        ph::PhysicsObject * neighbour = area_objects[0];
+        for (size_t i = 0; i < nof; i++) {
+            ph::PhysicsObject * neighbour = area_objects[i];
+            if (area_objects[i]->GetZ() > neighbour->GetZ()) neighbour = area_objects[i];
+        }
+
+        return reinterpret_cast<WorldObject *>(neighbour);
     }
 
     ph::PhysicsEngine * WorldSector::GetPhysicsEngine() {

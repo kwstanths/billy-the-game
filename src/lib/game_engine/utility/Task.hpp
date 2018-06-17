@@ -13,6 +13,8 @@ namespace utility {
         std::function<void()> func_;
 
     public:
+        Task() {};
+
         Task(std::function<void()> func) : func_(func) {};
 
         void operator()() {

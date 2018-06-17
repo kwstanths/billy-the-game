@@ -2,6 +2,7 @@
 #define __Types_hpp__
 
 #include "HelpFunctions.hpp"
+#include "Matrices.hpp"
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;

@@ -44,6 +44,11 @@ namespace utility {
         */
         void Stop();
 
+        /**
+        
+        */
+        void BusyWaitAll();
+
     private:
         std::thread running_thread_;
         std::mutex lock_;
@@ -51,6 +56,7 @@ namespace utility {
         std::queue<Task> tasks_;
         bool run_;
         bool is_inited_;
+        bool executing_;
 
         void run();
     };

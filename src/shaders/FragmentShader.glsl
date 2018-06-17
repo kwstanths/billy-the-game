@@ -8,10 +8,10 @@ out vec3 color;
 
 /* Texture */
 uniform sampler2D sampler_texture;
+uniform vec3 light_color;
 
 void main(){
 
-    color = texture(sampler_texture, uv) * vec4(0.1 ,0.1, 0.1, 1.0);
-	color = vec3(55, 55, 55);
+    color = light_color * texture(sampler_texture, uv).rgb;
 
 }

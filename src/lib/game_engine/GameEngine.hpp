@@ -6,15 +6,13 @@
 
 #include "opengl/OpenGLContext.hpp"
 #include "opengl/OpenGLCamera.hpp"
-#include "opengl/OpenGLRenderer.hpp"
-#include "opengl/OpenGLObject.hpp"
-#include "opengl/OpenGLTexture.hpp"
 
 #include "FrameRateRegulator.hpp"
 #include "Controls.hpp"
 #include "WorldObject.hpp"
 #include "WorldSector.hpp"
 #include "AssetManager.hpp"
+#include "Renderer.hpp"
 #include "Debugger.hpp"
 #include "ErrorCodes.hpp"
 
@@ -128,11 +126,12 @@ namespace game_engine {
         KeyControls_t key_controls_;
 
         FrameRateRegulator frame_regulator_;
-        OpenGLContext * context_ = nullptr;
-        OpenGLCamera * camera_ = nullptr;
-        OpenGLRenderer * renderer_ = nullptr;
+        Renderer * renderer_ = nullptr;
         AssetManager * asset_manager_ = nullptr;
         Debugger * debugger_ = nullptr;
+        
+        OpenGLContext * context_ = nullptr;
+        OpenGLCamera * camera_ = nullptr;
 
         WorldSector * sector_;
         std::vector<WorldObject *> visible_world_;

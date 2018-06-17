@@ -64,7 +64,7 @@ namespace game_engine {
         glBindVertexArray(VAO_);
 
         /* Set the model uniform */
-        glUniformMatrix4fv(shader_main_.uni_Model_, 1, GL_FALSE, &model[0][0]);
+        shader_main_.SetUniformMat4(shader_main_.uni_Model_, model);
 
         /* Set the texture uniform */
         glActiveTexture(GL_TEXTURE0);
@@ -84,6 +84,13 @@ namespace game_engine {
 
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
+        return 0;
+    }
+
+    int OpenGLRenderer::SetLight(glm::vec3 position, glm::vec3 color) {
+        /* TODO Set light position */
+        shader_main_.SetUniformVec3(shader_main_.uni_light_color_, color);
+
         return 0;
     }
 

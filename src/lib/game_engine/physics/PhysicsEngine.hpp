@@ -73,7 +73,7 @@ namespace physics {
             @param pos_y The y coordinate of the object that we want to find the closest neighbour
             @return A pointer to the closest neighbour, or nullptr if none is found
         */
-        PhysicsObject * FindNeighbour(Rectangle2D search_area, float pos_x, float pos_y);
+        size_t GetObjectsArea(Rectangle2D search_area, std::vector<PhysicsObject*>& objects);
 
         /**
             Check for collision inside.

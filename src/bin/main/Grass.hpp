@@ -9,10 +9,6 @@ public:
 
     bool Init(float x, float y, float z, game_engine::GameEngine * engine);
 
-    virtual void Step(double delta_time) override;
-
-    virtual void Interact() override;
-
 private:
 
 };

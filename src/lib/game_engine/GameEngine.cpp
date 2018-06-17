@@ -3,8 +3,6 @@
 #include "ErrorCodes.hpp"
 #include "physics/Types.hpp"
 
-#include "WorldSector.hpp"
-
 #include "debug_tools/Console.hpp"
 #include "debug_tools/CodeReminder.hpp"
 
@@ -17,7 +15,7 @@ namespace game_engine {
         last_error_ = 0;
 
         context_ = new OpenGLContext();
-        renderer_ = new OpenGLRenderer();
+        renderer_ = new Renderer();
         asset_manager_ = new AssetManager();
         debugger_ = new Debugger();
     }
@@ -52,7 +50,7 @@ namespace game_engine {
         renderer_->Init(context_);
         asset_manager_->Init(200, 200);
         debugger_->Init(asset_manager_, renderer_);
-        frame_regulator_.Init(config_.frame_rate_, 5);
+        frame_regulator_.Init(config_.frame_rate_, 10);
 
         CodeReminder("Find the size and margin of the visible world based on the camera");
         visible_world_ = std::vector<WorldObject *>(200);
@@ -88,7 +86,7 @@ namespace game_engine {
 
     void GameEngine::Step(double delta_time) {
 
-        /* Start the frame */
+        /* Start calculating frame time */
         frame_regulator_.FrameStart();
 
         /* Get latest control values */

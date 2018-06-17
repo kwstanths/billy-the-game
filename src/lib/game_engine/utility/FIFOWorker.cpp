@@ -1,5 +1,7 @@
 #include "FIFOWorker.hpp"
 
+#include "debug_tools/Console.hpp"
+namespace dt = debug_tools;
 
 namespace game_engine {
 
@@ -17,6 +19,7 @@ namespace utility {
         if (is_inited_) return;
 
         run_ = true;
+        executing_ = false;
         running_thread_ = std::thread(&FIFOWorker::run, this);
 
         /* Wait for the thread to spawn and start the run() function */
@@ -43,23 +46,29 @@ namespace utility {
         is_inited_ = false;
     }
 
+    void FIFOWorker::BusyWaitAll() {
+        while (executing_ || !tasks_.empty());
+    }
+
     void FIFOWorker::run() {
         is_inited_ = true;
         while (1) {
+            Task task;
             {   /* Wait for task to be scheduled */
                 std::unique_lock<std::mutex> l(lock_);
                 condition_.wait(l, [&]() { return !tasks_.empty() || !run_; });
-            }
 
-            if (!run_ && tasks_.empty()) break;
+                if (!run_ && tasks_.empty()) break;
+                
+                executing_ = true;
 
-            if (!tasks_.empty()) {
                 /* Pop front task... */
-                Task task = tasks_.front();
+                task = tasks_.front();
                 tasks_.pop();
-                /* ... and run it's () operator */
-                task();
             }
+            /* ... and run it's () operator */
+            task();
+            executing_ = false;
         }
     }
 

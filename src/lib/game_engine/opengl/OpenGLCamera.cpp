@@ -1,14 +1,12 @@
 #include "OpenGLCamera.hpp"
 
-#include <glm/gtc/matrix_transform.hpp>
-
 #include "../physics/HelpFunctions.hpp"
-
-#include "..//ErrorCodes.hpp"
+#include "../ErrorCodes.hpp"
 
 #include "debug_tools/Console.hpp"
-
 namespace dt = debug_tools;
+
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace game_engine {
 
@@ -102,8 +100,8 @@ namespace game_engine {
 
         view_matrix_ = glm::lookAt(config_.position_, config_.position_ + config_.direction_, config_.up_);
 
-        glUniformMatrix4fv(shader_main_.uni_View_, 1, GL_FALSE, &(view_matrix_[0][0]));
-        glUniformMatrix4fv(shader_main_.uni_Projection_, 1, GL_FALSE, &(projection_matrix_[0][0]));
+        shader_main_.SetUniformMat4(shader_main_.uni_View_, view_matrix_);
+        shader_main_.SetUniformMat4(shader_main_.uni_Projection_, projection_matrix_);
 
         return 0;
     }

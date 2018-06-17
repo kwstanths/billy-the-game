@@ -158,6 +158,14 @@ namespace game_engine {
         return ret;
     }
 
+    void OpenGLShader::SetUniformMat4(GLuint id, glm::mat4& model) {
+        glUniformMatrix4fv(id, 1, GL_FALSE, &model[0][0]);
+    }
+
+    void OpenGLShader::SetUniformVec3(GLuint id, glm::vec3 & vector) {
+        glUniform3fv(id, 1, &vector[0]);
+    }
+
     OpenGLShaderMain::OpenGLShaderMain() : OpenGLShader() {
 
     }
@@ -173,6 +181,7 @@ namespace game_engine {
         if ((uni_View_ = GetUniformLocation(shader_name_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Projection_ = GetUniformLocation(shader_name_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Texture_ = GetUniformLocation(shader_name_uni_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_light_color_ = GetUniformLocation(shader_name_uni_light_color)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }
