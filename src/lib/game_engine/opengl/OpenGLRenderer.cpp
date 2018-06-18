@@ -29,6 +29,7 @@ namespace game_engine {
         glBindVertexArray(VAO_);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
 
         /* Configure VAO/VBO for text shader */
         glGenVertexArrays(1, &VAO2DText_);
@@ -77,6 +78,9 @@ namespace game_engine {
         /* Attribute number 1 is the object's uv coordinates */
         glBindBuffer(GL_ARRAY_BUFFER, object->GetUVBufferID());
         glVertexAttribPointer(shader_main_.attr_vertex_uv_, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        /* Attribute number 2 is the object's normals */
+        glBindBuffer(GL_ARRAY_BUFFER, object->GetNormalBufferID());
+        glVertexAttribPointer(shader_main_.attr_vertex_normal_, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         /* Draw with index buffer */
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object->GetElementBufferID());
@@ -88,7 +92,8 @@ namespace game_engine {
     }
 
     int OpenGLRenderer::SetLight(glm::vec3 position, glm::vec3 color) {
-        /* TODO Set light position */
+
+        shader_main_.SetUniformVec3(shader_main_.uni_light_position_, position);
         shader_main_.SetUniformVec3(shader_main_.uni_light_color_, color);
 
         return 0;

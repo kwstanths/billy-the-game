@@ -109,6 +109,7 @@ namespace game_engine {
 
     void WorldObject::Scale(float scale_x, float scale_y, float scale_z) {
         /* TODO Maybe change collision detecton as well */
+        if (!(Equal(scale_x, scale_y) && Equal(scale_y, scale_z))) dt::Console(dt::WARNING, "Non uniform scale");
         scale_matrix_ = GetScaleMatrix(scale_x, scale_y, scale_z);
     }
 

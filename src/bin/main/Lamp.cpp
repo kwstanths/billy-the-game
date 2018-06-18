@@ -16,7 +16,7 @@ bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
     ret = WorldObject::Init(object, texture, x, y, z);
 
-    Scale(0.1f, 0.1f, 1.0f);
+    Scale(0.1f, 0.1f, 0.0f);
 
     light_intensity_ = glm::vec3(255.0 / 255.0, 214.0 / 255.0, 170.0 / 255.0);
 

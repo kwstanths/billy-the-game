@@ -118,7 +118,7 @@ void Player::Step(double delta_time) {
                 if (neighbour != nullptr) neighbour->Interact();
                 else {
                     /* Spawn new wall! Just for fun! */
-                    world_sector_->NewObj<Wall>(true)->Init((x3 + x4) / 2, (y3 + y4) / 2, 0.1f, engine_);
+                    world_sector_->NewObj<Wall>(true)->Init((x3 + x4) / 2, (y3 + y4) / 2, 0.01f, engine_);
                 }
             }
         }

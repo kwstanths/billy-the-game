@@ -16,7 +16,7 @@ bool Grass::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
     ret = WorldObject::Init(object, texture, x, y, z);
     
-    Scale(5, 5, 1);
+    Scale(5, 5, 5);
 
     return ret == 0;
 }

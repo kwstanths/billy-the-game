@@ -12,12 +12,16 @@ namespace game_engine {
     /* Names of the shader variables used */
     static const char shader_name_vertex_position[] = "vertex_position_modelspace";
     static const char shader_name_vertex_uv[] = "vertex_uv";
+    static const char shader_name_vertex_normal[] = "vertex_normal";
+
     static const char shader_name_uni_model[] = "matrix_model";
     static const char shader_name_uni_view[] = "matrix_view";
     static const char shader_name_uni_projection[] = "matrix_projection";
     static const char shader_name_uni_texture[] = "sampler_texture";
     static const char shader_name_uni_light_color[] = "light_color";
+    static const char shader_name_uni_light_position[] = "light_position";
 
+    /* Names of the text shader variables used */
     static const char shader_text_name_vertex[] = "vertex";
     static const char shader_text_name_uni_projection[] = "matrix_projection";
     static const char shader_text_name_uni_texture[] = "sampler_texture";
@@ -112,6 +116,7 @@ namespace game_engine {
         /* Attributes */
         GLuint attr_vertex_position_;
         GLuint attr_vertex_uv_;
+        GLuint attr_vertex_normal_;
 
         /* Uniforms */
         GLuint uni_Model_;
@@ -119,6 +124,7 @@ namespace game_engine {
         GLuint uni_Projection_;
         GLuint uni_Texture_;
         GLuint uni_light_color_;
+        GLuint uni_light_position_;
     };
 
     class OpenGLShaderText : public OpenGLShader {

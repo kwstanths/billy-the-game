@@ -177,11 +177,13 @@ namespace game_engine {
 
         if ((attr_vertex_position_ = GetAttributeLocation(shader_name_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((attr_vertex_uv_ = GetAttributeLocation(shader_name_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_normal_ = GetAttributeLocation(shader_name_vertex_normal)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Model_ = GetUniformLocation(shader_name_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_View_ = GetUniformLocation(shader_name_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Projection_ = GetUniformLocation(shader_name_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Texture_ = GetUniformLocation(shader_name_uni_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_light_color_ = GetUniformLocation(shader_name_uni_light_color)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_light_position_ = GetUniformLocation(shader_name_uni_light_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }

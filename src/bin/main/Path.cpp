@@ -16,6 +16,8 @@ bool Path::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
     ret = WorldObject::Init(object, texture, x, y, z);
 
+    Scale(4, 4, 4);
+
     return ret == 0;
 }
 

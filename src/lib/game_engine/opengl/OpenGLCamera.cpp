@@ -93,6 +93,7 @@ namespace game_engine {
     int OpenGLCamera::SetMouceCallback(void(*func)(GLFWwindow *, double, double)) {
         if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
         glfwSetCursorPosCallback(context_->glfw_window_, func);
+        return Error::ERROR_NO_ERROR;
     }
 
     int OpenGLCamera::SetView() {
