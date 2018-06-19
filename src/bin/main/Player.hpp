@@ -9,6 +9,7 @@
 
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/WorldObject.hpp"
+#include "game_engine/Renderer.hpp"
 
 #include "Input.hpp"
 #include "Camera.hpp"
@@ -26,6 +27,8 @@ public:
     void Step(double delta_time);
 
     float GetSpeed(bool running);
+
+    virtual void Draw(game_engine::Renderer * render);
 
 private:
     bool is_inited_;

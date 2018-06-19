@@ -18,6 +18,7 @@ namespace game_engine {
     static const char shader_name_uni_view[] = "matrix_view";
     static const char shader_name_uni_projection[] = "matrix_projection";
     static const char shader_name_uni_texture[] = "sampler_texture";
+    static const char shader_name_uni_camera_position_worldspace[] = "camera_position_worldspace";
     static const char shader_name_uni_light_color[] = "light_color";
     static const char shader_name_uni_light_position[] = "light_position";
 
@@ -78,6 +79,8 @@ namespace game_engine {
 
         void SetUniformVec3(GLuint id, glm::vec3& vector);
 
+        void SetUniFloat(GLuint id, float & value);
+
     protected:
         GLuint program_id_;
     private:
@@ -123,6 +126,7 @@ namespace game_engine {
         GLuint uni_View_;
         GLuint uni_Projection_;
         GLuint uni_Texture_;
+        GLuint uni_camera_position_worldspace_;
         GLuint uni_light_color_;
         GLuint uni_light_position_;
     };

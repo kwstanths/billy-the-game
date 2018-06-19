@@ -19,8 +19,19 @@ bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine) {
     Scale(0.1f, 0.1f, 0.0f);
 
     light_intensity_ = glm::vec3(255.0 / 255.0, 214.0 / 255.0, 170.0 / 255.0);
+    center_x_ = x;
+    center_y_ = y;
+    angular_speed_ = ge::GetRadians(100.0f); /* radians per second */
+    radius_ = 3;
 
     return ret == 0;
+}
+
+void Lamp::Step(double delta_time) {
+
+    float x = center_x_ + radius_ * cos(angular_speed_ * glfwGetTime());
+    float y = center_y_ + radius_ * sin(angular_speed_ * glfwGetTime());
+    SetPosition(x, y, GetZ());
 }
 
 void Lamp::Draw(game_engine::Renderer * renderer) {

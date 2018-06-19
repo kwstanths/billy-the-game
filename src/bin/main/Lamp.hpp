@@ -11,9 +11,14 @@ public:
 
     bool Init(float x, float y, float z, game_engine::GameEngine * engine);
 
+    virtual void Step(double delta_time) override;
+
     virtual void Draw(game_engine::Renderer * renderer) override;
 
 private:
+    float center_x_, center_y_;
+    float radius_;
+    float angular_speed_;
     glm::vec3 light_intensity_;
 };
 

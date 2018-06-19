@@ -1,6 +1,7 @@
 #include "OpenGLRenderer.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include "../graphics/Material.hpp"
 
 #include "debug_tools/Console.hpp"
 
@@ -63,6 +64,12 @@ namespace game_engine {
         if (!texture->IsInited()) return -1;
 
         glBindVertexArray(VAO_);
+
+        graphics::Material_t m(GAME_ENGINE_MATERIAL_PEARL);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.ambient"), m.ambient_);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.diffuse"), m.diffuse_);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.specular"), m.specular_);
+        shader_main_.SetUniFloat(shader_main_.GetUniformLocation("object_material.shininess"), m.shininess_);
 
         /* Set the model uniform */
         shader_main_.SetUniformMat4(shader_main_.uni_Model_, model);

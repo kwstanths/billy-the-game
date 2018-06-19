@@ -150,4 +150,11 @@ float Player::GetSpeed(bool running) {
     else return speed_regular_;
 }
 
+void Player::Draw(ge::Renderer * renderer) {
+
+    //renderer->AddLight(glm::vec3(GetX() + 4*sin(glfwGetTime()), GetY() + 4*cos(glfwGetTime()), GetZ() + 3) , glm::vec3(255.0 / 255.0, 214.0 / 255.0, 170.0 / 255.0));
+
+    WorldObject::Draw(renderer);
+}
+
 

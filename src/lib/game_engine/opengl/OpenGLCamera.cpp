@@ -103,6 +103,7 @@ namespace game_engine {
 
         shader_main_.SetUniformMat4(shader_main_.uni_View_, view_matrix_);
         shader_main_.SetUniformMat4(shader_main_.uni_Projection_, projection_matrix_);
+        shader_main_.SetUniformVec3(shader_main_.uni_camera_position_worldspace_, config_.position_);
 
         return 0;
     }

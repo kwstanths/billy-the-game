@@ -8,7 +8,7 @@ layout(location = 2) in vec3 vertex_normal;
 /* Output data to be passed to the fragment shader */
 out vec2 uv;
 out vec3 normal;
-out vec3 fragment_position_globalspace;
+out vec3 fragment_position_worldspace;
 
 /* Values that stay constant */
 uniform mat4 matrix_model;
@@ -24,7 +24,7 @@ void main(){
 
 	/* Set output */
 	/* Calculate the position of the fragment in the global space */
-	fragment_position_globalspace = vec3(matrix_model * vec4(vertex_position_modelspace, 1.0));
+	fragment_position_worldspace = vec3(matrix_model * vec4(vertex_position_modelspace, 1.0));
 	normal = vertex_normal;
     uv = vertex_uv;
 }
