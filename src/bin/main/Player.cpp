@@ -1,17 +1,18 @@
 #include "Player.hpp"
 
-#include "debug_tools/Console.hpp"
-
-#include "game_engine/opengl/OpenGLObject.hpp"
-#include "game_engine/opengl/OpenGLTexture.hpp"
-
+#include "game_engine/graphics/opengl/OpenGLObject.hpp"
+#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 #include "game_engine/physics/HelpFunctions.hpp"
 #include "game_engine/physics/Geometry.hpp"
 
+#include "debug_tools/Console.hpp"
+namespace dt = debug_tools;
+
 #include "Wall.hpp"
 
-namespace dt = debug_tools;
 namespace ge = game_engine;
+namespace grph = game_engine::graphics;
+namespace gl = game_engine::graphics::opengl;
 
 Player::Player(): WorldObject() {
     speed_regular_ = 4.0f;
@@ -29,8 +30,8 @@ int Player::Init(float x, float y, float z, Input * input, Camera * camera, ge::
     camera_ = camera;
 
     int ret;
-    ge::OpenGLObject * object = engine_->GetAssetManager()->FindObject("assets/circle.obj", &ret);
-    ge::OpenGLTexture * texture = engine_->GetAssetManager()->FindTexture("assets/player.bmp", ge::OpenGLTexture::TEXTURE_STB, &ret);
+    gl::OpenGLObject * object = engine_->GetAssetManager()->FindObject("assets/circle.obj", &ret);
+    gl::OpenGLTexture * texture = engine_->GetAssetManager()->FindTexture("assets/player.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
 
     ret = WorldObject::Init(object, texture, x, y, z);
     radius_ = 0.5f;
@@ -150,7 +151,7 @@ float Player::GetSpeed(bool running) {
     else return speed_regular_;
 }
 
-void Player::Draw(ge::Renderer * renderer) {
+void Player::Draw(grph::Renderer * renderer) {
 
     //renderer->AddLight(glm::vec3(GetX() + 4*sin(glfwGetTime()), GetY() + 4*cos(glfwGetTime()), GetZ() + 3) , glm::vec3(255.0 / 255.0, 214.0 / 255.0, 170.0 / 255.0));
 

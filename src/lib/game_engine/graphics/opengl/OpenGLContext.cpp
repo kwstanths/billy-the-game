@@ -1,10 +1,12 @@
 #include "OpenGLContext.hpp"
 
-#include "../ErrorCodes.hpp"
+#include "game_engine/ErrorCodes.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 
 namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     OpenGLContext::OpenGLContext() {
         is_inited_ = false;
@@ -144,4 +146,6 @@ namespace game_engine {
     }
 
 
+}
+}
 }

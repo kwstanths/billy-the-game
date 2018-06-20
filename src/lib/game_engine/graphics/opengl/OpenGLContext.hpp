@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "../Controls.hpp"
+#include "game_engine/Controls.hpp"
 
 #include "OpenGLIncludes.hpp"
 #include "OpenGLShaders.hpp"
@@ -13,6 +13,8 @@
 #define OPENGL_VERSION_MINOR 3
 
 namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     /**
         Values necessary to initialize the OpenGLContext object
@@ -118,6 +120,8 @@ namespace game_engine {
         GLFWwindow * glfw_window_ = nullptr;
     };
 
+}
+}
 }
 
 #endif

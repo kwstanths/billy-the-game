@@ -1,12 +1,13 @@
 #include "GameEngine.hpp"
 
 #include "ErrorCodes.hpp"
-#include "physics/Types.hpp"
+#include "game_engine/physics/Types.hpp"
 
 #include "debug_tools/Console.hpp"
 #include "debug_tools/CodeReminder.hpp"
-
 namespace dt = debug_tools;
+namespace gl = game_engine::graphics::opengl;
+namespace grph = game_engine::graphics;
 
 namespace game_engine {
 
@@ -14,8 +15,8 @@ namespace game_engine {
         is_inited_ = false;
         last_error_ = 0;
 
-        context_ = new OpenGLContext();
-        renderer_ = new Renderer();
+        context_ = new gl::OpenGLContext();
+        renderer_ = new grph::Renderer();
         asset_manager_ = new AssetManager();
         debugger_ = new Debugger();
     }
@@ -129,12 +130,12 @@ namespace game_engine {
         frame_regulator_.FrameEnd();
     }
 
-    void GameEngine::SetCamera(OpenGLCamera * camera, OpenGLCameraConfig_t config) {
+    void GameEngine::SetCamera(gl::OpenGLCamera * camera, gl::OpenGLCameraConfig_t config) {
         camera_ = camera;
         camera->Init(config, context_);
     }
 
-    OpenGLCamera * GameEngine::GetCamera() {
+    gl::OpenGLCamera * GameEngine::GetCamera() {
         return camera_;
     }
 

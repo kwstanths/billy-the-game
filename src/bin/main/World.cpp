@@ -1,8 +1,7 @@
 #include "World.hpp"
 
-#include "game_engine/opengl/OpenGLObject.hpp"
-#include "game_engine/opengl/OpenGLTexture.hpp"
-
+#include "game_engine/graphics/opengl/OpenGLObject.hpp"
+#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 #include "game_engine/AssetManager.hpp"
 
 #include "debug_tools/Console.hpp"
@@ -86,7 +85,7 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
 
     /* Create a lamp */
     Lamp * lamp = NewObj<Lamp>();
-    lamp->Init(0, 0, 3, engine);
+    lamp->Init(0, 0, 5, engine);
 
     /* Create a main player */
     Player * player = NewObj<Player>();

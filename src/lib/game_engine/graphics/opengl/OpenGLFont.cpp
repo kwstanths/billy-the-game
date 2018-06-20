@@ -3,9 +3,11 @@
 #include "ft2build.h"
 #include FT_FREETYPE_H
 
-#include "../ErrorCodes.hpp"
+#include "game_engine/ErrorCodes.hpp"
 
 namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     OpenGLFont::OpenGLFont() {
         is_inited_ = false;
@@ -95,4 +97,6 @@ namespace game_engine {
     }
 
 
+}
+}
 }

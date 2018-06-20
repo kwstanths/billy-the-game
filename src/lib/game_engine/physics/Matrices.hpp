@@ -1,8 +1,6 @@
 #ifndef __Matrices_hpp__
 #define __Matrices_hpp__
 
-#include "../opengl/OpenGLIncludes.hpp"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 

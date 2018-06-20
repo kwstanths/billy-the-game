@@ -8,6 +8,8 @@
 #include "glm/glm.hpp"
 
 namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     /* Struct represeting a renderable character */
     typedef struct {
@@ -56,6 +58,8 @@ namespace game_engine {
         GLuint VAO, VBO;
     };
 
+}
+}
 }
 
 #endif

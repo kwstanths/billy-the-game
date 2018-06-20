@@ -1,15 +1,12 @@
 #ifndef __Player_hpp__
 #define __Player_hpp__
 
-#include "game_engine/opengl/OpenGLObject.hpp"
-#include "game_engine/opengl/OpenGLTexture.hpp"
-#include "game_engine/opengl/OpenGLCamera.hpp"
-
-#include "game_engine/physics/Collision.hpp"
-
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/WorldObject.hpp"
-#include "game_engine/Renderer.hpp"
+#include "game_engine/graphics/opengl/OpenGLObject.hpp"
+#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
+#include "game_engine/graphics/Renderer.hpp"
+#include "game_engine/physics/Collision.hpp"
 
 #include "Input.hpp"
 #include "Camera.hpp"
@@ -28,7 +25,7 @@ public:
 
     float GetSpeed(bool running);
 
-    virtual void Draw(game_engine::Renderer * render);
+    virtual void Draw(game_engine::graphics::Renderer * render);
 
 private:
     bool is_inited_;

@@ -1,13 +1,15 @@
 #include "OpenGLObject.hpp"
 
-#include "../physics/Matrices.hpp"
-#include "../FileIO.hpp"
+#include "game_engine/physics/Matrices.hpp"
+#include "game_engine/FileIO.hpp"
 
 #include "debug_tools/Console.hpp"
 
 #include <map>
 
 namespace game_engine{
+namespace graphics {
+namespace opengl {
 
     OpenGLObject::OpenGLObject() {        
         is_inited_ = false;
@@ -132,6 +134,6 @@ namespace game_engine{
     }
 
     
-
-
+}
+}
 }

@@ -1,8 +1,10 @@
 #include "Lamp.hpp"
 
-#include "game_engine/opengl/OpenGLObject.hpp"
-#include "game_engine/opengl/OpenGLTexture.hpp"
+#include "game_engine/graphics/opengl/OpenGLObject.hpp"
+#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 namespace ge = game_engine;
+namespace grph = game_engine::graphics;
+namespace gl = game_engine::graphics::opengl;
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
@@ -11,14 +13,17 @@ namespace dt = debug_tools;
 bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
     int ret;
-    ge::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
-    ge::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/debug.bmp", ge::OpenGLTexture::TEXTURE_STB, &ret);
+    gl::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
+    gl::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/debug.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
 
     ret = WorldObject::Init(object, texture, x, y, z);
 
     Scale(0.1f, 0.1f, 0.0f);
 
-    light_intensity_ = glm::vec3(255.0 / 255.0, 214.0 / 255.0, 170.0 / 255.0);
+    /* small intensity */
+    light_ = ge::graphics::LightProperties_t(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+    /* full intensity */
+    light_ = ge::graphics::LightProperties_t(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     center_x_ = x;
     center_y_ = y;
     angular_speed_ = ge::GetRadians(100.0f); /* radians per second */
@@ -34,9 +39,9 @@ void Lamp::Step(double delta_time) {
     SetPosition(x, y, GetZ());
 }
 
-void Lamp::Draw(game_engine::Renderer * renderer) {
+void Lamp::Draw(grph::Renderer * renderer) {
     
-    renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ()), light_intensity_);
+    renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ()), light_);
 
     WorldObject::Draw(renderer);
 }

@@ -8,6 +8,8 @@
 #include "OpenGLIncludes.hpp"
 
 namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     /* Names of the shader variables used */
     static const char shader_name_vertex_position[] = "vertex_position_modelspace";
@@ -19,8 +21,6 @@ namespace game_engine {
     static const char shader_name_uni_projection[] = "matrix_projection";
     static const char shader_name_uni_texture[] = "sampler_texture";
     static const char shader_name_uni_camera_position_worldspace[] = "camera_position_worldspace";
-    static const char shader_name_uni_light_color[] = "light_color";
-    static const char shader_name_uni_light_position[] = "light_position";
 
     /* Names of the text shader variables used */
     static const char shader_text_name_vertex[] = "vertex";
@@ -127,8 +127,6 @@ namespace game_engine {
         GLuint uni_Projection_;
         GLuint uni_Texture_;
         GLuint uni_camera_position_worldspace_;
-        GLuint uni_light_color_;
-        GLuint uni_light_position_;
     };
 
     class OpenGLShaderText : public OpenGLShader {
@@ -153,6 +151,8 @@ namespace game_engine {
         GLuint uni_Texture_color_;
     };
 
+}
+}
 }
 
 #endif

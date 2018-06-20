@@ -1,8 +1,9 @@
 #include "Treasure.hpp"
 
-#include "game_engine/opengl/OpenGLObject.hpp"
-#include "game_engine/opengl/OpenGLTexture.hpp"
+#include "game_engine/graphics/opengl/OpenGLObject.hpp"
+#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 namespace ge = game_engine;
+namespace gl = game_engine::graphics::opengl;
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
@@ -10,8 +11,8 @@ namespace dt = debug_tools;
 bool Treasure::Init(float x, float y, float z, ge::GameEngine * engine, size_t id) {
     
     int ret;
-    ge::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/tile.obj", &ret);
-    ge::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/wood.jpg",ge::OpenGLTexture::TEXTURE_STB, &ret);
+    gl::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/tile.obj", &ret);
+    gl::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/wood.jpg", gl::OpenGLTexture::TEXTURE_STB, &ret);
 
     ret = WorldObject::Init(object, texture, x, y, z);
 

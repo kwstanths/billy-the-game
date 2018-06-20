@@ -6,17 +6,19 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-
 #include <stdlib.h>
 #include <string.h>
 
-#include "../ErrorCodes.hpp"
+#include "game_engine/ErrorCodes.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
 
+
 namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     OpenGLShader::OpenGLShader() {
         is_inited_ = false;
@@ -162,11 +164,11 @@ namespace game_engine {
         glUniformMatrix4fv(id, 1, GL_FALSE, &model[0][0]);
     }
 
-    void OpenGLShader::SetUniformVec3(GLuint id, glm::vec3 & vector) {
+    void OpenGLShader::SetUniformVec3(GLuint id, glm::vec3& vector) {
         glUniform3fv(id, 1, &vector[0]);
     }
 
-    void OpenGLShader::SetUniFloat(GLuint id, float & value) {
+    void OpenGLShader::SetUniFloat(GLuint id, float& value) {
         glUniform1fv(id, 1, &value);
     }
 
@@ -187,9 +189,7 @@ namespace game_engine {
         if ((uni_Projection_ = GetUniformLocation(shader_name_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Texture_ = GetUniformLocation(shader_name_uni_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_camera_position_worldspace_ = GetUniformLocation(shader_name_uni_camera_position_worldspace)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_light_color_ = GetUniformLocation(shader_name_uni_light_color)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_light_position_ = GetUniformLocation(shader_name_uni_light_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-
+        
         return 0;
     }
 
@@ -210,5 +210,7 @@ namespace game_engine {
         return 0;
     }
 
+}
+}
 }
 

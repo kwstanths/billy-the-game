@@ -1,11 +1,14 @@
 #include "OpenGLRenderer.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
-#include "../graphics/Material.hpp"
+
+#include "game_engine/graphics/Material.hpp"
 
 #include "debug_tools/Console.hpp"
 
 namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     OpenGLRenderer::OpenGLRenderer() {
 
@@ -65,7 +68,11 @@ namespace game_engine {
 
         glBindVertexArray(VAO_);
 
-        graphics::Material_t m(GAME_ENGINE_MATERIAL_PEARL);
+        /* TODO Put these values on the items themselves */
+        //graphics::Material_t m(glm::vec3(0.1, 0.1, 0.1), glm::vec3(1, 1, 1), glm::vec3(0.5, 0.5, 0.5), 32);
+        //graphics::Material_t m(glm::vec3(1.0, 0.5, 0.31), glm::vec3(1.0, 0.5, 0.31), glm::vec3(0.5, 0.5, 0.5), 32);
+        graphics::Material_t m(GAME_ENGINE_MATERIAL_GOLD);
+        m.shininess_ = 32;
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.ambient"), m.ambient_);
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.diffuse"), m.diffuse_);
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.specular"), m.specular_);
@@ -98,10 +105,12 @@ namespace game_engine {
         return 0;
     }
 
-    int OpenGLRenderer::SetLight(glm::vec3 position, glm::vec3 color) {
+    int OpenGLRenderer::SetLight(glm::vec3 position, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular) {
 
-        shader_main_.SetUniformVec3(shader_main_.uni_light_position_, position);
-        shader_main_.SetUniformVec3(shader_main_.uni_light_color_, color);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("light_properties.position"), position);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("light_properties.ambient"), color_ambient);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("light_properties.diffuse"), color_diffuse);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("light_properties.specular"), color_specular);
 
         return 0;
     }
@@ -162,4 +171,6 @@ namespace game_engine {
         return 0;
     }
 
+}
+}
 }

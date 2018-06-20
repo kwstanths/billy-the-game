@@ -2,10 +2,10 @@
 #define __Camera_hpp__
 
 
-#include "game_engine/opengl/OpenGLCamera.hpp"
+#include "game_engine/graphics/opengl/OpenGLCamera.hpp"
 
 
-class Camera : public game_engine::OpenGLCamera {
+class Camera : public game_engine::graphics::opengl::OpenGLCamera {
 public:
     Camera(int width, int height, float mouse_sensitivity);
 

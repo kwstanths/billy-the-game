@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 
 namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     /**
         Values necessary to initialize an OpenGLCamera object
@@ -30,7 +32,7 @@ namespace game_engine {
         friend class OpenGLContext;
     public:
         /**
-            Sets the parameters to the local variable, does nothing else. Feel free to discard 
+            Sets the parameters to the local variable, does nothing else. Feel free to discard
             the config object after this call
             @param config The necessary stuff when Init() is called
         */
@@ -39,10 +41,10 @@ namespace game_engine {
         /**
             Uses the parameters set to initialise the View matrix, and the projection matrix.
             Also, sets the OpenGLShaderVariables_t to be used with SetView
-            @param context Used to get OpenGLShaderVariables_t object to be used to set the view 
+            @param context Used to get OpenGLShaderVariables_t object to be used to set the view
             and projection matrices
             @return 0=OK
-                
+
         */
         int Init(OpenGLCameraConfig_t config, OpenGLContext * context);
 
@@ -101,7 +103,7 @@ namespace game_engine {
 
         /**
             Move the camera's position
-            @param move_x Movement in x 
+            @param move_x Movement in x
             @param move_y Movement in y
             @param move_z Movement in z
         */
@@ -122,7 +124,7 @@ namespace game_engine {
         void Zoom(float factor);
 
         /**
-        
+
         */
         int SetMouceCallback(void(*func)(GLFWwindow *, double, double));
 
@@ -135,7 +137,7 @@ namespace game_engine {
     private:
         bool is_inited_;
         OpenGLCameraConfig_t config_;
-        
+
         OpenGLContext * context_;
         OpenGLShaderMain shader_main_;
 
@@ -153,6 +155,9 @@ namespace game_engine {
         void Project3D();
     };
 
+
+}
+}
 }
 
 #endif

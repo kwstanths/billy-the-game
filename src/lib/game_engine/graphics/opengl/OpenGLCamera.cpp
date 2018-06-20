@@ -1,7 +1,7 @@
 #include "OpenGLCamera.hpp"
 
-#include "../physics/HelpFunctions.hpp"
-#include "../ErrorCodes.hpp"
+#include "game_engine/physics/HelpFunctions.hpp"
+#include "game_engine/ErrorCodes.hpp"
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
@@ -9,6 +9,8 @@ namespace dt = debug_tools;
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     OpenGLCamera::OpenGLCamera() {
         is_inited_ = false;
@@ -123,4 +125,6 @@ namespace game_engine {
             0.1f, 100.0f);
     }
 
+}
+}
 }

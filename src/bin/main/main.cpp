@@ -13,6 +13,7 @@
 #include "World.hpp"
 
 namespace ge = game_engine;
+namespace gl = game_engine::graphics::opengl;
 namespace dt = debug_tools;
 
 /* Camera needs to be global, since the mouse callback needs to be global */
@@ -30,7 +31,7 @@ int main(int argc, char ** argv) {
     CodeReminder("WorldObject, collision in SetPosition() maybe?");
 
     /* Configuration parameters for the engine */
-    ge::OpenGLContextConfig_t context_params;
+    gl::OpenGLContextConfig_t context_params;
     context_params.window_width_ = 1024;
     context_params.window_height_ = 768;
     context_params.window_name_ = "billy";
@@ -39,7 +40,7 @@ int main(int argc, char ** argv) {
     context_params.shader_fragment_file_path_ = "shaders/FragmentShader.glsl";
     context_params.shader_vertex_text_file_path = "shaders/TextVertexShader.glsl";
     context_params.shader_fragment_text_file_path = "shaders/TextFragmentShader.glsl";
-    ge::OpenGLCameraConfig_t camera_params;
+    gl::OpenGLCameraConfig_t camera_params;
     camera_params.position_ = glm::vec3(0, 0, 8);
     camera_params.direction_ = glm::vec3(0, 0, -1);
     camera_params.up_ = glm::vec3(0, 1, 0);

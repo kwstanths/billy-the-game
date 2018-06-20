@@ -4,7 +4,6 @@
 #include "../physics/Types.hpp"
 
 namespace game_engine {
-
 namespace graphics {
 
 #define GAME_ENGINE_MATERIAL_EMERALD        0
@@ -47,8 +46,31 @@ namespace graphics {
         /**
             Create a custom material
         */
-        Material_t(glm::vec3 a, glm::vec3 d, glm::vec3 spec, float shini) : ambient_(a), diffuse_(d), specular_(spec), shininess_(shini) {};
+        Material_t(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess) 
+            : ambient_(ambient), diffuse_(diffuse), specular_(specular), shininess_(shininess) {};
 
+    };
+
+    struct LightProperties_t {
+        glm::vec3 ambient_;
+        glm::vec3 diffuse_;
+        glm::vec3 specular_;
+
+
+        /**
+            Creates white light
+        */
+        LightProperties_t(){
+            ambient_ = glm::vec3(1.0f, 1.0f, 1.0f);
+            diffuse_ = glm::vec3(1.0f, 1.0f, 1.0f);
+            specular_ = glm::vec3(1.0f, 1.0f, 1.0f);
+        }
+
+        /**
+            Create a custom light
+        */
+        LightProperties_t(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) 
+            : ambient_(ambient), diffuse_(diffuse), specular_(specular) {};
     };
 
 }

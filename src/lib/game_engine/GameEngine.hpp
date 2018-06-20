@@ -4,15 +4,15 @@
 #include <string>
 #include <vector>
 
-#include "opengl/OpenGLContext.hpp"
-#include "opengl/OpenGLCamera.hpp"
+#include "game_engine/graphics/opengl/OpenGLContext.hpp"
+#include "game_engine/graphics/opengl/OpenGLCamera.hpp"
+#include "game_engine/graphics/Renderer.hpp"
 
 #include "FrameRateRegulator.hpp"
 #include "Controls.hpp"
 #include "WorldObject.hpp"
 #include "WorldSector.hpp"
 #include "AssetManager.hpp"
-#include "Renderer.hpp"
 #include "Debugger.hpp"
 #include "ErrorCodes.hpp"
 
@@ -23,7 +23,7 @@ namespace game_engine {
         Values necessary to initialize a GameEngine object
     */
     typedef struct {
-        OpenGLContextConfig_t context_params_;
+        graphics::opengl::OpenGLContextConfig_t context_params_;
 
         size_t frame_rate_;
 
@@ -69,12 +69,12 @@ namespace game_engine {
         /**
         
         */
-        void SetCamera(OpenGLCamera * camera, OpenGLCameraConfig_t config);
+        void SetCamera(graphics::opengl::OpenGLCamera * camera, graphics::opengl::OpenGLCameraConfig_t config);
 
         /**
         
         */
-        OpenGLCamera * GetCamera();
+        graphics::opengl::OpenGLCamera * GetCamera();
 
         /**
             Get a struct with input from the user
@@ -124,18 +124,19 @@ namespace game_engine {
         GameEngineConfig_t config_;
         /* Latest keybaord values pressed. Updated at every engine step */
         KeyControls_t key_controls_;
-
+        /* Holds the visible items in each frame */
+        std::vector<WorldObject *> visible_world_;
+        
+        /* Instances from other parts of the system */
         FrameRateRegulator frame_regulator_;
-        Renderer * renderer_ = nullptr;
         AssetManager * asset_manager_ = nullptr;
         Debugger * debugger_ = nullptr;
-        
-        OpenGLContext * context_ = nullptr;
-        OpenGLCamera * camera_ = nullptr;
-
         WorldSector * sector_;
-        std::vector<WorldObject *> visible_world_;
-
+        
+        graphics::Renderer * renderer_ = nullptr;
+        
+        graphics::opengl::OpenGLContext * context_ = nullptr;
+        graphics::opengl::OpenGLCamera * camera_ = nullptr;
     };
 
 }

@@ -5,13 +5,13 @@
 #include <string>
 #include <exception>
 
-#include "opengl/OpenGLObject.hpp"
-#include "opengl/OpenGLTexture.hpp"
-#include "physics/Types.hpp"
-#include "physics/PhysicsObject.hpp"
-#include "memory/ArrayAllocator.hpp"
-#include "memory/PoolAllocator.hpp"
-#include "Renderer.hpp"
+#include "game_engine/graphics/opengl/OpenGLObject.hpp"
+#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
+#include "game_engine/physics/Types.hpp"
+#include "game_engine/physics/PhysicsObject.hpp"
+#include "game_engine/memory/ArrayAllocator.hpp"
+#include "game_engine/memory/PoolAllocator.hpp"
+#include "game_engine/graphics/Renderer.hpp"
 
 #include "debug_tools/Console.hpp"
 
@@ -73,7 +73,7 @@ namespace game_engine {
             Initialize the object. Sets the OpenGL model and texture of the object. Sets the initial position
             @return 0=OK, else see ErrorCodes.hpp
         */
-        int Init(OpenGLObject * object, OpenGLTexture * texture, float x, float y, float z, bool interactable = false);
+        int Init(graphics::opengl::OpenGLObject * object, graphics::opengl::OpenGLTexture * texture, float x, float y, float z, bool interactable = false);
 
         /**
             Does nothing in particular yet
@@ -89,7 +89,7 @@ namespace game_engine {
             Draw the object during every frame, after calling the step function. Override for custom behaviour
             @param renderer The renderer
         */
-        virtual void Draw(Renderer * renderer);
+        virtual void Draw(graphics::Renderer * renderer);
 
         /**
             Function that should be overriden for custom step behaviour. Step() is called,
@@ -142,8 +142,8 @@ namespace game_engine {
         bool removable_;
         bool interactable_;
 
-        OpenGLObject * object_;
-        OpenGLTexture * texture_;
+        graphics::opengl::OpenGLObject * object_;
+        graphics::opengl::OpenGLTexture * texture_;
 
         glm::mat4 translation_matrix_;
         glm::mat4 rotation_matrix_;

@@ -1,11 +1,13 @@
 #ifndef __OpenGLTexture_hpp__
 #define __OpenGLTexture_hpp__
 
-#include "OpenGLIncludes.hpp"
-
 #include <string>
 
+#include "OpenGLIncludes.hpp"
+
 namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     class OpenGLTexture {
     public:
@@ -59,6 +61,8 @@ namespace game_engine {
         */
         int LoadSTB(const char * imagepath, GLuint * texture_id);
     };
+}
+}
 }
 
 #endif

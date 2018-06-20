@@ -2,6 +2,8 @@
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
+namespace utl = game_engine::utility;
+namespace gl = game_engine::graphics::opengl;
 
 namespace game_engine {
 
@@ -16,8 +18,8 @@ namespace game_engine {
     bool AssetManager::Init(size_t number_of_objects, size_t number_of_textures) {
         if (IsInited()) return false;
 
-        objects_ = new utl::HashTable<std::string, OpenGLObject *>(number_of_objects, number_of_objects);
-        textures_ = new utl::HashTable<std::string, OpenGLTexture *>(number_of_textures, number_of_textures);
+        objects_ = new utl::HashTable<std::string, gl::OpenGLObject *>(number_of_objects, number_of_objects);
+        textures_ = new utl::HashTable<std::string, gl::OpenGLTexture *>(number_of_textures, number_of_textures);
 
         is_inited_ = true;
         return true;
@@ -27,13 +29,13 @@ namespace game_engine {
         if (!IsInited()) return false;
     
         /* Destroy objects */
-        for(typename utl::HashTable<std::string, OpenGLObject *>::iterator itr = objects_->begin(); itr != objects_->end(); ++itr){
+        for(typename utl::HashTable<std::string, gl::OpenGLObject *>::iterator itr = objects_->begin(); itr != objects_->end(); ++itr){
             itr.GetValue()->Destroy();
         }
         objects_->Clear();
 
         /* Destroy textures */
-        for(typename utl::HashTable<std::string, OpenGLTexture *>::iterator itr = textures_->begin(); itr != textures_->end(); ++itr){
+        for(typename utl::HashTable<std::string, gl::OpenGLTexture *>::iterator itr = textures_->begin(); itr != textures_->end(); ++itr){
             itr.GetValue()->Destroy();
         }
         textures_->Clear();
@@ -46,21 +48,21 @@ namespace game_engine {
         return is_inited_;
     }
 
-    OpenGLObject * AssetManager::FindObject(std::string object_name, int * ret_code) {
+    gl::OpenGLObject * AssetManager::FindObject(std::string object_name, int * ret_code) {
         if (!IsInited()) {
             *ret_code = Error::ERROR_GEN_NOT_INIT;
             return nullptr;
         }
 
         /* Search among the already created objects */
-        utl::HashTable<std::string, OpenGLObject *>::iterator itr = objects_->Find(object_name);
+        utl::HashTable<std::string, gl::OpenGLObject *>::iterator itr = objects_->Find(object_name);
         if (itr != objects_->end()) {
             *ret_code = Error::ERROR_NO_ERROR;
              return itr.GetValue();
         }
 
         /* If not found, create it and insert it in the table */
-        OpenGLObject * object = new OpenGLObject();
+        gl::OpenGLObject * object = new gl::OpenGLObject();
         int ret = object->Init(object_name);
         if (ret != 0) {
             delete object;
@@ -78,7 +80,7 @@ namespace game_engine {
         return object;
     }
 
-    OpenGLTexture * AssetManager::FindTexture(std::string texture_name, OpenGLTexture::OpenGLTextureType type, int * ret_code) {
+    gl::OpenGLTexture * AssetManager::FindTexture(std::string texture_name, gl::OpenGLTexture::OpenGLTextureType type, int * ret_code) {
         if (!IsInited()) {
             *ret_code = Error::ERROR_GEN_NOT_INIT;
             PrintError(*ret_code);
@@ -86,14 +88,14 @@ namespace game_engine {
         }
 
         /* Search among the already created objects */
-        utl::HashTable<std::string, OpenGLTexture *>::iterator itr = textures_->Find(texture_name);
+        utl::HashTable<std::string, gl::OpenGLTexture *>::iterator itr = textures_->Find(texture_name);
         if (itr != textures_->end()) {
             *ret_code = Error::ERROR_NO_ERROR;
             return itr.GetValue();
         }
 
         /* If not found, create it and insert it in the table */
-        OpenGLTexture * texture = new OpenGLTexture();
+        gl::OpenGLTexture * texture = new gl::OpenGLTexture();
         int ret = texture->Init(texture_name, type);
         if (ret != 0) {
             delete texture;

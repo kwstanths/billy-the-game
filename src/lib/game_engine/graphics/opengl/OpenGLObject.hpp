@@ -10,6 +10,8 @@
 #include <glm/glm.hpp>
 
 namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     class OpenGLObject {
     public:
@@ -90,6 +92,8 @@ namespace game_engine {
 
     };
 
+}
+}
 }
 
 #endif

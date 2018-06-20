@@ -1,8 +1,11 @@
 #include "Debugger.hpp"
 
-#include "physics/Matrices.hpp"
+#include "game_engine/physics/Matrices.hpp"
 
 #include "ErrorCodes.hpp"
+
+namespace grph = game_engine::graphics;
+namespace gl = game_engine::graphics::opengl;
 
 namespace game_engine {
 
@@ -10,7 +13,7 @@ namespace game_engine {
         is_inited_ = false;
     }
 
-    int Debugger::Init(AssetManager * asset_manager, Renderer * renderer) {
+    int Debugger::Init(AssetManager * asset_manager, grph::Renderer * renderer) {
 
         renderer_ = renderer;
 
@@ -19,7 +22,7 @@ namespace game_engine {
 
         int ret;
         object_circle_ = asset_manager->FindObject("assets/circle.obj", &ret);
-        texture_circle_ = asset_manager->FindTexture("assets/debug.bmp", OpenGLTexture::TEXTURE_STB, &ret);
+        texture_circle_ = asset_manager->FindTexture("assets/debug.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
 
         is_inited_ = true;
         return 0;

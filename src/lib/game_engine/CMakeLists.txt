@@ -21,8 +21,6 @@ include_directories(${FREETYPE_INCLUDE_DIRS})
 # Sources
 file(GLOB ${NAME}_HEADERS *.hpp)
 file(GLOB ${NAME}_SOURCES *.cpp)
-file(GLOB ${NAME}_GL_HEADERS opengl/*.hpp)
-file(GLOB ${NAME}_GL_SOURCES opengl/*.cpp)
 file(GLOB ${NAME}_PHY_HEADERS physics/*.hpp)
 file(GLOB ${NAME}_PHY_SOURCES physics/*.cpp)
 file(GLOB ${NAME}_MEM_HEADERS memory/*.hpp)
@@ -31,21 +29,21 @@ file(GLOB ${NAME}_UTL_HEADERS utility/*.hpp)
 file(GLOB ${NAME}_UTL_SOURCES utility/*.cpp)
 file(GLOB ${NAME}_GPH_HEADERS graphics/*.hpp)
 file(GLOB ${NAME}_GPH_SOURCES graphics/*.cpp)
+file(GLOB ${NAME}_GL_HEADERS graphics/opengl/*.hpp)
+file(GLOB ${NAME}_GL_SOURCES graphics/opengl/*.cpp)
 
 # Target
 add_library(
 	${NAME} ${${NAME}_HEADERS} ${${NAME}_SOURCES} 
-	${${NAME}_GL_HEADERS} ${${NAME}_GL_SOURCES}
 	${${NAME}_PHY_HEADERS} ${${NAME}_PHY_SOURCES}
 	${${NAME}_MEM_HEADERS} ${${NAME}_MEM_SOURCES}
 	${${NAME}_UTL_HEADERS} ${${NAME}_UTL_SOURCES}
 	${${NAME}_GPH_HEADERS} ${${NAME}_GPH_SOURCES}
+	${${NAME}_GL_HEADERS} ${${NAME}_GL_SOURCES}
 	)
 
 source_group("core\\Headers"		FILES	${${NAME}_HEADERS})
 source_group("core\\Sources"		FILES	${${NAME}_SOURCES})
-source_group("opengl\\Headers"		FILES	${${NAME}_GL_HEADERS})
-source_group("opengl\\Sources"		FILES	${${NAME}_GL_SOURCES})
 source_group("physics\\Headers"		FILES	${${NAME}_PHY_HEADERS})
 source_group("physics\\Sources"		FILES	${${NAME}_PHY_SOURCES})
 source_group("memory\\Headers"		FILES	${${NAME}_MEM_HEADERS})
@@ -54,6 +52,8 @@ source_group("utility\\Headers"		FILES	${${NAME}_UTL_HEADERS})
 source_group("utility\\Sources"		FILES	${${NAME}_UTL_SOURCES})
 source_group("graphics\\Headers"	FILES	${${NAME}_GPH_HEADERS})
 source_group("graphics\\Sources"	FILES	${${NAME}_GPH_SOURCES})
+source_group("graphics\\opengl\\Headers" FILES 	${${NAME}_GL_HEADERS})
+source_group("graphics\\opengl\\Sources" FILES 	${${NAME}_GL_SOURCES})
 
 target_link_libraries(${NAME} ${FREETYPE_LIBRARY})
 target_link_libraries(${NAME} debug_tools)

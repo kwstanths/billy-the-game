@@ -3,14 +3,12 @@
 
 #include <string>
 
-#include "opengl/OpenGLObject.hpp"
-#include "opengl/OpenGLTexture.hpp"
+#include "game_engine/graphics/opengl/OpenGLObject.hpp"
+#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 
 #include "ErrorCodes.hpp"
 
 #include "utility/HashTable.hpp"
-namespace utl = game_engine::utility;
-
 
 namespace game_engine {
 
@@ -57,7 +55,7 @@ namespace game_engine {
             @param[out] object A pointer to the initialised object
             @return 0 = OK, -1 = Object not initialised, else see ErrorCodes.hpp
         */
-        OpenGLObject * FindObject(std::string object_name, int * ret_code);
+        graphics::opengl::OpenGLObject * FindObject(std::string object_name, int * ret_code);
 
         /**
             Search a texture
@@ -66,13 +64,14 @@ namespace game_engine {
             @param[out] A pointer to the initialised object
             @return 0 = OK, -1 = Object not initialised, else see ErrorCodes.hpp
         */
-        OpenGLTexture * FindTexture(std::string texture_name, OpenGLTexture::OpenGLTextureType type, int * ret_code);
+        graphics::opengl::OpenGLTexture * FindTexture(std::string texture_name, graphics::opengl::OpenGLTexture::OpenGLTextureType type, int * ret_code);
 
     private:
         bool is_inited_;
 
-        utl::HashTable<std::string, OpenGLObject *> * objects_ = nullptr;
-        utl::HashTable<std::string, OpenGLTexture *> * textures_ = nullptr;
+        /* Holds the objects */
+        utility::HashTable<std::string, graphics::opengl::OpenGLObject *> * objects_ = nullptr;
+        utility::HashTable<std::string, graphics::opengl::OpenGLTexture *> * textures_ = nullptr;
     };
 
 }

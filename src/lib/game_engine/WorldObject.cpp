@@ -7,6 +7,8 @@
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
 namespace ph = game_engine::physics;
+namespace gl = game_engine::graphics::opengl;
+namespace grph = game_engine::graphics;
 
 namespace game_engine {
 
@@ -17,7 +19,7 @@ namespace game_engine {
         is_inited_ = false;
     }
 
-    int WorldObject::Init(OpenGLObject * object, OpenGLTexture * texture, float x, float y, float z, bool interactable) {
+    int WorldObject::Init(gl::OpenGLObject * object, gl::OpenGLTexture * texture, float x, float y, float z, bool interactable) {
         
         if (WorldObject::is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
@@ -81,7 +83,7 @@ namespace game_engine {
         return is_inited_;
     }
 
-    void WorldObject::Draw(Renderer * renderer) {
+    void WorldObject::Draw(grph::Renderer * renderer) {
         if (!is_inited_) return;
 
         model_ = translation_matrix_ * rotation_matrix_ * scale_matrix_;

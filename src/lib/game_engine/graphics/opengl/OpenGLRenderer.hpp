@@ -11,6 +11,8 @@
 #include "OpenGLFont.hpp"
 
 namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     class OpenGLRenderer {
     public:
@@ -49,7 +51,7 @@ namespace game_engine {
         /**
         
         */
-        int SetLight(glm::vec3 position, glm::vec3 color);
+        int SetLight(glm::vec3 position, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular);
 
         /**
             Draw a 2d text on a certain position on the screen, not in the world
@@ -78,6 +80,8 @@ namespace game_engine {
         OpenGLShaderText shader_text_;
     };
 
+}
+}
 }
 
 #endif
