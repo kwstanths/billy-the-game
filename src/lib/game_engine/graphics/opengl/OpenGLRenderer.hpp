@@ -3,6 +3,8 @@
 
 #include "glm/glm.hpp"
 
+#include "game_engine/graphics/Material.hpp"
+
 #include "OpenGLIncludes.hpp"
 #include "OpenGLContext.hpp"
 #include "OpenGLShaders.hpp"
@@ -46,7 +48,7 @@ namespace opengl {
             @param model The object's model
             @return 0=OK, -1=Something's not initialised;
         */
-        int Draw(OpenGLObject * object, OpenGLTexture * texture, glm::mat4 model);
+        int Draw(OpenGLObject * object, OpenGLTexture * texture, glm::mat4 model, Material_t mtl);
         
         /**
         

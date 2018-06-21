@@ -18,6 +18,9 @@ bool Treasure::Init(float x, float y, float z, ge::GameEngine * engine, size_t i
 
     SetCollision(1.0f, 1.0f);
 
+    ge::graphics::Material_t m(glm::vec3(0.3, 0.3, 0.3), glm::vec3(0.54, 0.27, 0.07), glm::vec3(0.1, 0.1, 0.1), 32);
+    SetMaterial(m);
+
     id_ = id;
 
     return ret == 0;

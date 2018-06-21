@@ -25,6 +25,7 @@ void MouseCallback(GLFWwindow * w, double x, double y) {
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Move the opengl initialization from the game engine to the renderer");
     CodeReminder("Rendering order");
     CodeReminder("Draw with different shader");
     CodeReminder("Use the interactable property");

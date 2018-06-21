@@ -38,6 +38,17 @@ namespace graphics {
         float shininess_;
 
         /**
+        
+        */
+        Material_t() {
+            ambient_ = glm::vec3(1.0f, 1.0f, 1.0f);
+            diffuse_ = glm::vec3(1.0f, 1.0f, 1.0f);
+            specular_ = glm::vec3(1.0f, 1.0f, 1.0f);
+
+            shininess_ = 32;
+        }
+
+        /**
             Create a material based on an already defined type
             @param material_type The type of the material, e.g GAME_ENGINE_MATERIAL_COPPER
         */

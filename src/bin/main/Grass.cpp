@@ -19,6 +19,9 @@ bool Grass::Init(float x, float y, float z, game_engine::GameEngine * engine) {
     
     Scale(5, 5, 5);
 
+    ge::graphics::Material_t m(glm::vec3(0.1, 0.1, 0.1), glm::vec3(1, 1, 1), glm::vec3(0.5, 0.5, 0.5), 2);
+    SetMaterial(m);
+
     return ret == 0;
 }
 

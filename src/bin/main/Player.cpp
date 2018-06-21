@@ -43,6 +43,9 @@ int Player::Init(float x, float y, float z, Input * input, Camera * camera, ge::
     radius_ = radius_ * 0.5f;
     SetCollision(radius_);
 
+    ge::graphics::Material_t m(glm::vec3(0.2, 0.2, 0.2), glm::vec3(0.85, 0.70, 0.50), glm::vec3(0.1, 0.1, 0.1), 32);
+    SetMaterial(m);
+
     is_inited_ = true;
     return ret == 0;
 }

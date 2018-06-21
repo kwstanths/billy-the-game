@@ -22,8 +22,13 @@ namespace graphics {
         return is_inited_;
     }
 
-    int Renderer::Draw(gl::OpenGLObject * object, gl::OpenGLTexture * texture, glm::mat4 model) {
-        renderer_->Draw(object, texture, model);
+    int Renderer::Draw(GraphicsObject * rendering_object) {
+        renderer_->Draw(rendering_object->object_, rendering_object->texture_, rendering_object->model_, rendering_object->object_material_);
+        return 0;
+    }
+
+    int Renderer::Draw(opengl::OpenGLObject * object, opengl::OpenGLTexture * texture, glm::mat4 model) {
+        renderer_->Draw(object, texture, model, Material_t());
         return 0;
     }
 

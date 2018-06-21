@@ -1,6 +1,6 @@
 #include "WorldObject.hpp"
-
 #include "WorldSector.hpp"
+
 #include "ErrorCodes.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
@@ -12,9 +12,7 @@ namespace grph = game_engine::graphics;
 
 namespace game_engine {
 
-    WorldObject::WorldObject() : ph::PhysicsObject() {
-
-        translation_matrix_ = GetTranslateMatrix(GetX(), GetY(), GetZ());
+    WorldObject::WorldObject() : ph::PhysicsObject(), grph::GraphicsObject() {
 
         is_inited_ = false;
     }
@@ -23,39 +21,24 @@ namespace game_engine {
         
         if (WorldObject::is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
+        /* Initialize the physics layer */
         int ret = PhysicsObject::Init(x, y, z, world_sector_->GetPhysicsEngine());
         if (ret) {
             PrintError(ret);
             return ret;
         }
 
-        if (object == nullptr) {
-            PrintError(Error::ERROR_OBJECT_NOT_INIT);
-            return Error::ERROR_OBJECT_NOT_INIT;
+        /* Initialize the graphics layer */
+        ret = GraphicsObject::Init(x, y, z, object, texture);
+        if (ret) {
+            PrintError(ret);
+            return ret;
         }
 
-        if (texture == nullptr) {
-            PrintError(Error::ERROR_TEXTURE_NOT_INIT);
-            return Error::ERROR_TEXTURE_NOT_INIT;
-        }
-
-        if (!object->IsInited()) {
-            PrintError(Error::ERROR_OBJECT_NOT_INIT);
-            return Error::ERROR_OBJECT_NOT_INIT;
-        }
-        if (!texture->IsInited()) {
-            PrintError(Error::ERROR_TEXTURE_NOT_INIT);
-            return Error::ERROR_TEXTURE_NOT_INIT;
-        }
-
+        /* Insert in the world */
         if (world_sector_ != nullptr) world_sector_->Insert(this, x, y, z);
-        translation_matrix_ = GetTranslateMatrix(GetX(), GetY(), GetZ());
 
-        scale_matrix_ = GetScaleMatrix(1.0f, 1.0f, 1.0f);
         rotated_angle_ = 0.0f;
-
-        object_ = object;
-        texture_ = texture;
         interactable_ = interactable;
 
         is_inited_ = true;
@@ -68,12 +51,9 @@ namespace game_engine {
         
         PhysicsObject::Destroy();
 
-        world_sector_->Remove(this);
+        GraphicsObject::Destroy();
 
-        /* 
-            DON'T delete OpenGLObject and OpenGLTexture pointers !!! 
-            They might be used by other WorldObjects
-        */
+        world_sector_->Remove(this);
 
         is_inited_ = false;
         return 0;
@@ -85,9 +65,8 @@ namespace game_engine {
 
     void WorldObject::Draw(grph::Renderer * renderer) {
         if (!is_inited_) return;
-
-        model_ = translation_matrix_ * rotation_matrix_ * scale_matrix_;
-        renderer->Draw(object_, texture_, model_);
+        /* Is this function useless now? */
+        GraphicsObject::Draw(renderer);
     }
 
     void WorldObject::Step(double delta_time) {
@@ -105,22 +84,19 @@ namespace game_engine {
         /* Set the position in the physics layer */
         PhysicsObject::SetPosition(pos_x, pos_y, pos_z);
         
-        /* Set the translation matrix */
-        translation_matrix_= GetTranslateMatrix(GetX(), GetY(), GetZ());
+        /* Set the position in the graphics layer */
+        GraphicsObject::SetPosition(pos_x, pos_y, pos_z);
     }
 
     void WorldObject::Scale(float scale_x, float scale_y, float scale_z) {
-        /* TODO Maybe change collision detecton as well */
         if (!(Equal(scale_x, scale_y) && Equal(scale_y, scale_z))) dt::Console(dt::WARNING, "Non uniform scale");
-        scale_matrix_ = GetScaleMatrix(scale_x, scale_y, scale_z);
+        
+        /* TODO Maybe scale in the physics layer as well? */
+    
+        GraphicsObject::Scale(scale_x, scale_y, scale_z);
     }
 
     void WorldObject::Rotate(float angle, size_t axis) {        
-        glm::vec3 rotation_axis;
-
-        if (axis == 0) rotation_matrix_ = GetRotateMatrix(angle, 1, 0, 0);
-        else if (axis == 1) rotation_matrix_ = GetRotateMatrix(angle, 0, 1, 0);
-        else if (axis == 2) rotation_matrix_ = GetRotateMatrix(angle, 0, 0, 1);
         
         rotated_angle_ = angle;
 
@@ -132,6 +108,8 @@ namespace game_engine {
             the GetRotateMatrix has opposite behaviour 
         */
         PhysicsObject::Rotate(-angle);
+
+        GraphicsObject::Rotate(angle, axis);
     }
 
     Direction WorldObject::GetLookingDirection() {

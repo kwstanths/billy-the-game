@@ -19,15 +19,16 @@ bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine) {
     ret = WorldObject::Init(object, texture, x, y, z);
 
     Scale(0.1f, 0.1f, 0.0f);
+    SetCollision(0.05);
 
     /* small intensity */
-    light_ = ge::graphics::LightProperties_t(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+    //light_ = ge::graphics::LightProperties_t(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(2.2f, 1.2f, 1.3f), glm::vec3(0.0f, 0.0f, 0.0f));
     /* full intensity */
-    light_ = ge::graphics::LightProperties_t(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    light_ = ge::graphics::LightProperties_t(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     center_x_ = x;
     center_y_ = y;
     angular_speed_ = ge::GetRadians(100.0f); /* radians per second */
-    radius_ = 3;
+    radius_ = 3.5;
 
     return ret == 0;
 }
@@ -41,7 +42,7 @@ void Lamp::Step(double delta_time) {
 
 void Lamp::Draw(grph::Renderer * renderer) {
     
-    renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ()), light_);
+    renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ()+3), light_);
 
     WorldObject::Draw(renderer);
 }

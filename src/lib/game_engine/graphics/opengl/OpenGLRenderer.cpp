@@ -61,22 +61,17 @@ namespace opengl {
         return is_inited_;
     }
 
-    int OpenGLRenderer::Draw(OpenGLObject * object, OpenGLTexture * texture, glm::mat4 model) {
+    int OpenGLRenderer::Draw(OpenGLObject * object, OpenGLTexture * texture, glm::mat4 model, Material_t mtl) {
         if (!is_inited_) return -1;
         if (!object->IsInited()) return -1;
         if (!texture->IsInited()) return -1;
 
         glBindVertexArray(VAO_);
 
-        /* TODO Put these values on the items themselves */
-        //graphics::Material_t m(glm::vec3(0.1, 0.1, 0.1), glm::vec3(1, 1, 1), glm::vec3(0.5, 0.5, 0.5), 32);
-        //graphics::Material_t m(glm::vec3(1.0, 0.5, 0.31), glm::vec3(1.0, 0.5, 0.31), glm::vec3(0.5, 0.5, 0.5), 32);
-        graphics::Material_t m(GAME_ENGINE_MATERIAL_GOLD);
-        m.shininess_ = 32;
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.ambient"), m.ambient_);
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.diffuse"), m.diffuse_);
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.specular"), m.specular_);
-        shader_main_.SetUniFloat(shader_main_.GetUniformLocation("object_material.shininess"), m.shininess_);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.ambient"), mtl.ambient_);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.diffuse"), mtl.diffuse_);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.specular"), mtl.specular_);
+        shader_main_.SetUniFloat(shader_main_.GetUniformLocation("object_material.shininess"), mtl.shininess_);
 
         /* Set the model uniform */
         shader_main_.SetUniformMat4(shader_main_.uni_Model_, model);

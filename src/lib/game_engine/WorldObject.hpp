@@ -5,13 +5,12 @@
 #include <string>
 #include <exception>
 
-#include "game_engine/graphics/opengl/OpenGLObject.hpp"
-#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
+#include "game_engine/graphics/Renderer.hpp"
+#include "game_engine/graphics/GraphicsObject.hpp"
 #include "game_engine/physics/Types.hpp"
 #include "game_engine/physics/PhysicsObject.hpp"
 #include "game_engine/memory/ArrayAllocator.hpp"
 #include "game_engine/memory/PoolAllocator.hpp"
-#include "game_engine/graphics/Renderer.hpp"
 
 #include "debug_tools/Console.hpp"
 
@@ -23,7 +22,7 @@ namespace game_engine {
         A WorldObject is an entity inside a WorldSector. Override this class, call the function
         Init(... , ...), and provide your custom behaviour in the Step() and Interact function
     */
-    class WorldObject : public physics::PhysicsObject {
+    class WorldObject : public physics::PhysicsObject, public graphics::GraphicsObject {
         friend WorldSector;
     public:
 
@@ -142,13 +141,6 @@ namespace game_engine {
         bool removable_;
         bool interactable_;
 
-        graphics::opengl::OpenGLObject * object_;
-        graphics::opengl::OpenGLTexture * texture_;
-
-        glm::mat4 translation_matrix_;
-        glm::mat4 rotation_matrix_;
-        glm::mat4 scale_matrix_;
-        glm::mat4 model_;
     };
 
 }

@@ -6,7 +6,9 @@
 #include "game_engine/graphics/opengl/OpenGLRenderer.hpp"
 #include "game_engine/graphics/opengl/OpenGLObject.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
+
 #include "Material.hpp"
+#include "GraphicsObject.hpp"
 
 namespace game_engine {
 namespace graphics {
@@ -18,6 +20,8 @@ namespace graphics {
         int Init(opengl::OpenGLContext * context);
 
         bool IsInited();
+
+        int Draw(GraphicsObject * rendering_object);
 
         int Draw(opengl::OpenGLObject * object, opengl::OpenGLTexture * texture, glm::mat4 model);
 

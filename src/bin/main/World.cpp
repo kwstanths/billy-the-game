@@ -85,11 +85,11 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
 
     /* Create a lamp */
     Lamp * lamp = NewObj<Lamp>();
-    lamp->Init(0, 0, 5, engine);
+    lamp->Init(3.3, 3.8, 1.0f, engine);
 
     /* Create a main player */
     Player * player = NewObj<Player>();
-    player->Init(0.0f, 0.0f, 0.01f, input, camera, engine);
+    player->Init(0.0f, 0.0f, 0.1f, input, camera, engine);
 
     is_inited_ = true;
     return 0;

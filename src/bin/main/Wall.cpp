@@ -19,6 +19,10 @@ bool Wall::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
     SetCollision(1.0f, 1.0f);
 
+    ge::graphics::Material_t m(GAME_ENGINE_MATERIAL_JADE);
+    m.shininess_ = 32;
+    SetMaterial(m);
+
     return ret == 0;
 }
 
