@@ -28,14 +28,6 @@ namespace opengl {
         std::string window_name_;
         /* The file path of the font to be used */
         std::string font_file_path;
-        /* The vertex shader path in the disk */
-        std::string shader_vertex_file_path_;
-        /* The fragment shader path in the disk */
-        std::string shader_fragment_file_path_;
-        /* The text vertex shader */
-        std::string shader_vertex_text_file_path;
-        /* The text fragment shader */
-        std::string shader_fragment_text_file_path;
     } OpenGLContextConfig_t;
 
 
@@ -82,14 +74,19 @@ namespace opengl {
         KeyControls_t GetControlsInput();
 
         /**
-            Get main shader variables
+            Get the main shader
         */
-        OpenGLShaderMain GetShaderVariables();
+        OpenGLShaderMain GetShaderMain();
 
         /**
-            Get shader variables for 2d text
+            Get the simple shader
         */
-        OpenGLShaderText GetShaderTextVariables();
+        OpenGLShaderSimple GetShaderSimple();
+
+        /**
+            Get shader for 2d text
+        */
+        OpenGLShaderText GetShaderText();
 
         /**
             Get the font file location
@@ -113,10 +110,9 @@ namespace opengl {
         OpenGLContextConfig_t config_;
 
         OpenGLShaderMain shader_main_;
+        OpenGLShaderSimple shader_simple_;
         OpenGLShaderText shader_text_;
-        /*OpenGLShaderVariables_t shader_vars_;
-        OpenGLShaderTextVariables_t shader_text_vars_;
-*/
+        
         GLFWwindow * glfw_window_ = nullptr;
     };
 

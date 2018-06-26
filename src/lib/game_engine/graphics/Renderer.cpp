@@ -22,13 +22,21 @@ namespace graphics {
         return is_inited_;
     }
 
+    void Renderer::SetView(opengl::OpenGLCamera * camera) {
+        renderer_->SetView(camera);
+    }
+
     int Renderer::Draw(GraphicsObject * rendering_object) {
-        renderer_->Draw(rendering_object->object_, rendering_object->texture_, rendering_object->model_, rendering_object->object_material_);
+        renderer_->Draw(rendering_object->object_, 
+            rendering_object->diffuse_texture_, 
+            rendering_object->specular_texture_, 
+            rendering_object->model_, 
+            rendering_object->object_material_);
         return 0;
     }
 
     int Renderer::Draw(opengl::OpenGLObject * object, opengl::OpenGLTexture * texture, glm::mat4 model) {
-        renderer_->Draw(object, texture, model, Material_t());
+        renderer_->Draw(object, texture, model);
         return 0;
     }
 

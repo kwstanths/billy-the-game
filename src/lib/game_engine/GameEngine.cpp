@@ -111,7 +111,7 @@ namespace game_engine {
         /* 
             Set camera's view before drawing, because Step() might have tempered with the camera position
         */
-        camera_->SetView();
+        renderer_->SetView(camera_);
 
         /* Draw visible world */
         for (size_t i = 0; i < nof; i++) {

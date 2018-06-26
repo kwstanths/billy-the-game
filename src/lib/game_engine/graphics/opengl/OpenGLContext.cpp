@@ -53,9 +53,11 @@ namespace opengl {
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
         int ret;
-        ret = shader_main_.Init(config_.shader_vertex_file_path_, config_.shader_fragment_file_path_);
+        ret = shader_main_.Init("shaders/VertexShader.glsl", "shaders/FragmentShader.glsl");
         if (ret != 0) return ret;
-        ret = shader_text_.Init(config_.shader_vertex_text_file_path, config_.shader_fragment_text_file_path);
+        ret = shader_text_.Init("shaders/TextVertexShader.glsl", "shaders/TextFragmentShader.glsl");
+        if (ret != 0) return ret;
+        ret = shader_simple_.Init("shaders/VertexShaderSimple.glsl", "shaders/FragmentShaderSimple.glsl");
         if (ret != 0) return ret;
 
         is_inited_ = true;
@@ -113,13 +115,19 @@ namespace opengl {
         return key_controls;
     }
 
-    OpenGLShaderMain OpenGLContext::GetShaderVariables() {
+    OpenGLShaderMain OpenGLContext::GetShaderMain() {
         if (!is_inited_) return OpenGLShaderMain();
 
         return shader_main_;
     }
 
-    OpenGLShaderText OpenGLContext::GetShaderTextVariables() {
+    OpenGLShaderSimple OpenGLContext::GetShaderSimple() {
+        if (!is_inited_) return OpenGLShaderSimple();
+
+        return shader_simple_;
+    }
+
+    OpenGLShaderText OpenGLContext::GetShaderText() {
         if (!is_inited_) return OpenGLShaderText();
 
         return shader_text_;

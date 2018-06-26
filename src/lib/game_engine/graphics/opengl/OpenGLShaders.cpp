@@ -168,8 +168,12 @@ namespace opengl {
         glUniform3fv(id, 1, &vector[0]);
     }
 
-    void OpenGLShader::SetUniFloat(GLuint id, float& value) {
+    void OpenGLShader::SetUniformFloat(GLuint id, float value) {
         glUniform1fv(id, 1, &value);
+    }
+
+    void OpenGLShader::SetUniformInt(GLuint id, int value) {
+        glUniform1i(id, value);
     }
 
     OpenGLShaderMain::OpenGLShaderMain() : OpenGLShader() {
@@ -181,14 +185,13 @@ namespace opengl {
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
         if (ret != 0) return ret;
 
-        if ((attr_vertex_position_ = GetAttributeLocation(shader_name_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((attr_vertex_uv_ = GetAttributeLocation(shader_name_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((attr_vertex_normal_ = GetAttributeLocation(shader_name_vertex_normal)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_Model_ = GetUniformLocation(shader_name_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_View_ = GetUniformLocation(shader_name_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_Projection_ = GetUniformLocation(shader_name_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_Texture_ = GetUniformLocation(shader_name_uni_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_camera_position_worldspace_ = GetUniformLocation(shader_name_uni_camera_position_worldspace)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_position_ = GetAttributeLocation(shader_main_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_uv_ = GetAttributeLocation(shader_main_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_normal_ = GetAttributeLocation(shader_main_vertex_normal)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Model_ = GetUniformLocation(shader_main_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_View_ = GetUniformLocation(shader_main_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Projection_ = GetUniformLocation(shader_main_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_camera_position_worldspace_ = GetUniformLocation(shader_main_uni_camera_position_worldspace)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         
         return 0;
     }
@@ -206,6 +209,24 @@ namespace opengl {
         if ((uni_Projection_ = GetUniformLocation(shader_text_name_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Texture_ = GetUniformLocation(shader_text_name_uni_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Texture_color_ = GetUniformLocation(shader_text_name_uni_texture_color)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+
+        return 0;
+    }
+
+    OpenGLShaderSimple::OpenGLShaderSimple() {
+    }
+
+    int OpenGLShaderSimple::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
+        
+        int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
+        if (ret != 0) return ret;
+
+        if ((attr_vertex_position_ = GetAttributeLocation(shader_simple_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_uv_ = GetAttributeLocation(shader_simple_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Model_ = GetUniformLocation(shader_simple_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_View_ = GetUniformLocation(shader_simple_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Projection_ = GetUniformLocation(shader_simple_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_texture_ = GetUniformLocation(shader_simple_uni_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }

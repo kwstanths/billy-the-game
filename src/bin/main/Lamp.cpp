@@ -14,20 +14,18 @@ bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
     int ret;
     gl::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
-    gl::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/debug.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
+    gl::OpenGLTexture * diffuse_texture = engine->GetAssetManager()->FindTexture("assets/debug.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
+    gl::OpenGLTexture * specular_texture = engine->GetAssetManager()->FindTexture("assets/map_empty.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
 
-    ret = WorldObject::Init(object, texture, x, y, z);
+    ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
 
     Scale(0.1f, 0.1f, 0.0f);
     SetCollision(0.05);
 
-    /* small intensity */
-    //light_ = ge::graphics::LightProperties_t(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(2.2f, 1.2f, 1.3f), glm::vec3(0.0f, 0.0f, 0.0f));
-    /* full intensity */
-    light_ = ge::graphics::LightProperties_t(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    light_ = ge::graphics::LightProperties_t(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.5f, 0.5f, 0.5f));
     center_x_ = x;
     center_y_ = y;
-    angular_speed_ = ge::GetRadians(100.0f); /* radians per second */
+    angular_speed_ = ge::GetRadians(50.0f); /* radians per second */
     radius_ = 3.5;
 
     return ret == 0;

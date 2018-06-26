@@ -12,9 +12,10 @@ bool Treasure::Init(float x, float y, float z, ge::GameEngine * engine, size_t i
     
     int ret;
     gl::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/tile.obj", &ret);
-    gl::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/wood.jpg", gl::OpenGLTexture::TEXTURE_STB, &ret);
+    gl::OpenGLTexture * diffuse_texture = engine->GetAssetManager()->FindTexture("assets/container.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
+    gl::OpenGLTexture * specular_texture = engine->GetAssetManager()->FindTexture("assets/container_spec_map.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
 
-    ret = WorldObject::Init(object, texture, x, y, z);
+    ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
 
     SetCollision(1.0f, 1.0f);
 

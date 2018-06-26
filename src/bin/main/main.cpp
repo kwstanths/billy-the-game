@@ -25,6 +25,7 @@ void MouseCallback(GLFWwindow * w, double x, double y) {
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Fix the material useless properties");
     CodeReminder("Move the opengl initialization from the game engine to the renderer");
     CodeReminder("Rendering order");
     CodeReminder("Draw with different shader");
@@ -37,10 +38,6 @@ int main(int argc, char ** argv) {
     context_params.window_height_ = 768;
     context_params.window_name_ = "billy";
     context_params.font_file_path = "fonts/arial.ttf";
-    context_params.shader_vertex_file_path_ = "shaders/VertexShader.glsl";
-    context_params.shader_fragment_file_path_ = "shaders/FragmentShader.glsl";
-    context_params.shader_vertex_text_file_path = "shaders/TextVertexShader.glsl";
-    context_params.shader_fragment_text_file_path = "shaders/TextFragmentShader.glsl";
     gl::OpenGLCameraConfig_t camera_params;
     camera_params.position_ = glm::vec3(0, 0, 8);
     camera_params.direction_ = glm::vec3(0, 0, -1);

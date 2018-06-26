@@ -6,6 +6,7 @@
 #include "game_engine/graphics/opengl/OpenGLRenderer.hpp"
 #include "game_engine/graphics/opengl/OpenGLObject.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
+#include "game_engine/graphics/opengl/OpenGLCamera.hpp"
 
 #include "Material.hpp"
 #include "GraphicsObject.hpp"
@@ -20,6 +21,8 @@ namespace graphics {
         int Init(opengl::OpenGLContext * context);
 
         bool IsInited();
+
+        void SetView(opengl::OpenGLCamera * camera);
 
         int Draw(GraphicsObject * rendering_object);
 

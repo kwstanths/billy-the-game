@@ -16,7 +16,7 @@ namespace graphics {
     public:
         GraphicsObject();
 
-        int Init(float x, float y, float z, opengl::OpenGLObject * object, opengl::OpenGLTexture * texture);
+        int Init(float x, float y, float z, opengl::OpenGLObject * object, opengl::OpenGLTexture * diffuse_texture, opengl::OpenGLTexture * specular_texture);
 
         int Destroy();
 
@@ -36,7 +36,8 @@ namespace graphics {
         bool is_inited_;
 
         opengl::OpenGLObject * object_;
-        opengl::OpenGLTexture * texture_;
+        opengl::OpenGLTexture * diffuse_texture_;
+        opengl::OpenGLTexture * specular_texture_;
         Material_t object_material_;
 
         glm::mat4 translation_matrix_;

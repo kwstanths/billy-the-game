@@ -20,7 +20,6 @@ namespace opengl {
         
         config_ = config;
         context_ = context;
-        shader_main_ = context->GetShaderVariables();
 
         if (config.orthographic_) Ortho2D(config.zoom_factor_);
         else Project3D();
@@ -98,14 +97,10 @@ namespace opengl {
         return Error::ERROR_NO_ERROR;
     }
 
-    int OpenGLCamera::SetView() {
+    int OpenGLCamera::CalculateView() {
         if (!is_inited_) return false;
 
         view_matrix_ = glm::lookAt(config_.position_, config_.position_ + config_.direction_, config_.up_);
-
-        shader_main_.SetUniformMat4(shader_main_.uni_View_, view_matrix_);
-        shader_main_.SetUniformMat4(shader_main_.uni_Projection_, projection_matrix_);
-        shader_main_.SetUniformVec3(shader_main_.uni_camera_position_worldspace_, config_.position_);
 
         return 0;
     }

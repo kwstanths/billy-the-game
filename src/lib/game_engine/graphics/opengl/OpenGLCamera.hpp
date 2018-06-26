@@ -30,6 +30,7 @@ namespace opengl {
 
     class OpenGLCamera {
         friend class OpenGLContext;
+        friend class OpenGLRenderer;
     public:
         /**
             Sets the parameters to the local variable, does nothing else. Feel free to discard
@@ -128,18 +129,13 @@ namespace opengl {
         */
         int SetMouceCallback(void(*func)(GLFWwindow *, double, double));
 
-        /**
-            Sets the view and projection matrix to the shaders. Should be called at every step
-            @return 0=OK, -1=Not initialised
-        */
-        int SetView();
+        int CalculateView();
 
     private:
         bool is_inited_;
         OpenGLCameraConfig_t config_;
 
         OpenGLContext * context_;
-        OpenGLShaderMain shader_main_;
 
         glm::mat4 view_matrix_;
         glm::mat4 projection_matrix_;

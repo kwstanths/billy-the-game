@@ -143,7 +143,7 @@ namespace opengl {
     int OpenGLTexture::LoadSTB(const char * imagepath, GLuint * texture_id) {
 
         int width, height, channels;
-        unsigned char * data = stbi_load(imagepath, &width, &height, &channels, 0);
+        unsigned char * data = stbi_load(imagepath, &width, &height, &channels, STBI_rgb);
         if (!data) return Error::ERROR_ASSET_NOT_FOUND;
 
         GLuint textureID;

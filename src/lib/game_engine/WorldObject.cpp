@@ -17,7 +17,8 @@ namespace game_engine {
         is_inited_ = false;
     }
 
-    int WorldObject::Init(gl::OpenGLObject * object, gl::OpenGLTexture * texture, float x, float y, float z, bool interactable) {
+    int WorldObject::Init(gl::OpenGLObject * object, gl::OpenGLTexture * diffuse_texture, gl::OpenGLTexture * specular_texture,
+        float x, float y, float z, bool interactable) {
         
         if (WorldObject::is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
@@ -29,7 +30,7 @@ namespace game_engine {
         }
 
         /* Initialize the graphics layer */
-        ret = GraphicsObject::Init(x, y, z, object, texture);
+        ret = GraphicsObject::Init(x, y, z, object, diffuse_texture, specular_texture);
         if (ret) {
             PrintError(ret);
             return ret;

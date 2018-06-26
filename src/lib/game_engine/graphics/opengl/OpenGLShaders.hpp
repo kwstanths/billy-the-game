@@ -11,22 +11,30 @@ namespace game_engine {
 namespace graphics {
 namespace opengl {
 
-    /* Names of the shader variables used */
-    static const char shader_name_vertex_position[] = "vertex_position_modelspace";
-    static const char shader_name_vertex_uv[] = "vertex_uv";
-    static const char shader_name_vertex_normal[] = "vertex_normal";
+    /* Names of the main shader variables used */
+    static const char shader_main_vertex_position[] = "vertex_position_modelspace";
+    static const char shader_main_vertex_uv[] = "vertex_uv";
+    static const char shader_main_vertex_normal[] = "vertex_normal";
 
-    static const char shader_name_uni_model[] = "matrix_model";
-    static const char shader_name_uni_view[] = "matrix_view";
-    static const char shader_name_uni_projection[] = "matrix_projection";
-    static const char shader_name_uni_texture[] = "sampler_texture";
-    static const char shader_name_uni_camera_position_worldspace[] = "camera_position_worldspace";
+    static const char shader_main_uni_model[] = "matrix_model";
+    static const char shader_main_uni_view[] = "matrix_view";
+    static const char shader_main_uni_projection[] = "matrix_projection";
+    static const char shader_main_uni_camera_position_worldspace[] = "camera_position_worldspace";
+
+    /* Names of the simple shader varialbes used */
+    static const char shader_simple_vertex_position[] = "vertex_position_modelspace";
+    static const char shader_simple_vertex_uv[] = "vertex_uv";
+
+    static const char shader_simple_uni_model[] = "matrix_model";
+    static const char shader_simple_uni_view[] = "matrix_view";
+    static const char shader_simple_uni_projection[] = "matrix_projection";
+    static const char shader_simple_uni_texture[] = "sampler_texture";
 
     /* Names of the text shader variables used */
     static const char shader_text_name_vertex[] = "vertex";
     static const char shader_text_name_uni_projection[] = "matrix_projection";
-    static const char shader_text_name_uni_texture[] = "sampler_texture";
     static const char shader_text_name_uni_texture_color[] = "texture_color";
+    static const char shader_text_name_uni_texture[] = "sampler_texture";
 
     /**
         A shader class the encapsulates shader fuctionality
@@ -75,11 +83,13 @@ namespace opengl {
         */
         GLint GetUniformLocation(std::string uniform_name);
 
-        void SetUniformMat4(GLuint id, glm::mat4& model);
+        void SetUniformMat4(GLuint id, glm::mat4 & model);
 
-        void SetUniformVec3(GLuint id, glm::vec3& vector);
+        void SetUniformVec3(GLuint id, glm::vec3 & vector);
 
-        void SetUniFloat(GLuint id, float & value);
+        void SetUniformFloat(GLuint id, float value);
+
+        void SetUniformInt(GLuint id, int value);
 
     protected:
         GLuint program_id_;
@@ -125,7 +135,6 @@ namespace opengl {
         GLuint uni_Model_;
         GLuint uni_View_;
         GLuint uni_Projection_;
-        GLuint uni_Texture_;
         GLuint uni_camera_position_worldspace_;
     };
 
@@ -149,6 +158,36 @@ namespace opengl {
         GLuint uni_Projection_;
         GLuint uni_Texture_;
         GLuint uni_Texture_color_;
+    };
+
+    /**
+        Shader object for the simple shader
+    */
+    class OpenGLShaderSimple : public OpenGLShader {
+    public:
+        /**
+            Does nothing in particular. Call Init()
+        */
+        OpenGLShaderSimple();
+
+        /**
+            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+            @param vertex_shader_path The path to a vertex shader file
+            @param fragment_shader_path The path to a fragment shader file
+            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+        */
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+        /* Varialbe locations for the shader varialbes used */
+        /* Attributes */
+        GLuint attr_vertex_position_;
+        GLuint attr_vertex_uv_;
+
+        /* Uniforms */
+        GLuint uni_Model_;
+        GLuint uni_View_;
+        GLuint uni_Projection_;
+        GLuint uni_texture_;
     };
 
 }

@@ -11,6 +11,7 @@
 #include "OpenGLTexture.hpp"
 #include "OpenGLObject.hpp"
 #include "OpenGLFont.hpp"
+#include "OpenGLCamera.hpp"
 
 namespace game_engine {
 namespace graphics {
@@ -42,14 +43,29 @@ namespace opengl {
         bool IsInited();
 
         /**
-            Draw an object on the scene
+        
+        */
+        void SetView(OpenGLCamera * camera);
+
+        /**
+            Draw an object on the scene with lightning
             @param object The object to be drawn
-            @param texture The texture to draw
+            @param diffuse_texture The texture to draw
+            @param specular_texture The specular texture to be used
             @param model The object's model
+            @param mtl The material
             @return 0=OK, -1=Something's not initialised;
         */
-        int Draw(OpenGLObject * object, OpenGLTexture * texture, glm::mat4 model, Material_t mtl);
+        int Draw(OpenGLObject * object, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture, glm::mat4 model, Material_t mtl);
         
+        /**
+            Draw an object on the scene without lightning
+            @param object The object to be drawn
+            @param textuer The texture to be used
+            @param model The object's model
+        */
+        int Draw(OpenGLObject * object, OpenGLTexture * texture, glm::mat4 model);
+
         /**
         
         */
@@ -73,8 +89,12 @@ namespace opengl {
         OpenGLFont * font_;
 
         /* Main shaders */
-        GLuint VAO_;
+        GLuint VAO_main_;
         OpenGLShaderMain shader_main_;
+
+        /* Simple shaders */
+        GLuint VAO_simple_;
+        OpenGLShaderSimple shader_simple_;
         
         /* Text shaders */
         GLuint VAO2DText_, VBO2DText_;

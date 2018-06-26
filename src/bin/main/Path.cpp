@@ -13,9 +13,10 @@ bool Path::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
     int ret;
     gl::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/tile.obj", &ret);
-    gl::OpenGLTexture * texture = engine->GetAssetManager()->FindTexture("assets/path.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
+    gl::OpenGLTexture * diffuse_texture = engine->GetAssetManager()->FindTexture("assets/path.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
+    gl::OpenGLTexture * specular_texture = engine->GetAssetManager()->FindTexture("assets/map_empty.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
 
-    ret = WorldObject::Init(object, texture, x, y, z);
+    ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
 
     Scale(4, 4, 4);
 

@@ -25,15 +25,27 @@ namespace opengl {
             debug_tools::ConsoleInfoL(debug_tools::CRITICAL, "Font not found", "name", font_location);
 
         /* Get shader variables */
-        shader_main_ = context_->GetShaderVariables();
-        shader_text_ = context_->GetShaderTextVariables();
+        shader_main_ = context_->GetShaderMain();
+        shader_simple_ = context->GetShaderSimple();
+        shader_text_ = context_->GetShaderText();
 
-        /* Configure a VAO for main shader */
-        glGenVertexArrays(1, &VAO_);
-        glBindVertexArray(VAO_);
+        /* Configure a VAO for the main shader */
+        glGenVertexArrays(1, &VAO_main_);
+        glBindVertexArray(VAO_main_);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
+        shader_main_.Use();
+        shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.diffuse"), 0);
+        shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.specular"), 1);
+
+        /* Configure a VAO for the simple shader */
+        glGenVertexArrays(1, &VAO_simple_);
+        glBindVertexArray(VAO_simple_);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        shader_simple_.Use();
+        shader_simple_.SetUniformInt(shader_simple_.uni_texture_, 0);
 
         /* Configure VAO/VBO for text shader */
         glGenVertexArrays(1, &VAO2DText_);
@@ -61,25 +73,41 @@ namespace opengl {
         return is_inited_;
     }
 
-    int OpenGLRenderer::Draw(OpenGLObject * object, OpenGLTexture * texture, glm::mat4 model, Material_t mtl) {
+    void OpenGLRenderer::SetView(OpenGLCamera * camera) {
+
+        camera->CalculateView();
+
+        shader_main_.Use();
+        shader_main_.SetUniformMat4(shader_main_.uni_View_, camera->view_matrix_);
+        shader_main_.SetUniformMat4(shader_main_.uni_Projection_, camera->projection_matrix_);
+        shader_main_.SetUniformVec3(shader_main_.uni_camera_position_worldspace_, camera->config_.position_);
+
+        shader_simple_.Use();
+        shader_simple_.SetUniformMat4(shader_simple_.uni_View_, camera->view_matrix_);
+        shader_simple_.SetUniformMat4(shader_simple_.uni_Projection_, camera->projection_matrix_);
+    }
+
+    int OpenGLRenderer::Draw(OpenGLObject * object, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture, glm::mat4 model, Material_t mtl) {
         if (!is_inited_) return -1;
         if (!object->IsInited()) return -1;
-        if (!texture->IsInited()) return -1;
+        if (!diffuse_texture->IsInited()) return -1;
+        if (!specular_texture->IsInited()) return -1;
 
-        glBindVertexArray(VAO_);
+        shader_main_.Use();
+        glBindVertexArray(VAO_main_);
 
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.ambient"), mtl.ambient_);
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.diffuse"), mtl.diffuse_);
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.specular"), mtl.specular_);
-        shader_main_.SetUniFloat(shader_main_.GetUniformLocation("object_material.shininess"), mtl.shininess_);
-
+        /* Set object material */
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("object_material.shininess"), mtl.shininess_);
         /* Set the model uniform */
         shader_main_.SetUniformMat4(shader_main_.uni_Model_, model);
 
-        /* Set the texture uniform */
+        /* Set the diffuse texture */
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture->GetID());
-        glUniform1i(shader_main_.uni_Texture_, 0);
+        glBindTexture(GL_TEXTURE_2D, diffuse_texture->GetID());
+
+        /* Set the specualr texture */
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specular_texture->GetID());
 
         /* Attribute number 0 is the object vertices */
         glBindBuffer(GL_ARRAY_BUFFER, object->GetVertexBufferID());
@@ -97,6 +125,41 @@ namespace opengl {
 
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
+        return 0;
+    }
+
+    int OpenGLRenderer::Draw(OpenGLObject * object, OpenGLTexture * texture, glm::mat4 model) {
+
+        if (!is_inited_) return -1;
+        if (!object->IsInited()) return -1;
+        if (!texture->IsInited()) return -1;
+
+        shader_simple_.Use();
+        glBindVertexArray(VAO_simple_);
+
+        /* Set the model uniform */
+        shader_simple_.SetUniformMat4(shader_simple_.uni_Model_, model);
+
+        /* Set the diffuse texture */
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture->GetID());
+
+        /* Attribute number 0 is the object vertices */
+        glBindBuffer(GL_ARRAY_BUFFER, object->GetVertexBufferID());
+        glVertexAttribPointer(shader_simple_.attr_vertex_position_, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        /* Attribute number 1 is the object's uv coordinates */
+        glBindBuffer(GL_ARRAY_BUFFER, object->GetUVBufferID());
+        glVertexAttribPointer(shader_simple_.attr_vertex_uv_, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        
+        /* Draw with index buffer */
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object->GetElementBufferID());
+        glDrawElements(GL_TRIANGLES, object->GetNoFElements(), GL_UNSIGNED_SHORT, (void*)0);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindVertexArray(0);
+
+        shader_main_.Use();
+
         return 0;
     }
 

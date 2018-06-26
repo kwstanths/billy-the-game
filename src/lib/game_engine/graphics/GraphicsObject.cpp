@@ -15,18 +15,19 @@ namespace graphics {
         is_inited_ = false;
     }
 
-    int GraphicsObject::Init(float x, float y, float z, opengl::OpenGLObject * object, opengl::OpenGLTexture * texture) {
+    int GraphicsObject::Init(float x, float y, float z, opengl::OpenGLObject * object, opengl::OpenGLTexture * diffuse_texture, opengl::OpenGLTexture * specular_texture) {
 
         if (object == nullptr) return Error::ERROR_OBJECT_NOT_INIT;
-        if (texture == nullptr) return Error::ERROR_TEXTURE_NOT_INIT;
+        if (diffuse_texture == nullptr) return Error::ERROR_TEXTURE_NOT_INIT;
         if (!object->IsInited()) return Error::ERROR_OBJECT_NOT_INIT;
-        if (!texture->IsInited()) return Error::ERROR_TEXTURE_NOT_INIT;
+        if (!diffuse_texture->IsInited()) return Error::ERROR_TEXTURE_NOT_INIT;
 
         translation_matrix_ = GetTranslateMatrix(x, y, z);
         scale_matrix_ = GetScaleMatrix(1.0f, 1.0f, 1.0f);
 
         object_ = object;
-        texture_ = texture;
+        diffuse_texture_ = diffuse_texture;
+        specular_texture_ = specular_texture;
 
         is_inited_ = true;
         return 0;

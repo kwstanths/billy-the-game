@@ -31,12 +31,13 @@ int Player::Init(float x, float y, float z, Input * input, Camera * camera, ge::
 
     int ret;
     gl::OpenGLObject * object = engine_->GetAssetManager()->FindObject("assets/circle.obj", &ret);
-    gl::OpenGLTexture * texture = engine_->GetAssetManager()->FindTexture("assets/player.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
+    gl::OpenGLTexture * diffuse_texture = engine_->GetAssetManager()->FindTexture("assets/player.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
+    gl::OpenGLTexture * specular_texture = engine->GetAssetManager()->FindTexture("assets/map_empty.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
 
-    ret = WorldObject::Init(object, texture, x, y, z);
+    ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
     radius_ = 0.5f;
     interact_fov_ = ge::GetRadians(50.0f);
-    interact_margin_ = 0.2f;
+    interact_margin_ = 0.3f;
 
     /* Scale object down to half */
     Scale(0.5f, 0.5f, 1.0f);
@@ -122,7 +123,7 @@ void Player::Step(double delta_time) {
                 if (neighbour != nullptr) neighbour->Interact();
                 else {
                     /* Spawn new wall! Just for fun! */
-                    world_sector_->NewObj<Wall>(true)->Init((x3 + x4) / 2, (y3 + y4) / 2, 0.01f, engine_);
+                    world_sector_->NewObj<Wall>(true)->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, engine_);
                 }
             }
         }
