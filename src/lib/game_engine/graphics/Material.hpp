@@ -38,7 +38,7 @@ namespace graphics {
         float shininess_;
 
         /**
-        
+            Creates a material that fully reflects all kinds of color for all light components
         */
         Material_t() {
             ambient_ = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -69,7 +69,7 @@ namespace graphics {
 
 
         /**
-            Creates white light
+            Creates pure white light
         */
         LightProperties_t(){
             ambient_ = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -77,11 +77,42 @@ namespace graphics {
             specular_ = glm::vec3(1.0f, 1.0f, 1.0f);
         }
 
+        /** 
+            Creates custom light
+            @param a All light components are equal to a
+        */
+        LightProperties_t(float a) {
+            ambient_ = glm::vec3(a, a, a);
+            diffuse_ = glm::vec3(a, a, a);
+            specular_ = glm::vec3(a, a, a);
+        }
+
         /**
-            Create a custom light
+            Creates a custom light
         */
         LightProperties_t(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) 
             : ambient_(ambient), diffuse_(diffuse), specular_(specular) {};
+    };
+
+    struct Attenuation_t {
+        float constant_;
+        float linear_;
+        float quadratic_;
+
+        /**
+            Attenuation values are big enough 
+        */
+        Attenuation_t() {
+            constant_ = 1.0f;
+            linear_ = 0.0014f;
+            quadratic_ = 0.000007f;
+        }
+
+        /**
+            Create a custom attenuation struct 
+        */
+        Attenuation_t(float c, float l, float q) : constant_(c), linear_(l), quadratic_(q) {};
+
     };
 
 }

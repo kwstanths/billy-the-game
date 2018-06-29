@@ -10,7 +10,7 @@ namespace gl = game_engine::graphics::opengl;
 namespace dt = debug_tools;
 
 
-bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine) {
+bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine, Sun * sun) {
 
     int ret;
     gl::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
@@ -22,11 +22,14 @@ bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine) {
     Scale(0.1f, 0.1f, 0.0f);
     SetCollision(0.05);
 
-    light_ = ge::graphics::LightProperties_t(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.5f, 0.5f, 0.5f));
+    light_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));
+    att_ = ge::graphics::Attenuation_t(1, 0.22, 0.0019);
     center_x_ = x;
     center_y_ = y;
     angular_speed_ = ge::GetRadians(50.0f); /* radians per second */
     radius_ = 3.5;
+
+    sun_ = sun;
 
     return ret == 0;
 }
@@ -40,7 +43,11 @@ void Lamp::Step(double delta_time) {
 
 void Lamp::Draw(grph::Renderer * renderer) {
     
-    renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ()+3), light_);
+    double hour = sun_->GetTimeOfDay();
+    
+    /* If dark enough, then set the light up */
+    if (hour < 8 || hour > 19) renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ()+0.5), light_, att_);
+    else renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ() + 0.5), ge::graphics::LightProperties_t(0), att_);
 
     WorldObject::Draw(renderer);
 }

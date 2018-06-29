@@ -24,11 +24,25 @@ namespace graphics {
 
         void SetView(opengl::OpenGLCamera * camera);
 
+        /**
+            Draws an object with full lightning
+            @param rendering_object The object to draw
+            @return 0 = OK, -1 = rendering_object is not properly initialised
+        */
         int Draw(GraphicsObject * rendering_object);
 
+        /**
+            Draws an object as is
+            @param object The OpenGLObject
+            @param texture The OpenGLTexture
+            @param model The model of the object
+            @return 0 = OK, -1 = something is not properly initialised
+        */
         int Draw(opengl::OpenGLObject * object, opengl::OpenGLTexture * texture, glm::mat4 model);
 
-        int AddLight(glm::vec3 position, LightProperties_t light_properties);
+        int AddLight(glm::vec3 position, LightProperties_t light_properties, Attenuation_t attenuation);
+
+        int AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties);
 
         int Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 

@@ -69,7 +69,13 @@ namespace opengl {
         /**
         
         */
-        int SetLight(glm::vec3 position, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular);
+        int SetLight(glm::vec3 position, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular,
+            float attenuation_constant, float attenuation_linear, float attenuation_quadratic);
+
+        /**
+        
+        */
+        int SetDirectionalLight(glm::vec3 direction, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular);
 
         /**
             Draw a 2d text on a certain position on the screen, not in the world

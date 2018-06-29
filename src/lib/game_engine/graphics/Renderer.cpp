@@ -40,8 +40,14 @@ namespace graphics {
         return 0;
     }
 
-    int Renderer::AddLight(glm::vec3 position, graphics::LightProperties_t light_properties) {
-        return renderer_->SetLight(position, light_properties.ambient_, light_properties.diffuse_, light_properties.specular_);
+    int Renderer::AddLight(glm::vec3 position, graphics::LightProperties_t light_properties, Attenuation_t attenuation) {
+        return renderer_->SetLight(position,
+            light_properties.ambient_, light_properties.diffuse_, light_properties.specular_,
+            attenuation.constant_, attenuation.linear_, attenuation.quadratic_);
+    }
+
+    int Renderer::AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties) {
+        return renderer_->SetDirectionalLight(direction, light_properties.ambient_, light_properties.diffuse_, light_properties.specular_);
     }
 
     int Renderer::Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {

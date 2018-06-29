@@ -1,31 +1,29 @@
-#ifndef __Lamp_hpp__
-#define __Lamp_hpp__
+#ifndef __Sun_hpp__
+#define __Sun_hpp__
 
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/WorldObject.hpp"
 #include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/graphics/Material.hpp"
 
-#include "Sun.hpp"
 
-
-class Lamp : public game_engine::WorldObject {
+class Sun : public game_engine::WorldObject {
 public:
 
-    bool Init(float x, float y, float z, game_engine::GameEngine * engine, Sun * sun);
+    bool Init(float x, float y, float z, game_engine::GameEngine * engine);
 
     virtual void Step(double delta_time) override;
 
     virtual void Draw(game_engine::graphics::Renderer * renderer) override;
 
+    double GetTimeOfDay();
+
 private:
-    float center_x_, center_y_;
-    float radius_;
-    float angular_speed_;
+    double day_period_;
+    double game_time_;
+    double game_hour_;
     game_engine::graphics::LightProperties_t light_;
-    game_engine::graphics::Attenuation_t att_;
-    
-    Sun * sun_;
+
 };
 
 #endif

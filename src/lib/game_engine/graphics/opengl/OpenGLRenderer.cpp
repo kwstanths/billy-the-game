@@ -163,12 +163,28 @@ namespace opengl {
         return 0;
     }
 
-    int OpenGLRenderer::SetLight(glm::vec3 position, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular) {
+    int OpenGLRenderer::SetLight(glm::vec3 position, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular,
+        float attenuation_constant, float attenuation_linear, float attenuation_quadratic
+    ) {
 
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("light_properties.position"), position);
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("light_properties.ambient"), color_ambient);
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("light_properties.diffuse"), color_diffuse);
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("light_properties.specular"), color_specular);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light.position"), position);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light.ambient"), color_ambient);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light.diffuse"), color_diffuse);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light.specular"), color_specular);
+
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("point_light.constant"), attenuation_constant);
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("point_light.linear"), attenuation_linear);
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("point_light.quadratic"), attenuation_quadratic);
+
+        return 0;
+    }
+
+    int OpenGLRenderer::SetDirectionalLight(glm::vec3 direction, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular) {
+
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("global_illumination.direction"), direction);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("global_illumination.ambient"), color_ambient);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("global_illumination.diffuse"), color_diffuse);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("global_illumination.specular"), color_specular);
 
         return 0;
     }
