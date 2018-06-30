@@ -45,6 +45,7 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     floor->Init(5.0f, -5.0f, 0.0f, engine);
     floor = NewObj<Grass>();
     floor->Init(-5.0f, 5.0f, 0.0f, engine);
+    
 
     /* Create a path */
     Path * path = NewObj<Path>();

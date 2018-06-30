@@ -49,6 +49,8 @@ void Lamp::Draw(grph::Renderer * renderer) {
     if (hour < 8 || hour > 19) renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ()+0.5), light_, att_);
     else renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ() + 0.5), ge::graphics::LightProperties_t(0), att_);
 
+    /*renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ() + 0.5), light_, att_);*/
+
     WorldObject::Draw(renderer);
 }
 

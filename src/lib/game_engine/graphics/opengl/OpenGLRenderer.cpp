@@ -164,9 +164,9 @@ namespace opengl {
     }
 
     int OpenGLRenderer::SetLight(glm::vec3 position, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular,
-        float attenuation_constant, float attenuation_linear, float attenuation_quadratic
-    ) {
-
+        float attenuation_constant, float attenuation_linear, float attenuation_quadratic) 
+    {
+        shader_main_.Use();
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light.position"), position);
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light.ambient"), color_ambient);
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light.diffuse"), color_diffuse);
@@ -181,10 +181,31 @@ namespace opengl {
 
     int OpenGLRenderer::SetDirectionalLight(glm::vec3 direction, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular) {
 
+        shader_main_.Use();
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("global_illumination.direction"), direction);
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("global_illumination.ambient"), color_ambient);
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("global_illumination.diffuse"), color_diffuse);
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("global_illumination.specular"), color_specular);
+
+        return 0;
+    }
+
+    int OpenGLRenderer::SetSpotLight(glm::vec3 position, glm::vec3 direction, float radius, 
+        glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular, 
+        float attenuation_constant, float attenuation_linear, float attenuation_quadratic)
+    {
+        shader_main_.Use();
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("cast_light.position"), position);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("cast_light.direction"), direction);
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("cast_light.radius_cosine"), cos(radius));
+
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("cast_light.ambient"), color_ambient);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("cast_light.diffuse"), color_diffuse);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("cast_light.specular"), color_specular);
+
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("cast_light.constant"), attenuation_constant);
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("cast_light.linear"), attenuation_linear);
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("cast_light.quadratic"), attenuation_quadratic);
 
         return 0;
     }

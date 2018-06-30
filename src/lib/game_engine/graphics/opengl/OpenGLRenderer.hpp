@@ -78,6 +78,13 @@ namespace opengl {
         int SetDirectionalLight(glm::vec3 direction, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular);
 
         /**
+            @param radius The spotlight angle between the light direction and the edge of the cone in radians
+        */
+        int SetSpotLight(glm::vec3 position, glm::vec3 direction, float radius,
+            glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular,
+            float attenuation_constant, float attenuation_linear, float attenuation_quadratic);
+
+        /**
             Draw a 2d text on a certain position on the screen, not in the world
             @param text The text to draw
             @param x The horizontal position in screen coordinates

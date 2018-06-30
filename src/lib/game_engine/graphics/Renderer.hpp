@@ -24,6 +24,8 @@ namespace graphics {
 
         void SetView(opengl::OpenGLCamera * camera);
 
+        void StartFrame();
+
         /**
             Draws an object with full lightning
             @param rendering_object The object to draw
@@ -43,6 +45,11 @@ namespace graphics {
         int AddLight(glm::vec3 position, LightProperties_t light_properties, Attenuation_t attenuation);
 
         int AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties);
+
+        /**
+            @param radius The spotlight angle between the light direction and the edge of the cone in degrees
+        */
+        int AddSpotLight(glm::vec3 position, glm::vec3 direction, float angle, LightProperties_t light_properties, Attenuation_t attenuation);
 
         int Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 

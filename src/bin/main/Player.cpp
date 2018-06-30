@@ -1,5 +1,7 @@
 #include "Player.hpp"
 
+#include "glm/gtx/rotate_vector.hpp"
+
 #include "game_engine/graphics/opengl/OpenGLObject.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 #include "game_engine/physics/HelpFunctions.hpp"
@@ -157,8 +159,16 @@ float Player::GetSpeed(bool running) {
 
 void Player::Draw(grph::Renderer * renderer) {
 
-    //renderer->AddLight(glm::vec3(GetX() + 4*sin(glfwGetTime()), GetY() + 4*cos(glfwGetTime()), GetZ() + 3) , glm::vec3(255.0 / 255.0, 214.0 / 255.0, 170.0 / 255.0));
+    ge::Direction dir = GetLookingDirection();
+    glm::vec3 direction = glm::vec3(-sin(dir), cos(dir), 0);
+    renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 2), glm::vec3(0, 0, -1), 40.0f,
+        ge::graphics::LightProperties_t(0.8), ge::graphics::Attenuation_t(1, 0.32, 0.0019));
 
+
+    //renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ() + 2),
+    //    ge::graphics::LightProperties_t(glm::vec3(0.2, 0.2, 0.2), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5, 0.5, 0.5)),
+    //    ge::graphics::Attenuation_t(1, 0.12, 0.0019));
+    
     WorldObject::Draw(renderer);
 }
 

@@ -25,6 +25,7 @@ void MouseCallback(GLFWwindow * w, double x, double y) {
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Fix light tearring");
     CodeReminder("Fix the material useless properties");
     CodeReminder("Move the opengl initialization from the game engine to the Renderer");
     CodeReminder("Draw with different shader");

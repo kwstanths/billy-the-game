@@ -26,6 +26,10 @@ namespace graphics {
         renderer_->SetView(camera);
     }
 
+    void Renderer::StartFrame() {
+        /* TODO Pre frame drawing initialization */
+    }
+
     int Renderer::Draw(GraphicsObject * rendering_object) {
         renderer_->Draw(rendering_object->object_, 
             rendering_object->diffuse_texture_, 
@@ -48,6 +52,12 @@ namespace graphics {
 
     int Renderer::AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties) {
         return renderer_->SetDirectionalLight(direction, light_properties.ambient_, light_properties.diffuse_, light_properties.specular_);
+    }
+
+    int Renderer::AddSpotLight(glm::vec3 position, glm::vec3 direction, float angle, LightProperties_t light_properties, Attenuation_t attenuation) {
+        return renderer_->SetSpotLight(position, direction, GetRadians(angle),
+            light_properties.ambient_, light_properties.diffuse_, light_properties.specular_,
+            attenuation.constant_, attenuation.linear_, attenuation.quadratic_);
     }
 
     int Renderer::Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
