@@ -30,8 +30,9 @@ struct DirectionalLight {
 struct CastingLight {
     vec3 position;  
     vec3 direction;
-    float radius_cosine;
-    
+    float inner_radius_cosine;
+    float outer_radius_cosine;
+	
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -120,31 +121,39 @@ void main(){
 		/* Calculate vector between light and fragment */
 		vec3 light_direction_inv = normalize(cast_light.position - fragment_position_worldspace); 
 	
-		/* check if lighting is inside the spotlight cone */
+		/* Calculate angle between cast light direction and the vector between the fragment and the cast light */
 		float theta = dot(light_direction_inv, normalize(-cast_light.direction)); 
 	
-		if (theta > cast_light.radius_cosine){
-			/* Diffuse component */
-			float light_diffuse_strength = max(dot(fragment_normal, light_direction_inv), 0.0);
-			vec3 light_diffuse = cast_light.diffuse *  fragment_color;  
-			
-			/* Specular component */
-			vec3 light_reflect_vector = reflect(-light_direction_inv, fragment_normal);
-			float light_specular_strength = pow(max(dot(view_direction, light_reflect_vector), 0.0), object_material.shininess);
-			vec3 light_specular = cast_light.specular * light_specular_strength * fragment_specular_intensity;
-			
-			/* Calculate attenuation */
-			float distance = length(cast_light.position - fragment_position_worldspace);
-			float attenuation = 1.0 / (cast_light.constant + 
-									cast_light.linear * distance + 
-									cast_light.quadratic * (distance * distance)); 
-									
-			cast_light_color = clamp(attenuation * (light_diffuse + light_specular), 0, 1);
-		}
-	
+		/* Calculate diffuse component */
+		float light_diffuse_strength = max(dot(fragment_normal, light_direction_inv), 0.0);
+		vec3 light_diffuse = cast_light.diffuse *  fragment_color;  
 		
+		/* Calculate specular component */
+		vec3 light_reflect_vector = reflect(-light_direction_inv, fragment_normal);
+		float light_specular_strength = pow(max(dot(view_direction, light_reflect_vector), 0.0), object_material.shininess);
+		vec3 light_specular = cast_light.specular * light_specular_strength * fragment_specular_intensity;
+		
+		/* 
+			Calculate edges factor
+			theta angles lower than the cast light inner radius get intensity of 1
+			theta angles between the cast light inner radius and outer radius get linear decreasing to zero intensity
+			theta angles greater than the cast light outer radius get intensity pof zero 
+		*/
+		float epsilon = (cast_light.inner_radius_cosine - cast_light.outer_radius_cosine);
+		float intensity = clamp((theta - cast_light.outer_radius_cosine) / epsilon, 0.0, 1.0);
+		light_diffuse  *= intensity;
+		light_specular *= intensity;
+		
+		/* Calculate attenuation */
+		float distance = length(cast_light.position - fragment_position_worldspace);
+		float attenuation = 1.0 / (cast_light.constant + 
+								cast_light.linear * distance + 
+								cast_light.quadratic * (distance * distance)); 
+							
+		/* Sum components */
+		cast_light_color = clamp(attenuation * (light_diffuse + light_specular), 0, 1);
 	}
 	
-	/* Sum the two components, the minimum color is zero, the maxium color possible the actual color of the fragment */
+	/* Sum total components, the minimum color is zero, the maxium color possible the actual color of the fragment */
 	color = clamp(cast_light_color + point_light_color + global_illumination_color, vec3(0,0,0), fragment_color);
 }

@@ -54,8 +54,10 @@ namespace graphics {
         return renderer_->SetDirectionalLight(direction, light_properties.ambient_, light_properties.diffuse_, light_properties.specular_);
     }
 
-    int Renderer::AddSpotLight(glm::vec3 position, glm::vec3 direction, float angle, LightProperties_t light_properties, Attenuation_t attenuation) {
-        return renderer_->SetSpotLight(position, direction, GetRadians(angle),
+    int Renderer::AddSpotLight(glm::vec3 position, glm::vec3 direction, float inner_angle, float outer_angle, 
+        LightProperties_t light_properties, Attenuation_t attenuation) 
+    {
+        return renderer_->SetSpotLight(position, direction, GetRadians(inner_angle), GetRadians(outer_angle),
             light_properties.ambient_, light_properties.diffuse_, light_properties.specular_,
             attenuation.constant_, attenuation.linear_, attenuation.quadratic_);
     }

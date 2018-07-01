@@ -25,6 +25,7 @@ void MouseCallback(GLFWwindow * w, double x, double y) {
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Add the sun to something so that step and draw are always executed");
     CodeReminder("Fix light tearring");
     CodeReminder("Fix the material useless properties");
     CodeReminder("Move the opengl initialization from the game engine to the Renderer");

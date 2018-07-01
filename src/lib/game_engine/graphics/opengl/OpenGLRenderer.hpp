@@ -80,7 +80,7 @@ namespace opengl {
         /**
             @param radius The spotlight angle between the light direction and the edge of the cone in radians
         */
-        int SetSpotLight(glm::vec3 position, glm::vec3 direction, float radius,
+        int SetSpotLight(glm::vec3 position, glm::vec3 direction, float inner_radius, float outer_radius,
             glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular,
             float attenuation_constant, float attenuation_linear, float attenuation_quadratic);
 

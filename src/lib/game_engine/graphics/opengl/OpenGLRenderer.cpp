@@ -190,14 +190,15 @@ namespace opengl {
         return 0;
     }
 
-    int OpenGLRenderer::SetSpotLight(glm::vec3 position, glm::vec3 direction, float radius, 
+    int OpenGLRenderer::SetSpotLight(glm::vec3 position, glm::vec3 direction, float inner_radius, float outer_radius,
         glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular, 
         float attenuation_constant, float attenuation_linear, float attenuation_quadratic)
     {
         shader_main_.Use();
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("cast_light.position"), position);
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("cast_light.direction"), direction);
-        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("cast_light.radius_cosine"), cos(radius));
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("cast_light.inner_radius_cosine"), cos(inner_radius));
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("cast_light.outer_radius_cosine"), cos(outer_radius));
 
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("cast_light.ambient"), color_ambient);
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("cast_light.diffuse"), color_diffuse);

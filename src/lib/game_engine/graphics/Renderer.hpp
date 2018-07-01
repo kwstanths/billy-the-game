@@ -47,9 +47,10 @@ namespace graphics {
         int AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties);
 
         /**
-            @param radius The spotlight angle between the light direction and the edge of the cone in degrees
+            @param angles in degrees
         */
-        int AddSpotLight(glm::vec3 position, glm::vec3 direction, float angle, LightProperties_t light_properties, Attenuation_t attenuation);
+        int AddSpotLight(glm::vec3 position, glm::vec3 direction, float inner_angle, float outer_angle,
+            LightProperties_t light_properties, Attenuation_t attenuation);
 
         int Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 
