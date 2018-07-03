@@ -16,12 +16,14 @@ namespace opengl {
         is_inited_ = false;
     }
 
-    int OpenGLCamera::Init(OpenGLCameraConfig_t config, OpenGLContext * context)  {
+    int OpenGLCamera::Init(OpenGLContext * context)  {
         
-        config_ = config;
+        if (context == nullptr) return Error::ERROR_GEN_NOT_INIT;
+        if (!context->IsInited()) return Error::ERROR_GEN_NOT_INIT;
+
         context_ = context;
 
-        if (config.orthographic_) Ortho2D(config.zoom_factor_);
+        if (config_.orthographic_) Ortho2D(config_.zoom_factor_);
         else Project3D();
 
         is_inited_ = true;

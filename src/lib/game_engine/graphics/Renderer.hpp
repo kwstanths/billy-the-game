@@ -2,6 +2,7 @@
 #define __Renderer_hpp__
 
 #include "game_engine/physics/Types.hpp"
+#include "game_engine/Controls.hpp"
 #include "game_engine/graphics/opengl/OpenGLContext.hpp"
 #include "game_engine/graphics/opengl/OpenGLRenderer.hpp"
 #include "game_engine/graphics/opengl/OpenGLObject.hpp"
@@ -12,19 +13,32 @@
 #include "GraphicsObject.hpp"
 
 namespace game_engine {
+    
+    class GameEngine;
+
 namespace graphics {
 
+
     class Renderer {
+        friend game_engine::GameEngine;
     public:
         Renderer();
 
-        int Init(opengl::OpenGLContext * context);
+        int Init(opengl::OpenGLContextConfig_t config);
+
+        int Destroy();
 
         bool IsInited();
 
-        void SetView(opengl::OpenGLCamera * camera);
+        void SetView();
 
         void StartFrame();
+
+        void EndFrame();
+
+        void SetWindowSize(size_t width, size_t height);
+
+        KeyControls_t GetControlInput();
 
         /**
             Draws an object with full lightning
@@ -56,8 +70,19 @@ namespace graphics {
 
     private:
         bool is_inited_;
-        opengl::OpenGLRenderer * renderer_;
 
+        /* Variables needed for opengl drawiing */
+        opengl::OpenGLContext * context_ = nullptr;
+        opengl::OpenGLCamera * camera_ = nullptr;
+        opengl::OpenGLRenderer * renderer_ = nullptr;
+
+
+        /**
+            Set a camera
+            @param camera The camera to set
+            @return 0=OK, -1 = Not initialised
+        */
+        int SetCamera(opengl::OpenGLCamera * camera);
     };
 
 }

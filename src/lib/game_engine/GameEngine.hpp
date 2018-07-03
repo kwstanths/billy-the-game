@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "game_engine/graphics/opengl/OpenGLContext.hpp"
 #include "game_engine/graphics/opengl/OpenGLCamera.hpp"
 #include "game_engine/graphics/Renderer.hpp"
 
@@ -30,7 +29,7 @@ namespace game_engine {
     } GameEngineConfig_t;
 
     class GameEngine {
-        friend class WorldSector;
+        friend WorldSector;
     public:
         /**
             Does nothing in particular
@@ -69,12 +68,9 @@ namespace game_engine {
         /**
         
         */
-        void SetCamera(graphics::opengl::OpenGLCamera * camera, graphics::opengl::OpenGLCameraConfig_t config);
+        void SetCamera(graphics::opengl::OpenGLCamera * camera);
 
-        /**
-        
-        */
-        graphics::opengl::OpenGLCamera * GetCamera();
+        void SetWindowSize(size_t width, size_t height);
 
         /**
             Get a struct with input from the user
@@ -135,7 +131,6 @@ namespace game_engine {
         
         graphics::Renderer * renderer_ = nullptr;
         
-        graphics::opengl::OpenGLContext * context_ = nullptr;
         graphics::opengl::OpenGLCamera * camera_ = nullptr;
     };
 

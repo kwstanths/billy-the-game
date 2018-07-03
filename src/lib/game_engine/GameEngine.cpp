@@ -15,7 +15,6 @@ namespace game_engine {
         is_inited_ = false;
         last_error_ = 0;
 
-        context_ = new gl::OpenGLContext();
         renderer_ = new grph::Renderer();
         asset_manager_ = new AssetManager();
         debugger_ = new Debugger();
@@ -23,12 +22,10 @@ namespace game_engine {
 
     GameEngine::~GameEngine() {
         if (renderer_ != nullptr) delete renderer_;
-        if (context_ != nullptr) delete context_;
         if (asset_manager_ != nullptr) delete asset_manager_;
         if (debugger_!= nullptr) delete debugger_;
 
         renderer_ = nullptr;
-        context_ = nullptr;
         asset_manager_ = nullptr;
         debugger_ = nullptr;
     }
@@ -40,15 +37,14 @@ namespace game_engine {
         }
 
         config_ = config;
-        
-        int ret = context_->Init(config.context_params_);
-        if (ret != 0) {
+
+        int ret = renderer_->Init(config_.context_params_);
+        if (ret) {
             last_error_ = ret;
             PrintError(ret);
             Terminate();
         }
 
-        renderer_->Init(context_);
         asset_manager_->Init(200, 200);
         debugger_->Init(asset_manager_, renderer_);
         frame_regulator_.Init(config_.frame_rate_, 10);
@@ -70,8 +66,7 @@ namespace game_engine {
             return last_error_;
         }
 
-        context_->Destroy();
-        /* TODO Implement renderer Destroy() which depends on OpenGLContext */
+        renderer_->Destroy();
         asset_manager_->Destroy();
         debugger_->Destroy();
         frame_regulator_.Destroy();
@@ -91,9 +86,9 @@ namespace game_engine {
         frame_regulator_.FrameStart();
 
         /* Get latest control values */
-        key_controls_ = context_->GetControlsInput();
+        key_controls_ = renderer_->GetControlInput();
 
-        context_->ClearColor();
+        renderer_->StartFrame();
 
         /* Get visible items */
         float center_x, center_y, center_z;
@@ -111,7 +106,7 @@ namespace game_engine {
         /* 
             Set camera's view before drawing, because Step() might have tempered with the camera position
         */
-        renderer_->SetView(camera_);
+        renderer_->SetView();
 
         /* Draw visible world */
         for (size_t i = 0; i < nof; i++) {
@@ -124,19 +119,21 @@ namespace game_engine {
         /* Update world */
         sector_->DeleteRemovedObjects();
 
-        context_->SwapBuffers();
+        renderer_->EndFrame();
 
         /* End the frame */
         frame_regulator_.FrameEnd();
     }
 
-    void GameEngine::SetCamera(gl::OpenGLCamera * camera, gl::OpenGLCameraConfig_t config) {
+    void GameEngine::SetCamera(gl::OpenGLCamera * camera) {
+        int ret  = renderer_->SetCamera(camera);
         camera_ = camera;
-        camera->Init(config, context_);
+        if (ret) dt::Console(dt::CRITICAL, "Settings camera failed");
     }
 
-    gl::OpenGLCamera * GameEngine::GetCamera() {
-        return camera_;
+    void GameEngine::SetWindowSize(size_t width, size_t height) {
+
+        renderer_->SetWindowSize(width, height);
     }
 
     KeyControls_t GameEngine::GetControlsInput() {

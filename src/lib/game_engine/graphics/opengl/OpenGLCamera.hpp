@@ -47,7 +47,7 @@ namespace opengl {
             @return 0=OK
 
         */
-        int Init(OpenGLCameraConfig_t config, OpenGLContext * context);
+        int Init(OpenGLContext * context);
 
         /**
             Init allocates nothing, Destroy deallocates nothing
@@ -125,21 +125,23 @@ namespace opengl {
         void Zoom(float factor);
 
         /**
-
+            Set a function for callback when the mouse moves
         */
         int SetMouceCallback(void(*func)(GLFWwindow *, double, double));
 
-        int CalculateView();
+    protected:
 
+        OpenGLCameraConfig_t config_;
+    
     private:
         bool is_inited_;
-        OpenGLCameraConfig_t config_;
 
         OpenGLContext * context_;
 
         glm::mat4 view_matrix_;
         glm::mat4 projection_matrix_;
-
+        
+        
         /**
             Set Orthographic projection matrix
         */
@@ -149,6 +151,13 @@ namespace opengl {
             Set Perspective-3D projection matrix
         */
         void Project3D();
+
+
+        /**
+            Calulcate the projection matrix
+        */
+        int CalculateView();
+
     };
 
 

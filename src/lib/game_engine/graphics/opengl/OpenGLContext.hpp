@@ -50,6 +50,12 @@ namespace opengl {
         int Init(OpenGLContextConfig_t config);
 
         /**
+            Check whether or not the object is initialised
+            @param true = OK, false = NOT OK
+        */
+        bool IsInited();
+
+        /**
             Get the window width set
             @return 0=Not initialised
         */
@@ -66,6 +72,9 @@ namespace opengl {
             @return 0=OK, -1=Not initialized
         */
         int Destroy();
+
+
+        void SetWindowSize(size_t width, size_t height);
 
         /**
             Get a struct with input from the user. If init hasn't been called returns an all false  struct

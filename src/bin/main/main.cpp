@@ -11,24 +11,18 @@
 #include "Input.hpp"
 #include "Camera.hpp"
 #include "World.hpp"
+#include "Camera.hpp"
 
 namespace ge = game_engine;
 namespace gl = game_engine::graphics::opengl;
 namespace dt = debug_tools;
 
-/* Camera needs to be global, since the mouse callback needs to be global */
-Camera * camera;
-
-void MouseCallback(GLFWwindow * w, double x, double y) {
-    camera->MouseMove(x, y);
-}
 
 int main(int argc, char ** argv) {
 
     CodeReminder("Add the sun to something so that step and draw are always executed");
     CodeReminder("Fix light tearring");
     CodeReminder("Fix the material useless properties");
-    CodeReminder("Move the opengl initialization from the game engine to the Renderer");
     CodeReminder("Draw with different shader");
     CodeReminder("Rendering order");
     CodeReminder("Use the interactable property");
@@ -39,13 +33,7 @@ int main(int argc, char ** argv) {
     context_params.window_width_ = 1024;
     context_params.window_height_ = 768;
     context_params.window_name_ = "billy";
-    context_params.font_file_path = "fonts/arial.ttf";
-    gl::OpenGLCameraConfig_t camera_params;
-    camera_params.position_ = glm::vec3(0, 0, 8);
-    camera_params.direction_ = glm::vec3(0, 0, -1);
-    camera_params.up_ = glm::vec3(0, 1, 0);
-    camera_params.orthographic_ = false;
-    camera_params.zoom_factor_ = 75;
+    context_params.font_file_path = "fonts/KateCelebration.ttf";
     ge::GameEngineConfig_t engine_params;
     engine_params.context_params_ = context_params;
     engine_params.frame_rate_ = 100;
@@ -54,9 +42,9 @@ int main(int argc, char ** argv) {
     
     /* Create a camera */
     camera = new Camera(context_params.window_width_, context_params.window_height_, 0.05f);
-    engine.SetCamera(camera, camera_params);
+    engine.SetCamera(camera);
     camera->SetMouceCallback(MouseCallback);
-    
+
     /* Initialize the input class */
     Input input;
     input.Init(&engine);

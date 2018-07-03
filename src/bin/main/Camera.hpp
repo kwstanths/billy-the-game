@@ -1,9 +1,14 @@
 #ifndef __Camera_hpp__
 #define __Camera_hpp__
 
-
 #include "game_engine/graphics/opengl/OpenGLCamera.hpp"
 
+/**
+    Callback function when the mouse moves
+*/
+void MouseCallback(GLFWwindow * w, double x, double y);
+
+void MouseCallbackNONE(GLFWwindow * w, double x, double y);
 
 class Camera : public game_engine::graphics::opengl::OpenGLCamera {
 public:
@@ -15,7 +20,7 @@ public:
     void KeyboardMove(float x, float y, float z);
 
     /**
-    
+        FPS Style movement
     */
     void MouseMove(float mouse_x, float mouse_y);
 
@@ -27,5 +32,7 @@ private:
 
 };
 
+/* Global variable Camera */
+extern Camera * camera;
 
 #endif

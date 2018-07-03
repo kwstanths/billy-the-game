@@ -64,6 +64,10 @@ namespace opengl {
         return 0;
     }
 
+    bool OpenGLContext::IsInited() {
+        return is_inited_;
+    }
+
     size_t OpenGLContext::GetWindowWidth() {
         if (!is_inited_) return 0;
 
@@ -85,6 +89,16 @@ namespace opengl {
 
         is_inited_ = false;
         return 0;
+    }
+
+    void OpenGLContext::SetWindowSize(size_t width, size_t height) {
+
+        config_.window_height_ = height;
+        config_.window_width_ = width;
+        GLfloat window_ratio_ = (config_.window_width_ * 1.0f) / (config_.window_height_ * 1.0f);
+        glViewport(0, 0, config_.window_width_, config_.window_height_);
+
+        glfwSetWindowSize(glfw_window_, width, height);
     }
 
     KeyControls_t OpenGLContext::GetControlsInput() {

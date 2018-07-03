@@ -162,7 +162,8 @@ void Player::Draw(grph::Renderer * renderer) {
     ge::Direction dir = GetLookingDirection();
     glm::vec3 direction = glm::vec3(-sin(dir), cos(dir), 0);
     renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 2), glm::vec3(0, 0, -1), 40.0f, 45.0f,
-        ge::graphics::LightProperties_t(0.8), ge::graphics::Attenuation_t(1, 0.32, 0.0019));
+        ge::graphics::LightProperties_t(glm::vec3(0, 0, 0), glm::vec3(0.8, 0.8, 0.8), glm::vec3(0.8, 0.8, 0.8)),
+        ge::graphics::Attenuation_t(1, 0.32, 0.0019));
 
 
     //renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ() + 2),
