@@ -121,7 +121,7 @@ void Player::Step(double delta_time) {
 
             if (controls.INTERACT_) {
                 ge::Rectangle2D search_area(A, B, C, D);
-                WorldObject * neighbour = world_sector_->FindNeighbour(search_area, GetX(), GetY());
+                WorldObject * neighbour = world_sector_->FindInteractNeighbour(search_area, GetX(), GetY());
                 if (neighbour != nullptr) neighbour->Interact();
                 else {
                     /* Spawn new wall! Just for fun! */
@@ -161,7 +161,7 @@ void Player::Draw(grph::Renderer * renderer) {
 
     ge::Direction dir = GetLookingDirection();
     glm::vec3 direction = glm::vec3(-sin(dir), cos(dir), 0);
-    renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 2), glm::vec3(0, 0, -1), 40.0f, 45.0f,
+    renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 2), glm::vec3(0, 0, -1), 50.0f, 55.0f,
         ge::graphics::LightProperties_t(glm::vec3(0, 0, 0), glm::vec3(0.8, 0.8, 0.8), glm::vec3(0.8, 0.8, 0.8)),
         ge::graphics::Attenuation_t(1, 0.32, 0.0019));
 

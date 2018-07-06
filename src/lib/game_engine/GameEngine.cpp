@@ -134,6 +134,7 @@ namespace game_engine {
     void GameEngine::SetWindowSize(size_t width, size_t height) {
 
         renderer_->SetWindowSize(width, height);
+        camera_->SetPositionVector(0, 0, 8);
     }
 
     KeyControls_t GameEngine::GetControlsInput() {

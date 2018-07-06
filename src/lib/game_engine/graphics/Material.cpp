@@ -6,7 +6,7 @@ namespace game_engine {
 namespace graphics {
 
     /* The material values for all the defined materials in Material.hpp, each "row" belongs to each material in the following way */
-    float material_numbers[24 * 10] = {
+    double material_numbers[24 * 10] = {
         /* amb_x,    amb_y,    amb_z,    diff_x,   diff_y,     diff_z,     spec_x,     spec_y,     spec_z,    shininess */
            0.0215,   0.1745,   0.0215,   0.07568,  0.61424,    0.07568,    0.633,      0.727811,   0.633,      0.6,
            0.135,    0.2225,   0.1575,   0.54,     0.89,       0.63,       0.316228,   0.316228,   0.316228,   0.1,

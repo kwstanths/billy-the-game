@@ -7,6 +7,7 @@ namespace game_engine {
         bool KEY_ESC = false;
         bool KEY_ENTER = false;
         bool KEY_LSHIFT = false;
+        bool KEY_LALT = false;
 
         bool KEY_A = false;
         bool KEY_S = false;

@@ -16,10 +16,13 @@ namespace graphics {
 
     int Renderer::Init(gl::OpenGLContextConfig_t config) {
 
-        int ret = context_->Init(config);
-        if (ret != 0) return ret;
+        /* Create an opengl renderer */
+        {
+            int ret = context_->Init(config);
+            if (ret != 0) return ret;
 
-        renderer_->Init(context_);
+            renderer_->Init(context_);
+        }
 
         is_inited_ = true;
         return 0;
@@ -98,6 +101,8 @@ namespace graphics {
         
         camera_ = camera;
         camera->Init(context_);
+
+        return 0;
     }
 
 }

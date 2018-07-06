@@ -147,18 +147,19 @@ namespace game_engine {
         return index;
     }
 
-    WorldObject * WorldSector::FindNeighbour(Rectangle2D search_area, float pos_x, float pos_y) {
+    WorldObject * WorldSector::FindInteractNeighbour(Rectangle2D search_area, float pos_x, float pos_y) {
         std::vector<ph::PhysicsObject *> area_objects(10, nullptr);
         size_t nof = physics_engine_->GetObjectsArea(search_area, area_objects);
 
-        /* Find the one that's on top of the other */
-        ph::PhysicsObject * neighbour = area_objects[0];
+        //ph::PhysicsObject * neighbour = area_objects[0];
+        ph::PhysicsObject * neighbour = nullptr;
+        /* Find the first interactable object in the area */
         for (size_t i = 0; i < nof; i++) {
-            ph::PhysicsObject * neighbour = area_objects[i];
-            if (area_objects[i]->GetZ() > neighbour->GetZ()) neighbour = area_objects[i];
+            WorldObject * temp = dynamic_cast<WorldObject *>(area_objects[i]);
+            if (temp->interactable_) return temp;
         }
 
-        return reinterpret_cast<WorldObject *>(neighbour);
+        return nullptr;
     }
 
     ph::PhysicsEngine * WorldSector::GetPhysicsEngine() {

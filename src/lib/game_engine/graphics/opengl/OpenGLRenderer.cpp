@@ -26,7 +26,7 @@ namespace opengl {
 
         /* Get shader variables */
         shader_main_ = context_->GetShaderMain();
-        shader_simple_ = context->GetShaderSimple();
+        shader_simple_ = context_->GetShaderSimple();
         shader_text_ = context_->GetShaderText();
 
         /* Configure a VAO for the main shader */
@@ -36,6 +36,7 @@ namespace opengl {
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
         shader_main_.Use();
+        /* Set the texture IDs on the 2D samplers used */
         shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.diffuse"), 0);
         shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.specular"), 1);
 
@@ -45,6 +46,7 @@ namespace opengl {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         shader_simple_.Use();
+        /* Set the texture ID on the 2D sampler used */
         shader_simple_.SetUniformInt(shader_simple_.uni_texture_, 0);
 
         /* Configure VAO/VBO for text shader */
@@ -101,11 +103,11 @@ namespace opengl {
         /* Set the model uniform */
         shader_main_.SetUniformMat4(shader_main_.uni_Model_, model);
 
-        /* Set the diffuse texture */
+        /* Activare the appropriate texture and set the ID of the buffer */
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuse_texture->GetID());
 
-        /* Set the specualr texture */
+        /* Activate the appropriate texture and set the ID of the buffer */
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, specular_texture->GetID());
 

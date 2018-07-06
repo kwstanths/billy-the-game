@@ -112,9 +112,13 @@ namespace game_engine {
         size_t GetObjectsWindow(float center_x, float center_y, float margin, std::vector<WorldObject *> & objects);
 
         /**
-            Forwards the call the physics engine. See physics/PhysicsEngine::FindNeighbour()
+            Find  the first interactable object inside the search area. pos_x, pos_y is currently not used
+            @param search_area The area to search for objects
+            @param pos_x currently not used
+            @param pos_y currently not used
+            @return nullptr if none is found, the pointer if something is found
         */
-        WorldObject * FindNeighbour(Rectangle2D search_area, float pos_x, float pos_y);
+        WorldObject * FindInteractNeighbour(Rectangle2D search_area, float pos_x, float pos_y);
 
         /**
             Get the physics engine used in this world

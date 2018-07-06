@@ -8,7 +8,11 @@
 */
 void MouseCallback(GLFWwindow * w, double x, double y);
 
+/**
+    Callback function where nothing happens when mouse moves
+*/
 void MouseCallbackNONE(GLFWwindow * w, double x, double y);
+
 
 class Camera : public game_engine::graphics::opengl::OpenGLCamera {
 public:

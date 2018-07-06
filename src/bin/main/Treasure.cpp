@@ -15,7 +15,7 @@ bool Treasure::Init(float x, float y, float z, ge::GameEngine * engine, size_t i
     gl::OpenGLTexture * diffuse_texture = engine->GetAssetManager()->FindTexture("assets/container.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
     gl::OpenGLTexture * specular_texture = engine->GetAssetManager()->FindTexture("assets/container_spec_map.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
 
-    ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
+    ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z, true);
 
     SetCollision(1.0f, 1.0f);
 
