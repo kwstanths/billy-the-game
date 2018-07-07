@@ -176,6 +176,10 @@ namespace opengl {
         glUniform1i(id, value);
     }
 
+    void OpenGLShader::SetUniformUInt(GLuint id, unsigned int value) {
+        glUniform1ui(id, value);
+    }
+
     OpenGLShaderMain::OpenGLShaderMain() : OpenGLShader() {
 
     }

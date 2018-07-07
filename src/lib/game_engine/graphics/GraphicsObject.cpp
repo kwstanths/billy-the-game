@@ -35,8 +35,6 @@ namespace graphics {
 
     int GraphicsObject::Destroy() {
 
-        CodeReminder("Proper destroy");
-
         is_inited_ = false;
         return 0;
     }

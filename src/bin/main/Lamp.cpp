@@ -3,12 +3,14 @@
 #include "game_engine/graphics/opengl/OpenGLObject.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 namespace ge = game_engine;
+namespace mh = game_engine::math;
 namespace grph = game_engine::graphics;
 namespace gl = game_engine::graphics::opengl;
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
 
+#include "game_engine/math/RNGenerator.hpp"
 
 bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine, Sun * sun) {
 
@@ -23,11 +25,18 @@ bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine, Sun
     SetCollision(0.05);
 
     light_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));
-    att_ = ge::graphics::Attenuation_t(1, 0.22, 0.0019);
-    center_x_ = x;
-    center_y_ = y;
-    angular_speed_ = ge::GetRadians(50.0f); /* radians per second */
-    radius_ = 3.5;
+    att_ = ge::graphics::Attenuation_t(1, 0.02, 0.0239);
+    //center_x_ = x;
+    //center_y_ = y;
+    //angular_speed_ = ge::GetRadians(50.0f); /* radians per second */
+    //radius_ = 3.5;
+
+    attenutation_noise_ = std::vector<float>(201);
+    mh::RNGenerator gen;
+    gen.Init(0.3);
+    gen.GetPerlinNoise1d(201, 0.2, 0.15, 70, attenutation_noise_);
+    index_ = 0;
+
 
     sun_ = sun;
 
@@ -36,17 +45,21 @@ bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine, Sun
 
 void Lamp::Step(double delta_time) {
 
-    float x = center_x_ + radius_ * cos(angular_speed_ * glfwGetTime());
-    float y = center_y_ + radius_ * sin(angular_speed_ * glfwGetTime());
-    SetPosition(x, y, GetZ());
+    //float x = center_x_ + radius_ * cos(angular_speed_ * glfwGetTime());
+    //float y = center_y_ + radius_ * sin(angular_speed_ * glfwGetTime());
+    //SetPosition(x, y, GetZ());
 }
 
 void Lamp::Draw(grph::Renderer * renderer) {
     
     double hour = sun_->GetTimeOfDay();
-    
+
+    grph::Attenuation_t att = att_;
+    att.linear_ = attenutation_noise_[index_++];
+    if (index_ == 200) index_ = 0;
+
     /* If dark enough, then set the light up */
-    if (hour < 8 || hour > 19) renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ()+0.5), light_, att_);
+    if (hour < 7.5 || hour > 18.5) renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ()+0.5), light_, att);
     else renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ() + 0.5), ge::graphics::LightProperties_t(0), att_);
 
     /*renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ() + 0.5), light_, att_);*/

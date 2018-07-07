@@ -10,7 +10,7 @@
 #include <chrono>
 #include <thread>
 
-#include "physics/HelpFunctions.hpp"
+#include "game_engine/math/HelpFunctions.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"

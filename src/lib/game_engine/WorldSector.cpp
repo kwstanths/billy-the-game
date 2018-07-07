@@ -1,7 +1,7 @@
 #include "WorldSector.hpp"
 
-#include "physics/HelpFunctions.hpp"
-#include "physics/Types.hpp"
+#include "game_engine/math/HelpFunctions.hpp"
+#include "game_engine/math/Types.hpp"
 namespace ph = game_engine::physics;
 
 #include "debug_tools/Console.hpp"

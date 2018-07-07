@@ -7,7 +7,7 @@
 
 #include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/graphics/GraphicsObject.hpp"
-#include "game_engine/physics/Types.hpp"
+#include "game_engine/math/Types.hpp"
 #include "game_engine/physics/PhysicsObject.hpp"
 #include "game_engine/memory/ArrayAllocator.hpp"
 #include "game_engine/memory/PoolAllocator.hpp"

@@ -5,8 +5,7 @@
 namespace dt = debug_tools;
 
 namespace game_engine {
-
-namespace physics {
+namespace math {
 
     float DotProduct(Point2D vector_a, Point2D vector_b) {
         return vector_a.x_* vector_b.x_ + vector_a.y_ * vector_b.y_;

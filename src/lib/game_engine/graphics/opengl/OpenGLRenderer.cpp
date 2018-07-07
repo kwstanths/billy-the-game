@@ -169,14 +169,15 @@ namespace opengl {
         float attenuation_constant, float attenuation_linear, float attenuation_quadratic) 
     {
         shader_main_.Use();
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light.position"), position);
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light.ambient"), color_ambient);
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light.diffuse"), color_diffuse);
-        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light.specular"), color_specular);
+        shader_main_.SetUniformUInt(shader_main_.GetUniformLocation("number_of_point_lights"), 1);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light[0].position"), position);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light[0].ambient"), color_ambient);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light[0].diffuse"), color_diffuse);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("point_light[0].specular"), color_specular);
 
-        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("point_light.constant"), attenuation_constant);
-        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("point_light.linear"), attenuation_linear);
-        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("point_light.quadratic"), attenuation_quadratic);
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("point_light[0].constant"), attenuation_constant);
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("point_light[0].linear"), attenuation_linear);
+        shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("point_light[0].quadratic"), attenuation_quadratic);
 
         return 0;
     }

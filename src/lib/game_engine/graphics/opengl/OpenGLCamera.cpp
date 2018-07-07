@@ -1,6 +1,6 @@
 #include "OpenGLCamera.hpp"
 
-#include "game_engine/physics/HelpFunctions.hpp"
+#include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/ErrorCodes.hpp"
 
 #include "debug_tools/Console.hpp"

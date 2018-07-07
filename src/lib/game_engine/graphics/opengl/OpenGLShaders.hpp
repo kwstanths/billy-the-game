@@ -91,6 +91,8 @@ namespace opengl {
 
         void SetUniformInt(GLuint id, int value);
 
+        void SetUniformUInt(GLuint id, unsigned int value);
+
     protected:
         GLuint program_id_;
     private:

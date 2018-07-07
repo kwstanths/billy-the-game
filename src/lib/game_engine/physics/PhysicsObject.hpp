@@ -1,7 +1,7 @@
 #ifndef __PhysicsObject_hpp__
 #define __PhysicsObject_hpp__
 
-#include "Types.hpp"
+#include "game_engine/math/Types.hpp"
 #include "Collision.hpp"
 
 namespace game_engine {

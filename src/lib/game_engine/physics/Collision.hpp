@@ -3,7 +3,7 @@
 
 #include <cstdlib>
 
-#include "Types.hpp"
+#include "game_engine/math/Types.hpp"
 
 #include "debug_tools/Console.hpp"
 

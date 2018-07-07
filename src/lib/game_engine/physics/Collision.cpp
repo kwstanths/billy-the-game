@@ -2,22 +2,22 @@
 
 #include <cmath>
 
-#include "Geometry.hpp"
+#include "game_engine/math/Geometry.hpp"
 
 #include "debug_tools/Console.hpp"
 
 namespace game_engine {
 
     bool CollisionCheck(Rectangle2D rect_a, Rectangle2D rect_b) {
-        return physics::IntersectRect_Rect(rect_a, rect_b);
+        return math::IntersectRect_Rect(rect_a, rect_b);
     }
 
     bool CollisionCheck(Rectangle2D rect, Circle2D circle) {
-        return physics::IntersectRect_Circle(rect, circle);
+        return math::IntersectRect_Circle(rect, circle);
     }
 
     bool CollisionCheck(Circle2D a, Circle2D b) {
-        return physics::IntersectCircle_Circle(a, b);
+        return math::IntersectCircle_Circle(a, b);
     }
 
     bool CollisionBoundingRectangle::Check(CollisionNone * other){

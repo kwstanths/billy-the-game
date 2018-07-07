@@ -19,9 +19,13 @@ public:
     virtual void Draw(game_engine::graphics::Renderer * renderer) override;
 
 private:
-    float center_x_, center_y_;
-    float radius_;
-    float angular_speed_;
+    //float center_x_, center_y_;
+    //float radius_;
+    //float angular_speed_;
+
+    std::vector<float> attenutation_noise_;
+    size_t index_;
+
     game_engine::graphics::LightProperties_t light_;
     game_engine::graphics::Attenuation_t att_;
     

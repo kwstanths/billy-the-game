@@ -16,7 +16,7 @@ namespace game_engine {
         @param b Second number
         @return true=equal, false=not equal
     */
-    template<typename T> bool Equal(T a, T b, T e = std::numeric_limits<T>::epsilon()) {
+    template<typename T> bool Equal(const T& a, const T& b, T e = std::numeric_limits<T>::epsilon()) {
         return std::abs(a - b) <= e;
     }
 
@@ -33,6 +33,17 @@ namespace game_engine {
     }
 
     /**
+        Clamp function. Restrict the value between two other values
+        @param value The actual value
+        @param low If value smaller than low, then returns low
+        @param high If value greater than high, then returns high
+        @return else returns the actual value
+    */
+    template <typename T> T clamp(const T& value, const T& low, const T& high) {
+        return value < low ? low : (value > high ? high : value);
+    }
+
+    /**
         Get radians from degrees
         @param degrees
         @return radians
@@ -45,14 +56,16 @@ namespace game_engine {
         @return degrees
     */
     float GetDegrees(float radians);
-    
+
     /**
-        Get an integer random number between two numbers
-        @param min The lower bound
-        @param max The upper bound
-        @return Random number between
+    
     */
-    int GetRand(int min, int max);
+    float InterpolationLinear(float start, float end, float percentage);
+
+    /**
+    
+    */
+    float InterpolationCosine(float start, float end, float percentage);
 
 }
 

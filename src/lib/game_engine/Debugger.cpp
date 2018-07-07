@@ -1,6 +1,6 @@
 #include "Debugger.hpp"
 
-#include "game_engine/physics/Matrices.hpp"
+#include "game_engine/math/Matrices.hpp"
 
 #include "ErrorCodes.hpp"
 

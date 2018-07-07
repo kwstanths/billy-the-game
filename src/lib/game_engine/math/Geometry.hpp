@@ -9,8 +9,7 @@
 #include "Types.hpp"
 
 namespace game_engine {
-
-namespace physics {
+namespace math {
 
     /**
         Find the inner product between two vectors defined by points

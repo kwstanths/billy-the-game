@@ -1,7 +1,7 @@
 #ifndef __Material_hpp__
 #define __Material_hpp__
 
-#include "../physics/Types.hpp"
+#include "game_engine/math/Types.hpp"
 
 namespace game_engine {
 namespace graphics {

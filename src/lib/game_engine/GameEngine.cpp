@@ -1,7 +1,8 @@
 #include "GameEngine.hpp"
 
 #include "ErrorCodes.hpp"
-#include "game_engine/physics/Types.hpp"
+//#include "game_engine/math/Types.hpp"
+#include "game_engine/math/RNGenerator.hpp"
 
 #include "debug_tools/Console.hpp"
 #include "debug_tools/CodeReminder.hpp"
@@ -52,8 +53,8 @@ namespace game_engine {
         CodeReminder("Find the size and margin of the visible world based on the camera");
         visible_world_ = std::vector<WorldObject *>(200);
 
-        /* Init random numbers generator */
-        srand(time(NULL));       
+        /* Initialize standard library random numbers */
+        srand(time(NULL));
 
         is_inited_ = true;
         last_error_ = 0;
