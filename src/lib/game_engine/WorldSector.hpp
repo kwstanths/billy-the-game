@@ -65,9 +65,11 @@ namespace game_engine {
 
             /* Allocate memory for new object */
             T * the_new_object;
-            if (!removable) the_new_object = new (array_allocator_) T();
-            else the_new_object = new (pool_allocator_) T();
-            
+            //the_new_object = new T();
+            //if (!removable) the_new_object = new (array_allocator_) T();
+            //else the_new_object = new (pool_allocator_) T();
+            the_new_object = new (array_allocator_) T();
+
             the_new_object->world_sector_ = this;
             the_new_object->removable_ = removable;
             

@@ -31,6 +31,14 @@ namespace game_engine {
         */
         WorldObject();
 
+        //void * operator new (size_t size) {
+        //    return new WorldObject();
+        //}
+
+        //void operator delete(void * ptr) {
+        //    delete ptr;
+        //}
+
         /**
             Custom sequential alloction without single remove and delete
         */

@@ -14,6 +14,7 @@ namespace game_engine {
         bool KEY_D = false;
         bool KEY_W = false;
         bool KEY_E = false;
+        bool KEY_F = false;
 
         bool KEY_ARROW_UP = false;
         bool KEY_ARROW_DOWN = false;

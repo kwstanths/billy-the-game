@@ -86,7 +86,7 @@ void main(){
 	/* Calculate the point light color */
 	vec3 point_lights_color = vec3(0,0,0);
 	for(uint i = 0u; i < number_of_point_lights; i++)
-		point_lights_color = CalculatePointLight(point_light[i], fragment_normal,view_direction, fragment_color, fragment_specular_intensity);
+		point_lights_color += CalculatePointLight(point_light[i], fragment_normal,view_direction, fragment_color, fragment_specular_intensity);
 	
 	/* Calculate casting light color */
 	vec3 cast_light_color = CalculateCastingLight(cast_light, fragment_normal,view_direction, fragment_color, fragment_specular_intensity);

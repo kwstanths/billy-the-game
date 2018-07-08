@@ -116,6 +116,7 @@ namespace opengl {
         if (glfwGetKey(glfw_window_, GLFW_KEY_D) == GLFW_PRESS) key_controls.KEY_D = true;
         if (glfwGetKey(glfw_window_, GLFW_KEY_W) == GLFW_PRESS) key_controls.KEY_W = true;
         if (glfwGetKey(glfw_window_, GLFW_KEY_E) == GLFW_PRESS) key_controls.KEY_E = true;
+        if (glfwGetKey(glfw_window_, GLFW_KEY_F) == GLFW_PRESS) key_controls.KEY_F = true;
 
         if (glfwGetKey(glfw_window_, GLFW_KEY_UP) == GLFW_PRESS) key_controls.KEY_ARROW_UP = true;
         if (glfwGetKey(glfw_window_, GLFW_KEY_DOWN) == GLFW_PRESS) key_controls.KEY_ARROW_DOWN = true;

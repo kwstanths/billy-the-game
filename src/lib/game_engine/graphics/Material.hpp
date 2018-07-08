@@ -31,6 +31,9 @@ namespace graphics {
 #define GAME_ENGINE_MATERIAL_WHITE_RUBBER   22
 #define GAME_ENGINE_MATERIAL_YELLOW_RUBBER  23
 
+    /**
+        
+    */
     struct Material_t {
         glm::vec3 ambient_;
         glm::vec3 diffuse_;
@@ -62,6 +65,9 @@ namespace graphics {
 
     };
 
+    /**
+        Holds the necessary values for the rgb properties of a light
+    */
     struct LightProperties_t {
         glm::vec3 ambient_;
         glm::vec3 diffuse_;
@@ -94,6 +100,9 @@ namespace graphics {
             : ambient_(ambient), diffuse_(diffuse), specular_(specular) {};
     };
 
+    /**
+        Holds the necessary values for the light attenuation aglrothim
+    */
     struct Attenuation_t {
         float constant_;
         float linear_;
@@ -112,7 +121,20 @@ namespace graphics {
             Create a custom attenuation struct 
         */
         Attenuation_t(float c, float l, float q) : constant_(c), linear_(l), quadratic_(q) {};
+    };
 
+
+    /**
+        Holds the necessary values to draw a point light 
+    */
+    struct PointLight_t {
+        glm::vec3 position_ = glm::vec3(0, 0, 0);
+        LightProperties_t properties_;
+        Attenuation_t attenutation_;
+
+        PointLight_t() {};
+
+        PointLight_t(glm::vec3 pos, LightProperties_t prop, Attenuation_t att) : position_(pos), properties_(prop), attenutation_(att) {};
     };
 
 }

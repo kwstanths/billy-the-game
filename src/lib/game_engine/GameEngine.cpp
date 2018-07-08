@@ -97,7 +97,7 @@ namespace game_engine {
 
         /* TODO Check whether sector_ is set */
         /* TODO Find the visible items based on the z of the camera */
-        size_t nof = sector_->GetObjectsWindow(center_x, center_y, 4, visible_world_);
+        size_t nof = sector_->GetObjectsWindow(center_x, center_y, 3, visible_world_);
 
         /* Step all the objects one frame */
         for (size_t i = 0; i < nof; i++) {
@@ -113,6 +113,7 @@ namespace game_engine {
         for (size_t i = 0; i < nof; i++) {
             visible_world_[i]->Draw(renderer_);
         }
+        renderer_->FlushDrawsCalls();
 
         /* Render text overlay */
         renderer_->Draw2DText("Welcome!", 100, 100, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));

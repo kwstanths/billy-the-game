@@ -1,4 +1,4 @@
-#include "Lamp.hpp"
+#include "Fire.hpp"
 
 #include "game_engine/graphics/opengl/OpenGLObject.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
@@ -12,7 +12,7 @@ namespace dt = debug_tools;
 
 #include "game_engine/math/RNGenerator.hpp"
 
-bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine, Sun * sun) {
+bool Fire::Init(float x, float y, float z, game_engine::GameEngine * engine, Sun * sun) {
 
     int ret;
     gl::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
@@ -26,10 +26,6 @@ bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine, Sun
 
     light_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));
     att_ = ge::graphics::Attenuation_t(1, 0.02, 0.0239);
-    //center_x_ = x;
-    //center_y_ = y;
-    //angular_speed_ = ge::GetRadians(50.0f); /* radians per second */
-    //radius_ = 3.5;
 
     attenutation_noise_ = std::vector<float>(201);
     mh::RNGenerator gen;
@@ -43,14 +39,11 @@ bool Lamp::Init(float x, float y, float z, game_engine::GameEngine * engine, Sun
     return ret == 0;
 }
 
-void Lamp::Step(double delta_time) {
+void Fire::Step(double delta_time) {
 
-    //float x = center_x_ + radius_ * cos(angular_speed_ * glfwGetTime());
-    //float y = center_y_ + radius_ * sin(angular_speed_ * glfwGetTime());
-    //SetPosition(x, y, GetZ());
 }
 
-void Lamp::Draw(grph::Renderer * renderer) {
+void Fire::Draw(grph::Renderer * renderer) {
     
     double hour = sun_->GetTimeOfDay();
 
@@ -59,8 +52,8 @@ void Lamp::Draw(grph::Renderer * renderer) {
     if (index_ == 200) index_ = 0;
 
     /* If dark enough, then set the light up */
-    if (hour < 7.5 || hour > 18.5) renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ()+0.5), light_, att);
-    else renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ() + 0.5), ge::graphics::LightProperties_t(0), att_);
+    if (hour < 8 || hour > 18.5) renderer->AddPointLight(glm::vec3(GetX(), GetY(), GetZ()+0.5), light_, att);
+    else renderer->AddPointLight(glm::vec3(GetX(), GetY(), GetZ() + 0.5), ge::graphics::LightProperties_t(0), att_);
 
     /*renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ() + 0.5), light_, att_);*/
 

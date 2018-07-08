@@ -5,6 +5,7 @@ namespace ge = game_engine;
 Input::Input() {
     is_inited_ = false;
     previous_interact_state_ = false;
+    previous_flashlight_state_ = false;
     last_control_timestamp_ = -1.0;
 }
 
@@ -42,10 +43,13 @@ ControlInput_t Input::GetControls() {
     control_input_.ZOOM_OUT_ = key_controls.KEY_PAGE_UP;
     control_input_.INTERACT_PRESSED = key_controls.KEY_E;
 
+    /* Change flashlight state only when the button F is released */
+    if (!key_controls.KEY_F && previous_flashlight_state_) control_input_.FLASHLIGHT_ = !control_input_.FLASHLIGHT_;
+    previous_flashlight_state_ = key_controls.KEY_F;
+
     /* Interact with object should only be done when the E button is released */
     control_input_.INTERACT_ = false;
     if (!key_controls.KEY_E && previous_interact_state_) control_input_.INTERACT_ = true;
-
     previous_interact_state_ = key_controls.KEY_E;
     
     return control_input_;

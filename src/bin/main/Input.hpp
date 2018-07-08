@@ -14,6 +14,7 @@ typedef struct {
     bool MOVE_UP_ = false;
     bool MOVE_DOWN_ = false;
 
+    bool FLASHLIGHT_ = false;
     bool RUN_ = false;
     bool INTERACT_ = false;
     bool INTERACT_PRESSED = false;
@@ -37,7 +38,7 @@ public:
 
 private:
     double last_control_timestamp_;
-    bool is_inited_, previous_interact_state_;
+    bool is_inited_, previous_interact_state_, previous_flashlight_state_;
 
     ControlInput_t control_input_;
 

@@ -18,7 +18,7 @@ bool Path::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
     ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
 
-    Scale(4, 4, 4);
+    Scale(5, 5, 0);
 
     ge::graphics::Material_t m(glm::vec3(0.2, 0.2, 0.2), glm::vec3(0.96, 0.90, 0.70), glm::vec3(0.1, 0.1, 0.1), 32);
     SetMaterial(m);

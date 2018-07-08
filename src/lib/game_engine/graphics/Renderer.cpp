@@ -24,6 +24,8 @@ namespace graphics {
             renderer_->Init(context_);
         }
 
+        point_lights_to_draw_ = std::vector<PointLight_t>(NR_POINT_LIGHTS);
+
         is_inited_ = true;
         return 0;
     }
@@ -43,6 +45,8 @@ namespace graphics {
 
     void Renderer::StartFrame() {
         context_->ClearColor();
+
+        number_of_point_lights_ = 0;
     }
 
     void Renderer::EndFrame() {
@@ -73,10 +77,13 @@ namespace graphics {
         return 0;
     }
 
-    int Renderer::AddLight(glm::vec3 position, graphics::LightProperties_t light_properties, Attenuation_t attenuation) {
-        return renderer_->SetLight(position,
-            light_properties.ambient_, light_properties.diffuse_, light_properties.specular_,
-            attenuation.constant_, attenuation.linear_, attenuation.quadratic_);
+    int Renderer::AddPointLight(glm::vec3 position, graphics::LightProperties_t light_properties, Attenuation_t attenuation) {
+        if (number_of_point_lights_ >= NR_POINT_LIGHTS) {
+            dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");
+            return -1;
+        }
+        point_lights_to_draw_.at(number_of_point_lights_++) = PointLight_t(position, light_properties, attenuation);
+        return 0;
     }
 
     int Renderer::AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties) {
@@ -103,6 +110,24 @@ namespace graphics {
         camera->Init(context_);
 
         return 0;
+    }
+
+    void Renderer::FlushDrawsCalls() {
+        renderer_->SetPointLightsNumber(number_of_point_lights_);
+
+        for (size_t i = 0; i < number_of_point_lights_; i++) {
+            std::string index = std::to_string(i);
+            renderer_->SetPointLight(index,
+                point_lights_to_draw_[i].position_,
+                point_lights_to_draw_[i].properties_.ambient_,
+                point_lights_to_draw_[i].properties_.diffuse_,
+                point_lights_to_draw_[i].properties_.specular_,
+                point_lights_to_draw_[i].attenutation_.constant_,
+                point_lights_to_draw_[i].attenutation_.linear_,
+                point_lights_to_draw_[i].attenutation_.quadratic_
+            );
+        }
+
     }
 
 }

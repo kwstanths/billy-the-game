@@ -56,7 +56,7 @@ namespace graphics {
         */
         int Draw(opengl::OpenGLObject * object, opengl::OpenGLTexture * texture, glm::mat4 model);
 
-        int AddLight(glm::vec3 position, LightProperties_t light_properties, Attenuation_t attenuation);
+        int AddPointLight(glm::vec3 position, LightProperties_t light_properties, Attenuation_t attenuation);
 
         int AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties);
 
@@ -70,6 +70,8 @@ namespace graphics {
 
     private:
         bool is_inited_;
+        size_t number_of_point_lights_;
+        std::vector<PointLight_t> point_lights_to_draw_;
 
         /* Variables needed for opengl drawiing */
         opengl::OpenGLContext * context_ = nullptr;
@@ -83,6 +85,11 @@ namespace graphics {
             @return 0=OK, -1 = Not initialised
         */
         int SetCamera(opengl::OpenGLCamera * camera);
+
+        /**
+        
+        */
+        void FlushDrawsCalls();
     };
 
 }

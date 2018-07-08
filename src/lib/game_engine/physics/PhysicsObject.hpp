@@ -128,7 +128,7 @@ namespace physics {
         bool is_inited_;
         float pos_x_, pos_y_, pos_z_;
         
-        Collision * collision_;
+        Collision * collision_ = nullptr;
         PhysicsEngine * physics_engine_;
     };
 

@@ -17,6 +17,9 @@ namespace game_engine {
 namespace graphics {
 namespace opengl {
 
+/* Maximum number of point lights allowed */
+#define NR_POINT_LIGHTS 16
+
     class OpenGLRenderer {
     public:
         /**
@@ -67,9 +70,14 @@ namespace opengl {
         int Draw(OpenGLObject * object, OpenGLTexture * texture, glm::mat4 model);
 
         /**
+            
+        */
+        int SetPointLightsNumber(unsigned int number);
+
+        /**
         
         */
-        int SetLight(glm::vec3 position, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular,
+        int SetPointLight(std::string index, glm::vec3 position, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular,
             float attenuation_constant, float attenuation_linear, float attenuation_quadratic);
 
         /**

@@ -159,15 +159,16 @@ float Player::GetSpeed(bool running) {
 
 void Player::Draw(grph::Renderer * renderer) {
 
-    ge::Direction dir = GetLookingDirection();
-    glm::vec3 direction = glm::vec3(-sin(dir), cos(dir), 0);
-    renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 2), glm::vec3(0, 0, -1), 50.0f, 55.0f,
-        ge::graphics::LightProperties_t(glm::vec3(0, 0, 0), glm::vec3(0.8, 0.8, 0.8), glm::vec3(0.8, 0.8, 0.8)),
-        ge::graphics::Attenuation_t(1, 0.32, 0.0019));
+    /* Get input */
+    ControlInput_t controls = input_->GetControls();
 
-    //renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ() + 2),
-    //    ge::graphics::LightProperties_t(glm::vec3(0.2, 0.2, 0.2), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5, 0.5, 0.5)),
-    //    ge::graphics::Attenuation_t(1, 0.12, 0.0019));
+    grph::LightProperties_t light(0);
+    if (controls.FLASHLIGHT_) light = grph::LightProperties_t(glm::vec3(0, 0, 0), glm::vec3(0.6, 0.6, 0.6), glm::vec3(0.8, 0.8, 0.8));
+    grph::Attenuation_t att = ge::graphics::Attenuation_t(1, 0.32, 0.0019);
+    
+    renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 2), glm::vec3(0, 0, -1), 50.0f, 55.0f,
+        light, att);
+
     
     WorldObject::Draw(renderer);
 }
