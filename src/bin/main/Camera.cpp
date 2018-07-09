@@ -9,7 +9,7 @@ namespace gl = game_engine::graphics::opengl;
 Camera * camera;
 
 void MouseCallback(GLFWwindow * w, double x, double y) {
-    camera->MouseMove(x, y);
+    camera->MouseMove(static_cast<float>(x), static_cast<float>(y));
 }
 
 void MouseCallbackNONE(GLFWwindow * w, double x, double y) { };

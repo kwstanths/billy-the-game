@@ -269,6 +269,7 @@ namespace utility {
 				current->previous = temp_node;
 				return true;
 			}
+            return false;
 		}
 
 

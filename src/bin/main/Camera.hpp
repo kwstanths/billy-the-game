@@ -2,6 +2,7 @@
 #define __Camera_hpp__
 
 #include "game_engine/graphics/opengl/OpenGLCamera.hpp"
+#include "game_engine/graphics/opengl/OpenGLIncludes.hpp"
 
 /**
     Callback function when the mouse moves

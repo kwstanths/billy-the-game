@@ -1,22 +1,15 @@
 cmake_minimum_required(VERSION 3.0)
 
-
-# Environment
+#Setup environment
 set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../)
-include(${PROJECT_ROOT}/src/lib/external/Modules/SetupEnvironment.cmake)
+include(${PROJECT_ROOT}/src/lib/SetupEnvironment.cmake)
 SetupEnvironment()
-
 
 # Project
 set(NAME "game_engine")
 project(${NAME})
 	
-
-include_directories(${PROJECT_ROOT}/src/lib/)
-include_directories(${GLFW_INCLUDE_DIRS})
-include_directories(${GLM_INCLUDE_DIRS})
-include_directories(${GLEW_INCLUDE_DIRS})
-include_directories(${FREETYPE_INCLUDE_DIRS})
+include_directories(${ENGINE_INCLUDE_DIRS})
 
 # Sources
 file(GLOB ${NAME}_HEADERS *.hpp)
@@ -60,5 +53,4 @@ source_group("graphics\\Sources"	FILES	${${NAME}_GPH_SOURCES})
 source_group("opengl\\Headers" 		FILES 	${${NAME}_GL_HEADERS})
 source_group("opengl\\Sources" 		FILES 	${${NAME}_GL_SOURCES})
 
-target_link_libraries(${NAME} ${FREETYPE_LIBRARY})
-target_link_libraries(${NAME} debug_tools)
+target_link_libraries(${NAME} ${ENGINE_LIBS})

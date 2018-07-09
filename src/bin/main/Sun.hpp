@@ -19,9 +19,9 @@ public:
     double GetTimeOfDay();
 
 private:
-    double day_period_;
-    double game_time_;
-    double game_hour_;
+    float day_period_;
+    float game_time_;
+    float game_hour_;
     game_engine::graphics::LightProperties_t light_;
 
 };

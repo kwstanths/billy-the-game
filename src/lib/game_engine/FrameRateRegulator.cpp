@@ -26,7 +26,7 @@ namespace game_engine {
         /* Initialize the deltas vector with the frame time needed in seconds */
         deltas_ = std::vector<double>(frame_averages, frame_time_required_);
 
-        /* If not push as many frames as possible, then setpu timer */
+        /* If not push as many frames as possible, then setup timer */
         if (!Equal(frame_time_required_, 0.0)) {
 #ifdef _WIN32
             /*
@@ -47,8 +47,8 @@ namespace game_engine {
 
             /* Signal the timer every frame_time_required seconds, starting after the timer_interval time */
             LARGE_INTEGER timer_interval;
-            timer_interval.QuadPart = -(10000LL * frame_time_required_ * 1000);
-            SetWaitableTimer(timer_, &timer_interval, frame_time_required_ * 1000, NULL, 0, NULL);
+            timer_interval.QuadPart = static_cast<LONGLONG>(-(10000LL * frame_time_required_ * 1000));
+            SetWaitableTimer(timer_, &timer_interval, static_cast<long>(frame_time_required_ * 1000), NULL, 0, NULL);
 #endif
         }
 
@@ -100,7 +100,7 @@ namespace game_engine {
         for (size_t i = 0; i < deltas_.size(); i++) {
             avg += deltas_[i] / ((double)deltas_.size());
         }
-        return avg;
+        return static_cast<float>(avg);
     }
 
     void FrameRateRegulator::DisplayFPS(double frame_time_ms) {

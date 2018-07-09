@@ -90,13 +90,13 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
 
     /* Adn then, there was light */
     Sun * sun = NewObj<Sun>();
-    sun->Init(0.0, 0.0, 1000.0f, engine);
+    sun->Init(0.0f, 0.0f, 1000.0f, engine);
 
-    /* Create some fire lights */
-    NewObj<Fire>()->Init(3.3, -5.8, 1.0f, engine, sun);
-    NewObj<Fire>()->Init(3.3, 0.8, 1.0f, engine, sun);
-    NewObj<Fire>()->Init(3.3, 10.8, 1.0f, engine, sun);
-    NewObj<Fire>()->Init(3.3, 15.8, 1.0f, engine, sun);
+    /* Create some fire lighfts */
+    NewObj<Fire>()->Init(3.3f, -5.8f, 1.0f, engine, sun);
+    NewObj<Fire>()->Init(3.3f, 0.8f, 1.0f, engine, sun);
+    NewObj<Fire>()->Init(3.3f, 10.8f, 1.0f, engine, sun);
+    NewObj<Fire>()->Init(3.3f, 15.8f, 1.0f, engine, sun);
 
     /* Create a main player */
     Player * player = NewObj<Player>();

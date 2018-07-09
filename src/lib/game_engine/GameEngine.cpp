@@ -1,7 +1,6 @@
 #include "GameEngine.hpp"
 
 #include "ErrorCodes.hpp"
-//#include "game_engine/math/Types.hpp"
 #include "game_engine/math/RNGenerator.hpp"
 
 #include "debug_tools/Console.hpp"
@@ -9,6 +8,10 @@
 namespace dt = debug_tools;
 namespace gl = game_engine::graphics::opengl;
 namespace grph = game_engine::graphics;
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 namespace game_engine {
 
@@ -38,7 +41,7 @@ namespace game_engine {
         }
 
         config_ = config;
-
+        Assimp::Importer importer;
         int ret = renderer_->Init(config_.context_params_);
         if (ret) {
             last_error_ = ret;
@@ -54,7 +57,7 @@ namespace game_engine {
         visible_world_ = std::vector<WorldObject *>(200);
 
         /* Initialize standard library random numbers */
-        srand(time(NULL));
+        srand(static_cast<unsigned int>(time(NULL)));
 
         is_inited_ = true;
         last_error_ = 0;

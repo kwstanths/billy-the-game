@@ -1,15 +1,13 @@
 #include <iostream>
 #include <vector>
 
-#include "debug_tools/Console.hpp"
-namespace dt = debug_tools;
-
-#include "game_engine/physics/Types.hpp"
-#include "game_engine/physics/Geometry.hpp"
+#include "game_engine/math/RNGenerator.hpp"
 #include "game_engine/utility/QuadTree.hpp"
 #include "game_engine/utility/List.hpp"
 #include "game_engine/utility/HashTable.hpp"
 
+#include "debug_tools/Console.hpp"
+namespace dt = debug_tools;
 namespace ge = game_engine;
 namespace utl = game_engine::utility;
 
@@ -152,6 +150,8 @@ int main(int argc, char ** argv) {
     
     dt::Console("---------------------------");
 
+    srand((unsigned int)time(NULL));
+
     tree.Init(ge::Rectangle2D(
         ge::Point2D(0, 0), 
         ge::Point2D(500000, 0), 
@@ -165,8 +165,8 @@ int main(int argc, char ** argv) {
     };
     std::vector<test_t> a(1000000);
     for(size_t i=0; i<1000000; i++) {
-        a[i].x = ge::GetRand(0, 500000);
-        a[i].y = ge::GetRand(0, 500000);
+        a[i].x = ge::math::RNGenerator::GetRand(0, 500000);
+        a[i].y = ge::math::RNGenerator::GetRand(0, 500000);
         a[i].d = new int(i);
     }
     

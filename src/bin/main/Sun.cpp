@@ -32,14 +32,14 @@ bool Sun::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 void Sun::Step(double delta_time) {
 
     /* Time passes 400 times faster in the game */
-    game_time_ += 2000.0 * delta_time;
+    game_time_ += 2000.0f * static_cast<float>(delta_time);
     if (game_time_ > day_period_) game_time_ = 0;
 
     /* Calcluate the hour of the game */
-    game_hour_ = game_time_ / 3600.0;
+    game_hour_ = game_time_ / 3600.0f;
     
     /* 15 degrees for each hour for the 24 hours cycle */
-    double color = sin(ge::GetRadians((game_hour_ - 7) * 15));
+    float color = sin(ge::GetRadians((game_hour_ - 7) * 15));
 
     light_.diffuse_ = glm::vec3(color, color, color);
     light_.specular_ = glm::vec3(0.5 * color, 0.5 * color, 0.5 * color);

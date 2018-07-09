@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.0)
 
 #Environment
 set (PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../)
-include(${PROJECT_ROOT}/src/lib/external/Modules/SetupEnvironment.cmake)
+include(${PROJECT_ROOT}/src/lib/SetupEnvironment.cmake)
 SetupEnvironment()
 
 set (NAME "memory_test")
