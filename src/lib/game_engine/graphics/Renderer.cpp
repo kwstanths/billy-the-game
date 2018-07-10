@@ -64,12 +64,17 @@ namespace graphics {
     }
 
     int Renderer::Draw(GraphicsObject * rendering_object) {
-        renderer_->Draw(rendering_object->object_, 
-            rendering_object->diffuse_texture_, 
-            rendering_object->specular_texture_, 
-            rendering_object->model_, 
-            rendering_object->object_material_);
+        for (size_t i = 0; i < rendering_object->meshes_.size(); i++)
+            Draw(&(rendering_object->meshes_[i]), rendering_object->model_);
+
         return 0;
+    }
+
+    int Renderer::Draw(Mesh * mesh, glm::mat4 model) {
+        
+        renderer_->Draw(mesh->opengl_object_, mesh->opengl_textures_, model, mesh->mat_);
+        
+        return -1;
     }
 
     int Renderer::Draw(opengl::OpenGLObject * object, opengl::OpenGLTexture * texture, glm::mat4 model) {

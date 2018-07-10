@@ -8,6 +8,9 @@
 
 #include "game_engine/ErrorCodes.hpp"
 
+#include "debug_tools/Console.hpp"
+namespace dt = debug_tools;
+
 #define FOURCC_DXT1 0x31545844 // Equivalent to "DXT1" in ASCII
 #define FOURCC_DXT3 0x33545844 // Equivalent to "DXT3" in ASCII
 #define FOURCC_DXT5 0x35545844 // Equivalent to "DXT5" in ASCII
@@ -20,14 +23,13 @@ namespace opengl {
         is_inited_ = false;
     }
 
-    int OpenGLTexture::Init(std::string file_path, OpenGLTextureType type) {
+    int OpenGLTexture::Init(std::string file_path, int type) {
         if (is_inited_) return -1;
 
-        int ret;
-        if (type == OpenGLTextureType::TEXTURE_STB) ret = LoadSTB(file_path.c_str(), &texture_);
-        else ret = LoadDDS(file_path.c_str(), &texture_);
-
+        int ret = LoadSTB(file_path.c_str(), &texture_);
         if (ret != 0) return ret;
+
+        type_ = type;
 
         is_inited_ = true;
         return 0;
@@ -49,6 +51,11 @@ namespace opengl {
         if (!is_inited_) return 0;
 
         return texture_;
+    }
+
+    void OpenGLTexture::ActivateTexture(int texture_id) {
+        glActiveTexture(GL_TEXTURE0 + texture_id);
+        glBindTexture(GL_TEXTURE_2D, GetID());
     }
 
     int OpenGLTexture::LoadDDS(const char * imagepath, GLuint * texture_id) {
@@ -143,13 +150,22 @@ namespace opengl {
     int OpenGLTexture::LoadSTB(const char * imagepath, GLuint * texture_id) {
 
         int width, height, channels;
-        unsigned char * data = stbi_load(imagepath, &width, &height, &channels, STBI_rgb);
-        if (!data) return Error::ERROR_ASSET_NOT_FOUND;
+        unsigned char * data = stbi_load(imagepath, &width, &height, &channels, 0);
+        if (!data) {
+            return Error::ERROR_ASSET_NOT_FOUND;
+            stbi_image_free(data);
+        }
+
+        GLenum format;
+        if (channels == 1) format = GL_RED;
+        else if (channels == 3) format = GL_RGB;
+        else if (channels == 4) format = GL_RGBA;
 
         GLuint textureID;
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
 
         /* Configure wrapping and zooming behaviour */
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -157,7 +173,6 @@ namespace opengl {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         /* Generate the mipmaps */
-        glGenerateMipmap(GL_TEXTURE_2D);
 
         stbi_image_free(data);
 

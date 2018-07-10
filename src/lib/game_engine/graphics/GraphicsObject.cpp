@@ -5,6 +5,9 @@
 
 #include "debug_tools/CodeReminder.hpp"
 
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+
 namespace game_engine {
 namespace graphics {
 
@@ -15,26 +18,20 @@ namespace graphics {
         is_inited_ = false;
     }
 
-    int GraphicsObject::Init(float x, float y, float z, opengl::OpenGLObject * object, opengl::OpenGLTexture * diffuse_texture, opengl::OpenGLTexture * specular_texture) {
-
-        if (object == nullptr) return Error::ERROR_OBJECT_NOT_INIT;
-        if (diffuse_texture == nullptr) return Error::ERROR_TEXTURE_NOT_INIT;
-        if (!object->IsInited()) return Error::ERROR_OBJECT_NOT_INIT;
-        if (!diffuse_texture->IsInited()) return Error::ERROR_TEXTURE_NOT_INIT;
+    int GraphicsObject::Init(float x, float y, float z, std::string model_file_path) {
 
         translation_matrix_ = GetTranslateMatrix(x, y, z);
         scale_matrix_ = GetScaleMatrix(1.0f, 1.0f, 1.0f);
 
-        object_ = object;
-        diffuse_texture_ = diffuse_texture;
-        specular_texture_ = specular_texture;
+        int ret = LoadModel(model_file_path);
+        if (ret) return ret;
 
         is_inited_ = true;
         return 0;
     }
 
     int GraphicsObject::Destroy() {
-
+        /* TODO destroy objects */
         is_inited_ = false;
         return 0;
     }
@@ -68,9 +65,96 @@ namespace graphics {
 
     }
 
-    void GraphicsObject::SetMaterial(Material_t mtl) {
-        object_material_ = mtl;
+    int GraphicsObject::LoadModel(std::string file_path) {
+        
+        Assimp::Importer importer;
+        const aiScene * scene = importer.ReadFile(file_path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+            dt::ConsoleInfoL(dt::WARNING, "Assimp::ReadFile error", "error", importer.GetErrorString());
+            return -1;
+        }
+        directory_ = file_path.substr(0, file_path.find_last_of('/'));
+
+        ProcessNode(scene->mRootNode, scene);
+        return 0;
     }
+
+    int GraphicsObject::ProcessNode(aiNode * node, const aiScene * scene) {
+        // process all the node's meshes (if any)
+        for (unsigned int i = 0; i < node->mNumMeshes; i++) {
+            aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+            meshes_.push_back(ProcessMesh(mesh, scene));
+        }
+        // then do the same for each of its children
+        for (unsigned int i = 0; i < node->mNumChildren; i++) {
+            ProcessNode(node->mChildren[i], scene);
+        }
+
+        return 0;
+    }
+
+    Mesh GraphicsObject::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
+        std::vector<Vertex_t> vertices;
+        std::vector<unsigned int> indices;
+        std::vector<Texture_t> textures;
+
+        for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+            Vertex_t vertex;
+            /* Process vertex position */
+            vertex.position_ = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+            /* Process vertex normal */
+            vertex.normal_ = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+            /* Provess vertex uv coordinates */
+            if (mesh->mTextureCoords[0]) {
+                /* does the mesh contain texture coordinates? */
+                vertex.uv_ = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+            } else
+                vertex.uv_ = glm::vec2(0.0f, 0.0f);
+
+
+            vertices.push_back(vertex);
+        }
+        /* Process indices */
+        for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+            aiFace face = mesh->mFaces[i];
+            for (unsigned int j = 0; j < face.mNumIndices; j++)
+                indices.push_back(face.mIndices[j]);
+        }
+        
+        /* Process materials */
+        float shininess;
+        if (mesh->mMaterialIndex >= 0) {
+            aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+
+            material->Get(AI_MATKEY_SHININESS, shininess);
+            
+            std::vector<Texture_t> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP);
+            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+            
+            std::vector<Texture_t> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP);
+            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+        }
+
+        Mesh temp_mesh;
+        temp_mesh.Init(vertices, indices, textures, Material_t(shininess));
+        return temp_mesh;
+    }
+
+    std::vector<Texture_t> GraphicsObject::LoadMaterialTextures(aiMaterial * mat, aiTextureType type, int texture_type) {
+
+        std::vector<Texture_t> textures;
+        for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
+            aiString str;
+            mat->GetTexture(type, i, &str);
+            Texture_t texture;
+            texture.path_ = directory_ + "/" + std::string(str.C_Str());
+            texture.type_ = texture_type;
+            textures.push_back(texture);
+        }
+        return textures;
+
+    }
+
 
 }
 }

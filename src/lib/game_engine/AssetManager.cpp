@@ -27,15 +27,15 @@ namespace game_engine {
 
     bool AssetManager::Destroy() {
         if (!IsInited()) return false;
-    
+
         /* Destroy objects */
-        for(typename utl::HashTable<std::string, gl::OpenGLObject *>::iterator itr = objects_->begin(); itr != objects_->end(); ++itr){
+        for (typename utl::HashTable<std::string, gl::OpenGLObject *>::iterator itr = objects_->begin(); itr != objects_->end(); ++itr) {
             itr.GetValue()->Destroy();
         }
         objects_->Clear();
 
         /* Destroy textures */
-        for(typename utl::HashTable<std::string, gl::OpenGLTexture *>::iterator itr = textures_->begin(); itr != textures_->end(); ++itr){
+        for (typename utl::HashTable<std::string, gl::OpenGLTexture *>::iterator itr = textures_->begin(); itr != textures_->end(); ++itr) {
             itr.GetValue()->Destroy();
         }
         textures_->Clear();
@@ -61,26 +61,11 @@ namespace game_engine {
              return itr.GetValue();
         }
 
-        /* If not found, create it and insert it in the table */
-        gl::OpenGLObject * object = new gl::OpenGLObject();
-        int ret = object->Init(object_name);
-        if (ret != 0) {
-            delete object;
-            *ret_code = ret;
-
-            dt::ConsoleInfoL(dt::CRITICAL, "OpenGL object not found",
-                "name", object_name);
-
-            return nullptr;
-        }
-        
-        objects_->Insert(object_name, object);
-
-        *ret_code = 0;
-        return object;
+        *ret_code = -1;
+        return nullptr;
     }
 
-    gl::OpenGLTexture * AssetManager::FindTexture(std::string texture_name, gl::OpenGLTexture::OpenGLTextureType type, int * ret_code) {
+    gl::OpenGLTexture * AssetManager::FindTexture(std::string texture_name, int * ret_code) {
         if (!IsInited()) {
             *ret_code = Error::ERROR_GEN_NOT_INIT;
             PrintError(*ret_code);
@@ -94,25 +79,8 @@ namespace game_engine {
             return itr.GetValue();
         }
 
-        /* If not found, create it and insert it in the table */
-        gl::OpenGLTexture * texture = new gl::OpenGLTexture();
-        int ret = texture->Init(texture_name, type);
-        if (ret != 0) {
-            delete texture;
-            *ret_code = ret;
-
-            dt::ConsoleInfoL(dt::CRITICAL, "OpenGL Texture not found", 
-                "name", texture_name,
-                "type", type);
-
-            return nullptr;
-        }
-
-        textures_->Insert(texture_name, texture);
-        
-        *ret_code = Error::ERROR_NO_ERROR;
-        return texture;
+        *ret_code = -1;
+        return nullptr;
     }
-
 
 }

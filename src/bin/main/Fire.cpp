@@ -15,26 +15,26 @@ namespace dt = debug_tools;
 bool Fire::Init(float x, float y, float z, game_engine::GameEngine * engine, Sun * sun) {
 
     int ret;
-    gl::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
-    gl::OpenGLTexture * diffuse_texture = engine->GetAssetManager()->FindTexture("assets/debug.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
-    gl::OpenGLTexture * specular_texture = engine->GetAssetManager()->FindTexture("assets/map_empty.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
+    //gl::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
+    //gl::OpenGLTexture * diffuse_texture = engine->GetAssetManager()->FindTexture("assets/debug.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
+    //gl::OpenGLTexture * specular_texture = engine->GetAssetManager()->FindTexture("assets/map_empty.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
 
-    ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
+    //ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
 
-    Scale(0.1f, 0.1f, 0.0f);
-    SetCollision(0.05f);
+    //Scale(0.1f, 0.1f, 0.0f);
+    //SetCollision(0.05f);
 
-    light_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));
-    att_ = ge::graphics::Attenuation_t(1, 0.02f, 0.0239f);
+    //light_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));
+    //att_ = ge::graphics::Attenuation_t(1, 0.02f, 0.0239f);
 
-    attenutation_noise_ = std::vector<float>(201);
-    mh::RNGenerator gen;
-    gen.Init(0.3f);
-    gen.GetPerlinNoise1d(201, 0.2f, 0.15f, 70, attenutation_noise_);
-    index_ = 0;
+    //attenutation_noise_ = std::vector<float>(201);
+    //mh::RNGenerator gen;
+    //gen.Init(0.3f);
+    //gen.GetPerlinNoise1d(201, 0.2f, 0.15f, 70, attenutation_noise_);
+    //index_ = 0;
 
 
-    sun_ = sun;
+    //sun_ = sun;
 
     return ret == 0;
 }

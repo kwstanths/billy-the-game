@@ -60,8 +60,8 @@ int main(int argc, char ** argv) {
             break;
         }
 
-        if (controls.ZOOM_IN_) camera->Zoom(-10 * delta_time);
-        if (controls.ZOOM_OUT_) camera->Zoom(10 * delta_time);
+        if (controls.ZOOM_IN_) camera->Zoom(-20 * delta_time);
+        if (controls.ZOOM_OUT_) camera->Zoom(20 * delta_time);
 
         engine.Step(delta_time);
 

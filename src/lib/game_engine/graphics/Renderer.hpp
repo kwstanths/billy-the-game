@@ -9,8 +9,9 @@
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 #include "game_engine/graphics/opengl/OpenGLCamera.hpp"
 
-#include "Material.hpp"
+#include "GraphicsTypes.hpp"
 #include "GraphicsObject.hpp"
+#include "Mesh.hpp"
 
 namespace game_engine {
     
@@ -46,6 +47,8 @@ namespace graphics {
             @return 0 = OK, -1 = rendering_object is not properly initialised
         */
         int Draw(GraphicsObject * rendering_object);
+
+        int Draw(Mesh * mesh, glm::mat4 model);
 
         /**
             Draws an object as is

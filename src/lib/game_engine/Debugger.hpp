@@ -6,7 +6,7 @@
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 #include "game_engine/graphics/Renderer.hpp"
 
-#include "AssetManager.hpp"
+#include "game_engine/AssetManager.hpp"
 
 
 namespace game_engine {

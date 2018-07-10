@@ -6,12 +6,12 @@
 
 #include "game_engine/graphics/opengl/OpenGLCamera.hpp"
 #include "game_engine/graphics/Renderer.hpp"
+#include "game_engine/AssetManager.hpp"
 
 #include "FrameRateRegulator.hpp"
 #include "Controls.hpp"
 #include "WorldObject.hpp"
 #include "WorldSector.hpp"
-#include "AssetManager.hpp"
 #include "Debugger.hpp"
 #include "ErrorCodes.hpp"
 
@@ -91,12 +91,6 @@ namespace game_engine {
         int SetWorld(WorldSector * world);
 
         /**
-            Get the asset manager
-            @return The asset manager. nullptr is returned if Init() error
-        */
-        AssetManager * GetAssetManager();
-
-        /**
             Get the debugger object
             @return The debugger. nullptr is returned if Init() error
         */
@@ -125,7 +119,6 @@ namespace game_engine {
         
         /* Instances from other parts of the system */
         FrameRateRegulator frame_regulator_;
-        AssetManager * asset_manager_ = nullptr;
         Debugger * debugger_ = nullptr;
         WorldSector * sector_;
         

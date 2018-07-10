@@ -31,12 +31,7 @@ int Player::Init(float x, float y, float z, Input * input, Camera * camera, ge::
     engine_ = engine;
     camera_ = camera;
 
-    int ret;
-    gl::OpenGLObject * object = engine_->GetAssetManager()->FindObject("assets/circle.obj", &ret);
-    gl::OpenGLTexture * diffuse_texture = engine_->GetAssetManager()->FindTexture("assets/player.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
-    gl::OpenGLTexture * specular_texture = engine->GetAssetManager()->FindTexture("assets/map_empty.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
-
-    ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
+    int ret = WorldObject::Init("assets/player/player.obj", x, y, z);
     radius_ = 0.5f;
     interact_fov_ = ge::GetRadians(50.0f);
     interact_margin_ = 0.3f;
@@ -45,9 +40,6 @@ int Player::Init(float x, float y, float z, Input * input, Camera * camera, ge::
     Scale(0.5f, 0.5f, 1.0f);
     radius_ = radius_ * 0.5f;
     SetCollision(radius_);
-
-    ge::graphics::Material_t m(glm::vec3(0.2, 0.2, 0.2), glm::vec3(0.85, 0.70, 0.50), glm::vec3(0.1, 0.1, 0.1), 32);
-    SetMaterial(m);
 
     is_inited_ = true;
     return ret == 0;
@@ -168,7 +160,6 @@ void Player::Draw(grph::Renderer * renderer) {
     
     renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 2), glm::vec3(0, 0, -1), 50.0f, 55.0f,
         light, att);
-
     
     WorldObject::Draw(renderer);
 }

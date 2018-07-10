@@ -20,9 +20,9 @@ namespace game_engine {
         if (!asset_manager->IsInited()) return Error::ERROR_GEN_NOT_INIT;
         if (!renderer->IsInited()) return Error::ERROR_GEN_NOT_INIT;
 
-        int ret;
-        object_circle_ = asset_manager->FindObject("assets/circle.obj", &ret);
-        texture_circle_ = asset_manager->FindTexture("assets/debug.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
+        //int ret;
+        //object_circle_ = asset_manager->FindObject("assets/circle.obj", &ret);
+        //texture_circle_ = asset_manager->FindTexture("assets/debug.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
 
         is_inited_ = true;
         return 0;

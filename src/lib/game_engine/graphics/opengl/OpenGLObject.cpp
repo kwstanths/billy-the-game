@@ -15,50 +15,45 @@ namespace opengl {
         is_inited_ = false;
     }
 
-    int OpenGLObject::Init(std::string object_path) {
+    int OpenGLObject::Init(std::vector<Vertex_t> & vertices, std::vector<unsigned int> & indices) {
         if (is_inited_) return -1;
 
-        std::vector<glm::vec3> vertices;
-        std::vector<glm::vec2> uvs;
-        std::vector<glm::vec3> normals;
-        int ret = LoadObj(object_path.c_str(), vertices, uvs, normals);
-        if (ret != 0) return ret;
-
-        std::vector<unsigned short> indices;
-        std::vector<glm::vec3> indexed_vertices;
-        std::vector<glm::vec2> indexed_uvs;
-        std::vector<glm::vec3> indexed_normals;
-        IndexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
+        glGenVertexArrays(1, &VAO_);
+        glBindVertexArray(VAO_);
 
         glGenBuffers(1, &vertex_buffer_);
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
-        glBufferData(GL_ARRAY_BUFFER, indexed_vertices.size() * sizeof(glm::vec3), &indexed_vertices[0], GL_STATIC_DRAW);
-
-        glGenBuffers(1, &uv_buffer_);
-        glBindBuffer(GL_ARRAY_BUFFER, uv_buffer_);
-        glBufferData(GL_ARRAY_BUFFER, indexed_uvs.size() * sizeof(glm::vec2), &indexed_uvs[0], GL_STATIC_DRAW);
-
-        glGenBuffers(1, &normal_buffer_);
-        glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
-        glBufferData(GL_ARRAY_BUFFER, indexed_normals.size() * sizeof(glm::vec3), &indexed_normals[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex_t), &vertices[0], GL_STATIC_DRAW);
 
         glGenBuffers(1, &element_buffer_);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
-
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
         total_indices_ = indices.size();
 
         is_inited_ = true;
         return 0;
     }
 
+    void OpenGLObject::SetupAttributes(OpenGLShader * shader) {
+        /* Set shader layout attributes */
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
+        /* Attribute number 0 is the object vertices */
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(shader->GetAttributeLocation(shader_main_vertex_position), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)0);
+        /* Attribute number 1 is the object's uv coordinates */
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(shader->GetAttributeLocation(shader_main_vertex_uv), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, uv_));
+        /* Attribute number 2 is the object's normals */
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(shader->GetAttributeLocation(shader_main_vertex_normal), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, normal_));
+    }
+
     int OpenGLObject::Destroy() {
         if (!is_inited_) return -1;
 
         glDeleteBuffers(1, &vertex_buffer_);
-        glDeleteBuffers(1, &uv_buffer_);
-        glDeleteBuffers(1, &normal_buffer_);
         glDeleteBuffers(1, &element_buffer_);
+        glDeleteVertexArrays(1, &VAO_);
 
         is_inited_ = false;
         return 0;
@@ -72,14 +67,6 @@ namespace opengl {
         return vertex_buffer_;
     }
 
-    GLuint OpenGLObject::GetUVBufferID() {
-        return uv_buffer_;
-    }
-
-    GLuint OpenGLObject::GetNormalBufferID() {
-        return normal_buffer_;
-    }
-
     GLuint OpenGLObject::GetElementBufferID() {
         return element_buffer_;
     }
@@ -90,50 +77,6 @@ namespace opengl {
         return total_indices_;
     }
 
-    void OpenGLObject::IndexVBO(std::vector<glm::vec3>& in_vertices, 
-        std::vector<glm::vec2>& in_uvs, 
-        std::vector<glm::vec3>& in_normals, 
-        std::vector<unsigned short>& out_indices, 
-        std::vector<glm::vec3>& out_vertices, 
-        std::vector<glm::vec2>& out_uvs, 
-        std::vector<glm::vec3>& out_normals) 
-    {
-        std::map<PackedVertex, unsigned short> VertexToOutIndex;
-
-        /* For each vertex */
-        for (unsigned int i = 0; i<in_vertices.size(); i++) {
-
-            PackedVertex packed_vertex = { in_vertices[i], in_uvs[i], in_normals[i] };
-
-            /* Search if we already indexed one */
-            bool found;
-            unsigned short index;
-            std::map<PackedVertex, unsigned short>::iterator it = VertexToOutIndex.find(packed_vertex);
-            if (it == VertexToOutIndex.end()) {
-                found = false;
-            } else {
-                index = it->second;
-                found = true;
-            }
-
-
-            if (found) {
-                /* If a similar vertex was already found just return its index */
-                out_indices.push_back(index);
-            }
-            else {
-                /* If not, push into the indexed structures */
-                out_vertices.push_back(in_vertices[i]);
-                out_uvs.push_back(in_uvs[i]);
-                out_normals.push_back(in_normals[i]);
-                unsigned short newindex = (unsigned short)out_vertices.size() - 1;
-                out_indices.push_back(newindex);
-                VertexToOutIndex[packed_vertex] = newindex;
-            }
-        }
-    }
-
-    
 }
 }
 }

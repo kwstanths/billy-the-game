@@ -5,10 +5,10 @@
 
 #include "game_engine/graphics/opengl/OpenGLObject.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
+#include "game_engine/utility/HashTable.hpp"
 
-#include "ErrorCodes.hpp"
+#include "game_engine/ErrorCodes.hpp"
 
-#include "utility/HashTable.hpp"
 
 namespace game_engine {
 
@@ -19,6 +19,7 @@ namespace game_engine {
     */
     class AssetManager {
     public:
+
         /**
             Does nothing in particular. Call Init()
         */
@@ -50,10 +51,10 @@ namespace game_engine {
         bool IsInited();
 
         /**
-            Search an object
+            Search an object. If not found returns nullptr
             @param object_name The file path of the object
             @param[out] object A pointer to the initialised object
-            @return 0 = OK, -1 = Object not initialised, else see ErrorCodes.hpp
+            @return 0 = OK, -1 = Object not initialised, or not found else else see ErrorCodes.hpp
         */
         graphics::opengl::OpenGLObject * FindObject(std::string object_name, int * ret_code);
 
@@ -62,9 +63,9 @@ namespace game_engine {
             @param texture_name The file path of the object
             @param type The type of the texture file
             @param[out] A pointer to the initialised object
-            @return 0 = OK, -1 = Object not initialised, else see ErrorCodes.hpp
+            @return 0 = OK, -1 = Object not initialised, or not found else else see ErrorCodes.hpp
         */
-        graphics::opengl::OpenGLTexture * FindTexture(std::string texture_name, graphics::opengl::OpenGLTexture::OpenGLTextureType type, int * ret_code);
+        graphics::opengl::OpenGLTexture * FindTexture(std::string texture_name, int * ret_code);
 
     private:
         bool is_inited_;
@@ -72,6 +73,7 @@ namespace game_engine {
         /* Holds the objects */
         utility::HashTable<std::string, graphics::opengl::OpenGLObject *> * objects_ = nullptr;
         utility::HashTable<std::string, graphics::opengl::OpenGLTexture *> * textures_ = nullptr;
+
     };
 
 }
