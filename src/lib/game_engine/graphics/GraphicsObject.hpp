@@ -33,6 +33,8 @@ namespace graphics {
 
         void Rotate(float angle, size_t axis);
 
+        void SetModelMatrix();
+
     private:
         bool is_inited_;
 

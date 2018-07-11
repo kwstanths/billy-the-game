@@ -94,6 +94,7 @@ namespace game_engine {
 
         /**
             Draw the object during every frame, after calling the step function. Override for custom behaviour
+            If not overriden, the object is drawn with full lightning
             @param renderer The renderer
         */
         virtual void Draw(graphics::Renderer * renderer);

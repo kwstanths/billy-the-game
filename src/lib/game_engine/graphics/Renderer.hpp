@@ -42,22 +42,14 @@ namespace graphics {
         KeyControls_t GetControlInput();
 
         /**
-            Draws an object with full lightning
+            Draws an object with full lightning. If you call this function directly, and not via the call 
+            upon the rendering_object, make sure to call SetModelMatrix() on the rendering object
             @param rendering_object The object to draw
             @return 0 = OK, -1 = rendering_object is not properly initialised
         */
         int Draw(GraphicsObject * rendering_object);
 
-        int Draw(Mesh * mesh, glm::mat4 model);
-
-        /**
-            Draws an object as is
-            @param object The OpenGLObject
-            @param texture The OpenGLTexture
-            @param model The model of the object
-            @return 0 = OK, -1 = something is not properly initialised
-        */
-        int Draw(opengl::OpenGLObject * object, opengl::OpenGLTexture * texture, glm::mat4 model);
+        int DrawSimple(GraphicsObject * rendering_object);
 
         int AddPointLight(glm::vec3 position, LightProperties_t light_properties, Attenuation_t attenuation);
 
@@ -80,7 +72,6 @@ namespace graphics {
         opengl::OpenGLContext * context_ = nullptr;
         opengl::OpenGLCamera * camera_ = nullptr;
         opengl::OpenGLRenderer * renderer_ = nullptr;
-
 
         /**
             Set a camera

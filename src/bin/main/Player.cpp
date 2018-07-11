@@ -155,7 +155,7 @@ void Player::Draw(grph::Renderer * renderer) {
     ControlInput_t controls = input_->GetControls();
 
     grph::LightProperties_t light(0);
-    if (controls.FLASHLIGHT_) light = grph::LightProperties_t(glm::vec3(0, 0, 0), glm::vec3(0.6, 0.6, 0.6), glm::vec3(0.8, 0.8, 0.8));
+    if (controls.FLASHLIGHT_) light = grph::LightProperties_t(glm::vec3(0, 0, 0), glm::vec3(0.7, 0.7, 0.7), glm::vec3(0.8, 0.8, 0.8));
     grph::Attenuation_t att = ge::graphics::Attenuation_t(1, 0.32f, 0.0019f);
     
     renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 2), glm::vec3(0, 0, -1), 50.0f, 55.0f,

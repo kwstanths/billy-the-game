@@ -11,6 +11,7 @@
 
 
 namespace game_engine {
+namespace graphics {
 
     /**
         Object to manage assets to only keep one copy for each and easy
@@ -50,32 +51,33 @@ namespace game_engine {
         */
         bool IsInited();
 
-        /**
-            Search an object. If not found returns nullptr
-            @param object_name The file path of the object
-            @param[out] object A pointer to the initialised object
-            @return 0 = OK, -1 = Object not initialised, or not found else else see ErrorCodes.hpp
-        */
-        graphics::opengl::OpenGLObject * FindObject(std::string object_name, int * ret_code);
+        ///**
+        //    Search an object. If not found returns nullptr
+        //    @param object_name The file path of the object
+        //    @param[out] object A pointer to the initialised object
+        //    @return 0 = OK, -1 = Object not initialised, or not found else else see ErrorCodes.hpp
+        //*/
+        //graphics::opengl::OpenGLObject * FindObject(std::string object_name, int * ret_code);
 
-        /**
-            Search a texture
-            @param texture_name The file path of the object
-            @param type The type of the texture file
-            @param[out] A pointer to the initialised object
-            @return 0 = OK, -1 = Object not initialised, or not found else else see ErrorCodes.hpp
-        */
-        graphics::opengl::OpenGLTexture * FindTexture(std::string texture_name, int * ret_code);
+        ///**
+        //    Search a texture
+        //    @param texture_name The file path of the object
+        //    @param type The type of the texture file
+        //    @param[out] A pointer to the initialised object
+        //    @return 0 = OK, -1 = Object not initialised, or not found else else see ErrorCodes.hpp
+        //*/
+        //graphics::opengl::OpenGLTexture * FindTexture(std::string texture_name, int * ret_code);
 
     private:
         bool is_inited_;
 
-        /* Holds the objects */
-        utility::HashTable<std::string, graphics::opengl::OpenGLObject *> * objects_ = nullptr;
-        utility::HashTable<std::string, graphics::opengl::OpenGLTexture *> * textures_ = nullptr;
+        ///* Holds the objects */
+        //utility::HashTable<std::string, graphics::opengl::OpenGLObject *> * objects_ = nullptr;
+        //utility::HashTable<std::string, graphics::opengl::OpenGLTexture *> * textures_ = nullptr;
 
     };
 
+}
 }
 
 

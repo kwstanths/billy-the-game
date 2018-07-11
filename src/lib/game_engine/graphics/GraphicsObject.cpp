@@ -42,7 +42,7 @@ namespace graphics {
 
     void GraphicsObject::Draw(Renderer * renderer) {
 
-        model_ = translation_matrix_ * rotation_matrix_ * scale_matrix_;
+        SetModelMatrix();
         renderer->Draw(this);
     }
 
@@ -63,6 +63,10 @@ namespace graphics {
         else if (axis == 1) rotation_matrix_ = GetRotateMatrix(angle, 0, 1, 0);
         else if (axis == 2) rotation_matrix_ = GetRotateMatrix(angle, 0, 0, 1);
 
+    }
+
+    void GraphicsObject::SetModelMatrix() {
+        model_ = translation_matrix_ * rotation_matrix_ * scale_matrix_;
     }
 
     int GraphicsObject::LoadModel(std::string file_path) {

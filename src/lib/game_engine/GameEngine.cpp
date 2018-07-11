@@ -47,7 +47,7 @@ namespace game_engine {
         }
 
         frame_regulator_.Init(config_.frame_rate_, 10);
-
+        debugger_->Init(renderer_);
         CodeReminder("Find the size and margin of the visible world based on the camera");
         visible_world_ = std::vector<WorldObject *>(200);
 

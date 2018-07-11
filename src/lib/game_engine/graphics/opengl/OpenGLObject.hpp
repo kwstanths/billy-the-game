@@ -31,7 +31,9 @@ namespace opengl {
         */
         int Init(std::vector<game_engine::graphics::Vertex_t> & vertices, std::vector<unsigned int> & indices);
 
-        void SetupAttributes(OpenGLShader * shader);
+        void SetupAttributes(OpenGLShaderMain * shader);
+
+        void SetupAttributes(OpenGLShaderSimple * shader);
 
         /**
             Deallocates the OpenGL stuf initialized

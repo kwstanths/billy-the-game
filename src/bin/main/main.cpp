@@ -19,6 +19,8 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("mtl relative paths");
+    CodeReminder("Asset manager");
     CodeReminder("Add the sun to something so that step and draw are always executed");
     CodeReminder("Fix light tearring, rendering order");
     CodeReminder("Fix the material useless properties, only shininess is currently used");
@@ -60,8 +62,8 @@ int main(int argc, char ** argv) {
             break;
         }
 
-        if (controls.ZOOM_IN_) camera->Zoom(-20 * delta_time);
-        if (controls.ZOOM_OUT_) camera->Zoom(20 * delta_time);
+        if (controls.ZOOM_IN_) camera->Zoom(-10 * delta_time);
+        if (controls.ZOOM_OUT_) camera->Zoom(10 * delta_time);
 
         engine.Step(delta_time);
 

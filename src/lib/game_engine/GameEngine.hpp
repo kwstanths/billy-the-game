@@ -6,7 +6,6 @@
 
 #include "game_engine/graphics/opengl/OpenGLCamera.hpp"
 #include "game_engine/graphics/Renderer.hpp"
-#include "game_engine/AssetManager.hpp"
 
 #include "FrameRateRegulator.hpp"
 #include "Controls.hpp"

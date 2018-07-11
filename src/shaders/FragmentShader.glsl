@@ -74,7 +74,6 @@ void main(){
 	vec3 fragment_color = texture(object_material.diffuse, uv).rgb;
 	vec3 fragment_specular_intensity = texture(object_material.specular, uv).rgb;
 	
-	
 	/* Calculate necessary light stuff */
 	vec3 fragment_normal = normalize(normal);
 	vec3 view_direction = normalize(camera_position_worldspace - fragment_position_worldspace);
@@ -89,10 +88,11 @@ void main(){
 		point_lights_color += CalculatePointLight(point_light[i], fragment_normal,view_direction, fragment_color, fragment_specular_intensity);
 	
 	/* Calculate casting light color */
-	vec3 cast_light_color = CalculateCastingLight(cast_light, fragment_normal,view_direction, fragment_color, fragment_specular_intensity);
+	vec3 cast_light_color = CalculateCastingLight(cast_light, fragment_normal, view_direction, fragment_color, fragment_specular_intensity);
 	
 	/* Sum total components, the minimum color is zero, the maxium color possible the actual color of the fragment */
-	color = clamp(cast_light_color + point_lights_color + global_illumination_color, vec3(0,0,0), fragment_color);
+	//color = clamp(cast_light_color + point_lights_color + global_illumination_color, vec3(0,0,0), fragment_color);
+	color = clamp(cast_light_color, vec3(0,0,0), fragment_color);
 }
 
 vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec3 view_direction, vec3 fragment_color, vec3 fragment_specular_intensity){
@@ -137,7 +137,7 @@ vec3 CalculatePointLight(PointLight light, vec3 fragment_normal, vec3 view_direc
 }
 
 vec3 CalculateCastingLight(CastingLight light, vec3 fragment_normal, vec3 view_direction, vec3 fragment_color, vec3 fragment_specular_intensity){
-		/* Calculate vector between light and fragment */
+/* Calculate vector between light and fragment */
 		vec3 light_direction_inv = normalize(light.position - fragment_position_worldspace); 
 	
 		/* Calculate angle between cast light direction and the vector between the fragment and the cast light */
@@ -148,7 +148,7 @@ vec3 CalculateCastingLight(CastingLight light, vec3 fragment_normal, vec3 view_d
 	
 		/* Calculate diffuse component */
 		float light_diffuse_strength = max(dot(fragment_normal, light_direction_inv), 0.0);
-		vec3 light_diffuse = light.diffuse *  fragment_color;  
+		vec3 light_diffuse = light.diffuse *  light_diffuse_strength * fragment_color;  
 		
 		/* Calculate specular component */
 		vec3 light_reflect_vector = reflect(-light_direction_inv, fragment_normal);
