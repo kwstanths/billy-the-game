@@ -21,7 +21,6 @@ int main(int argc, char ** argv) {
 
     CodeReminder("Add the sun to something so that step and draw are always executed");
     CodeReminder("Fix light tearring, rendering order");
-    CodeReminder("Fix the material useless properties, only shininess is currently used");
     CodeReminder("Draw with different shader");
     CodeReminder("WorldObject, collision in SetPosition() maybe?");
 

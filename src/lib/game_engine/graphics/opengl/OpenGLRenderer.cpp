@@ -2,7 +2,8 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "game_engine/graphics/Material.hpp"
+#include "game_engine/graphics/GraphicsTypes.hpp"
+#include "game_engine/graphics/Mesh.hpp"
 
 #include "debug_tools/Console.hpp"
 
@@ -30,21 +31,12 @@ namespace opengl {
         shader_text_ = context_->GetShaderText();
 
         /* Configure a VAO for the main shader */
-        glGenVertexArrays(1, &VAO_main_);
-        glBindVertexArray(VAO_main_);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
         shader_main_.Use();
         /* Set the texture IDs on the 2D samplers used */
         shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.diffuse"), 0);
         shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.specular"), 1);
 
         /* Configure a VAO for the simple shader */
-        glGenVertexArrays(1, &VAO_simple_);
-        glBindVertexArray(VAO_simple_);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
         shader_simple_.Use();
         /* Set the texture ID on the 2D sampler used */
         shader_simple_.SetUniformInt(shader_simple_.uni_texture_, 0);
@@ -89,41 +81,25 @@ namespace opengl {
         shader_simple_.SetUniformMat4(shader_simple_.uni_Projection_, camera->projection_matrix_);
     }
 
-    int OpenGLRenderer::Draw(OpenGLObject * object, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture, glm::mat4 model, Material_t mtl) {
-        if (!is_inited_) return -1;
-        if (!object->IsInited()) return -1;
-        if (!diffuse_texture->IsInited()) return -1;
-        if (!specular_texture->IsInited()) return -1;
+    int OpenGLRenderer::Draw(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl) {
 
         shader_main_.Use();
-        glBindVertexArray(VAO_main_);
-
         /* Set object material */
         shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("object_material.shininess"), mtl.shininess_);
         /* Set the model uniform */
         shader_main_.SetUniformMat4(shader_main_.uni_Model_, model);
 
-        /* Activare the appropriate texture and set the ID of the buffer */
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, diffuse_texture->GetID());
+        glBindVertexArray(object.VAO_);
 
-        /* Activate the appropriate texture and set the ID of the buffer */
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, specular_texture->GetID());
+        object.SetupAttributes(&shader_main_);
 
-        /* Attribute number 0 is the object vertices */
-        glBindBuffer(GL_ARRAY_BUFFER, object->GetVertexBufferID());
-        glVertexAttribPointer(shader_main_.attr_vertex_position_, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        /* Attribute number 1 is the object's uv coordinates */
-        glBindBuffer(GL_ARRAY_BUFFER, object->GetUVBufferID());
-        glVertexAttribPointer(shader_main_.attr_vertex_uv_, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        /* Attribute number 2 is the object's normals */
-        glBindBuffer(GL_ARRAY_BUFFER, object->GetNormalBufferID());
-        glVertexAttribPointer(shader_main_.attr_vertex_normal_, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
+        for (size_t i = 0; i < textures.size(); i++) {
+            textures[i]->ActivateTexture(i);
+        }
+        
         /* Draw with index buffer */
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object->GetElementBufferID());
-        glDrawElements(GL_TRIANGLES, object->GetNoFElements(), GL_UNSIGNED_SHORT, (void*)0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.GetElementBufferID());
+        glDrawElements(GL_TRIANGLES, object.GetNoFElements(), GL_UNSIGNED_INT, (void*)0);
 
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
@@ -137,25 +113,18 @@ namespace opengl {
         if (!texture->IsInited()) return -1;
 
         shader_simple_.Use();
-        glBindVertexArray(VAO_simple_);
-
         /* Set the model uniform */
         shader_simple_.SetUniformMat4(shader_simple_.uni_Model_, model);
 
-        /* Set the diffuse texture */
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture->GetID());
+        glBindVertexArray(object->VAO_);
 
-        /* Attribute number 0 is the object vertices */
-        glBindBuffer(GL_ARRAY_BUFFER, object->GetVertexBufferID());
-        glVertexAttribPointer(shader_simple_.attr_vertex_position_, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        /* Attribute number 1 is the object's uv coordinates */
-        glBindBuffer(GL_ARRAY_BUFFER, object->GetUVBufferID());
-        glVertexAttribPointer(shader_simple_.attr_vertex_uv_, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        
+        object->SetupAttributes(&shader_simple_);
+
+        texture->ActivateTexture(0);
+
         /* Draw with index buffer */
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object->GetElementBufferID());
-        glDrawElements(GL_TRIANGLES, object->GetNoFElements(), GL_UNSIGNED_SHORT, (void*)0);
+        glDrawElements(GL_TRIANGLES, object->GetNoFElements(), GL_UNSIGNED_INT, (void*)0);
 
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);

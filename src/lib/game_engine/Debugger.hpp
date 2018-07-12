@@ -1,13 +1,8 @@
 #ifndef __Debugger_hpp__
 #define __Debugger_hpp__
 
-
-#include "game_engine/graphics/opengl/OpenGLObject.hpp"
-#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
+#include "game_engine/graphics/GraphicsObject.hpp"
 #include "game_engine/graphics/Renderer.hpp"
-
-#include "AssetManager.hpp"
-
 
 namespace game_engine {
 
@@ -25,7 +20,7 @@ namespace game_engine {
             @param renderer The renderer object
             @return 0 = OK, -1 = objects passed not initialised
         */
-        int Init(AssetManager * asset_manager, graphics::Renderer * renderer);
+        int Init(graphics::Renderer * renderer);
 
         /**
             No deallocation needed for this objects, Does nothing of great importance 
@@ -50,9 +45,8 @@ namespace game_engine {
     private:
         bool is_inited_;
 
+        graphics::GraphicsObject debug_object;
         graphics::Renderer * renderer_ = nullptr;
-        graphics::opengl::OpenGLObject * object_circle_ = nullptr;
-        graphics::opengl::OpenGLTexture * texture_circle_ = nullptr;
     };
 
 }

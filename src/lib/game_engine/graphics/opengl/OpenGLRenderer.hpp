@@ -3,7 +3,7 @@
 
 #include "glm/glm.hpp"
 
-#include "game_engine/graphics/Material.hpp"
+#include "game_engine/graphics/GraphicsTypes.hpp"
 
 #include "OpenGLIncludes.hpp"
 #include "OpenGLContext.hpp"
@@ -59,7 +59,7 @@ namespace opengl {
             @param mtl The material
             @return 0=OK, -1=Something's not initialised;
         */
-        int Draw(OpenGLObject * object, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture, glm::mat4 model, Material_t mtl);
+        int Draw(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl);
         
         /**
             Draw an object on the scene without lightning
@@ -110,7 +110,6 @@ namespace opengl {
         OpenGLFont * font_;
 
         /* Main shaders */
-        GLuint VAO_main_;
         OpenGLShaderMain shader_main_;
 
         /* Simple shaders */

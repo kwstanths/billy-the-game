@@ -80,8 +80,7 @@ namespace game_engine {
             Initialize the object. Sets the OpenGL model and texture of the object. Sets the initial position
             @return 0=OK, else see ErrorCodes.hpp
         */
-        int Init(graphics::opengl::OpenGLObject * object, graphics::opengl::OpenGLTexture * diffuse_texture, graphics::opengl::OpenGLTexture * specular_texture,
-            float x, float y, float z, bool interactable = false);
+        int Init(std::string model_file_path, float x, float y, float z, bool interactable = false);
 
         /**
             Does nothing in particular yet
@@ -95,6 +94,7 @@ namespace game_engine {
 
         /**
             Draw the object during every frame, after calling the step function. Override for custom behaviour
+            If not overriden, the object is drawn with full lightning
             @param renderer The renderer
         */
         virtual void Draw(graphics::Renderer * renderer);

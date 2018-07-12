@@ -1,9 +1,5 @@
 #include "World.hpp"
 
-#include "game_engine/graphics/opengl/OpenGLObject.hpp"
-#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
-#include "game_engine/AssetManager.hpp"
-
 #include "debug_tools/Console.hpp"
 
 #include "Grass.hpp"
@@ -27,51 +23,19 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
 
     /* Initialize the world */
     /* Create some grass */
-    NewObj<Grass>()->Init(0.0f, 0.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(5.0f, 0.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(-5.0f, 0.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(0.0f, 5.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(5.0f, 5.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(-5.0f, 5.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(0.0f, -5.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(-5.0f, -5.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(5.0f, -5.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(5.0f, 10.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(0.0f, 10.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(-5.0f, 10.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(-10.0f, 10.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(-10.0f, 5.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(-10.0f, 0.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(-10.0f, -5.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(-10.0f, -10.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(-5.0f, -10.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(0.0f, -10.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(5.0f, -10.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(10.0f, -10.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(10.0f, -5.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(10.0f, 0.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(10.0f, 5.0f, 0.0f, engine);
-    NewObj<Grass>()->Init(10.0f, 10.0f, 0.0f, engine);
-
+    for (int x = -15; x < 15; x += 5)
+        for (int y = -15; y < 15; y += 5)
+            NewObj<Grass>()->Init(x, y, 0.0f, engine);
+    
     /* Create a path*/
-    NewObj<Path>()->Init(0.0f, 15.0f, 0.01f, engine);
-    NewObj<Path>()->Init(5.0f, 15.0f, 0.01f, engine);
-    NewObj<Path>()->Init(0.0f, 20.0f, 0.01f, engine);
-    NewObj<Path>()->Init(5.0f, 20.0f, 0.01f, engine);
-
+    for (int x = 0; x < 10; x += 5)
+        for (int y = 15; y < 40; y += 5)
+            NewObj<Path>()->Init(x, y, 0.0f, engine);
+            
     /* Create a wall */
-    NewObj<Wall>(true)->Init(-7.0f, 6.5f, 0.01f, engine);
-    NewObj<Wall>(true)->Init(-6.0f, 6.5f, 0.01f, engine);
-    NewObj<Wall>(true)->Init(-5.0f, 6.5f, 0.01f, engine);
-    NewObj<Wall>(true)->Init(-4.0f, 6.5f, 0.01f, engine);
-    NewObj<Wall>(true)->Init(-3.0f, 6.5f, 0.01f, engine);
-    NewObj<Wall>(true)->Init(-2.0f, 6.5f, 0.01f, engine);
-    NewObj<Wall>(true)->Init(-1.0f, 6.5f, 0.01f, engine);
-    NewObj<Wall>(true)->Init(0.0f, 6.5f, 0.01f, engine);
-    NewObj<Wall>(true)->Init(1.0f, 6.5f, 0.01f, engine);
-    NewObj<Wall>(true)->Init(2.0f, 6.5f, 0.01f, engine);
-    NewObj<Wall>(true)->Init(3.0f, 6.5f, 0.01f, engine);
-    NewObj<Wall>(true)->Init(4.0f, 6.5f, 0.01f, engine);
+    for (int x = -15; x < 4; x += 1)
+        NewObj<Wall>()->Init(x, 6.5f, 0.01f, engine);
+
 
     /* Create some collidable treasures with some random ids */
     NewObj<Treasure>()->Init(0.0f, 1.5f, 0.01f, engine, 1);

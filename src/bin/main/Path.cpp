@@ -11,17 +11,9 @@ namespace dt = debug_tools;
 
 bool Path::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
-    int ret;
-    gl::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/tile.obj", &ret);
-    gl::OpenGLTexture * diffuse_texture = engine->GetAssetManager()->FindTexture("assets/path.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
-    gl::OpenGLTexture * specular_texture = engine->GetAssetManager()->FindTexture("assets/map_empty.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
+    int ret = WorldObject::Init("assets/path.obj", x, y, z);
 
-    ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
-
-    Scale(5, 5, 0);
-
-    ge::graphics::Material_t m(glm::vec3(0.2, 0.2, 0.2), glm::vec3(0.96, 0.90, 0.70), glm::vec3(0.1, 0.1, 0.1), 32);
-    SetMaterial(m);
+    Scale(5, 5, 5);
 
     return ret == 0;
 }

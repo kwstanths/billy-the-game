@@ -54,11 +54,11 @@ namespace opengl {
 
         int ret;
         ret = shader_main_.Init("shaders/VertexShader.glsl", "shaders/FragmentShader.glsl");
-        if (ret != 0) return ret;
+        //if (ret != 0) return ret;
         ret = shader_text_.Init("shaders/TextVertexShader.glsl", "shaders/TextFragmentShader.glsl");
-        if (ret != 0) return ret;
+        //if (ret != 0) return ret;
         ret = shader_simple_.Init("shaders/VertexShaderSimple.glsl", "shaders/FragmentShaderSimple.glsl");
-        if (ret != 0) return ret;
+        //if (ret != 0) return ret;
 
         is_inited_ = true;
         return 0;

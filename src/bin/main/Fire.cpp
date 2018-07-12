@@ -14,14 +14,9 @@ namespace dt = debug_tools;
 
 bool Fire::Init(float x, float y, float z, game_engine::GameEngine * engine, Sun * sun) {
 
-    int ret;
-    gl::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
-    gl::OpenGLTexture * diffuse_texture = engine->GetAssetManager()->FindTexture("assets/debug.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
-    gl::OpenGLTexture * specular_texture = engine->GetAssetManager()->FindTexture("assets/map_empty.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
+    int ret = WorldObject::Init("assets/debug.obj", x, y, z);
 
-    ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
-
-    Scale(0.1f, 0.1f, 0.0f);
+    Scale(0.1f, 0.1f, 0.1f);
     SetCollision(0.05f);
 
     light_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));
@@ -32,7 +27,6 @@ bool Fire::Init(float x, float y, float z, game_engine::GameEngine * engine, Sun
     gen.Init(0.3f);
     gen.GetPerlinNoise1d(201, 0.2f, 0.15f, 70, attenutation_noise_);
     index_ = 0;
-
 
     sun_ = sun;
 
@@ -54,8 +48,6 @@ void Fire::Draw(grph::Renderer * renderer) {
     /* If dark enough, then set the light up */
     if (hour < 8 || hour > 18.5) renderer->AddPointLight(glm::vec3(GetX(), GetY(), GetZ()+0.5), light_, att);
     else renderer->AddPointLight(glm::vec3(GetX(), GetY(), GetZ() + 0.5), ge::graphics::LightProperties_t(0), att_);
-
-    /*renderer->AddLight(glm::vec3(GetX(), GetY(), GetZ() + 0.5), light_, att_);*/
 
     WorldObject::Draw(renderer);
 }

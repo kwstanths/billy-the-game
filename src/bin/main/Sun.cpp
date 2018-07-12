@@ -12,12 +12,7 @@ namespace dt = debug_tools;
 
 bool Sun::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
-    int ret;
-    gl::OpenGLObject * object = engine->GetAssetManager()->FindObject("assets/circle.obj", &ret);
-    gl::OpenGLTexture * diffuse_texture = engine->GetAssetManager()->FindTexture("assets/debug.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
-    gl::OpenGLTexture * specular_texture = engine->GetAssetManager()->FindTexture("assets/map_empty.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
-
-    ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
+    int ret = WorldObject::Init("assets/circle.obj", x, y, z);
 
     light_ = ge::graphics::LightProperties_t(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
     

@@ -5,7 +5,10 @@
 #include <cstring>
 #include <vector>
 
+#include "game_engine/graphics/GraphicsTypes.hpp"
+
 #include "OpenGLIncludes.hpp"
+#include "OpenGLShaders.hpp"
 
 #include <glm/glm.hpp>
 
@@ -14,6 +17,7 @@ namespace graphics {
 namespace opengl {
 
     class OpenGLObject {
+        friend class OpenGLRenderer;
     public:
         /**
             Does nothing
@@ -25,7 +29,11 @@ namespace opengl {
             @param The disk file path of the .obj file
             @return 0=OK, -1=Already initialised, else see ErrorCodes.hpp
         */
-        int Init(std::string object_path);
+        int Init(std::vector<game_engine::graphics::Vertex_t> & vertices, std::vector<unsigned int> & indices);
+
+        void SetupAttributes(OpenGLShaderMain * shader);
+
+        void SetupAttributes(OpenGLShaderSimple * shader);
 
         /**
             Deallocates the OpenGL stuf initialized
@@ -45,18 +53,6 @@ namespace opengl {
         GLuint GetVertexBufferID();
 
         /**
-            Get the UV buffer OpenGL ID
-            @return The id
-        */
-        GLuint GetUVBufferID();
-
-        /**
-            Get the normal buffer OpenGL ID
-            @return The id
-        */
-        GLuint GetNormalBufferID();
-
-        /**
             Get the indexed elements buffer Opengl ID
             @return The id
         */
@@ -68,28 +64,13 @@ namespace opengl {
         */
         size_t GetNoFElements();
 
-    private:
-        /* A structure to represent the data for an OpenGL vertex */
-        struct PackedVertex {
-            glm::vec3 position_;
-            glm::vec2 uv_;
-            glm::vec3 normal_;
-            bool operator<(const PackedVertex that) const {
-                return memcmp((void*)this, (void*)&that, sizeof(PackedVertex)) > 0;
-            };
-        };
-        
+    private:        
         bool is_inited_;
 
         size_t total_indices_;
-        GLuint vertex_buffer_, uv_buffer_, normal_buffer_, element_buffer_;
+        GLuint VAO_, vertex_buffer_, element_buffer_;
 
-        /**
-            
-        */
-        void IndexVBO(std::vector<glm::vec3> & in_vertices, std::vector<glm::vec2> & in_uvs, std::vector<glm::vec3> & in_normals,
-            std::vector<unsigned short> & out_indices, std::vector<glm::vec3> & out_vertices, std::vector<glm::vec2> & out_uvs, std::vector<glm::vec3> & out_normals);
-
+        
     };
 
 }

@@ -13,16 +13,14 @@ namespace game_engine {
         is_inited_ = false;
     }
 
-    int Debugger::Init(AssetManager * asset_manager, grph::Renderer * renderer) {
+    int Debugger::Init(grph::Renderer * renderer) {
 
         renderer_ = renderer;
 
-        if (!asset_manager->IsInited()) return Error::ERROR_GEN_NOT_INIT;
         if (!renderer->IsInited()) return Error::ERROR_GEN_NOT_INIT;
 
-        int ret;
-        object_circle_ = asset_manager->FindObject("assets/circle.obj", &ret);
-        texture_circle_ = asset_manager->FindTexture("assets/debug.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
+        int ret = debug_object.Init(0, 0, 0, "assets/debug.obj");
+        if (ret) return ret;
 
         is_inited_ = true;
         return 0;
@@ -30,9 +28,8 @@ namespace game_engine {
 
     int Debugger::Destroy() {
 
+        debug_object.Destroy();
         renderer_= nullptr;
-        object_circle_ = nullptr;
-        texture_circle_ = nullptr;
 
         is_inited_ = false;
         return 0;
@@ -46,7 +43,10 @@ namespace game_engine {
 
         if (!is_inited_) return;
 
-        renderer_->Draw(object_circle_, texture_circle_, GetTranslateMatrix(x, y, z) * GetScaleMatrix(size, size, size));
+        debug_object.SetPosition(x, y, z);
+        debug_object.Scale(size, size, size);
+        debug_object.SetModelMatrix();
+        renderer_->DrawSimple(&debug_object);
     }
 
 }

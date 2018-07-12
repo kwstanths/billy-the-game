@@ -11,10 +11,6 @@ namespace opengl {
 
     class OpenGLTexture {
     public:
-        enum OpenGLTextureType {
-            TEXTURE_STB,
-            TEXTURE_DDS,
-        };
 
         /**
             Does nothing
@@ -26,7 +22,7 @@ namespace opengl {
             @param file_path The path to the disk file
             @return 0=OK, -1=Already initialised, else see ErrorCodes.hpp
         */
-        int Init(std::string file_path, OpenGLTextureType type);
+        int Init(std::string file_path, int type);
 
         /**
             Deletes allocated objects, needs Init to be called again. Never fails
@@ -46,9 +42,11 @@ namespace opengl {
         */
         GLuint GetID();
 
+        void ActivateTexture(int texture_id);
+
     private:
         bool is_inited_;
-
+        int type_;
         GLuint texture_;
 
         /**
@@ -60,6 +58,7 @@ namespace opengl {
             Load a BMP, JPG, PNG image and others, see proper documentation here https://github.com/nothings/stb/blob/master/stb_image.h
         */
         int LoadSTB(const char * imagepath, GLuint * texture_id);
+
     };
 }
 }

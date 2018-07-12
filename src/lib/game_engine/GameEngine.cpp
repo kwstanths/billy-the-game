@@ -20,17 +20,14 @@ namespace game_engine {
         last_error_ = 0;
 
         renderer_ = new grph::Renderer();
-        asset_manager_ = new AssetManager();
         debugger_ = new Debugger();
     }
 
     GameEngine::~GameEngine() {
         if (renderer_ != nullptr) delete renderer_;
-        if (asset_manager_ != nullptr) delete asset_manager_;
         if (debugger_!= nullptr) delete debugger_;
 
         renderer_ = nullptr;
-        asset_manager_ = nullptr;
         debugger_ = nullptr;
     }
 
@@ -49,10 +46,8 @@ namespace game_engine {
             Terminate();
         }
 
-        asset_manager_->Init(200, 200);
-        debugger_->Init(asset_manager_, renderer_);
         frame_regulator_.Init(config_.frame_rate_, 10);
-
+        debugger_->Init(renderer_);
         CodeReminder("Find the size and margin of the visible world based on the camera");
         visible_world_ = std::vector<WorldObject *>(200);
 
@@ -71,7 +66,6 @@ namespace game_engine {
         }
 
         renderer_->Destroy();
-        asset_manager_->Destroy();
         debugger_->Destroy();
         frame_regulator_.Destroy();
 
@@ -164,10 +158,6 @@ namespace game_engine {
         }
         sector_ = world;
         return 0;
-    }
-
-    AssetManager * GameEngine::GetAssetManager() {
-        return asset_manager_;
     }
 
     Debugger * GameEngine::GetDebugger() {

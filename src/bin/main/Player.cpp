@@ -31,12 +31,7 @@ int Player::Init(float x, float y, float z, Input * input, Camera * camera, ge::
     engine_ = engine;
     camera_ = camera;
 
-    int ret;
-    gl::OpenGLObject * object = engine_->GetAssetManager()->FindObject("assets/circle.obj", &ret);
-    gl::OpenGLTexture * diffuse_texture = engine_->GetAssetManager()->FindTexture("assets/player.bmp", gl::OpenGLTexture::TEXTURE_STB, &ret);
-    gl::OpenGLTexture * specular_texture = engine->GetAssetManager()->FindTexture("assets/map_empty.png", gl::OpenGLTexture::TEXTURE_STB, &ret);
-
-    ret = WorldObject::Init(object, diffuse_texture, specular_texture, x, y, z);
+    int ret = WorldObject::Init("assets/player.obj", x, y, z);
     radius_ = 0.5f;
     interact_fov_ = ge::GetRadians(50.0f);
     interact_margin_ = 0.3f;
@@ -45,9 +40,6 @@ int Player::Init(float x, float y, float z, Input * input, Camera * camera, ge::
     Scale(0.5f, 0.5f, 1.0f);
     radius_ = radius_ * 0.5f;
     SetCollision(radius_);
-
-    ge::graphics::Material_t m(glm::vec3(0.2, 0.2, 0.2), glm::vec3(0.85, 0.70, 0.50), glm::vec3(0.1, 0.1, 0.1), 32);
-    SetMaterial(m);
 
     is_inited_ = true;
     return ret == 0;
@@ -163,12 +155,11 @@ void Player::Draw(grph::Renderer * renderer) {
     ControlInput_t controls = input_->GetControls();
 
     grph::LightProperties_t light(0);
-    if (controls.FLASHLIGHT_) light = grph::LightProperties_t(glm::vec3(0, 0, 0), glm::vec3(0.6, 0.6, 0.6), glm::vec3(0.8, 0.8, 0.8));
+    if (controls.FLASHLIGHT_) light = grph::LightProperties_t(glm::vec3(0, 0, 0), glm::vec3(0.7, 0.7, 0.7), glm::vec3(0.8, 0.8, 0.8));
     grph::Attenuation_t att = ge::graphics::Attenuation_t(1, 0.32f, 0.0019f);
     
     renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 2), glm::vec3(0, 0, -1), 50.0f, 55.0f,
         light, att);
-
     
     WorldObject::Draw(renderer);
 }

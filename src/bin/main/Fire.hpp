@@ -4,7 +4,7 @@
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/WorldObject.hpp"
 #include "game_engine/graphics/Renderer.hpp"
-#include "game_engine/graphics/Material.hpp"
+#include "game_engine/graphics/GraphicsTypes.hpp"
 
 #include "Sun.hpp"
 
