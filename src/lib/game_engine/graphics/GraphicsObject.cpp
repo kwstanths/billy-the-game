@@ -5,6 +5,8 @@
 
 #include "debug_tools/CodeReminder.hpp"
 
+#include "AssetManager.hpp"
+
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
@@ -71,23 +73,38 @@ namespace graphics {
 
     int GraphicsObject::LoadModel(std::string file_path) {
         
+        /* Use assimp to load the model */
         Assimp::Importer importer;
         const aiScene * scene = importer.ReadFile(file_path, aiProcess_Triangulate | aiProcess_FlipUVs);
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             dt::ConsoleInfoL(dt::WARNING, "Assimp::ReadFile error", "error", importer.GetErrorString());
             return -1;
         }
+
         directory_ = file_path.substr(0, file_path.find_last_of('/'));
+        asset_file_path = file_path.substr(0, file_path.find_last_of('.'));
 
         ProcessNode(scene->mRootNode, scene);
         return 0;
     }
 
     int GraphicsObject::ProcessNode(aiNode * node, const aiScene * scene) {
-        // process all the node's meshes (if any)
+        /* process all the node's meshes (if any) */
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
             aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-            meshes_.push_back(ProcessMesh(mesh, scene));
+
+            std::string mesh_file_path = asset_file_path + "/" + std::string(mesh->mName.C_Str());
+            
+            /* Grab the instance of the asset manager, and check if we already have that Mesh */
+            AssetManager & asset_manager = AssetManager::GetInstance();
+            Mesh * previously_allocated_mesh = asset_manager.FindMesh(mesh_file_path);
+            if (!previously_allocated_mesh) {
+                Mesh * new_mesh = ProcessMesh(mesh, scene);
+                asset_manager.InsertMesh(mesh_file_path, new_mesh);
+                meshes_.push_back(new_mesh);
+            } else
+                meshes_.push_back(previously_allocated_mesh);
+
         }
         // then do the same for each of its children
         for (unsigned int i = 0; i < node->mNumChildren; i++) {
@@ -97,7 +114,7 @@ namespace graphics {
         return 0;
     }
 
-    Mesh GraphicsObject::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
+    Mesh * GraphicsObject::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
         std::vector<Vertex_t> vertices;
         std::vector<unsigned int> indices;
         std::vector<Texture_t> textures;
@@ -139,8 +156,8 @@ namespace graphics {
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         }
 
-        Mesh temp_mesh;
-        temp_mesh.Init(vertices, indices, textures, Material_t(shininess));
+        Mesh * temp_mesh = new Mesh();
+        temp_mesh->Init(vertices, indices, textures, Material_t(shininess));
         return temp_mesh;
     }
 

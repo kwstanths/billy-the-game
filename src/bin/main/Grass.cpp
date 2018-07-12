@@ -11,7 +11,7 @@ namespace dt = debug_tools;
 
 bool Grass::Init(float x, float y, float z, game_engine::GameEngine * engine) {
     
-    int ret = WorldObject::Init("assets/grass/grass.obj", x, y, z);
+    int ret = WorldObject::Init("assets/grass.obj", x, y, z);
     
     Scale(5, 5, 5);
 

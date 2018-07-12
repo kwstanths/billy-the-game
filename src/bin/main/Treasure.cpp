@@ -10,7 +10,7 @@ namespace dt = debug_tools;
 
 bool Treasure::Init(float x, float y, float z, ge::GameEngine * engine, size_t id) {
     
-    int ret = WorldObject::Init("assets/treasure/treasure.obj", x, y, z, true);
+    int ret = WorldObject::Init("assets/treasure.obj", x, y, z, true);
 
     SetCollision(1.0f, 1.0f);
 

@@ -11,9 +11,9 @@ namespace dt = debug_tools;
 
 bool Path::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
-    int ret = WorldObject::Init("assets/path/path.obj", x, y, z);
+    int ret = WorldObject::Init("assets/path.obj", x, y, z);
 
-    Scale(5, 5, 0);
+    Scale(5, 5, 5);
 
     return ret == 0;
 }

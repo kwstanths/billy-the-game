@@ -11,7 +11,7 @@ namespace dt = debug_tools;
 
 bool Wall::Init(float x, float y, float z, game_engine::GameEngine * engine) {
 
-    int ret = WorldObject::Init("assets/wall/wall.obj", x, y, z, true);
+    int ret = WorldObject::Init("assets/wall.obj", x, y, z, true);
 
     SetCollision(1.0f, 1.0f);
 

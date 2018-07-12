@@ -91,8 +91,7 @@ void main(){
 	vec3 cast_light_color = CalculateCastingLight(cast_light, fragment_normal, view_direction, fragment_color, fragment_specular_intensity);
 	
 	/* Sum total components, the minimum color is zero, the maxium color possible the actual color of the fragment */
-	//color = clamp(cast_light_color + point_lights_color + global_illumination_color, vec3(0,0,0), fragment_color);
-	color = clamp(cast_light_color, vec3(0,0,0), fragment_color);
+	color = clamp(cast_light_color + point_lights_color + global_illumination_color, vec3(0,0,0), fragment_color);
 }
 
 vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec3 view_direction, vec3 fragment_color, vec3 fragment_specular_intensity){

@@ -19,7 +19,7 @@ namespace game_engine {
 
         if (!renderer->IsInited()) return Error::ERROR_GEN_NOT_INIT;
 
-        int ret = debug_object.Init(0, 0, 0, "assets/debug/debug.obj");
+        int ret = debug_object.Init(0, 0, 0, "assets/debug.obj");
         if (ret) return ret;
 
         is_inited_ = true;

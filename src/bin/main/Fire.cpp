@@ -14,9 +14,9 @@ namespace dt = debug_tools;
 
 bool Fire::Init(float x, float y, float z, game_engine::GameEngine * engine, Sun * sun) {
 
-    int ret = WorldObject::Init("assets/debug/debug.obj", x, y, z);
+    int ret = WorldObject::Init("assets/debug.obj", x, y, z);
 
-    Scale(0.1f, 0.1f, 0.0f);
+    Scale(0.1f, 0.1f, 0.1f);
     SetCollision(0.05f);
 
     light_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));

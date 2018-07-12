@@ -1,5 +1,8 @@
 #include "Mesh.hpp"
 
+#include "AssetManager.hpp"
+
+namespace gl = game_engine::graphics::opengl;
 
 namespace game_engine {
 namespace graphics {
@@ -23,8 +26,18 @@ namespace graphics {
         opengl_object_.Init(vertices_, indices_);
         /* opengl textures */
         for (size_t i = 0; i < textures_.size(); i++) {
-            opengl_textures_.push_back(new opengl::OpenGLTexture());
-            opengl_textures_[i]->Init(textures_[i].path_, textures_[i].type_);
+
+            /* Try to find if it wad previously allocated */
+            AssetManager & asset_manager = AssetManager::GetInstance();
+            std::string texture_path = textures_[i].path_;
+            gl::OpenGLTexture * previously_allocated_texture = asset_manager.FindTexture(texture_path);
+            if (!previously_allocated_texture) {
+                previously_allocated_texture = new gl::OpenGLTexture();
+                previously_allocated_texture->Init(textures_[i].path_, textures_[i].type_);
+                asset_manager.InsertTexture(texture_path, previously_allocated_texture);
+            }
+
+            opengl_textures_.push_back(previously_allocated_texture);
         }
 
         is_inited_ = true;
@@ -36,7 +49,7 @@ namespace graphics {
         opengl_object_.Destroy();
         for (size_t i = 0; i < textures_.size(); i++)
             opengl_textures_[i]->Destroy();
-        textures_.clear();
+        opengl_textures_.clear();
 
         is_inited_ = false;
         return 0;

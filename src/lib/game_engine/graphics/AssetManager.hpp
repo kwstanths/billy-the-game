@@ -3,9 +3,9 @@
 
 #include <string>
 
-#include "game_engine/graphics/opengl/OpenGLObject.hpp"
-#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
+#include "game_engine/graphics/Mesh.hpp"
 #include "game_engine/utility/HashTable.hpp"
+#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 
 #include "game_engine/ErrorCodes.hpp"
 
@@ -21,60 +21,51 @@ namespace graphics {
     class AssetManager {
     public:
 
-        /**
-            Does nothing in particular. Call Init()
-        */
-        AssetManager();
+        static AssetManager & GetInstance() {
+            static AssetManager instance;
+            return instance;
+        }
 
         /**
-            Calls Destroy()
+            Be very carefull when destroying the asset manager, since it will delete the
+            meshes themselves! Pointers to meshes may be everywhere!
         */
         ~AssetManager();
 
         /**
-            Initializes the required structures 
-            @param number_of_objects The number of objects to hold, roughly
-            @param number_of_textures The number of textures to hold, roughly
-            @return true = OK, false = NOT OK
+            Search for a mesh, based on the name
+            @param The name of the mesh
+            @return nullptr = not found, else the pointer to that object
         */
-        bool Init(size_t number_of_objects, size_t number_of_textures);
+        Mesh * FindMesh(std::string name);
 
         /**
-            Deallocates all the objects held.
-            @return true = OK, false = NOT OK
+            Insert a mesh. Produces a warning if already inserted
+            @param name The name of the mesh
+            @param mesh A pointer to the mesh allocation
         */
-        bool Destroy();
+        void InsertMesh(std::string name, Mesh * mesh);
 
         /**
-            Get wether the object is initialised already
-            @return true = OK, false = NOT OK
+        
         */
-        bool IsInited();
+        opengl::OpenGLTexture * FindTexture(std::string name);
 
-        ///**
-        //    Search an object. If not found returns nullptr
-        //    @param object_name The file path of the object
-        //    @param[out] object A pointer to the initialised object
-        //    @return 0 = OK, -1 = Object not initialised, or not found else else see ErrorCodes.hpp
-        //*/
-        //graphics::opengl::OpenGLObject * FindObject(std::string object_name, int * ret_code);
-
-        ///**
-        //    Search a texture
-        //    @param texture_name The file path of the object
-        //    @param type The type of the texture file
-        //    @param[out] A pointer to the initialised object
-        //    @return 0 = OK, -1 = Object not initialised, or not found else else see ErrorCodes.hpp
-        //*/
-        //graphics::opengl::OpenGLTexture * FindTexture(std::string texture_name, int * ret_code);
+        /**
+        
+        */
+        void InsertTexture(std::string name, opengl::OpenGLTexture * texture);
 
     private:
-        bool is_inited_;
+        /* Holds the meshes */
+        utility::HashTable<std::string, Mesh *> * meshes_;
+        /* Holds the textures */
+        utility::HashTable<std::string, opengl::OpenGLTexture *> * textures_;
 
-        ///* Holds the objects */
-        //utility::HashTable<std::string, graphics::opengl::OpenGLObject *> * objects_ = nullptr;
-        //utility::HashTable<std::string, graphics::opengl::OpenGLTexture *> * textures_ = nullptr;
-
+        /**
+            Does nothing in particular. Call Init()
+        */
+        AssetManager();
     };
 
 }

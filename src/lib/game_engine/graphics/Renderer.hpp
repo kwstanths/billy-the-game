@@ -12,6 +12,7 @@
 #include "GraphicsTypes.hpp"
 #include "GraphicsObject.hpp"
 #include "Mesh.hpp"
+#include "AssetManager.hpp"
 
 namespace game_engine {
     

@@ -38,7 +38,8 @@ namespace graphics {
     private:
         bool is_inited_;
 
-        std::vector<Mesh> meshes_;
+        std::vector<Mesh *> meshes_;
+        std::string asset_file_path;
         std::string directory_;
 
         glm::mat4 translation_matrix_;
@@ -50,7 +51,7 @@ namespace graphics {
 
         int ProcessNode(aiNode *node, const aiScene *scene);
 
-        Mesh ProcessMesh(aiMesh *mesh, const aiScene *scene);
+        Mesh * ProcessMesh(aiMesh *mesh, const aiScene *scene);
 
         std::vector<Texture_t> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, int texture_type);
     };

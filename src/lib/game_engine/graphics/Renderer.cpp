@@ -65,7 +65,7 @@ namespace graphics {
 
     int Renderer::Draw(GraphicsObject * rendering_object) {
         for (size_t i = 0; i < rendering_object->meshes_.size(); i++) {
-            Mesh * mesh = &(rendering_object->meshes_[i]);
+            Mesh * mesh = rendering_object->meshes_[i];
             renderer_->Draw(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_, mesh->mat_);
         }
         return 0;
@@ -73,7 +73,7 @@ namespace graphics {
 
     int Renderer::DrawSimple(GraphicsObject * rendering_object) {
         for (size_t i = 0; i < rendering_object->meshes_.size(); i++) {
-            Mesh * mesh = &(rendering_object->meshes_[i]);
+            Mesh * mesh = rendering_object->meshes_[i];
             gl::OpenGLTexture * texture = mesh->opengl_textures_.at(0);
             renderer_->Draw(&(mesh->opengl_object_), texture, rendering_object->model_);
         }

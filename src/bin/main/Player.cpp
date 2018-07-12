@@ -31,7 +31,7 @@ int Player::Init(float x, float y, float z, Input * input, Camera * camera, ge::
     engine_ = engine;
     camera_ = camera;
 
-    int ret = WorldObject::Init("assets/player/player.obj", x, y, z);
+    int ret = WorldObject::Init("assets/player.obj", x, y, z);
     radius_ = 0.5f;
     interact_fov_ = ge::GetRadians(50.0f);
     interact_margin_ = 0.3f;

@@ -9,80 +9,63 @@ namespace game_engine {
 namespace graphics {
 
     AssetManager::AssetManager() {
-        is_inited_ = false;
+
+        meshes_ = new utl::HashTable<std::string, Mesh *>(512, 1.0);
+        textures_ = new utl::HashTable<std::string, gl::OpenGLTexture *>(512, 1.0);
     }
 
     AssetManager::~AssetManager() {
-        Destroy();
+        /* Destroy meshes */
+        for (typename utl::HashTable<std::string, Mesh *>::iterator itr = meshes_->begin(); itr != meshes_->end(); ++itr) {
+            Mesh * mesh = itr.GetValue();
+            mesh->Destroy();
+            delete mesh;
+        }
+        delete meshes_;
+
+        /* Destroy textures */
+        for (typename utl::HashTable<std::string, gl::OpenGLTexture *>::iterator itr = textures_->begin(); itr != textures_->end(); ++itr) {
+            gl::OpenGLTexture * texture = itr.GetValue();
+            texture->Destroy();
+            delete texture;
+        }
+        delete textures_;
+
     }
 
-    bool AssetManager::Init(size_t number_of_objects, size_t number_of_textures) {
-        if (IsInited()) return false;
+    Mesh * AssetManager::FindMesh(std::string name) {
 
-        //objects_ = new utl::HashTable<std::string, gl::OpenGLObject *>(number_of_objects, number_of_objects);
-        //textures_ = new utl::HashTable<std::string, gl::OpenGLTexture *>(number_of_textures, number_of_textures);
+        utl::HashTable<std::string, Mesh *>::iterator itr = meshes_->Find(name);
+        if (itr != meshes_->end())
+            return itr.GetValue();
 
-        is_inited_ = true;
-        return true;
+        return nullptr;
     }
 
-    bool AssetManager::Destroy() {
-        if (!IsInited()) return false;
+    void AssetManager::InsertMesh(std::string name, Mesh * mesh) {
 
-        ///* Destroy objects */
-        //for (typename utl::HashTable<std::string, gl::OpenGLObject *>::iterator itr = objects_->begin(); itr != objects_->end(); ++itr) {
-        //    itr.GetValue()->Destroy();
-        //}
-        //objects_->Clear();
+        bool ret = meshes_->Insert(name, mesh);
+        if (!ret)
+            dt::Console(dt::WARNING, "AssetManager::InsertMesh(): Mesh already present");
 
-        ///* Destroy textures */
-        //for (typename utl::HashTable<std::string, gl::OpenGLTexture *>::iterator itr = textures_->begin(); itr != textures_->end(); ++itr) {
-        //    itr.GetValue()->Destroy();
-        //}
-        //textures_->Clear();
-
-        is_inited_ = false;
-        return true;
     }
 
-    bool AssetManager::IsInited() {
-        return is_inited_;
+    opengl::OpenGLTexture * AssetManager::FindTexture(std::string name) {
+
+        utl::HashTable<std::string, gl::OpenGLTexture *>::iterator itr = textures_->Find(name);
+        if (itr != textures_->end())
+            return itr.GetValue();
+
+        return nullptr;
     }
 
-    //gl::OpenGLObject * AssetManager::FindObject(std::string object_name, int * ret_code) {
-    //    if (!IsInited()) {
-    //        *ret_code = Error::ERROR_GEN_NOT_INIT;
-    //        return nullptr;
-    //    }
+    void AssetManager::InsertTexture(std::string name, opengl::OpenGLTexture * texture) {
 
-    //    /* Search among the already created objects */
-    //    utl::HashTable<std::string, gl::OpenGLObject *>::iterator itr = objects_->Find(object_name);
-    //    if (itr != objects_->end()) {
-    //        *ret_code = Error::ERROR_NO_ERROR;
-    //         return itr.GetValue();
-    //    }
+        bool ret = textures_->Insert(name, texture);
+        if (!ret)
+            dt::Console(dt::WARNING, "AssetManager::InsertTexure(): Texture already present");
 
-    //    *ret_code = -1;
-    //    return nullptr;
-    //}
-
-    //gl::OpenGLTexture * AssetManager::FindTexture(std::string texture_name, int * ret_code) {
-    //    if (!IsInited()) {
-    //        *ret_code = Error::ERROR_GEN_NOT_INIT;
-    //        PrintError(*ret_code);
-    //        return nullptr;
-    //    }
-
-    //    /* Search among the already created objects */
-    //    utl::HashTable<std::string, gl::OpenGLTexture *>::iterator itr = textures_->Find(texture_name);
-    //    if (itr != textures_->end()) {
-    //        *ret_code = Error::ERROR_NO_ERROR;
-    //        return itr.GetValue();
-    //    }
-
-    //    *ret_code = -1;
-    //    return nullptr;
-    //}
+    }
 
 }
 }
