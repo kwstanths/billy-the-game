@@ -20,6 +20,7 @@ namespace game_engine {
 
 namespace graphics {
 
+#define GAME_ENGINE_RENDERER_MAX_OBJECTS 100
 
     class Renderer {
         friend game_engine::GameEngine;
@@ -44,7 +45,10 @@ namespace graphics {
 
         /**
             Draws an object with full lightning. If you call this function directly, and not via the call 
-            upon the rendering_object, make sure to call SetModelMatrix() on the rendering object
+            upon the rendering_object, make sure to call SetModelMatrix() on the rendering object. Also, all
+            Draw() calls will happen at the end of the frame. This means that calling this Draw() on an object 
+            multiple times within a single frame, will result it drawing the same object multiple on the last
+            object position
             @param rendering_object The object to draw
             @return 0 = OK, -1 = rendering_object is not properly initialised
         */
@@ -67,7 +71,9 @@ namespace graphics {
     private:
         bool is_inited_;
         size_t number_of_point_lights_;
+        size_t number_of_objects_to_draw_;
         std::vector<PointLight_t> point_lights_to_draw_;
+        std::vector<GraphicsObject *> objects_to_draw_;
 
         /* Variables needed for opengl drawiing */
         opengl::OpenGLContext * context_ = nullptr;
@@ -82,7 +88,7 @@ namespace graphics {
         int SetCamera(opengl::OpenGLCamera * camera);
 
         /**
-        
+            Flushes the point lights into drawing, flushes the object draw calls into drawing
         */
         void FlushDrawsCalls();
     };

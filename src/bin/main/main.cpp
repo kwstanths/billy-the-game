@@ -20,7 +20,7 @@ namespace dt = debug_tools;
 int main(int argc, char ** argv) {
 
     CodeReminder("Add the sun to something so that step and draw are always executed");
-    CodeReminder("Fix light tearring, rendering order");
+    CodeReminder("Add the point lights so that the ones closest are always drawn");
     CodeReminder("Draw with different shader");
     CodeReminder("WorldObject, collision in SetPosition() maybe?");
 

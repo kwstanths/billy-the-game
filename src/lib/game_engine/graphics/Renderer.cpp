@@ -24,7 +24,8 @@ namespace graphics {
             renderer_->Init(context_);
         }
 
-        point_lights_to_draw_ = std::vector<PointLight_t>(NR_POINT_LIGHTS);
+        point_lights_to_draw_ = std::vector<PointLight_t>(GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS);
+        objects_to_draw_ = std::vector<GraphicsObject *>(GAME_ENGINE_RENDERER_MAX_OBJECTS);
 
         is_inited_ = true;
         return 0;
@@ -47,6 +48,7 @@ namespace graphics {
         context_->ClearColor();
 
         number_of_point_lights_ = 0;
+        number_of_objects_to_draw_ = 0;
     }
 
     void Renderer::EndFrame() {
@@ -64,10 +66,12 @@ namespace graphics {
     }
 
     int Renderer::Draw(GraphicsObject * rendering_object) {
-        for (size_t i = 0; i < rendering_object->meshes_.size(); i++) {
-            Mesh * mesh = rendering_object->meshes_[i];
-            renderer_->Draw(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_, mesh->mat_);
+        if (number_of_objects_to_draw_ >= GAME_ENGINE_RENDERER_MAX_OBJECTS) {
+            dt::Console(dt::WARNING, "Renderer::Draw(): Maximum number of objects reached");
+            return -1;
         }
+
+        objects_to_draw_.at(number_of_objects_to_draw_++) = rendering_object;
         return 0;
     }
 
@@ -81,7 +85,7 @@ namespace graphics {
     }
 
     int Renderer::AddPointLight(glm::vec3 position, graphics::LightProperties_t light_properties, Attenuation_t attenuation) {
-        if (number_of_point_lights_ >= NR_POINT_LIGHTS) {
+        if (number_of_point_lights_ >= GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS) {
             dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");
             return -1;
         }
@@ -129,6 +133,14 @@ namespace graphics {
                 point_lights_to_draw_[i].attenutation_.linear_,
                 point_lights_to_draw_[i].attenutation_.quadratic_
             );
+        }
+
+        for (size_t i = 0; i < number_of_objects_to_draw_; i++) {
+            GraphicsObject * rendering_object = objects_to_draw_[i];
+            for (size_t i = 0; i < rendering_object->meshes_.size(); i++) {
+                Mesh * mesh = rendering_object->meshes_[i];
+                renderer_->Draw(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_, mesh->mat_);
+            }
         }
 
     }
