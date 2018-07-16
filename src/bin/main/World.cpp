@@ -9,6 +9,7 @@
 #include "Player.hpp"
 #include "Sun.hpp"
 #include "Fire.hpp"
+#include "Cow.hpp"
 
 namespace dt = debug_tools;
 namespace ge = game_engine;
@@ -65,6 +66,9 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     /* Create a main player */
     Player * player = NewObj<Player>();
     player->Init(0.0f, 0.0f, 0.1f, input, camera, engine);
+
+    /* Create a cow */
+    NewObj<Cow>()->Init(2.0f, -2.0f, 0.01f, engine);
 
     is_inited_ = true;
     return 0;

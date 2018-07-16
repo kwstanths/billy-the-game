@@ -33,8 +33,8 @@ namespace opengl {
         /* Configure a VAO for the main shader */
         shader_main_.Use();
         /* Set the texture IDs on the 2D samplers used */
-        shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.diffuse"), 0);
-        shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.specular"), 1);
+        shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.texture_diffuse"), 0);
+        shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.texture_specular"), 1);
 
         /* Configure a VAO for the simple shader */
         shader_simple_.Use();
@@ -85,6 +85,9 @@ namespace opengl {
 
         shader_main_.Use();
         /* Set object material */
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.ambient"), mtl.ambient_);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.diffuse"), mtl.diffuse_);
+        shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.specular"), mtl.specular_);
         shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("object_material.shininess"), mtl.shininess_);
         /* Set the model uniform */
         shader_main_.SetUniformMat4(shader_main_.uni_Model_, model);

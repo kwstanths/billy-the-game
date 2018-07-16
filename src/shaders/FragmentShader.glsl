@@ -2,8 +2,12 @@
 
 /* Define types */
 struct Material {
-    sampler2D diffuse;
-    sampler2D specular;
+    sampler2D texture_diffuse;
+    sampler2D texture_specular;
+	
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
     float shininess;
 }; 
 
@@ -71,8 +75,8 @@ vec3 CalculateCastingLight(CastingLight light, vec3 fragment_normal, vec3 view_d
 void main(){
 
 	/* Sample the fragment color, and specular light intensity */
-	vec3 fragment_color = texture(object_material.diffuse, uv).rgb;
-	vec3 fragment_specular_intensity = texture(object_material.specular, uv).rgb;
+	vec3 fragment_color = texture(object_material.texture_diffuse, uv).rgb + object_material.diffuse;
+	vec3 fragment_specular_intensity = texture(object_material.texture_specular, uv).rgb + object_material.specular;
 	
 	/* Calculate necessary light stuff */
 	vec3 fragment_normal = normalize(normal);

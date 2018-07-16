@@ -41,9 +41,9 @@ namespace graphics {
         int index = material_type * 10;
 
         /* We use maps for these values */
-        //ambient_ = glm::vec3(material_numbers[index + 0], material_numbers[index + 1], material_numbers[index + 2]);
-        //diffuse_ = glm::vec3(material_numbers[index + 3], material_numbers[index + 4], material_numbers[index + 5]);
-        //specular_ = glm::vec3(material_numbers[index + 6], material_numbers[index + 7], material_numbers[index + 8]);
+        ambient_ = glm::vec3(material_numbers[index + 0], material_numbers[index + 1], material_numbers[index + 2]);
+        diffuse_ = glm::vec3(material_numbers[index + 3], material_numbers[index + 4], material_numbers[index + 5]);
+        specular_ = glm::vec3(material_numbers[index + 6], material_numbers[index + 7], material_numbers[index + 8]);
         shininess_ = static_cast<float>(material_numbers[index + 9]);
     }
 

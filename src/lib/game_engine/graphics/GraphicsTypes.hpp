@@ -54,12 +54,18 @@ namespace graphics {
 
     */
     struct Material_t {
+        glm::vec3 ambient_;
+        glm::vec3 diffuse_;
+        glm::vec3 specular_;
         float shininess_;
 
         /**
-            Creates a material with shininess 32
+            Creates a material with shininess 32 and full ambient, diffuse and specular components
         */
         Material_t() {
+            ambient_ = glm::vec3(1.0f, 1.0f, 1.0f);
+            ambient_ = glm::vec3(1.0f, 1.0f, 1.0f);
+            ambient_ = glm::vec3(1.0f, 1.0f, 1.0f);
             shininess_ = 32;
         }
 
@@ -72,7 +78,8 @@ namespace graphics {
         /**
             Create a custom material
         */
-        Material_t(float shininess): shininess_(shininess) {};
+        Material_t(float shininess, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular): 
+            shininess_(shininess), ambient_(ambient), diffuse_(diffuse), specular_(specular){};
 
     };
 

@@ -143,10 +143,16 @@ namespace graphics {
         }
         
         /* Process materials */
+        aiColor3D color_ambient;
+        aiColor3D color_diffuse;
+        aiColor3D color_specular;
         float shininess;
         if (mesh->mMaterialIndex >= 0) {
             aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
+            material->Get(AI_MATKEY_COLOR_AMBIENT, color_ambient);
+            material->Get(AI_MATKEY_COLOR_DIFFUSE, color_diffuse);
+            material->Get(AI_MATKEY_COLOR_SPECULAR, color_specular);
             material->Get(AI_MATKEY_SHININESS, shininess);
             
             std::vector<Texture_t> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP);
@@ -157,7 +163,12 @@ namespace graphics {
         }
 
         Mesh * temp_mesh = new Mesh();
-        temp_mesh->Init(vertices, indices, textures, Material_t(shininess));
+        temp_mesh->Init(vertices, indices, textures, Material_t(shininess,
+            glm::vec3(color_ambient.r, color_ambient.g, color_ambient.b),
+            glm::vec3(color_diffuse.r, color_diffuse.g, color_diffuse.b),
+            glm::vec3(color_specular.r, color_specular.g, color_specular.b))
+        );
+
         return temp_mesh;
     }
 
