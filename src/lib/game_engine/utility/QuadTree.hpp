@@ -16,7 +16,6 @@ namespace dt = debug_tools;
 
 
 namespace game_engine {
-
 namespace utility {
 
     /* 
@@ -25,12 +24,64 @@ namespace utility {
     */
     template<typename T> class QuadTree {
     private:
+
         /* Internal struct to hold a saved element */
         struct QuadTreeData_t {
             /* Position in space */
             Point2D p_;
-            /* Pointer to element */
-            T * data_;
+            /* The element */
+            T data_;
+            /* true, if it holds meaningfull data, false if not */
+            bool holds_data_ = false;
+        };
+
+        /* iterator for the QuadTree */
+        class QuadTreeIterator : public std::iterator<std::forward_iterator_tag, T> {
+            friend class QuadTree;
+        private:
+            /* Holds the elements inside an area */
+            std::vector<T *> elements_vector_;
+            /* The index of the pointed element inside the elements_vector_ */
+            size_t elements_vector_index_;
+            T * pointed_;
+
+            QuadTreeIterator(Rectangle2D brect, size_t n_elements, QuadTree * tree) {
+                /* Initialize a vector with the elements */
+                elements_vector_ = std::vector<T *>(n_elements, nullptr);
+                elements_vector_index_ = 0;
+                /* Get all elements inside the area */
+                size_t elements_found = 0;
+                tree->QueryRangePrivateDataPointers(brect, elements_vector_, elements_found);
+
+                /* Set the pointed to point to the first element */
+                pointed_ = elements_vector_[elements_vector_index_++];
+            }
+
+            QuadTreeIterator(T * pointed) : pointed_(pointed) {};
+
+        public:
+            T & operator*() {
+                return *pointed_;
+            }
+
+            const QuadTreeIterator & operator++() {
+                if (elements_vector_index_ >= elements_vector_.size()) pointed_ = nullptr;
+                else pointed_ = elements_vector_[elements_vector_index_++];
+
+                return *this;
+            }
+
+            const QuadTreeIterator& operator+=(size_t amount) {
+                for (size_t i = 0; i < amount; i++)
+                    operator++();
+
+                return *this;
+            }
+
+            bool operator!=(const QuadTreeIterator& other) const {
+                return this->pointed_ != other.pointed_;
+            }
+
         };
 
         /* Objects needs to be initialised first */
@@ -95,11 +146,11 @@ namespace utility {
             @param[out] objects The objects found
             @param[out] index The number of the last object found and stored inside objects
         */
-        void QueryRangePrivate(Rectangle2D rect, std::vector<T *>& objects, size_t& index){
+        void QueryRangePrivate(Rectangle2D rect, std::vector<T>& objects, size_t& index){
             if (!mth::IntersectRect_Rect(brect_, rect)) return;
 
             /* Check this node's object */
-            if (node_data_.data_ != nullptr && mth::PointInside(node_data_.p_, rect)) {
+            if (node_data_.holds_data_ && mth::PointInside(node_data_.p_, rect)) {
                 if (index > objects.size() - 1) {
                     dt::Console(dt::CRITICAL, "QuadTree::QueryRange() Objects overflow");
                     return;
@@ -116,6 +167,27 @@ namespace utility {
             }
         }
 
+        void QueryRangePrivateDataPointers(Rectangle2D rect, std::vector<T*>& objects, size_t& index) {
+            if (!mth::IntersectRect_Rect(brect_, rect)) return;
+
+            /* Check this node's object */
+            if (node_data_.holds_data_ && mth::PointInside(node_data_.p_, rect)) {
+                if (index > objects.size() - 1) {
+                    dt::Console(dt::CRITICAL, "QuadTree::QueryRange() Objects overflow");
+                    return;
+                }
+                objects[index++] = &node_data_.data_;
+            }
+
+            /* Gather your children's objects */
+            if (child_nw_ != nullptr) {
+                child_nw_->QueryRangePrivateDataPointers(rect, objects, index);
+                child_ne_->QueryRangePrivateDataPointers(rect, objects, index);
+                child_sw_->QueryRangePrivateDataPointers(rect, objects, index);
+                child_se_->QueryRangePrivateDataPointers(rect, objects, index);
+            }
+        }
+
         /**
             Update the position of an element from position p to new_p
             @param p The point position of the element
@@ -124,7 +196,7 @@ namespace utility {
             @param root The root of the quad tree
             @return true = Updated, false = Element not found
         */
-        bool UpdatePrivate(Point2D p, T * data, Point2D new_p, QuadTree * root){
+        bool UpdatePrivate(Point2D p, T data, Point2D new_p, QuadTree * root){
             if (!mth::PointInside(p, brect_)) return false;
 
             /* If this node has the point update here */
@@ -133,7 +205,7 @@ namespace utility {
                 if (mth::PointInside(new_p, brect_)) node_data_.p_ = new_p;
                 else {
                     /* else remove it and insert from the beginning */
-                    node_data_.data_ = nullptr;
+                    node_data_.holds_data_ = false;
                     root->Insert(new_p, data);
                 }
                 return true;
@@ -151,12 +223,17 @@ namespace utility {
         }
 
     public:
+
+        /*
+            QuadTree iterator
+        */
+        typedef QuadTreeIterator iterator;
+
         /**
             Does nothing in particular. Call Init() to initialize
         */
         QuadTree() {
             is_inited_ = false;
-            node_data_.data_ = nullptr;
             pool_ = nullptr;
         }
 
@@ -227,11 +304,22 @@ namespace utility {
                 child_se_ = nullptr;
             }
 
-            node_data_.data_ = nullptr;
+            node_data_.holds_data_ = false;
             
             is_inited_ = false;
 
             return true;
+        }
+
+        void Clear() {
+            if (!is_inited_) return;
+
+            if (child_nw_ != nullptr) child_nw_->Clear();
+            if (child_ne_ != nullptr) child_ne_->Clear();
+            if (child_sw_ != nullptr) child_sw_->Clear();
+            if (child_se_ != nullptr) child_se_->Clear();
+
+            node_data_.holds_data_ = false;
         }
 
         /**
@@ -240,18 +328,17 @@ namespace utility {
             @param data The actual data
             @return true = OK, false = Out of region
         */
-        bool Insert(Point2D p, T * data) {
+        bool Insert(Point2D p, T data) {
             if (!is_inited_) return false;
-
-            _assert(data != nullptr);
             
             /* If point to be inserted is not inside the current quad tree rectangle, return */
             if (!mth::PointInside(p, brect_)) return false;
             
             /* If the current node does not hold anything, insert here */
-            if (node_data_.data_ == nullptr) {
+            if (!node_data_.holds_data_) {
                 node_data_.p_ = p;
                 node_data_.data_ = data;
+                node_data_.holds_data_ = true;
                 return true;
             }
 
@@ -274,7 +361,7 @@ namespace utility {
             @param[out] objects The elements
             @return The number of elements found
         */
-        size_t QueryRange(Rectangle2D rect, std::vector<T *>& objects){
+        size_t QueryRange(Rectangle2D rect, std::vector<T>& objects){
             if (!is_inited_) return 0;
 
             size_t number_of_objects = 0;
@@ -290,7 +377,7 @@ namespace utility {
             @param new_p The new position of the element
             @return true = Updated, false = Element not found            
         */
-        bool Update(Point2D p, T * data, Point2D new_p){
+        bool Update(Point2D p, T data, Point2D new_p){
             if (!is_inited_) return 0;
 
             return UpdatePrivate(p, data, new_p, this);
@@ -302,17 +389,15 @@ namespace utility {
             @param data The element itself
             @return true = OK, false = Not found
         */
-        bool Remove(Point2D p, T * data){
+        bool Remove(Point2D p, T data){
             if (!is_inited_) return false;
-
-            _assert(data != nullptr);
 
             /* If point to be removed is not inside the current quad tree rectangle, return */
             if (!mth::PointInside(p, brect_)) return false;
 
             /* If the current node has the element, remove it from here */
             if (node_data_.data_ == data && node_data_.p_ == p) {
-                node_data_.data_ = nullptr;
+                node_data_.holds_data_ = false;
                 return true;
             }
             
@@ -334,11 +419,11 @@ namespace utility {
         void PrettyPrint(size_t level = 0){
             if (!is_inited_) return;
 
-            for(size_t i=0; i<level; i++) dt::CustomPrint(std::cout, "-");
-            if (node_data_.data_ != nullptr) {
+            for (size_t i = 0; i < level; i++) dt::CustomPrint(std::cout, "-");
+            if (node_data_.holds_data_) {
                 std::cout << "(" << std::to_string(node_data_.p_.x_) << "," << std::to_string(node_data_.p_.y_)  << "): " 
-                    << *node_data_.data_ << std::endl;
-            } else dt::Console("null");
+                    << node_data_.data_ << std::endl;
+            } else dt::Console("no data");
 
             if (child_nw_ != nullptr){
                 child_nw_->PrettyPrint(level+1);
@@ -346,6 +431,23 @@ namespace utility {
                 child_sw_->PrettyPrint(level+1);
                 child_se_->PrettyPrint(level+1);
             }
+        }
+
+        /*
+            Get an iterator to the first element in a region
+            @param brect The area to search
+            @param n_elements The max number of elements to get
+        */
+        iterator begin(Rectangle2D brect, size_t n_elements) {
+            return QuadTreeIterator(brect, n_elements, this);
+        }
+
+
+        /*
+            Get an iterator to the end
+        */
+        iterator end() {
+            return QuadTreeIterator(NULL);
         }
     };
 

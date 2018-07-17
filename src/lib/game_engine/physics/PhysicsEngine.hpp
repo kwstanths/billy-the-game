@@ -89,7 +89,7 @@ namespace physics {
         /* Memory to hold the objects */
         memory_subsystem::PoolAllocator pool_quad_tree_;
         /* Data structure to hold the objects */
-        utility::QuadTree<PhysicsObject> world_;
+        utility::QuadTree<PhysicsObject *> world_;
 
         /**
             Get the minumum distance between an object and it's surroundings

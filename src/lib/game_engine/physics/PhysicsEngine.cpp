@@ -25,7 +25,7 @@ namespace physics {
 
         if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
-        if (!pool_quad_tree_.Init(sizeof(utility::QuadTree<PhysicsObject>), number_of_objects)) {
+        if (!pool_quad_tree_.Init(sizeof(utility::QuadTree<PhysicsObject *>), number_of_objects)) {
             dt::Console(dt::FATAL, "PhysicsEngine::Init(): PoolAllocato::Init() failed");
             return Error::ERROR_PHYSICS_INIT;
         }

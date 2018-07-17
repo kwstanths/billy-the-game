@@ -27,48 +27,48 @@ int main(int argc, char ** argv) {
     );
     
     int data = 1;
-    if (!tree.Insert({0,0}, &data)) dt::Console(dt::CRITICAL, "Insertion failed");    
+    if (!tree.Insert({0,0}, data)) dt::Console(dt::CRITICAL, "Insertion failed");    
     tree.PrettyPrint();
 
     dt::Console("---------------------------");
     
     int data_1 = 10;
-    if (!tree.Insert({50,50}, &data_1)) dt::Console(dt::CRITICAL, "Insertion failed");    
+    if (!tree.Insert({50,50}, data_1)) dt::Console(dt::CRITICAL, "Insertion failed");    
     tree.PrettyPrint();
 
     dt::Console("---------------------------");
     
     int data_2 = 11;
-    if (!tree.Insert({50,-50}, &data_2)) dt::Console(dt::CRITICAL, "Insertion failed");    
+    if (!tree.Insert({50,-50}, data_2)) dt::Console(dt::CRITICAL, "Insertion failed");    
     tree.PrettyPrint();
 
     dt::Console("---------------------------");
     
     int data_3 = 12;
-    if (!tree.Insert({-50,50}, &data_3)) dt::Console(dt::CRITICAL, "Insertion failed");    
+    if (!tree.Insert({-50,50}, data_3)) dt::Console(dt::CRITICAL, "Insertion failed");    
     tree.PrettyPrint();
 
     dt::Console("---------------------------");
     
     int data_4 = 13;
-    if (!tree.Insert({-50,-50}, &data_4)) dt::Console(dt::CRITICAL, "Insertion failed");    
+    if (!tree.Insert({-50,-50}, data_4)) dt::Console(dt::CRITICAL, "Insertion failed");    
     tree.PrettyPrint();
 
     dt::Console("---------------------------");
     
     int data_5 = 100;
-    if (!tree.Insert({150, 150}, &data_5)) dt::Console(dt::CRITICAL, "Insertion failed");    
+    if (!tree.Insert({150, 150}, data_5)) dt::Console(dt::CRITICAL, "Insertion failed");    
     tree.PrettyPrint();
 
     dt::Console("---------------------------");
     
     int data_6 = 1000;
-    if (!tree.Insert({150, 150}, &data_6)) dt::Console(dt::CRITICAL, "Insertion failed");    
+    if (!tree.Insert({150, 150}, data_6)) dt::Console(dt::CRITICAL, "Insertion failed");    
     tree.PrettyPrint();
 
     dt::Console("---------------------------");
 
-    std::vector<int *> objects(15);
+    std::vector<int> objects(15);
     size_t noo = tree.QueryRange(ge::Rectangle2D(
         ge::Point2D(0,0), 
         ge::Point2D(200,0), 
@@ -76,11 +76,11 @@ int main(int argc, char ** argv) {
         ge::Point2D(0, 200)), objects);
 
     dt::Console("Elements: " + std::to_string(noo));
-    for(size_t i =0; i<noo; i++) dt::Console(*objects.at(i));
+    for(size_t i =0; i<noo; i++) dt::Console(objects.at(i));
 
     dt::Console("---------------------------");
 
-    tree.Remove({150, 150}, &data_5);
+    tree.Remove({150, 150}, data_5);
     noo = tree.QueryRange(ge::Rectangle2D(
         ge::Point2D(0,0), 
         ge::Point2D(200,0), 
@@ -88,13 +88,13 @@ int main(int argc, char ** argv) {
         ge::Point2D(0, 200)), objects);
 
     dt::Console("Elements: " + std::to_string(noo));
-    for(size_t i =0; i<noo; i++) dt::Console(*objects.at(i));
+    for(size_t i =0; i<noo; i++) dt::Console(objects.at(i));
 
-    tree.Remove({150, 150}, &data_5);
+    tree.Remove({150, 150}, data_5);
 
-    tree.Remove({150, 150}, &data_6);
-    tree.Remove({0, 0}, &data);
-    tree.Remove({50, 50}, &data_1);
+    tree.Remove({150, 150}, data_6);
+    tree.Remove({0, 0}, data);
+    tree.Remove({50, 50}, data_1);
 
     dt::Console("---------------------------");
 
@@ -105,11 +105,11 @@ int main(int argc, char ** argv) {
         ge::Point2D(-200, 200)), objects);
 
     dt::Console("Elements: " + std::to_string(noo));
-    for(size_t i =0; i<noo; i++) dt::Console(*objects.at(i));
+    for(size_t i =0; i<noo; i++) dt::Console(objects.at(i));
 
-    tree.Remove({50, -50}, &data_2);
-    tree.Remove({-50, 50}, &data_3);
-    tree.Remove({-50, -50}, &data_4);
+    tree.Remove({50, -50}, data_2);
+    tree.Remove({-50, 50}, data_3);
+    tree.Remove({-50, -50}, data_4);
 
     noo = tree.QueryRange(ge::Rectangle2D(
         ge::Point2D(-200,200), 
@@ -118,21 +118,21 @@ int main(int argc, char ** argv) {
         ge::Point2D(-200, 200)), objects);
 
     dt::Console("Elements: " + std::to_string(noo));
-    for(size_t i =0; i<noo; i++) dt::Console(*objects.at(i));
+    for(size_t i =0; i<noo; i++) dt::Console(objects.at(i));
     tree.PrettyPrint();
 
     dt::Console("---------------------------");
 
-    tree.Insert({1,10}, new int(0));
-    tree.Insert({30, 80}, new int (2));
-    tree.Insert({-150, -180}, new int(3));
-    tree.Insert({13, -56}, new int(7));
-    tree.Insert({77,100}, new int(1));
-    tree.Insert({85, -199}, new int(8));
-    tree.Insert({-135, -2}, new int(4));
-    tree.Insert({186, -175}, new int(9));
-    tree.Insert({-10, 56}, new int (5));
-    tree.Insert({-184, 56}, new int(6));
+    tree.Insert({1,10}, int(0));
+    tree.Insert({30, 80}, int (2));
+    tree.Insert({-150, -180}, int(3));
+    tree.Insert({13, -56}, int(7));
+    tree.Insert({77,100}, int(1));
+    tree.Insert({85, -199}, int(8));
+    tree.Insert({-135, -2}, int(4));
+    tree.Insert({186, -175}, int(9));
+    tree.Insert({-10, 56}, int (5));
+    tree.Insert({-184, 56}, int(6));
 
     noo = tree.QueryRange(ge::Rectangle2D(
         ge::Point2D(-200,200), 
@@ -141,7 +141,7 @@ int main(int argc, char ** argv) {
         ge::Point2D(-200, 200)), objects);
 
     dt::Console("Elements: " + std::to_string(noo));
-    for(size_t i =0; i<noo; i++) dt::Console(*objects.at(i));
+    for(size_t i =0; i<noo; i++) dt::Console(objects.at(i));
 
     dt::Console("---------------------------");
     
@@ -184,18 +184,45 @@ int main(int argc, char ** argv) {
         ge::Point2D(200, 200), 
         ge::Point2D(0, 200)),
         &pool);
-    tree.Insert({0,0}, &data);
-    tree.Insert({0,1}, &data_1);
+    tree.Insert({0,0}, data);
+    tree.Insert({0,1}, data_1);
     tree.PrettyPrint();
-    tree.Update({0,1}, &data_1, {155,0});
+    tree.Update({0,1}, data_1, {155,0});
     tree.PrettyPrint();
 
     dt::Console("---------------------------");
 
-    tree.Insert({156, 0}, &data_2);
+    tree.Insert({156, 0}, data_2);
     tree.PrettyPrint();
-    tree.Update({156, 0}, &data_2, {155, 5});
+    tree.Update({156, 0}, data_2, {155, 5});
     tree.PrettyPrint();
+
+    /* quad tree iterator check */
+    tree.Destroy();
+    tree.Init(ge::Rectangle2D(
+        ge::Point2D(-200, -200),
+        ge::Point2D(200, -200),
+        ge::Point2D(200, 200),
+        ge::Point2D(-200, 200)),
+        &pool
+    );
+    tree.Insert({ 1,10 }, int(0));
+    tree.Insert({ 30, 80 }, int(2));
+    tree.Insert({ -150, -180 }, int(3));
+    tree.Insert({ 13, -56 }, int(7));
+    tree.Insert({ 77,100 }, int(1));
+    tree.Insert({ 85, -199 }, int(8));
+    tree.Insert({ -135, -2 }, int(4));
+    tree.Insert({ 186, -175 }, int(9));
+    tree.Insert({ -10, 56 }, int(5));
+    tree.Insert({ -184, 56 }, int(6));
+    dt::Console("---------------------------");
+    tree.PrettyPrint();
+    ge::Rectangle2D search_area(ge::Point2D(0, 0), ge::Point2D(200, 0), ge::Point2D(200, 200), ge::Point2D(0, 200));
+    for (typename utl::QuadTree<int>::iterator itr = tree.begin(search_area, 5); itr != tree.end(); itr+=2) {
+        std::cout << *itr << std::endl;
+    }
+
 
     /* Simple list check */
     utl::List<int> listexample;
