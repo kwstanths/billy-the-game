@@ -40,6 +40,7 @@ int Player::Init(float x, float y, float z, Input * input, Camera * camera, ge::
     Scale(0.5f, 0.5f, 1.0f);
     radius_ = radius_ * 0.5f;
     SetCollision(radius_);
+    SetObjectType(1);
 
     is_inited_ = true;
     return ret == 0;
@@ -162,6 +163,14 @@ void Player::Draw(grph::Renderer * renderer) {
         light, att);
     
     WorldObject::Draw(renderer);
+}
+
+void Player::OnCollisionDetected(size_t object_type) {
+    
+    if (object_type == 2) {
+        SetPosition(0, 0, GetZ());
+        camera_->Set2DPosition(0, 0);
+    }
 }
 
 

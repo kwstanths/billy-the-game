@@ -107,6 +107,22 @@ namespace physics {
         return physics_engine_->CheckCollision(this, move_offset, direction);
     }
 
+    void PhysicsObject::OnCollisionDetected(size_t object_type) {
+        
+    }
+
+    void PhysicsObject::Rotate(float angle) {
+        collision_->Rotate(angle);
+    }
+
+    size_t PhysicsObject::GetObjectType() {
+        return object_type_;
+    }
+
+    void PhysicsObject::SetObjectType(size_t type) {
+        object_type_ = type;
+    }
+
     bool PhysicsObject::Collides(Point2D new_position, PhysicsObject * other) {
 
         if (!is_inited_) return false;
@@ -130,14 +146,15 @@ namespace physics {
         /* Check collision */
         bool collides = neighbour_collision->Check(collision_);
 
+        if (collides) {
+            this->OnCollisionDetected(other->GetObjectType());
+            other->OnCollisionDetected(object_type_);
+        }
+
         /* Move collision object back */
         collision_->Translate(-x_offset, -y_offset);
 
         return collides;
-    }
-
-    void PhysicsObject::Rotate(float angle) {
-        collision_->Rotate(angle);
     }
 
 }

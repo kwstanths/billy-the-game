@@ -10,6 +10,7 @@
 #include "Sun.hpp"
 #include "Fire.hpp"
 #include "Cow.hpp"
+#include "Lava.hpp"
 
 namespace dt = debug_tools;
 namespace ge = game_engine;
@@ -36,6 +37,8 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     /* Create a wall */
     for (int x = -15; x < 4; x += 1)
         NewObj<Wall>()->Init(x, 6.5f, 0.01f, engine);
+
+    NewObj<Lava>()->Init(-5, 15, 0.0f, engine);
 
 
     /* Create some collidable treasures with some random ids */

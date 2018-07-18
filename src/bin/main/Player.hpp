@@ -27,6 +27,8 @@ public:
 
     virtual void Draw(game_engine::graphics::Renderer * render);
 
+    virtual void OnCollisionDetected(size_t object_type);
+
 private:
     bool is_inited_;
     float radius_;

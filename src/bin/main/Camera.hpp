@@ -29,11 +29,17 @@ public:
     */
     void MouseMove(float mouse_x, float mouse_y);
 
+    /**
+    
+    */
+    void Set2DPosition(float x, float y);
+
 private:
     bool is_inited_;
     float last_cursor_position_x_, last_cursor_position_y_;
     float pitch_, yaw_;
     float mouse_sensitivity_;
+    float z_height_;
 
 };
 

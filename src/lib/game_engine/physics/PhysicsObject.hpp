@@ -14,6 +14,7 @@ namespace physics {
         A physics object
     */
     class PhysicsObject {
+        friend PhysicsEngine;
     public:
         /**
             Does nothing in particular. Call Init()
@@ -110,12 +111,9 @@ namespace physics {
         CollisionResult_t CheckCollision(float move_offset, Direction direction);
 
         /**
-            Get wether this object collides with another object in a new position
-            @param new_position The new position of the object 
-            @param other The other object
-            @return true = collides, false =  not collides
+        
         */
-        bool Collides(Point2D new_position, PhysicsObject * other);
+        virtual void OnCollisionDetected(size_t object_type);
 
         /**
             Rotate the physics object clockwise in the 2d pane
@@ -124,12 +122,32 @@ namespace physics {
         */
         void Rotate(float angle);
 
+        /**
+        
+        */
+        size_t GetObjectType();
+
+        /**
+        
+        */
+        void SetObjectType(size_t type);
+
+
     private:
         bool is_inited_;
         float pos_x_, pos_y_, pos_z_;
-        
+        size_t object_type_ = 0;
+
         Collision * collision_ = nullptr;
         PhysicsEngine * physics_engine_;
+
+        /**
+            Get wether this object collides with another object in a new position
+            @param new_position The new position of the object
+            @param other The other object
+            @return true = collides, false =  not collides
+        */
+        bool Collides(Point2D new_position, PhysicsObject * other);
     };
 
 }

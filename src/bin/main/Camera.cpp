@@ -16,8 +16,9 @@ void MouseCallbackNONE(GLFWwindow * w, double x, double y) { };
 
 Camera::Camera(int width, int height, float mouse_sensitivity) : OpenGLCamera() {
 
+    z_height_ = 8;
     /* Configure OpenGLCamera parameters */
-    config_.position_ = glm::vec3(0, 0, 8);
+    config_.position_ = glm::vec3(0, 0, z_height_);
     config_.direction_ = glm::vec3(0, 0, -1);
     config_.up_ = glm::vec3(0, 1, 0);
     config_.orthographic_ = false;
@@ -56,4 +57,8 @@ void Camera::MouseMove(float mouse_x, float mouse_y) {
     direction.z = cos(glm::radians(pitch_)) * sin(glm::radians(yaw_));
     direction = glm::normalize(direction);
     SetDirectionVector(direction.x, direction.y, direction.z);
+}
+
+void Camera::Set2DPosition(float x, float y) {
+    SetPositionVector(x, y, z_height_);
 }

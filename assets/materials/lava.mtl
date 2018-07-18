@@ -1,8 +1,8 @@
 # Blender MTL File: 'tile.blend'
 # Material Count: 1
 
-newmtl Path
-Ns 32.000000
+newmtl Lava
+Ns 2.000000
 Ka 0.100000 0.100000 0.100000
 Kd 0.000000 0.000000 0.000000
 Ks 0.000000 0.000000 0.000000
@@ -10,5 +10,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 0
-map_Kd textures/path.bmp
+map_Kd textures/lava.png
 map_Ks textures/spec_map_empty.png
