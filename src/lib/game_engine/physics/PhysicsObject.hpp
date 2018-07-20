@@ -31,7 +31,7 @@ namespace physics {
             @param engine The physics engine to use
             @return 0=OK, else see ErrorCodes.hpp
         */
-        int Init(float pos_x, float pos_y, float pos_z, PhysicsEngine * engine);
+        int Init(game_engine::Real_t pos_x, game_engine::Real_t pos_y, game_engine::Real_t pos_z, PhysicsEngine * engine);
 
         /**
             Removes from the pgysics engine, TODO
@@ -49,19 +49,19 @@ namespace physics {
             Get the position x coordinate
             @return position x coordinate
         */
-        float GetX();
+        game_engine::Real_t GetX();
 
         /**
             Get the position y coordinate
             @return position y coordinate
         */
-        float GetY();
+        game_engine::Real_t GetY();
 
         /**
             Get the position z coordinate
             @return position z coordinate
         */
-        float GetZ();
+        game_engine::Real_t GetZ();
 
         /**
             Set the position of the object
@@ -69,7 +69,7 @@ namespace physics {
             @param pos_y Position y coordinate
             @param pos_z Position z coordinate
         */
-        void SetPosition(float pos_x, float pos_y, float pos_z);
+        void SetPosition(game_engine::Real_t pos_x, game_engine::Real_t pos_y, game_engine::Real_t pos_z);
     
         /**
             Set collision to none
@@ -82,13 +82,13 @@ namespace physics {
             @param y_size The y size
             @param z_size The z size. <-- This is not used
         */
-        void SetCollision(float x_size, float y_size, float z_size = 0.0f);
+        void SetCollision(game_engine::Real_t x_size, game_engine::Real_t y_size, game_engine::Real_t z_size = 0.0f);
 
         /**
             Set the collision to bounding circle
             @param radius The radius of the circle
         */
-        void SetCollision(float radius);
+        void SetCollision(game_engine::Real_t radius);
 
         /**
             Get the type of collision
@@ -103,24 +103,11 @@ namespace physics {
         Collision * GetCollision();
 
         /**
-            Check this object for collision
-            @param move_offset The amount of moving
-            @param direction The direction of moving
-            @return The collision result
-        */
-        CollisionResult_t CheckCollision(float move_offset, Direction direction);
-
-        /**
-        
-        */
-        virtual void OnCollisionDetected(size_t object_type);
-
-        /**
             Rotate the physics object clockwise in the 2d pane
             @angle angle The rotation angle in radians
             @param axis The axis to rotate around
         */
-        void Rotate(float angle);
+        void Rotate(game_engine::Real_t angle);
 
         /**
         
@@ -135,7 +122,7 @@ namespace physics {
 
     private:
         bool is_inited_;
-        float pos_x_, pos_y_, pos_z_;
+        game_engine::Real_t pos_x_, pos_y_, pos_z_;
         size_t object_type_ = 0;
 
         Collision * collision_ = nullptr;
@@ -147,7 +134,7 @@ namespace physics {
             @param other The other object
             @return true = collides, false =  not collides
         */
-        bool Collides(Point2D new_position, PhysicsObject * other);
+        bool Collides(game_engine::math::Point2D new_position, PhysicsObject * other);
     };
 
 }

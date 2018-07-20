@@ -2,14 +2,16 @@
 
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/math/Types.hpp"
-namespace ph = game_engine::physics;
 
 #include "debug_tools/Console.hpp"
 #include "debug_tools/CodeReminder.hpp"
-namespace dt = debug_tools;
 
 #include "ErrorCodes.hpp"
+
+namespace dt = debug_tools;
+namespace ph = game_engine::physics;
 namespace ms = game_engine::memory_subsystem;
+namespace math = game_engine::math;
 
 namespace game_engine {
 
@@ -19,8 +21,8 @@ namespace game_engine {
     }
 
     int WorldSector::Init(size_t width, size_t height, 
-        float x_margin_start, float x_margin_end,
-        float y_margin_start, float y_margin_end,
+        Real_t x_margin_start, Real_t x_margin_end,
+        Real_t y_margin_start, Real_t y_margin_end,
         size_t elements) 
     {
         if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
@@ -33,7 +35,7 @@ namespace game_engine {
         pool_allocator_->Init(sizeof(WorldObject), 1000);
 
         /* Initialize the physics engine used */
-        physics_engine_->Init(Rectangle2D(0, 0, 250, 250), elements);
+        physics_engine_->Init(math::Rectangle2D(0, 0, 250, 250), elements);
 
         /* Set the margins */
         x_margin_start_ = x_margin_start;
@@ -61,7 +63,7 @@ namespace game_engine {
         return is_inited_;
     }
 
-    int WorldSector::Insert(WorldObject * object, float x, float y, float z) {
+    int WorldSector::Insert(WorldObject * object, Real_t x, Real_t y, Real_t z) {
         if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
         size_t index_row = GetRow(y);
@@ -72,7 +74,7 @@ namespace game_engine {
         return 0;
     }
 
-    void WorldSector::UpdateObjectPosition(WorldObject * object, float old_pos_x, float old_pos_y, float new_pos_x, float new_pos_y) {
+    void WorldSector::UpdateObjectPosition(WorldObject * object, Real_t old_pos_x, Real_t old_pos_y, Real_t new_pos_x, Real_t new_pos_y) {
         
         /* TODO Do some checkig on th object */
         
@@ -114,7 +116,7 @@ namespace game_engine {
         else dt::Console(dt::WARNING, "Memory leak: Removing object that was not made removable");
     }
 
-    size_t WorldSector::GetObjectsWindow(float center_x, float center_y, float margin,
+    size_t WorldSector::GetObjectsWindow(Real_t center_x, Real_t center_y, Real_t margin,
         std::vector<WorldObject*> & objects) 
     {
         if (!is_inited_) {
@@ -147,7 +149,7 @@ namespace game_engine {
         return index;
     }
 
-    WorldObject * WorldSector::FindInteractNeighbour(Rectangle2D search_area, float pos_x, float pos_y) {
+    WorldObject * WorldSector::FindInteractNeighbour(math::Rectangle2D search_area, Real_t pos_x, Real_t pos_y) {
         std::vector<ph::PhysicsObject *> area_objects(10, nullptr);
         size_t nof = physics_engine_->GetObjectsArea(search_area, area_objects);
 
@@ -167,12 +169,12 @@ namespace game_engine {
         return physics_engine_;
     }
 
-    size_t WorldSector::GetRow(float vertical_coordinate) {
+    size_t WorldSector::GetRow(Real_t vertical_coordinate) {
         float index = 0.0f + (world_.size() - 1 - 0.0f) * (vertical_coordinate - y_margin_start_) / (y_margin_end_ - y_margin_start_);
         return static_cast<size_t>(index);
     }
 
-    size_t WorldSector::GetColumn(float horizontal_coordinate) {
+    size_t WorldSector::GetColumn(Real_t horizontal_coordinate) {
         float index = 0.0f + (world_[0].size() - 1 - 0.0f) * (horizontal_coordinate - x_margin_start_) / (x_margin_end_ - x_margin_start_);
         return static_cast<size_t>(index);
     }

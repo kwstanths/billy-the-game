@@ -1,16 +1,13 @@
 #include "Sun.hpp"
 
-#include "game_engine/graphics/opengl/OpenGLObject.hpp"
-#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
+#include "game_engine/math/HelpFunctions.hpp"
+#include "debug_tools/Console.hpp"
+
 namespace ge = game_engine;
 namespace grph = game_engine::graphics;
-namespace gl = game_engine::graphics::opengl;
-
-#include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
 
-
-bool Sun::Init(float x, float y, float z, game_engine::GameEngine * engine) {
+bool Sun::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, game_engine::GameEngine * engine) {
 
     int ret = WorldObject::Init("assets/circle.obj", x, y, z);
 
@@ -34,7 +31,7 @@ void Sun::Step(double delta_time) {
     game_hour_ = game_time_ / 3600.0f;
     
     /* 15 degrees for each hour for the 24 hours cycle */
-    float color = sin(ge::GetRadians((game_hour_ - 7) * 15));
+    float color = sin(ge::math::GetRadians((game_hour_ - 7) * 15));
 
     light_.diffuse_ = glm::vec3(color, color, color);
     light_.specular_ = glm::vec3(0.5 * color, 0.5 * color, 0.5 * color);

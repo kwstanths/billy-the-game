@@ -28,7 +28,7 @@ namespace utility {
         /* Internal struct to hold a saved element */
         struct QuadTreeData_t {
             /* Position in space */
-            Point2D p_;
+            math::Point2D p_;
             /* The element */
             T data_;
             /* true, if it holds meaningfull data, false if not */
@@ -45,7 +45,7 @@ namespace utility {
             size_t elements_vector_index_;
             T * pointed_;
 
-            QuadTreeIterator(Rectangle2D brect, size_t n_elements, QuadTree * tree) {
+            QuadTreeIterator(math::Rectangle2D brect, size_t n_elements, QuadTree * tree) {
                 /* Initialize a vector with the elements */
                 elements_vector_ = std::vector<T *>(n_elements, nullptr);
                 elements_vector_index_ = 0;
@@ -87,7 +87,7 @@ namespace utility {
         /* Objects needs to be initialised first */
         bool is_inited_;
         /* Holds the region that this quad tree node holds elements for */
-        Rectangle2D brect_;
+        math::Rectangle2D brect_;
         /* Each quad tree node holds one element */
         QuadTreeData_t node_data_;
         /* Each quad tree node has four children */
@@ -106,37 +106,37 @@ namespace utility {
             child_se_ = new (pool_) QuadTree<T>();
             child_sw_ = new (pool_) QuadTree<T>();
 
-            float x_west = brect_.A_.x_;
-            float x_middle = (brect_.A_.x_ + brect_.B_.x_)/2.0f;
-            float x_east = brect_.B_.x_;
+            Real_t x_west = brect_.A_.x_;
+            Real_t x_middle = (brect_.A_.x_ + brect_.B_.x_)/2.0f;
+            Real_t x_east = brect_.B_.x_;
 
-            float y_south = brect_.A_.y_;
-            float y_middle = (brect_.A_.y_ + brect_.D_.y_) / 2.0f;
-            float y_north = brect_.D_.y_;
+            Real_t y_south = brect_.A_.y_;
+            Real_t y_middle = (brect_.A_.y_ + brect_.D_.y_) / 2.0f;
+            Real_t y_north = brect_.D_.y_;
 
-            child_nw_->Init(Rectangle2D(
-                Point2D(x_west, y_middle),
-                Point2D(x_middle, y_middle),
-                Point2D(x_middle, y_north),
-                Point2D(x_west, y_north)),
+            child_nw_->Init(math::Rectangle2D(
+                math::Point2D(x_west, y_middle),
+                math::Point2D(x_middle, y_middle),
+                math::Point2D(x_middle, y_north),
+                math::Point2D(x_west, y_north)),
                 pool_);
-            child_ne_->Init(Rectangle2D(
-                Point2D(x_middle, y_middle),
-                Point2D(x_east, y_middle),
-                Point2D(x_east, y_north),
-                Point2D(x_middle, y_north)),
+            child_ne_->Init(math::Rectangle2D(
+                math::Point2D(x_middle, y_middle),
+                math::Point2D(x_east, y_middle),
+                math::Point2D(x_east, y_north),
+                math::Point2D(x_middle, y_north)),
                 pool_);
-            child_sw_->Init(Rectangle2D(
-                Point2D(x_west, y_south),
-                Point2D(x_middle, y_south),
-                Point2D(x_middle, y_middle),
-                Point2D(x_west, y_middle)),
+            child_sw_->Init(math::Rectangle2D(
+                math::Point2D(x_west, y_south),
+                math::Point2D(x_middle, y_south),
+                math::Point2D(x_middle, y_middle),
+                math::Point2D(x_west, y_middle)),
                 pool_);
-            child_se_->Init(Rectangle2D(
-                Point2D(x_middle, y_south),
-                Point2D(x_east, y_south),
-                Point2D(x_east, y_middle),
-                Point2D(x_middle, y_middle)),
+            child_se_->Init(math::Rectangle2D(
+                math::Point2D(x_middle, y_south),
+                math::Point2D(x_east, y_south),
+                math::Point2D(x_east, y_middle),
+                math::Point2D(x_middle, y_middle)),
                 pool_);
         } 
 
@@ -146,7 +146,7 @@ namespace utility {
             @param[out] objects The objects found
             @param[out] index The number of the last object found and stored inside objects
         */
-        void QueryRangePrivate(Rectangle2D rect, std::vector<T>& objects, size_t& index){
+        void QueryRangePrivate(math::Rectangle2D rect, std::vector<T>& objects, size_t& index){
             if (!mth::IntersectRect_Rect(brect_, rect)) return;
 
             /* Check this node's object */
@@ -167,7 +167,7 @@ namespace utility {
             }
         }
 
-        void QueryRangePrivateDataPointers(Rectangle2D rect, std::vector<T*>& objects, size_t& index) {
+        void QueryRangePrivateDataPointers(math::Rectangle2D rect, std::vector<T*>& objects, size_t& index) {
             if (!mth::IntersectRect_Rect(brect_, rect)) return;
 
             /* Check this node's object */
@@ -196,7 +196,7 @@ namespace utility {
             @param root The root of the quad tree
             @return true = Updated, false = Element not found
         */
-        bool UpdatePrivate(Point2D p, T data, Point2D new_p, QuadTree * root){
+        bool UpdatePrivate(math::Point2D p, T data, math::Point2D new_p, QuadTree * root){
             if (!mth::PointInside(p, brect_)) return false;
 
             /* If this node has the point update here */
@@ -260,7 +260,7 @@ namespace utility {
             @param pool The pool allocator to store elements
             @return true = OK, false = Already initialised
         */
-        bool Init(Rectangle2D brect, ms::PoolAllocator * pool) {
+        bool Init(math::Rectangle2D brect, ms::PoolAllocator * pool) {
             if (is_inited_) return false;
 
             brect_ = brect;
@@ -328,7 +328,7 @@ namespace utility {
             @param data The actual data
             @return true = OK, false = Out of region
         */
-        bool Insert(Point2D p, T data) {
+        bool Insert(math::Point2D p, T data) {
             if (!is_inited_) return false;
             
             /* If point to be inserted is not inside the current quad tree rectangle, return */
@@ -352,7 +352,10 @@ namespace utility {
             if (child_se_->Insert(p, data)) return true;
 
             /* We should never reach this point */
-            _assert(0);
+            dt::ConsoleInfoL(dt::CRITICAL, "QuadTree::Insert(): Reached, unreachable point. Cannot insert into quad tree",
+                "point", p);
+
+            return false;
         }
 
         /**
@@ -361,7 +364,7 @@ namespace utility {
             @param[out] objects The elements
             @return The number of elements found
         */
-        size_t QueryRange(Rectangle2D rect, std::vector<T>& objects){
+        size_t QueryRange(math::Rectangle2D rect, std::vector<T>& objects){
             if (!is_inited_) return 0;
 
             size_t number_of_objects = 0;
@@ -377,7 +380,7 @@ namespace utility {
             @param new_p The new position of the element
             @return true = Updated, false = Element not found            
         */
-        bool Update(Point2D p, T data, Point2D new_p){
+        bool Update(math::Point2D p, T data, math::Point2D new_p){
             if (!is_inited_) return 0;
 
             return UpdatePrivate(p, data, new_p, this);
@@ -389,7 +392,7 @@ namespace utility {
             @param data The element itself
             @return true = OK, false = Not found
         */
-        bool Remove(Point2D p, T data){
+        bool Remove(math::Point2D p, T data){
             if (!is_inited_) return false;
 
             /* If point to be removed is not inside the current quad tree rectangle, return */
@@ -438,7 +441,7 @@ namespace utility {
             @param brect The area to search
             @param n_elements The max number of elements to get
         */
-        iterator begin(Rectangle2D brect, size_t n_elements) {
+        iterator begin(math::Rectangle2D brect, size_t n_elements) {
             return QuadTreeIterator(brect, n_elements, this);
         }
 

@@ -1,8 +1,10 @@
 #include "Renderer.hpp"
 
+#include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/ErrorCodes.hpp"
 
 
+namespace math = game_engine::math;
 namespace gl = game_engine::graphics::opengl;
 
 namespace game_engine {
@@ -97,10 +99,10 @@ namespace graphics {
         return renderer_->SetDirectionalLight(direction, light_properties.ambient_, light_properties.diffuse_, light_properties.specular_);
     }
 
-    int Renderer::AddSpotLight(glm::vec3 position, glm::vec3 direction, float inner_angle, float outer_angle, 
+    int Renderer::AddSpotLight(glm::vec3 position, glm::vec3 direction, Real_t inner_angle, Real_t outer_angle, 
         LightProperties_t light_properties, Attenuation_t attenuation) 
     {
-        return renderer_->SetSpotLight(position, direction, GetRadians(inner_angle), GetRadians(outer_angle),
+        return renderer_->SetSpotLight(position, direction, math::GetRadians(inner_angle), math::GetRadians(outer_angle),
             light_properties.ambient_, light_properties.diffuse_, light_properties.specular_,
             attenuation.constant_, attenuation.linear_, attenuation.quadratic_);
     }

@@ -27,7 +27,7 @@ namespace game_engine {
         deltas_ = std::vector<double>(frame_averages, frame_time_required_);
 
         /* If not push as many frames as possible, then setup timer */
-        if (!Equal(frame_time_required_, 0.0)) {
+        if (!math::Equal(frame_time_required_, 0.0)) {
 #ifdef _WIN32
             /*
                 Don't know if it does anything, but in order to maintain an accurate constant
@@ -74,7 +74,7 @@ namespace game_engine {
         if (!is_inited_) return -1;
 
         /* If we have to maintain a certain frame rate, then wait the timer */
-        if (!Equal(frame_time_required_, 0.0)) {
+        if (!math::Equal(frame_time_required_, 0.0)) {
 #ifdef _WIN32
             /*
                 Wait for the timer signal. INFINITE means that if the frame took more time than frame_time_required
@@ -94,13 +94,13 @@ namespace game_engine {
         return 0;
     }
 
-    float FrameRateRegulator::GetDelta() {
+    Real_t FrameRateRegulator::GetDelta() {
         /* Calculate a running average of the frame times */
         double avg = 0.0;
         for (size_t i = 0; i < deltas_.size(); i++) {
             avg += deltas_[i] / ((double)deltas_.size());
         }
-        return static_cast<float>(avg);
+        return static_cast<Real_t>(avg);
     }
 
     void FrameRateRegulator::DisplayFPS(double frame_time_ms) {

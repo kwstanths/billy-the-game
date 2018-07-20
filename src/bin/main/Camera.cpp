@@ -9,12 +9,12 @@ namespace gl = game_engine::graphics::opengl;
 Camera * camera;
 
 void MouseCallback(GLFWwindow * w, double x, double y) {
-    camera->MouseMove(static_cast<float>(x), static_cast<float>(y));
+    camera->MouseMove(static_cast<ge::Real_t>(x), static_cast<ge::Real_t>(y));
 }
 
 void MouseCallbackNONE(GLFWwindow * w, double x, double y) { };
 
-Camera::Camera(int width, int height, float mouse_sensitivity) : OpenGLCamera() {
+Camera::Camera(int width, int height, ge::Real_t mouse_sensitivity) : OpenGLCamera() {
 
     z_height_ = 8;
     /* Configure OpenGLCamera parameters */
@@ -35,13 +35,13 @@ Camera::Camera(int width, int height, float mouse_sensitivity) : OpenGLCamera() 
 
 }
 
-void Camera::KeyboardMove(float x, float y, float z) {
+void Camera::KeyboardMove(ge::Real_t x, ge::Real_t y, ge::Real_t z) {
     MovePositionVector(x, y, z);
 }
 
-void Camera::MouseMove(float mouse_x, float mouse_y) {
-    float xoffset = mouse_x - last_cursor_position_x_;
-    float yoffset = last_cursor_position_y_ - mouse_y;
+void Camera::MouseMove(ge::Real_t mouse_x, ge::Real_t mouse_y) {
+    ge::Real_t xoffset = mouse_x - last_cursor_position_x_;
+    ge::Real_t yoffset = last_cursor_position_y_ - mouse_y;
     last_cursor_position_x_ = mouse_x;
     last_cursor_position_y_ = mouse_y;
 
@@ -59,6 +59,6 @@ void Camera::MouseMove(float mouse_x, float mouse_y) {
     SetDirectionVector(direction.x, direction.y, direction.z);
 }
 
-void Camera::Set2DPosition(float x, float y) {
+void Camera::Set2DPosition(ge::Real_t x, ge::Real_t y) {
     SetPositionVector(x, y, z_height_);
 }

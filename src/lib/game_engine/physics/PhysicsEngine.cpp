@@ -4,13 +4,13 @@
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
+
 namespace dt = debug_tools;
-
 namespace utl = game_engine::utility;
-
+namespace math = game_engine::math;
+namespace ge = game_engine;
 
 namespace game_engine {
-
 namespace physics {
     
     PhysicsEngine::PhysicsEngine() {
@@ -21,7 +21,7 @@ namespace physics {
         Destroy();
     }
 
-    int PhysicsEngine::Init(Rectangle2D world_size, size_t number_of_objects) {
+    int PhysicsEngine::Init(math::Rectangle2D world_size, size_t number_of_objects) {
 
         if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
@@ -29,7 +29,7 @@ namespace physics {
             dt::Console(dt::FATAL, "PhysicsEngine::Init(): PoolAllocato::Init() failed");
             return Error::ERROR_PHYSICS_INIT;
         }
-        if (!world_.Init(Rectangle2D(world_size), &pool_quad_tree_)) {
+        if (!world_.Init(math::Rectangle2D(world_size), &pool_quad_tree_)) {
             dt::Console(dt::FATAL, "Physicsengine::Init(): QuadTree::Init() failed");
             return Error::ERROR_PHYSICS_INIT;
         }
@@ -59,31 +59,33 @@ namespace physics {
     }
 
     int PhysicsEngine::Insert(PhysicsObject * object) {
-        return !world_.Insert(Point2D(object->GetX(), object->GetY()), object);
+        bool ret = world_.Insert(math::Point2D(object->GetX(), object->GetY()), object);
+        if (!ret) return Error::ERROR_OUT_OF_REGION;
+        return 0;
     }
 
     int PhysicsEngine::Update(PhysicsObject * object, float new_pos_x, float new_pos_y) {
-        bool ret = world_.Update(Point2D(object->GetX(), object->GetY()), object, Point2D(new_pos_x, new_pos_y));
+        bool ret = world_.Update(math::Point2D(object->GetX(), object->GetY()), object, math::Point2D(new_pos_x, new_pos_y));
         if (!ret) dt::Console(dt::WARNING, "PhysicsEngine::Update(): object not found");
         
         return 0;
     }
 
     void PhysicsEngine::Remove(PhysicsObject * object) {
-        bool ret = world_.Remove(Point2D(object->GetX(), object->GetY()), object);
+        bool ret = world_.Remove(math::Point2D(object->GetX(), object->GetY()), object);
         if (!ret) dt::Console(dt::WARNING, "PhysicsEngine::Remove(): object not found");
 
         return;
     }
 
-    size_t PhysicsEngine::GetObjectsArea(Rectangle2D search_area, std::vector<PhysicsObject*>& objects) {
+    size_t PhysicsEngine::GetObjectsArea(math::Rectangle2D search_area, std::vector<PhysicsObject*>& objects) {
 
         size_t nof = world_.QueryRange(search_area, objects);
 
         return nof;
     }
 
-    CollisionResult_t PhysicsEngine::CheckCollision(PhysicsObject * object, float move_offset, Direction direction) {
+    CollisionResult_t PhysicsEngine::CheckCollision(PhysicsObject * object, math::Point2D new_position) {
         CollisionResult_t collision_res;
 
         if (!is_inited_) {
@@ -98,48 +100,20 @@ namespace physics {
             dt::Console(dt::CRITICAL, "PhysicsEngine::CheckCollision(): moving object is not initialised");
             return collision_res;
         }
-        if (direction < 0 || direction >= 360.0f) {
-            dt::Console(dt::CRITICAL, "PhysicsEngine::CheckCollision(): direction is out of the allowed values");
-            return collision_res;
-        }
 
-        bool moving_top = ((direction >= 0.0f && direction < 90.0f) || (direction > 270.0f && direction <= 360.0f));
-        bool moving_down = (direction > 90.0f && direction < 270.0f);
-        bool moving_left = (direction > 0 && direction < 180.0f);
-        bool moving_right = (direction > 180.0f && direction < 360.0f);
-
-        Point2D moving_object_new_position(object->GetX(), object->GetY());
-        if (moving_top) {
-            moving_object_new_position.y_ += move_offset;
-            collision_res.up_ = CollisionGetDistance(object, moving_object_new_position).first;
-            moving_object_new_position.y_ = object->GetY() + collision_res.up_;
-        } else if (moving_down) {
-            moving_object_new_position.y_ -= move_offset;
-            collision_res.down_ = CollisionGetDistance(object, moving_object_new_position).first;
-            moving_object_new_position.y_ = object->GetY() - collision_res.up_;
-        }
-
-        if (moving_left) {
-            moving_object_new_position.x_ -= move_offset;
-            collision_res.left_ = CollisionGetDistance(object, moving_object_new_position).second;
-            moving_object_new_position.x_ = object->GetX() - collision_res.left_;
-
-        } else if (moving_right) {
-            moving_object_new_position.x_ += move_offset;
-            collision_res.right_ = CollisionGetDistance(object, moving_object_new_position).second;
-            moving_object_new_position.x_ = object->GetX() - collision_res.right_;
-        }
+        collision_res.horizontal_ = CollisionGetDistance(object, { new_position.x_, object->GetY() }).first;
+        collision_res.vertical_ = CollisionGetDistance(object, { object->GetX(), new_position.y_ }).second;
 
         return collision_res;
     }
 
-    std::pair<float, float> PhysicsEngine::CollisionGetDistance(PhysicsObject * object, Point2D new_position) {
+    std::pair<float, float> PhysicsEngine::CollisionGetDistance(PhysicsObject * object, math::Point2D new_position) {
         /* Get neighbours */
         std::vector<PhysicsObject *> neighbours(50);
-        size_t nof = world_.QueryRange(Rectangle2D(object->GetX(), object->GetY(), 3, 3), neighbours);
+        size_t nof = world_.QueryRange(math::Rectangle2D(object->GetX(), object->GetY(), 3, 3), neighbours);
         
-        float horizontal_move_offset = std::abs(object->GetX() - new_position.x_);
-        float vertical_move_offset = std::abs(object->GetY() - new_position.y_);
+        ge::Real_t horizontal_move_offset = new_position.x_ - object->GetX();
+        ge::Real_t vertical_move_offset = new_position.y_ - object->GetY();
 
         for (size_t i = 0; i < nof; i++) {
             PhysicsObject * neighbour = neighbours[i];
@@ -151,11 +125,10 @@ namespace physics {
             }
         }
 
-        return std::pair<float, float>(vertical_move_offset, horizontal_move_offset);
+        return std::pair<float, float>(horizontal_move_offset, vertical_move_offset);
     }
 
 
 
 }
-
 }

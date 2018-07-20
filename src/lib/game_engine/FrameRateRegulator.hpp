@@ -9,6 +9,8 @@
 
 #include <glfw3.h>
 
+#include "game_engine/math/Types.hpp"
+
 namespace game_engine {
 
     /**
@@ -44,7 +46,7 @@ namespace game_engine {
             Get the frame time in seconds using a running average, First frame will be 1/frame_rate requested
             @return The difference between frame_end_time - frame_start_time
         */
-        float GetDelta();
+        Real_t GetDelta();
 
         /**
             Writes the frame rate in the console. Just pass the frame time in milliseconds

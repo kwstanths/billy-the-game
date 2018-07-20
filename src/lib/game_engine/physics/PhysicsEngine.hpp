@@ -1,16 +1,15 @@
 #ifndef __PhysicsEngine_hpp__
 #define __PhysicsEngine_hpp__
 
-#include "PhysicsObject.hpp"
 
 #include "game_engine/memory/PoolAllocator.hpp"
-
 #include "game_engine/utility/QuadTree.hpp"
+#include "game_engine/math/Types.hpp"
 
+#include "PhysicsObject.hpp"
 #include "Collision.hpp"
 
 namespace game_engine {
-
 namespace physics {
 
     /* The physics engine */
@@ -30,7 +29,7 @@ namespace physics {
             @param number_of_objects The maximum number of object to hold
             @return 0=OK, else see ErrorCodes.hpp
         */
-        int Init(Rectangle2D world_size, size_t number_of_objects);
+        int Init(game_engine::math::Rectangle2D world_size, size_t number_of_objects);
 
         /**
             Destroys the engine. Deallocates memory used. Not the objects themselves
@@ -73,7 +72,7 @@ namespace physics {
             @param pos_y The y coordinate of the object that we want to find the closest neighbour
             @return A pointer to the closest neighbour, or nullptr if none is found
         */
-        size_t GetObjectsArea(Rectangle2D search_area, std::vector<PhysicsObject*>& objects);
+        size_t GetObjectsArea(math::Rectangle2D search_area, std::vector<PhysicsObject*>& objects);
 
         /**
             Check for collision inside.
@@ -82,7 +81,7 @@ namespace physics {
             @param direction The direction of moving
             @return The collision result
         */
-        CollisionResult_t CheckCollision(PhysicsObject * object, float move_offset, Direction direction);
+        CollisionResult_t CheckCollision(PhysicsObject * object, math::Point2D new_position);
     
     private:
         bool is_inited_;
@@ -97,7 +96,7 @@ namespace physics {
             @param new_position The new position of the object
             @return A pair of distances to move. First is horisontal, second is vertical
         */
-        std::pair<float, float> CollisionGetDistance(PhysicsObject * object, Point2D new_position);
+        std::pair<float, float> CollisionGetDistance(PhysicsObject * object, math::Point2D new_position);
     };
 
 }

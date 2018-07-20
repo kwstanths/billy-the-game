@@ -1,6 +1,8 @@
 #include "WorldObject.hpp"
 #include "WorldSector.hpp"
 
+#include "game_engine/physics/Collision.hpp"
+#include "game_engine/math/HelpFunctions.hpp"
 #include "ErrorCodes.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
@@ -17,7 +19,7 @@ namespace game_engine {
         is_inited_ = false;
     }
 
-    int WorldObject::Init(std::string model_file_path, float x, float y, float z, bool interactable) {
+    int WorldObject::Init(std::string model_file_path, Real_t x, Real_t y, Real_t z, bool interactable) {
         
         if (WorldObject::is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
@@ -77,26 +79,37 @@ namespace game_engine {
         /* Re-implement this function for custom interact behaviour */
     }
 
-    void WorldObject::SetPosition(float pos_x, float pos_y, float pos_z) {
+    void WorldObject::SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, bool collision_check) {
+
+        Real_t new_pos_x = pos_x;
+        Real_t new_pos_y = pos_y;
+        if (collision_check) {
+            ph::PhysicsEngine * physics_engine = world_sector_->GetPhysicsEngine();
+            ph::CollisionResult_t collision_result = physics_engine->CheckCollision(this, { pos_x, pos_y });
+            
+            new_pos_x = GetX() + collision_result.horizontal_;
+            new_pos_y = GetY() + collision_result.vertical_;
+        }
+
         /* Update the object's position inside the world sector */
-        world_sector_->UpdateObjectPosition(this, GetX(), GetY(), pos_x, pos_y);
+        world_sector_->UpdateObjectPosition(this, GetX(), GetY(), new_pos_x, new_pos_y);
         
         /* Set the position in the physics layer */
-        PhysicsObject::SetPosition(pos_x, pos_y, pos_z);
+        PhysicsObject::SetPosition(new_pos_x, new_pos_y, pos_z);
         
         /* Set the position in the graphics layer */
-        GraphicsObject::SetPosition(pos_x, pos_y, pos_z);
+        GraphicsObject::SetPosition(new_pos_x, new_pos_y, pos_z);
     }
 
-    void WorldObject::Scale(float scale_x, float scale_y, float scale_z) {
-        if (!(Equal(scale_x, scale_y) && Equal(scale_y, scale_z))) dt::Console(dt::WARNING, "Non uniform scale");
+    void WorldObject::Scale(Real_t scale_x, Real_t scale_y, Real_t scale_z) {
+        if (!(math::Equal(scale_x, scale_y) && math::Equal(scale_y, scale_z))) dt::Console(dt::WARNING, "Non uniform scale");
         
         /* TODO Maybe scale in the physics layer as well? */
     
         GraphicsObject::Scale(scale_x, scale_y, scale_z);
     }
 
-    void WorldObject::Rotate(float angle, size_t axis) {        
+    void WorldObject::Rotate(Real_t angle, size_t axis) {        
         
         rotated_angle_ = angle;
 
@@ -112,7 +125,7 @@ namespace game_engine {
         GraphicsObject::Rotate(angle, axis);
     }
 
-    Direction WorldObject::GetLookingDirection() {
+    Direction_t WorldObject::GetLookingDirection() {
         return  rotated_angle_;
     }
 

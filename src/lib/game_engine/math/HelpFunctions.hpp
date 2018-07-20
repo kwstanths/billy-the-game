@@ -8,8 +8,12 @@
 #endif
 #include <cmath>
 
+#include "Types.hpp"
+
+
 namespace game_engine {
-    
+namespace math {
+
     /**
         Check if two double numbers are equal
         @param a First number
@@ -17,6 +21,9 @@ namespace game_engine {
         @return true=equal, false=not equal
     */
     template<typename T> bool Equal(const T& a, const T& b, T e = std::numeric_limits<T>::epsilon()) {
+        return std::abs(a - b) <= e;
+    }
+    template<typename T> bool Equal(const Real_t& a, const Real_t& b, Real_t e = std::numeric_limits<Real_t>::epsilon()) {
         return std::abs(a - b) <= e;
     }
 
@@ -48,25 +55,26 @@ namespace game_engine {
         @param degrees
         @return radians
     */
-    float GetRadians(float degrees);
+    Real_t GetRadians(Real_t degrees);
 
     /**
         Get degrees from radians
         @param radians
         @return degrees
     */
-    float GetDegrees(float radians);
+    Real_t GetDegrees(Real_t radians);
 
     /**
-    
+
     */
-    float InterpolationLinear(float start, float end, float percentage);
+    Real_t InterpolationLinear(Real_t start, Real_t end, Real_t percentage);
 
     /**
-    
-    */
-    float InterpolationCosine(float start, float end, float percentage);
 
+    */
+    Real_t InterpolationCosine(Real_t start, Real_t end, Real_t percentage);
+
+}
 }
 
 #endif

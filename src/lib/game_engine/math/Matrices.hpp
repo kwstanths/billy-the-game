@@ -4,7 +4,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "Types.hpp"
+
 namespace game_engine {
+namespace math {
 
     /**
         Get a model matrix
@@ -14,9 +17,9 @@ namespace game_engine {
         @param rotate_axis_vec The axis for rotation
         @return The Model matrix
      */
-    glm::mat4 GetModelMatrix(float translate_x, float translate_y, float translate_z, 
-        float scale_x, float scale_y, float scale_z,
-        float rotate_deg, float rotate_axis_x, float rotate_axis_y, float rotate_axis_z);
+    glm::mat4 GetModelMatrix(Real_t translate_x, Real_t translate_y, Real_t translate_z,
+        Real_t scale_x, Real_t scale_y, Real_t scale_z,
+        Real_t rotate_deg, Real_t rotate_axis_x, Real_t rotate_axis_y, Real_t rotate_axis_z);
 
     /**
         Get a translation matrix
@@ -25,7 +28,7 @@ namespace game_engine {
         @param translate_z The translation amount in z direction
         @return The translation matrix
      */
-    glm::mat4 GetTranslateMatrix(float translate_x, float translate_y, float translate_z);
+    glm::mat4 GetTranslateMatrix(Real_t translate_x, Real_t translate_y, Real_t translate_z);
 
     /**
         Get a scale matrix
@@ -34,7 +37,7 @@ namespace game_engine {
         @param scale_z The amount of scaling in z direction
         @return The scale matrix
      */
-    glm::mat4 GetScaleMatrix(float scale_x, float scale_y, float scale_z);
+    glm::mat4 GetScaleMatrix(Real_t scale_x, Real_t scale_y, Real_t scale_z);
 
     /**
         Get a rotation matrix
@@ -44,8 +47,9 @@ namespace game_engine {
         @param rotate_axis_z The z coordinate of the axis to rotate around
         @return The rotation matrix
      */
-    glm::mat4 GetRotateMatrix(float rotate_deg, float rotate_axis_x, float rotate_axis_y, float rotate_axis_z);
+    glm::mat4 GetRotateMatrix(Real_t rotate_deg, Real_t rotate_axis_x, Real_t rotate_axis_y, Real_t rotate_axis_z);
 
+}
 }
 
 
