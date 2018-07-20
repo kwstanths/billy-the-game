@@ -1,5 +1,6 @@
 #include "World.hpp"
 
+#include "game_engine/math/HelpFunctions.hpp"
 #include "debug_tools/Console.hpp"
 
 #include "Grass.hpp"
@@ -14,6 +15,7 @@
 
 namespace dt = debug_tools;
 namespace ge = game_engine;
+namespace math = game_engine::math;
 
 World::World() : WorldSector() {
     is_inited_ = false;
@@ -50,11 +52,11 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     /* Create and rotate some treasures */
     Treasure * tres = NewObj<Treasure>();
     tres->Init(7.0, 7.0f, 0.01f, engine, 6);
-    tres->Rotate(ge::GetRadians(15.0f), 2);
+    tres->Rotate(math::GetRadians(15.0f), 2);
     /* Put something far up */
     tres = NewObj<Treasure>();
     tres->Init(0.0f, 30.0f, 0.01f, engine, 7);
-    tres->Rotate(ge::GetRadians(45.0f), 2);
+    tres->Rotate(math::GetRadians(45.0f), 2);
 
     /* Adn then, there was light */
     Sun * sun = NewObj<Sun>();

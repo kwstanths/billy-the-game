@@ -1,14 +1,11 @@
 #include "Treasure.hpp"
 
-#include "game_engine/graphics/opengl/OpenGLObject.hpp"
-#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
-namespace ge = game_engine;
-namespace gl = game_engine::graphics::opengl;
-
 #include "debug_tools/Console.hpp"
+
+namespace ge = game_engine;
 namespace dt = debug_tools;
 
-bool Treasure::Init(float x, float y, float z, ge::GameEngine * engine, size_t id) {
+bool Treasure::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::GameEngine * engine, size_t id) {
     
     int ret = WorldObject::Init("assets/treasure.obj", x, y, z, true);
 

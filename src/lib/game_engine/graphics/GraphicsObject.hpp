@@ -5,6 +5,7 @@
 
 #include "game_engine/graphics/opengl/OpenGLObject.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
+#include "game_engine/math/Types.hpp"
 
 #include "GraphicsTypes.hpp"
 #include "Mesh.hpp"
@@ -19,7 +20,7 @@ namespace graphics {
     public:
         GraphicsObject();
 
-        int Init(float x, float y, float z, std::string model_file_path);
+        int Init(Real_t x, Real_t y, Real_t z, std::string model_file_path);
 
         int Destroy();
 
@@ -27,11 +28,11 @@ namespace graphics {
 
         virtual void Draw(Renderer * renderer);
 
-        void SetPosition(float x, float y, float z);
+        void SetPosition(Real_t x, Real_t y, Real_t z);
 
-        void Scale(float scale_x, float scale_y, float scale_z);
+        void Scale(Real_t scale_x, Real_t scale_y, Real_t scale_z);
 
-        void Rotate(float angle, size_t axis);
+        void Rotate(Real_t angle, size_t axis);
 
         void SetModelMatrix();
 

@@ -1,29 +1,32 @@
 #include "GraphicsObject.hpp"
 #include "Renderer.hpp"
 
-#include"game_engine/ErrorCodes.hpp"
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+
+#include "game_engine/ErrorCodes.hpp"
+#include "game_engine/math/Matrices.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 
 #include "AssetManager.hpp"
 
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
+namespace math = game_engine::math;
 
 namespace game_engine {
 namespace graphics {
 
     GraphicsObject::GraphicsObject() {
 
-        translation_matrix_ = GetTranslateMatrix(0, 0, 0);
+        translation_matrix_ = math::GetTranslateMatrix(0, 0, 0);
 
         is_inited_ = false;
     }
 
-    int GraphicsObject::Init(float x, float y, float z, std::string model_file_path) {
+    int GraphicsObject::Init(Real_t x, Real_t y, Real_t z, std::string model_file_path) {
 
-        translation_matrix_ = GetTranslateMatrix(x, y, z);
-        scale_matrix_ = GetScaleMatrix(1.0f, 1.0f, 1.0f);
+        translation_matrix_ = math::GetTranslateMatrix(x, y, z);
+        scale_matrix_ = math::GetScaleMatrix(1.0f, 1.0f, 1.0f);
 
         int ret = LoadModel(model_file_path);
         if (ret) return ret;
@@ -48,22 +51,22 @@ namespace graphics {
         renderer->Draw(this);
     }
 
-    void GraphicsObject::SetPosition(float x, float y, float z) {
+    void GraphicsObject::SetPosition(Real_t x, Real_t y, Real_t z) {
         /* Set the translation matrix */
-        translation_matrix_ = GetTranslateMatrix(x, y, z);
+        translation_matrix_ = math::GetTranslateMatrix(x, y, z);
     }
 
-    void GraphicsObject::Scale(float scale_x, float scale_y, float scale_z) {
+    void GraphicsObject::Scale(Real_t scale_x, Real_t scale_y, Real_t scale_z) {
         /* Set the scaling matrix */
-        scale_matrix_ = GetScaleMatrix(scale_x, scale_y, scale_z);
+        scale_matrix_ = math::GetScaleMatrix(scale_x, scale_y, scale_z);
     }
 
-    void GraphicsObject::Rotate(float angle, size_t axis) {
+    void GraphicsObject::Rotate(Real_t angle, size_t axis) {
         glm::vec3 rotation_axis;
 
-        if (axis == 0) rotation_matrix_ = GetRotateMatrix(angle, 1, 0, 0);
-        else if (axis == 1) rotation_matrix_ = GetRotateMatrix(angle, 0, 1, 0);
-        else if (axis == 2) rotation_matrix_ = GetRotateMatrix(angle, 0, 0, 1);
+        if (axis == 0) rotation_matrix_ = math::GetRotateMatrix(angle, 1, 0, 0);
+        else if (axis == 1) rotation_matrix_ = math::GetRotateMatrix(angle, 0, 1, 0);
+        else if (axis == 2) rotation_matrix_ = math::GetRotateMatrix(angle, 0, 0, 1);
 
     }
 
@@ -146,7 +149,7 @@ namespace graphics {
         aiColor3D color_ambient;
         aiColor3D color_diffuse;
         aiColor3D color_specular;
-        float shininess;
+        Real_t shininess;
         if (mesh->mMaterialIndex >= 0) {
             aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 

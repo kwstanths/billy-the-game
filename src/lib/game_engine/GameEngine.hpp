@@ -6,6 +6,7 @@
 
 #include "game_engine/graphics/opengl/OpenGLCamera.hpp"
 #include "game_engine/graphics/Renderer.hpp"
+#include "game_engine/math/Types.hpp"
 
 #include "FrameRateRegulator.hpp"
 #include "Controls.hpp"
@@ -81,7 +82,7 @@ namespace game_engine {
             Get the delta of the last frame in seconds
             @return Frame delta in seconds
         */
-        float GetFrameDelta();
+        Real_t GetFrameDelta();
 
         /**
             Set a world sector to be used

@@ -1,6 +1,9 @@
 #include "Input.hpp"
 
+#include "game_engine/math/HelpFunctions.hpp"
+
 namespace ge = game_engine;
+namespace math = game_engine::math;
 
 Input::Input() {
     is_inited_ = false;
@@ -30,7 +33,7 @@ bool Input::IsInited() {
 ControlInput_t Input::GetControls() {
 
     ge::KeyControls_t key_controls = engine_->GetControlsInput();
-    if (ge::Equal(key_controls.timestamp_, last_control_timestamp_)) return control_input_;
+    if (math::Equal(key_controls.timestamp_, last_control_timestamp_)) return control_input_;
 
     last_control_timestamp_ = key_controls.timestamp_;
     control_input_.MOVE_UP_ = key_controls.KEY_ARROW_UP + key_controls.KEY_W;

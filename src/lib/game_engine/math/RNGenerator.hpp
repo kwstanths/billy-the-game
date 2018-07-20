@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "Types.hpp"
+
 namespace game_engine {
 namespace math {
 
@@ -20,7 +22,7 @@ namespace math {
             Initialize the generator
             @param lcg_seed The seed for the lcg random number generator. Use GetPseudoRandFloat() for these random numbers
         */
-        int Init(float lcg_seed);
+        int Init(Real_t lcg_seed);
 
         int Destroy();
 
@@ -38,13 +40,13 @@ namespace math {
             Get a float random number between zero and one
             @return Random between zero and one
         */
-        static float GetRandFloat();
+        static Real_t GetRandFloat();
 
         /**
             Get a float random number between zero and one with custom seed from Init()
             @return Random between zero and one
         */
-        float GetPseudoRandFloat();
+        Real_t GetPseudoRandFloat();
 
         /**
             Generate Perlin noise in a one dimensional array
@@ -54,7 +56,7 @@ namespace math {
             @param wavelength The wavelength between peak points
             @param[out] out The vector with the values. If n_points is greater than the out vector size, zeros are returned
         */
-        void GetPerlinNoise1d(size_t n_points, float height, float amplitude, size_t wavelength, std::vector<float> & out);
+        void GetPerlinNoise1d(size_t n_points, Real_t height, Real_t amplitude, size_t wavelength, std::vector<Real_t> & out);
 
     private:
         bool is_inited_;

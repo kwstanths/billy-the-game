@@ -3,6 +3,7 @@
 
 #include "game_engine/graphics/GraphicsObject.hpp"
 #include "game_engine/graphics/Renderer.hpp"
+#include "game_engine/math/Types.hpp"
 
 namespace game_engine {
 
@@ -40,7 +41,7 @@ namespace game_engine {
             @param z The z coordinate of the position
             @param size The size of the point
         */
-        void DrawPoint(float x, float y, float z, float size);
+        void DrawPoint(Real_t x, Real_t y, Real_t z, Real_t size);
 
     private:
         bool is_inited_;

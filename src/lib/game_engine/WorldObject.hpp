@@ -31,14 +31,6 @@ namespace game_engine {
         */
         WorldObject();
 
-        //void * operator new (size_t size) {
-        //    return new WorldObject();
-        //}
-
-        //void operator delete(void * ptr) {
-        //    delete ptr;
-        //}
-
         /**
             Custom sequential alloction without single remove and delete
         */
@@ -80,7 +72,7 @@ namespace game_engine {
             Initialize the object. Sets the OpenGL model and texture of the object. Sets the initial position
             @return 0=OK, else see ErrorCodes.hpp
         */
-        int Init(std::string model_file_path, float x, float y, float z, bool interactable = false);
+        int Init(std::string model_file_path, Real_t x, Real_t y, Real_t z, bool interactable = false);
 
         /**
             Does nothing in particular yet
@@ -117,7 +109,7 @@ namespace game_engine {
             @param pos_y Position y coordinate
             @param pos_z Position z coordinate
         */
-        void SetPosition(float pos_x, float pos_y, float pos_z);
+        void SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, bool collision_check = true);
 
         /**
             Scale the object, sets the scale matrix. Collision detection is NOT changed TODO
@@ -125,28 +117,28 @@ namespace game_engine {
             @param Scale amount in axis y
             @param Scale amount in axis z
         */
-        void Scale(float scale_x, float scale_y, float scale_z);
+        void Scale(Real_t scale_x, Real_t scale_y, Real_t scale_z);
 
         /**
             Rotate the object. Changes collision detection as well
             @param angle The angle of rotation in radians, can be negative
             @param axis The axis to rotate around, 0=X-axis, 1=Y-axis, 2=Z-axis
         */
-        void Rotate(float angle, size_t axis);
+        void Rotate(Real_t angle, size_t axis);
 
         /**
             Get the diercton at which the object is "looking". The initial direction is "top" 
             which is zero degrees angle
             @return The direction of the object in RADIANS
         */
-        Direction GetLookingDirection();
+        Direction_t GetLookingDirection();
 
     protected:
         WorldSector * world_sector_ = nullptr;
 
     private:
         bool is_inited_;
-        float rotated_angle_;
+        Real_t rotated_angle_;
         bool removable_;
         bool interactable_;
 

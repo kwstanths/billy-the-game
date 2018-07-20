@@ -63,7 +63,7 @@ namespace graphics {
         /**
             @param angles in degrees
         */
-        int AddSpotLight(glm::vec3 position, glm::vec3 direction, float inner_angle, float outer_angle,
+        int AddSpotLight(glm::vec3 position, glm::vec3 direction, Real_t inner_angle, Real_t outer_angle,
             LightProperties_t light_properties, Attenuation_t attenuation);
 
         int Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);

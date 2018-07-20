@@ -3,13 +3,12 @@
 
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/WorldObject.hpp"
-
-class Player;
+#include "game_engine/math/Types.hpp"
 
 class Lava : public game_engine::WorldObject {
 public:
 
-    bool Init(float x, float y, float z, game_engine::GameEngine * engine);
+    bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, game_engine::GameEngine * engine);
 
 private:
 

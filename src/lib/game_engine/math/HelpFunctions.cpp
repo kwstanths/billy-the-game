@@ -7,27 +7,28 @@
 #include <algorithm>
 
 namespace game_engine {
+namespace math {
 
     float M_PI_FLOAT = static_cast<float>(M_PI);
 
-    float GetRadians(float degrees) {
-        return M_PI_FLOAT / 180.0f * degrees;
+    Real_t GetRadians(Real_t degrees) {
+        return static_cast<Real_t>(M_PI / 180.0 * degrees);
     }
 
-    float GetDegrees(float radians) {
-        return radians * 180.0f / M_PI_FLOAT;
+    Real_t GetDegrees(Real_t radians) {
+        return static_cast<Real_t>(radians * 180.0 / M_PI);
     }
 
-    float InterpolationLinear(float start, float end, float percentage) {
-        percentage = clamp(percentage, 0.0f, 1.0f);
+    Real_t InterpolationLinear(Real_t start, Real_t end, Real_t percentage) {
+        percentage = clamp(percentage, Real_t(0.0), Real_t(1.0));
         return start * (1 - percentage) + end * percentage;
     }
 
-    float InterpolationCosine(float start, float end, float percentage) {
-        float ft = percentage * M_PI_FLOAT;
-        float f = (1.0f - cos(ft)) * 0.5f;
+    Real_t InterpolationCosine(Real_t start, Real_t end, Real_t percentage) {
+        Real_t ft = percentage * M_PI_FLOAT;
+        Real_t f = (1.0f - cos(ft)) * 0.5f;
         return start * (1.0f - f) + end * f;
-
     }
 
+}
 }

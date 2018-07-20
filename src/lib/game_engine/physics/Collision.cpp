@@ -6,29 +6,32 @@
 
 #include "debug_tools/Console.hpp"
 
-namespace game_engine {
+namespace math = game_engine::math;
 
-    bool CollisionCheck(Rectangle2D rect_a, Rectangle2D rect_b) {
+namespace game_engine {
+namespace physics {
+
+    bool CollisionCheck(math::Rectangle2D rect_a, math::Rectangle2D rect_b) {
         return math::IntersectRect_Rect(rect_a, rect_b);
     }
 
-    bool CollisionCheck(Rectangle2D rect, Circle2D circle) {
+    bool CollisionCheck(math::Rectangle2D rect, math::Circle2D circle) {
         return math::IntersectRect_Circle(rect, circle);
     }
 
-    bool CollisionCheck(Circle2D a, Circle2D b) {
+    bool CollisionCheck(math::Circle2D a, math::Circle2D b) {
         return math::IntersectCircle_Circle(a, b);
     }
 
-    bool CollisionBoundingRectangle::Check(CollisionNone * other){
+    bool CollisionBoundingRectangle::Check(CollisionNone * other) {
         return false;
     }
 
-    bool CollisionBoundingRectangle::Check(CollisionBoundingRectangle * other){
+    bool CollisionBoundingRectangle::Check(CollisionBoundingRectangle * other) {
         return CollisionCheck(brect_, other->brect_);
     }
-    
-    bool CollisionBoundingRectangle::Check(CollisionBoundingCircle * other){
+
+    bool CollisionBoundingRectangle::Check(CollisionBoundingCircle * other) {
         return CollisionCheck(brect_, other->bcircle_);
     }
 
@@ -37,15 +40,15 @@ namespace game_engine {
         return CollisionType::COLLISION_BOUNDING_RECTANGLE;
     }
 
-    bool CollisionBoundingCircle::Check(CollisionNone * other){
+    bool CollisionBoundingCircle::Check(CollisionNone * other) {
         return false;
     }
-    
-    bool CollisionBoundingCircle::Check(CollisionBoundingRectangle * other){
+
+    bool CollisionBoundingCircle::Check(CollisionBoundingRectangle * other) {
         return CollisionCheck(other->brect_, bcircle_);
     }
-    
-    bool CollisionBoundingCircle::Check(CollisionBoundingCircle * other){
+
+    bool CollisionBoundingCircle::Check(CollisionBoundingCircle * other) {
         return CollisionCheck(bcircle_, other->bcircle_);
     }
 
@@ -54,5 +57,5 @@ namespace game_engine {
         return CollisionType::COLLISION_BOUNDING_CIRCLE;
     }
 
-
+}
 }

@@ -17,7 +17,7 @@ namespace math {
         @param vector_a Second vector
         @return The inner product
     */
-    float DotProduct(Point2D vector_a, Point2D vector_b);
+    Real_t DotProduct(Point2D vector_a, Point2D vector_b);
     
     /**
         Check whether a point is inside a rectangle in a 2D pane
@@ -41,7 +41,7 @@ namespace math {
         @param line The line
         @return The distance
     */
-    float GetDistance(Point2D point, Line2D line);
+    Real_t GetDistance(Point2D point, Line2D line);
     
     /**
         Get the distance between two points
@@ -49,7 +49,7 @@ namespace math {
         @param p_b The second point
         @return The distance
     */
-    float GetDistance(Point2D p_a, Point2D p_b);
+    Real_t GetDistance(Point2D p_a, Point2D p_b);
     
     /**
         Check whether a line intersects with a circle, the line is an infinite line

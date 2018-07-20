@@ -5,6 +5,8 @@
 
 #include <glm/glm.hpp>
 
+#include "game_engine/math/Types.hpp"
+
 namespace game_engine {
 namespace graphics {
 
@@ -57,7 +59,7 @@ namespace graphics {
         glm::vec3 ambient_;
         glm::vec3 diffuse_;
         glm::vec3 specular_;
-        float shininess_;
+        Real_t shininess_;
 
         /**
             Creates a material with shininess 32 and full ambient, diffuse and specular components
@@ -78,7 +80,7 @@ namespace graphics {
         /**
             Create a custom material
         */
-        Material_t(float shininess, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular): 
+        Material_t(Real_t shininess, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular): 
             shininess_(shininess), ambient_(ambient), diffuse_(diffuse), specular_(specular){};
 
     };
@@ -105,7 +107,7 @@ namespace graphics {
             Creates custom light
             @param a All light components are equal to a
         */
-        LightProperties_t(float a) {
+        LightProperties_t(Real_t a) {
             ambient_ = glm::vec3(a, a, a);
             diffuse_ = glm::vec3(a, a, a);
             specular_ = glm::vec3(a, a, a);
@@ -122,9 +124,9 @@ namespace graphics {
         Holds the necessary values for the light attenuation aglrothim
     */
     struct Attenuation_t {
-        float constant_;
-        float linear_;
-        float quadratic_;
+        Real_t constant_;
+        Real_t linear_;
+        Real_t quadratic_;
 
         /**
             Attenuation values are big enough
@@ -138,7 +140,7 @@ namespace graphics {
         /**
             Create a custom attenuation struct
         */
-        Attenuation_t(float c, float l, float q) : constant_(c), linear_(l), quadratic_(q) {};
+        Attenuation_t(Real_t c, Real_t l, Real_t q) : constant_(c), linear_(l), quadratic_(q) {};
     };
 
 

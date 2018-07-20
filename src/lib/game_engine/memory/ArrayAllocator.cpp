@@ -22,7 +22,7 @@ namespace memory_subsystem {
     bool ArrayAllocator::Init(size_t bytes_size) {
         if (is_inited_) return false;
 
-        size_t number_of_pages = static_cast<size_t>(std::ceil(((float)bytes_size) / ((float)PAGE_SIZE)));
+        size_t number_of_pages = static_cast<size_t>(std::ceil(((double)bytes_size) / ((double)PAGE_SIZE)));
         pages_ = std::vector<MemoryPage *>(number_of_pages);
         for (size_t i = 0; i < number_of_pages; i++)
             pages_[i] = new MemoryPage(PAGE_SIZE);

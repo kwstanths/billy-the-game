@@ -39,7 +39,7 @@ namespace game_engine {
         return is_inited_;
     }
 
-    void Debugger::DrawPoint(float x, float y, float z, float size) {
+    void Debugger::DrawPoint(Real_t x, Real_t y, Real_t z, Real_t size) {
 
         if (!is_inited_) return;
 

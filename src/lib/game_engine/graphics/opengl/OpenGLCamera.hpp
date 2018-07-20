@@ -1,11 +1,13 @@
 #ifndef __OpenGLCamera_hpp__
 #define __OpenGLCamera_hpp__
 
+#include <glm/glm.hpp>
+
+#include "game_engine/math/Types.hpp"
+
 #include "OpenGLIncludes.hpp"
 #include "OpenGLShaders.hpp"
 #include "OpenGLContext.hpp"
-
-#include <glm/glm.hpp>
 
 namespace game_engine {
 namespace graphics {
@@ -24,7 +26,7 @@ namespace opengl {
         /* true: Orthographic-2D, false: Perspective-3D */
         bool orthographic_;
         /* If orthigraphic is applied, set the zoom factor */
-        float zoom_factor_;
+        Real_t zoom_factor_;
     } OpenGLCameraConfig_t;
 
 
@@ -60,7 +62,7 @@ namespace opengl {
             @param[out] pos_y Y
             @param[out] pos_z Z
         */
-        void GetPositionVector(float * pos_x, float * pos_y, float * pos_z);
+        void GetPositionVector(Real_t * pos_x, Real_t * pos_y, Real_t * pos_z);
 
         /**
             Get camera's direction vector
@@ -68,7 +70,7 @@ namespace opengl {
             @param[out] dir_y Y
             @param[out] dir_z Z
         */
-        void GetDirectionVector(float * dir_x, float * dir_y, float * dir_z);
+        void GetDirectionVector(Real_t * dir_x, Real_t * dir_y, Real_t * dir_z);
 
         /**
             Get camera's up vector
@@ -76,7 +78,7 @@ namespace opengl {
             @param[out] up_y Y
             @param[out] up_z Z
         */
-        void GetUpVector(float * up_x, float * up_y, float * up_z);
+        void GetUpVector(Real_t * up_x, Real_t * up_y, Real_t * up_z);
 
         /**
             Set camera's position vector
@@ -84,7 +86,7 @@ namespace opengl {
             @param y y coordinate
             @param z z coordinate
         */
-        void SetPositionVector(float x, float y, float z);
+        void SetPositionVector(Real_t x, Real_t y, Real_t z);
 
         /**
             Set camera's direction vector
@@ -92,7 +94,7 @@ namespace opengl {
             @param y y coordinate
             @param z z coordinate
         */
-        void SetDirectionVector(float x, float y, float z);
+        void SetDirectionVector(Real_t x, Real_t y, Real_t z);
 
         /**
             Set camera's up vector
@@ -100,7 +102,7 @@ namespace opengl {
             @param y y coordinate
             @param z z coordinate
         */
-        void SetUpVector(float x, float y, float z);
+        void SetUpVector(Real_t x, Real_t y, Real_t z);
 
         /**
             Move the camera's position
@@ -108,7 +110,7 @@ namespace opengl {
             @param move_y Movement in y
             @param move_z Movement in z
         */
-        void MovePositionVector(float move_x, float move_y, float move_z);
+        void MovePositionVector(Real_t move_x, Real_t move_y, Real_t move_z);
 
         /**
             Move the camera's directon
@@ -116,13 +118,13 @@ namespace opengl {
             @param move_y Movement in y
             @param move_z Movement in z
         */
-        void MoveDirectionVector(float move_x, float move_y, float move_z);
+        void MoveDirectionVector(Real_t move_x, Real_t move_y, Real_t move_z);
 
         /**
             Zoom in/out of the scene
             @param factor Add to the camera zoom_factor already set
         */
-        void Zoom(float factor);
+        void Zoom(Real_t factor);
 
         /**
             Set a function for callback when the mouse moves
@@ -145,7 +147,7 @@ namespace opengl {
         /**
             Set Orthographic projection matrix
         */
-        void Ortho2D(float zoom_factor);
+        void Ortho2D(Real_t zoom_factor);
 
         /**
             Set Perspective-3D projection matrix

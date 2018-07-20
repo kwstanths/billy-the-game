@@ -89,7 +89,7 @@ namespace game_engine {
         renderer_->StartFrame();
 
         /* Get visible items */
-        float center_x, center_y, center_z;
+        Real_t center_x, center_y, center_z;
         camera_->GetPositionVector(&center_x, &center_y, &center_z);
 
         /* TODO Check whether sector_ is set */
@@ -140,7 +140,7 @@ namespace game_engine {
         return key_controls_;
     }
 
-    float GameEngine::GetFrameDelta() {
+    Real_t GameEngine::GetFrameDelta() {
         return frame_regulator_.GetDelta();
     }
 

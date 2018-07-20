@@ -1,49 +1,48 @@
 #ifndef __Types_hpp__
 #define __Types_hpp__
 
-#include "HelpFunctions.hpp"
-#include "Matrices.hpp"
+#include <iostream>
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
+   
 
 namespace game_engine {
-    
-    /* Shows a direction in degrees: 0 = top, 90 = left, 180 = bottom, 270 = right */
-    typedef float Direction;
 
+    typedef float Real_t;
+    /* Shows a direction in degrees: 0 = top, 90 = left, 180 = bottom, 270 = right */
+    typedef float Direction_t;
+
+namespace math {
 
     class Shape2D {
-        virtual void Translate(float x, float y) = 0;
-        virtual void Rotate(float th) = 0;
+        virtual void Translate(Real_t x, Real_t y) = 0;
+        virtual void Rotate(Real_t th) = 0;
     };
 
 
     /**
-        A point in a 2D pane 
+        A point in a 2D pane
         (x,y) : point coordinates
     */
     class Point2D {
     public:
-        float x_;
-        float y_;
+        Real_t x_;
+        Real_t y_;
 
         Point2D() {
             x_ = y_ = 0.0f;
         }
-        Point2D(float x, float y) : x_(x), y_(y) {};
+        Point2D(Real_t x, Real_t y) : x_(x), y_(y) {};
 
-        bool operator==(Point2D a) const {
-            if (Equal(a.x_, x_) && Equal(a.y_, y_)) return true;
-            else return false;
-        }
+        bool operator==(Point2D a) const;
 
         /*
             Translate the point
             @param x Horizontal movement
             @param y Vertical movement
         */
-        void Translate(float x, float y){
+        void Translate(Real_t x, Real_t y) {
             x_ += x;
             y_ += y;
         }
@@ -53,12 +52,12 @@ namespace game_engine {
             @param th The rotation angle in radians
             @param axis The point to rotate around
         */
-        void Rotate(float th, Point2D axis) {
-            float c = cos(th);
-            float s = sin(th);
-            
-            float x = x_ - axis.x_;
-            float y = y_ - axis.y_;
+        void Rotate(Real_t th, Point2D axis) {
+            Real_t c = cos(th);
+            Real_t s = sin(th);
+
+            Real_t x = x_ - axis.x_;
+            Real_t y = y_ - axis.y_;
 
             x_ = x * c + y * s;
             y_ = -x * s + y * c;
@@ -67,21 +66,23 @@ namespace game_engine {
             y_ += axis.y_;
         }
 
+        friend std::ostream& operator<<(std::ostream& os, const Point2D& p);
+
     };
 
     /**
-        A circle in a 2D pane 
+        A circle in a 2D pane
         c : center point
         r : radius
     */
     class Circle2D : public Shape2D {
     public:
         Point2D c_;
-        float r_;
+        Real_t r_;
 
 
         Circle2D() {};
-        Circle2D(float x, float y, float r) {
+        Circle2D(Real_t x, Real_t y, Real_t r) {
             c_.x_ = x;
             c_.y_ = y;
             r_ = r;
@@ -92,7 +93,7 @@ namespace game_engine {
             @param x Horizontal movement
             @param y Vertical movement
         */
-        void Translate(float x, float y){
+        void Translate(Real_t x, Real_t y) {
             c_.Translate(x, y);
         }
 
@@ -100,7 +101,7 @@ namespace game_engine {
             Scale the circle
             @param s The scaling amount
         */
-        void Scale(float s) {
+        void Scale(Real_t s) {
             r_ = r_ * s;
         }
 
@@ -108,7 +109,7 @@ namespace game_engine {
             Rotate the circle clockwise around its center
             @param th The rotation angle in radians
         */
-        void Rotate(float th){
+        void Rotate(Real_t th) {
             /* Do nothing */
         }
     };
@@ -127,11 +128,11 @@ namespace game_engine {
 
         Rectangle2D() {};
 
-        Rectangle2D(Point2D A, Point2D B, Point2D C, Point2D D): A_(A), B_(B), C_(C), D_(D) {};
-        
-        Rectangle2D(float center_x, float center_y, float x_width, float y_height) {
-            float xmar = x_width / 2.0f;
-            float ymar = y_height / 2.0f;
+        Rectangle2D(Point2D A, Point2D B, Point2D C, Point2D D) : A_(A), B_(B), C_(C), D_(D) {};
+
+        Rectangle2D(Real_t center_x, Real_t center_y, Real_t x_width, Real_t y_height) {
+            Real_t xmar = x_width / 2.0f;
+            Real_t ymar = y_height / 2.0f;
 
             A_ = Point2D(center_x - xmar, center_y - ymar);
             B_ = Point2D(center_x + xmar, center_y - ymar);
@@ -144,7 +145,7 @@ namespace game_engine {
             @param x Horizontal movement
             @param y Vertical movement
         */
-        void Translate(float x, float y){
+        void Translate(Real_t x, Real_t y) {
             A_.Translate(x, y);
             B_.Translate(x, y);
             C_.Translate(x, y);
@@ -155,7 +156,7 @@ namespace game_engine {
             Scale the rectangle
             @param s The scaling amount
         */
-        void Scale(float s) {
+        void Scale(Real_t s) {
             dt::Console(dt::CRITICAL, "Rectangle2D::Scale(): This function is not implemented");
         }
 
@@ -163,7 +164,7 @@ namespace game_engine {
             Rotate the rectangle clockwise around its center
             @param th The rotation angle in radians
         */
-        void Rotate(float th){
+        void Rotate(Real_t th) {
             Point2D center((B_.x_ + D_.x_) / 2.0f, (B_.y_ + D_.y_) / 2.0f);
 
             A_.Rotate(th, center);
@@ -175,14 +176,14 @@ namespace game_engine {
     };
 
     /**
-        A line in a 2D pane 
+        A line in a 2D pane
         [A*x + B*y + C = 0]
     */
     class Line2D {
     public:
-        float A_;
-        float B_;
-        float C_;
+        Real_t A_;
+        Real_t B_;
+        Real_t C_;
 
         Line2D() {
             A_ = B_ = C_ = 0.0f;
@@ -190,22 +191,11 @@ namespace game_engine {
         /**
             Create a line from two points
         */
-        Line2D(float a_x, float a_y, float b_x, float b_y) {
-            if (Equal(b_x, a_x)) {
-                A_ = 1.0f;
-                B_ = 0.0f;
-                C_ = -a_x;
-                return;
-            }
-            float gradient = (b_y - a_y) / (b_x - a_x);
-            A_ = gradient;
-            B_ = -1.0f;
-            C_ = a_y - gradient * a_x;
-        };
+        Line2D(Real_t a_x, Real_t a_y, Real_t b_x, Real_t b_y);
         /**
             Create a line from a point and a slope
         */
-        Line2D(float a_x, float a_y, float gradient) {
+        Line2D(Real_t a_x, Real_t a_y, Real_t gradient) {
             A_ = gradient;
             B_ = -1.0f;
             C_ = a_y - gradient * a_x;
@@ -214,19 +204,20 @@ namespace game_engine {
         /**
             Get the line gradient
         */
-        float GetGradient() {
+        Real_t GetGradient() {
             return -A_ / B_;
         }
 
         /**
             Get the line y-intercept
         */
-        float GetYIntercept() {
+        Real_t GetYIntercept() {
             return -C_ / B_;
         }
 
     };
 
+}
 }
 
 #endif

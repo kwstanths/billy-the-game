@@ -1,18 +1,15 @@
 #include "Wall.hpp"
 
-#include "game_engine/graphics/opengl/OpenGLObject.hpp"
-#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
-namespace ge = game_engine;
-namespace gl = game_engine::graphics::opengl;
-
 #include "debug_tools/Console.hpp"
+
+namespace ge = game_engine;
 namespace dt = debug_tools;
 
-
-bool Wall::Init(float x, float y, float z, game_engine::GameEngine * engine) {
+bool Wall::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, game_engine::GameEngine * engine) {
 
     int ret = WorldObject::Init("assets/wall.obj", x, y, z, true);
 
+    SetPosition(x, y, z);
     SetCollision(1.0f, 1.0f);
 
     return ret == 0;

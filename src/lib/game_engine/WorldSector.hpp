@@ -4,9 +4,10 @@
 #include <vector>
 #include <deque>
 
-#include "physics/PhysicsEngine.hpp"
-#include "memory/ArrayAllocator.hpp"
-#include "memory/PoolAllocator.hpp"
+#include "game_engine/memory/ArrayAllocator.hpp"
+#include "game_engine/memory/PoolAllocator.hpp"
+#include "game_engine/physics/PhysicsEngine.hpp"
+#include "game_engine/math/Types.hpp"
 
 #include "WorldObject.hpp"
 
@@ -36,8 +37,8 @@ namespace game_engine {
             @return 0=OK, -1 = Not initialised
         */
         int Init(size_t width, size_t height, 
-            float x_margin_start, float x_margin_end,
-            float y_margin_start, float y_margin_end, 
+            Real_t x_margin_start, Real_t x_margin_end,
+            Real_t y_margin_start, Real_t y_margin_end, 
             size_t elements);
 
         /**
@@ -65,10 +66,8 @@ namespace game_engine {
 
             /* Allocate memory for new object */
             T * the_new_object;
-            //the_new_object = new T();
-            //if (!removable) the_new_object = new (array_allocator_) T();
-            //else the_new_object = new (pool_allocator_) T();
-            the_new_object = new (array_allocator_) T();
+            if (!removable) the_new_object = new (array_allocator_) T();
+            else the_new_object = new (pool_allocator_) T();
 
             the_new_object->world_sector_ = this;
             the_new_object->removable_ = removable;
@@ -84,7 +83,7 @@ namespace game_engine {
             @param z Position Z coordinate
             @return 0 = OK, -1 = Not initialised
         */
-        int Insert(WorldObject * object, float x, float y, float z);
+        int Insert(WorldObject * object, Real_t x, Real_t y, Real_t z);
 
         /**
             Updates the position of an object in the world
@@ -94,7 +93,7 @@ namespace game_engine {
             @param new_pos_x The new position x coordinate
             @param new_pos_y The new position y coordinate
         */
-        void UpdateObjectPosition(WorldObject * object, float old_pos_x, float old_pos_y, float new_pos_x, float new_pos_y);
+        void UpdateObjectPosition(WorldObject * object, Real_t old_pos_x, Real_t old_pos_y, Real_t new_pos_x, Real_t new_pos_y);
 
         /**
             Remove the object from the world
@@ -111,7 +110,7 @@ namespace game_engine {
             @param[out] visible_world The vector with pointers to the objects window
             @return The number of objects assigned to the visible_world vector
         */
-        size_t GetObjectsWindow(float center_x, float center_y, float margin, std::vector<WorldObject *> & objects);
+        size_t GetObjectsWindow(Real_t center_x, Real_t center_y, Real_t margin, std::vector<WorldObject *> & objects);
 
         /**
             Find  the first interactable object inside the search area. pos_x, pos_y is currently not used
@@ -120,7 +119,7 @@ namespace game_engine {
             @param pos_y currently not used
             @return nullptr if none is found, the pointer if something is found
         */
-        WorldObject * FindInteractNeighbour(Rectangle2D search_area, float pos_x, float pos_y);
+        WorldObject * FindInteractNeighbour(game_engine::math::Rectangle2D search_area, Real_t pos_x, Real_t pos_y);
 
         /**
             Get the physics engine used in this world
@@ -131,7 +130,7 @@ namespace game_engine {
     private:
         
         bool is_inited_;
-        float x_margin_start_, x_margin_end_, y_margin_start_, y_margin_end_;
+        Real_t x_margin_start_, x_margin_end_, y_margin_start_, y_margin_end_;
         physics::PhysicsEngine * physics_engine_;
         
         /* 
@@ -152,14 +151,14 @@ namespace game_engine {
             @param vertical_coordinate The vertical coordinate
             @return The row
         */    
-        size_t GetRow(float vertical_coordinate);
+        size_t GetRow(Real_t vertical_coordinate);
         
         /**
             Get the column in the world based in the horizontal coordinate
             @param horizontal_coordiante The horizontal coordiante
             @return The column
         */
-        size_t GetColumn(float horizontal_coordinate);
+        size_t GetColumn(Real_t horizontal_coordinate);
 
         /**
             Deallocate the removed objects

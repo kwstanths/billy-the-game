@@ -20,7 +20,7 @@ namespace math {
 
     }
 
-    int RNGenerator::Init(float lcg_seed) {
+    int RNGenerator::Init(Real_t lcg_seed) {
         
         /* Initialize pseudo random number generator LCG */
         lcg_M_ = std::numeric_limits<std::size_t>::max() - 1;
@@ -46,16 +46,16 @@ namespace math {
         return rand() % (max - min + 1) + min;
     }
 
-    float RNGenerator::GetRandFloat() {
-        return (float)rand() / (float)RAND_MAX;
+    Real_t RNGenerator::GetRandFloat() {
+        return (Real_t)rand() / (Real_t)RAND_MAX;
     }
 
-    float RNGenerator::GetPseudoRandFloat() {
+    Real_t RNGenerator::GetPseudoRandFloat() {
         lcg_Z_ = (lcg_A_ * lcg_Z_ + lcg_C_) % lcg_M_;
-        return ((float)lcg_Z_ / ((float)lcg_M_));
+        return ((Real_t)lcg_Z_ / ((Real_t)lcg_M_));
     }
 
-    void RNGenerator::GetPerlinNoise1d(size_t n_points, float height, float amplitude, size_t wavelength, std::vector<float>& out) {
+    void RNGenerator::GetPerlinNoise1d(size_t n_points, Real_t height, Real_t amplitude, size_t wavelength, std::vector<Real_t>& out) {
 
         if (out.size() < n_points) {
             dt::Console(dt::CRITICAL, "RNGenerator::GetPerlinNoise1d(): output vector size smaller than n_points");
@@ -63,10 +63,10 @@ namespace math {
         }
 
         size_t index = 0;
-        float h2 = (float)height / 2.0f;
-        float value = h2;
-        float start = GetPseudoRandFloat() - 0.5f;
-        float end = GetPseudoRandFloat() - 0.5f;
+        Real_t h2 = (Real_t)height / 2.0f;
+        Real_t value = h2;
+        Real_t start = GetPseudoRandFloat() - 0.5f;
+        Real_t end = GetPseudoRandFloat() - 0.5f;
 
         while (index < n_points) {
             if (index % wavelength == 0) {
@@ -74,7 +74,7 @@ namespace math {
                 end = GetPseudoRandFloat() - 0.5f;
                 value = h2 + start * amplitude;
             } else {
-                value = h2 + InterpolationCosine(start, end, ((float)(index % wavelength) / (float)wavelength)) * amplitude;
+                value = h2 + InterpolationCosine(start, end, ((Real_t)(index % wavelength) / (Real_t)wavelength)) * amplitude;
             }
             out[index] = value;
             index += 1;
