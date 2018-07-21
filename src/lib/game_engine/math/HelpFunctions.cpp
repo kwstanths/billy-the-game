@@ -19,6 +19,17 @@ namespace math {
         return static_cast<Real_t>(radians * 180.0 / M_PI);
     }
 
+    size_t PowerOfTwo(size_t v) {
+        v--;
+        v |= v >> 1;
+        v |= v >> 2;
+        v |= v >> 4;
+        v |= v >> 8;
+        v |= v >> 16;
+        v++;
+        return v;
+    }
+
     Real_t InterpolationLinear(Real_t start, Real_t end, Real_t percentage) {
         percentage = clamp(percentage, Real_t(0.0), Real_t(1.0));
         return start * (1 - percentage) + end * percentage;

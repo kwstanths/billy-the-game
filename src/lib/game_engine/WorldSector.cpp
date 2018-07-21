@@ -37,6 +37,9 @@ namespace game_engine {
         /* Initialize the physics engine used */
         physics_engine_->Init(math::Rectangle2D(0, 0, 250, 250), elements);
 
+        /* Initialize the circular buffer for deleting objects */
+        delete_objects_buffer_.Init(128);
+
         /* Set the margins */
         x_margin_start_ = x_margin_start;
         x_margin_end_ = x_margin_end;
@@ -112,8 +115,11 @@ namespace game_engine {
             }
         }
 
-        if (object->removable_) delete_vector_.push_back(object);
-        else dt::Console(dt::WARNING, "Memory leak: Removing object that was not made removable");
+        if (object->removable_) {
+            int ret = delete_objects_buffer_.Push(object);
+            if (ret) dt::Console(dt::CRITICAL, "WorldSector::Remove(): MEMORY LEAK, delete buffer is full");
+
+        } else dt::Console(dt::WARNING, "WorldSector::Remove(): MEMORY LEAK, removing object that was not made removable");
     }
 
     size_t WorldSector::GetObjectsWindow(Real_t center_x, Real_t center_y, Real_t margin,
@@ -180,10 +186,13 @@ namespace game_engine {
     }
 
     void WorldSector::DeleteRemovedObjects() {
-        for (std::deque<WorldObject *>::iterator itr = delete_vector_.begin(); itr != delete_vector_.end(); ++itr) {
-            pool_allocator_->Deallocate(*itr);
+
+        for (size_t i = 0; i < delete_objects_buffer_.Items(); i++) {
+            WorldObject * object;
+            delete_objects_buffer_.Get(object);
+            pool_allocator_->Deallocate(object);
         }
-        delete_vector_.clear();
+
     }
 
 }

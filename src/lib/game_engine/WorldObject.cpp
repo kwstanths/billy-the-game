@@ -40,7 +40,6 @@ namespace game_engine {
         /* Insert in the world */
         if (world_sector_ != nullptr) world_sector_->Insert(this, x, y, z);
 
-        rotated_angle_ = 0.0f;
         interactable_ = interactable;
 
         is_inited_ = true;
@@ -109,24 +108,20 @@ namespace game_engine {
         GraphicsObject::Scale(scale_x, scale_y, scale_z);
     }
 
-    void WorldObject::Rotate(Real_t angle, size_t axis) {        
+    void WorldObject::Rotate(Real_t angle, glm::vec3 axis) {        
         
-        rotated_angle_ = angle;
-
-        /* Update physics object */
-        /* 
-            Currently, rotation is done in a 2d manner only in the xy pane clockwise, i.e along the z-axis
-            This means that positive angle will actually rotate along the -z axis, and 
-            negative angle will rotate along the z-axis. That's why we pass the opositve of the angle, since
-            the GetRotateMatrix has opposite behaviour 
-        */
-        PhysicsObject::Rotate(-angle);
+        if (axis == glm::vec3(0, 0, 1)) {
+            /* Update physics object */
+            /*
+                Currently, rotation is done in a 2d manner only in the xy pane clockwise, i.e along the z-axis
+                This means that positive angle will actually rotate along the -z axis, and
+                negative angle will rotate along the z-axis. That's why we pass the opositve of the angle, since
+                the GetRotateMatrix has opposite behaviour
+            */
+            PhysicsObject::Rotate(-angle);
+        }
 
         GraphicsObject::Rotate(angle, axis);
-    }
-
-    Direction_t WorldObject::GetLookingDirection() {
-        return  rotated_angle_;
     }
 
 }

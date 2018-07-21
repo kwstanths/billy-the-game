@@ -61,13 +61,12 @@ namespace graphics {
         scale_matrix_ = math::GetScaleMatrix(scale_x, scale_y, scale_z);
     }
 
-    void GraphicsObject::Rotate(Real_t angle, size_t axis) {
-        glm::vec3 rotation_axis;
+    void GraphicsObject::SetRotation(Real_t angle, glm::vec3 axis) {
+        rotation_matrix_ = math::GetRotateMatrix(angle, axis.x, axis.y, axis.z);
+    }
 
-        if (axis == 0) rotation_matrix_ = math::GetRotateMatrix(angle, 1, 0, 0);
-        else if (axis == 1) rotation_matrix_ = math::GetRotateMatrix(angle, 0, 1, 0);
-        else if (axis == 2) rotation_matrix_ = math::GetRotateMatrix(angle, 0, 0, 1);
-
+    void GraphicsObject::Rotate(Real_t angle, glm::vec3 axis) {
+        rotation_matrix_ *= math::GetRotateMatrix(angle, axis.x, axis.y, axis.z);
     }
 
     void GraphicsObject::SetModelMatrix() {

@@ -32,7 +32,15 @@ namespace graphics {
 
         void Scale(Real_t scale_x, Real_t scale_y, Real_t scale_z);
 
-        void Rotate(Real_t angle, size_t axis);
+        /**
+            Set the rotation matrix of the model.
+        */
+        void SetRotation(Real_t angle, glm::vec3 axis);
+
+        /** 
+            Rotate the model around the axis, takes in mind previous rotations
+        */
+        void Rotate(Real_t angle, glm::vec3 axis);
 
         void SetModelMatrix();
 

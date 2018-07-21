@@ -19,6 +19,7 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Collision add center of the object");
     CodeReminder("fix OnCollisionDetected()");
     CodeReminder("Fix the build with double");
     CodeReminder("Add the sun to something so that step and draw are always executed");

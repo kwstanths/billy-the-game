@@ -119,7 +119,6 @@ namespace physics {
         */
         void SetObjectType(size_t type);
 
-
     private:
         bool is_inited_;
         game_engine::Real_t pos_x_, pos_y_, pos_z_;

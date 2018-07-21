@@ -1,5 +1,6 @@
 #include "Treasure.hpp"
 
+#include "game_engine/math/HelpFunctions.hpp"
 #include "debug_tools/Console.hpp"
 
 namespace ge = game_engine;
@@ -17,7 +18,7 @@ bool Treasure::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::GameEngine * e
 }
 
 void Treasure::Step(double delta_time){
-    
+
 }
 
 void Treasure::Interact() {

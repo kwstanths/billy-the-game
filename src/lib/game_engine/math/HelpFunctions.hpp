@@ -23,9 +23,6 @@ namespace math {
     template<typename T> bool Equal(const T& a, const T& b, T e = std::numeric_limits<T>::epsilon()) {
         return std::abs(a - b) <= e;
     }
-    template<typename T> bool Equal(const Real_t& a, const Real_t& b, Real_t e = std::numeric_limits<Real_t>::epsilon()) {
-        return std::abs(a - b) <= e;
-    }
 
     /**
         Swap two values, uses copy constructor
@@ -63,6 +60,13 @@ namespace math {
         @return degrees
     */
     Real_t GetDegrees(Real_t radians);
+
+    /**
+        Find the nearest number higher than v, that is a power of two
+        @param v Input number
+        @return The closest power of two number higher than v
+    */
+    size_t PowerOfTwo(size_t v);
 
     /**
 

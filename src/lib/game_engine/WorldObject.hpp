@@ -120,25 +120,17 @@ namespace game_engine {
         void Scale(Real_t scale_x, Real_t scale_y, Real_t scale_z);
 
         /**
-            Rotate the object. Changes collision detection as well
+            Rotate the object around an axis. Changes collision detection as well
             @param angle The angle of rotation in radians, can be negative
-            @param axis The axis to rotate around, 0=X-axis, 1=Y-axis, 2=Z-axis
+            @param axis The axis to rotate around
         */
-        void Rotate(Real_t angle, size_t axis);
-
-        /**
-            Get the diercton at which the object is "looking". The initial direction is "top" 
-            which is zero degrees angle
-            @return The direction of the object in RADIANS
-        */
-        Direction_t GetLookingDirection();
+        void Rotate(Real_t angle, glm::vec3 axis);
 
     protected:
         WorldSector * world_sector_ = nullptr;
 
     private:
         bool is_inited_;
-        Real_t rotated_angle_;
         bool removable_;
         bool interactable_;
 

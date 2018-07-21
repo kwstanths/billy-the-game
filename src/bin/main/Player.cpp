@@ -31,6 +31,7 @@ int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera
     radius_ = 0.5f;
     interact_fov_ = math::GetRadians(50.0f);
     interact_margin_ = 0.3f;
+    looking_direction_ = 0.0f;
 
     /* Scale object down to half */
     Scale(0.5f, 0.5f, 1.0f);
@@ -61,10 +62,33 @@ void Player::Step(double delta_time) {
     /* Get input */
     ControlInput_t controls = input_->GetControls();
 
+    /* Move player and camera */
+    {
+        ge::Real_t move_offset = (1.0f * GetSpeed(controls.RUN_)) * static_cast<float>(delta_time);
+        /* Find the moving direction based on the input */
+        size_t lookup_index = controls.MOVE_UP_ * 8 + controls.MOVE_DOWN_ * 4 + controls.MOVE_LEFT_ * 2 + controls.MOVE_RIGHT_ * 1;
+        ge::Direction_t new_direction = direction_array_[lookup_index];
+        if (!math::Equal(new_direction, -1.0f)) {
+
+            /* Set the rotation of the model */
+            SetRotation(math::GetRadians(new_direction), { 0,0,1 });
+            looking_direction_ = ge::math::GetRadians(new_direction);
+
+            /* Set position */
+            ge::Real_t pos_x = GetX();
+            ge::Real_t pos_y = GetY();
+            ge::Real_t pos_z = GetZ();
+            pos_x = pos_x - controls.MOVE_LEFT_ * move_offset + controls.MOVE_RIGHT_ * move_offset;
+            pos_y = pos_y + controls.MOVE_UP_ * move_offset - controls.MOVE_DOWN_ * move_offset;
+            SetPosition(pos_x, pos_y, pos_z);
+            camera->Set2DPosition(GetX(), GetY());
+        }
+    }
+
     /* Interact with objects */
     {
         if (controls.INTERACT_PRESSED || controls.INTERACT_) {
-            ge::Direction_t direction = GetLookingDirection();
+            ge::Direction_t direction = looking_direction_;
             ge::Real_t x1 = GetX() - (radius_ + interact_margin_) * sin(direction + interact_fov_);
             ge::Real_t y1 = GetY() + (radius_ + interact_margin_) * cos(direction + interact_fov_);
             math::Point2D A(x1, y1);
@@ -97,28 +121,6 @@ void Player::Step(double delta_time) {
                     world_sector_->NewObj<Wall>(true)->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, engine_);
                 }
             }
-        }
-    }
-
-    /* Move player and camera */
-    {
-        ge::Real_t move_offset = (1.0f * GetSpeed(controls.RUN_)) * static_cast<float>(delta_time);
-        /* Find the moving direction based on the input */
-        size_t lookup_index = controls.MOVE_UP_ * 8 + controls.MOVE_DOWN_ * 4 + controls.MOVE_LEFT_ * 2 + controls.MOVE_RIGHT_ * 1;
-        ge::Direction_t direction = direction_array_[lookup_index];
-        if (!math::Equal(direction, -1.0f)) {
-
-            /* Rotate*/
-            Rotate(math::GetRadians(direction), 2);
-
-            /* Set position */
-            ge::Real_t pos_x = GetX();
-            ge::Real_t pos_y = GetY();
-            ge::Real_t pos_z = GetZ();
-            pos_x = pos_x - controls.MOVE_LEFT_ * move_offset + controls.MOVE_RIGHT_ * move_offset;
-            pos_y = pos_y + controls.MOVE_UP_ * move_offset - controls.MOVE_DOWN_ * move_offset;
-            SetPosition(pos_x, pos_y, pos_z);
-            camera->Set2DPosition(GetX(), GetY());
         }
     }
 

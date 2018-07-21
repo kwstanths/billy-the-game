@@ -58,6 +58,10 @@ namespace physics {
         return is_inited_;
     }
 
+    void PhysicsEngine::Step() {
+
+    }
+
     int PhysicsEngine::Insert(PhysicsObject * object) {
         bool ret = world_.Insert(math::Point2D(object->GetX(), object->GetY()), object);
         if (!ret) return Error::ERROR_OUT_OF_REGION;

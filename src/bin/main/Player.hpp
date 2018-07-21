@@ -27,7 +27,8 @@ private:
     bool is_inited_;
     game_engine::Real_t radius_;
     game_engine::Real_t interact_fov_, interact_margin_;
-    
+    game_engine::Direction_t looking_direction_;
+
     game_engine::GameEngine * engine_;
     Input * input_;
     Camera * camera_;

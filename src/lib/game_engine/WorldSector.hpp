@@ -7,6 +7,7 @@
 #include "game_engine/memory/ArrayAllocator.hpp"
 #include "game_engine/memory/PoolAllocator.hpp"
 #include "game_engine/physics/PhysicsEngine.hpp"
+#include "game_engine/utility/CircularBuffer.hpp"
 #include "game_engine/math/Types.hpp"
 
 #include "WorldObject.hpp"
@@ -140,7 +141,7 @@ namespace game_engine {
         std::vector<std::vector<std::deque<WorldObject *> > >world_;
 
         /* Holds objects that are removed from the world, whose memory needs deallocation */
-        std::deque<WorldObject *> delete_vector_;
+        utility::CircularBuffer<WorldObject *> delete_objects_buffer_;
 
         /* Sequential allocators for objects */
         memory_subsystem::ArrayAllocator * array_allocator_;

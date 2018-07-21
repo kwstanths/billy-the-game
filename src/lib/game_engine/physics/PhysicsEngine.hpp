@@ -44,6 +44,11 @@ namespace physics {
         bool IsInited();
 
         /**
+        
+        */
+        void Step();
+
+        /**
             Insert an object to the engine. Will use the object parameters at the moment of calling
             @return 0 = OK, else see ErrorCodes.hpp
         */
