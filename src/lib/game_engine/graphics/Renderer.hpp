@@ -90,7 +90,7 @@ namespace graphics {
         /**
             Flushes the point lights into drawing, flushes the object draw calls into drawing
         */
-        void FlushDrawsCalls();
+        void FlushDrawCalls();
     };
 
 }

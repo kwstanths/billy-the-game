@@ -43,10 +43,16 @@ namespace game_engine {
         */
         void DrawPoint(Real_t x, Real_t y, Real_t z, Real_t size);
 
+        /**
+        
+        */
+        void DrawLine(math::Point2D start, math::Point2D stop, Real_t z, Real_t size);
+
     private:
         bool is_inited_;
 
-        graphics::GraphicsObject debug_object;
+        graphics::GraphicsObject debug_object_point_;
+        graphics::GraphicsObject debug_object_line_;
         graphics::Renderer * renderer_ = nullptr;
     };
 

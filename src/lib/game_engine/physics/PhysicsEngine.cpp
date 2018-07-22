@@ -34,6 +34,9 @@ namespace physics {
             return Error::ERROR_PHYSICS_INIT;
         }
 
+        /* The maximum number of collisions that will notify the objects is 128 */
+        collisions_.Init(128);
+        
         is_inited_ = true;
         return 0;
     }
@@ -59,7 +62,12 @@ namespace physics {
     }
 
     void PhysicsEngine::Step() {
+        
+        /* ... */
 
+        /* ... */
+
+        CallCollisionHandlers();
     }
 
     int PhysicsEngine::Insert(PhysicsObject * object) {
@@ -124,6 +132,8 @@ namespace physics {
 
             if (object->Collides(new_position, neighbour)) {
 
+                collisions_.Push(collision_detected_t(object, neighbour));
+
                 /* TODO apply some clever mechanism to calculate remaining distance to colliding object */
                 return std::pair<float, float>(0.0f, 0.0f);
             }
@@ -132,7 +142,15 @@ namespace physics {
         return std::pair<float, float>(horizontal_move_offset, vertical_move_offset);
     }
 
+    void PhysicsEngine::CallCollisionHandlers() {
+        for (size_t i = 0; i < collisions_.Items(); i++) {
+            collision_detected_t t;
+            collisions_.Get(t);
 
+            t.object1_->OnCollisionDetected(t.object2_->object_type_);
+            t.object2_->OnCollisionDetected(t.object1_->object_type_);
+        }
+    }
 
 }
 }

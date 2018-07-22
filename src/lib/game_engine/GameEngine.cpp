@@ -101,6 +101,8 @@ namespace game_engine {
             visible_world_[i]->Step(delta_time);
         }
 
+        sector_->GetPhysicsEngine()->Step();
+
         /* 
             Set camera's view before drawing, because Step() might have tempered with the camera position
         */
@@ -110,7 +112,7 @@ namespace game_engine {
         for (size_t i = 0; i < nof; i++) {
             visible_world_[i]->Draw(renderer_);
         }
-        renderer_->FlushDrawsCalls();
+        renderer_->FlushDrawCalls();
 
         /* Render text overlay */
         renderer_->Draw2DText("Welcome!", 100, 100, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));

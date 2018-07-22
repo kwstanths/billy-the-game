@@ -77,18 +77,14 @@ namespace physics {
         void SetCollision();
 
         /**
-            Set collision to bounding rectangle
-            @param x_size The x size
-            @param y_size The y size
-            @param z_size The z size. <-- This is not used
+        
         */
-        void SetCollision(game_engine::Real_t x_size, game_engine::Real_t y_size, game_engine::Real_t z_size = 0.0f);
+        void SetCollision(game_engine::math::Rectangle2D rect);
 
         /**
-            Set the collision to bounding circle
-            @param radius The radius of the circle
+        
         */
-        void SetCollision(game_engine::Real_t radius);
+        void SetCollision(game_engine::math::Circle2D circle);
 
         /**
             Get the type of collision
@@ -118,6 +114,8 @@ namespace physics {
         
         */
         void SetObjectType(size_t type);
+
+        virtual void OnCollisionDetected(size_t type);
 
     private:
         bool is_inited_;

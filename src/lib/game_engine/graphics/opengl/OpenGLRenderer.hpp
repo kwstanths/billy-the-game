@@ -72,6 +72,11 @@ namespace opengl {
         /**
             
         */
+        int DrawLine(float start_x, float start_y, float start_z, float stop_x, float stop_y, float stop_z, float size);
+
+        /**
+            
+        */
         int SetPointLightsNumber(unsigned int number);
 
         /**

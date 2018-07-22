@@ -64,6 +64,7 @@ namespace physics {
         virtual bool Check(CollisionBoundingCircle * other) = 0;
         virtual bool Check(CollisionBoundingRectangle * other) = 0;
 
+        virtual math::Shape2D * GetShape() = 0;
         virtual CollisionType GetType() = 0;
 
         virtual void Translate(game_engine::Real_t x, game_engine::Real_t y) = 0;
@@ -84,6 +85,9 @@ namespace physics {
         bool Check(CollisionBoundingRectangle * other) {
             return false;
         }
+        math::Shape2D * GetShape() { 
+            return nullptr; 
+        }
         CollisionType GetType() {
             return CollisionType::COLLISION_NONE;
         }
@@ -96,9 +100,8 @@ namespace physics {
     };
 
     class CollisionBoundingRectangle : public Collision {
+        friend CollisionBoundingCircle;
     public:
-        game_engine::math::Rectangle2D brect_;
-
         CollisionBoundingRectangle(game_engine::math::Rectangle2D brect) : brect_(brect) {};
 
         bool Check(Collision * other) {
@@ -111,6 +114,10 @@ namespace physics {
 
         bool Check(CollisionBoundingCircle * other);
 
+        math::Shape2D * GetShape() {
+            return &brect_;
+        }
+
         CollisionType GetType();
 
         void Translate(game_engine::Real_t x, game_engine::Real_t y) {
@@ -120,13 +127,14 @@ namespace physics {
         void Rotate(game_engine::Real_t th) {
             brect_.Rotate(th);
         }
+    private:
+        game_engine::math::Rectangle2D brect_;
     };
 
     class CollisionBoundingCircle : public Collision {
+        friend CollisionBoundingRectangle;
     public:
         CollisionBoundingCircle(game_engine::math::Circle2D bcircle) : bcircle_(bcircle) {};
-
-        game_engine::math::Circle2D bcircle_;
 
         bool Check(Collision * other) {
             return other->Check(this);
@@ -138,6 +146,10 @@ namespace physics {
 
         bool Check(CollisionBoundingCircle * other);
 
+        math::Shape2D * GetShape() {
+            return &bcircle_;
+        }
+
         CollisionType GetType();
 
         void Translate(game_engine::Real_t x, game_engine::Real_t y) {
@@ -147,6 +159,8 @@ namespace physics {
         void Rotate(game_engine::Real_t th) {
             bcircle_.Rotate(th);
         }
+    private:
+        game_engine::math::Circle2D bcircle_;
     };
 
 }

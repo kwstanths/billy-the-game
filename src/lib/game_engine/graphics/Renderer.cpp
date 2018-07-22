@@ -121,7 +121,7 @@ namespace graphics {
         return 0;
     }
 
-    void Renderer::FlushDrawsCalls() {
+    void Renderer::FlushDrawCalls() {
         renderer_->SetPointLightsNumber(number_of_point_lights_);
 
         for (size_t i = 0; i < number_of_point_lights_; i++) {

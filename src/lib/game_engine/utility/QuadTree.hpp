@@ -82,6 +82,10 @@ namespace utility {
                 return this->pointed_ != other.pointed_;
             }
 
+            bool operator==(const QuadTreeIterator& other) const {
+                return this->pointed_ == other.pointed_;
+            }
+
         };
 
         /* Objects needs to be initialised first */
@@ -450,7 +454,7 @@ namespace utility {
             Get an iterator to the end
         */
         iterator end() {
-            return QuadTreeIterator(NULL);
+            return QuadTreeIterator(nullptr);
         }
     };
 

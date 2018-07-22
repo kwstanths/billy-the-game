@@ -38,7 +38,7 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
             
     /* Create a wall */
     for (int x = -15; x < 4; x += 1)
-        NewObj<Wall>()->Init(x, 6.5f, 0.01f, engine);
+        NewObj<Wall>(true)->Init(x, 6.5f, 0.01f, engine);
 
     NewObj<Lava>()->Init(-5, 15, 0.0f, engine);
 

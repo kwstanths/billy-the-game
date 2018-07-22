@@ -4,6 +4,7 @@
 
 #include "game_engine/memory/PoolAllocator.hpp"
 #include "game_engine/utility/QuadTree.hpp"
+#include "game_engine/utility/CircularBuffer.hpp"
 #include "game_engine/math/Types.hpp"
 
 #include "PhysicsObject.hpp"
@@ -89,11 +90,23 @@ namespace physics {
         CollisionResult_t CheckCollision(PhysicsObject * object, math::Point2D new_position);
     
     private:
+
         bool is_inited_;
+        
         /* Memory to hold the objects */
         memory_subsystem::PoolAllocator pool_quad_tree_;
+        
         /* Data structure to hold the objects */
         utility::QuadTree<PhysicsObject *> world_;
+        
+        /* Holds the detected collision in each step */
+        struct collision_detected_t {
+            PhysicsObject * object1_ = nullptr;
+            PhysicsObject * object2_ = nullptr;
+            collision_detected_t() {};
+            collision_detected_t(PhysicsObject * object1, PhysicsObject * object2) : object1_(object1), object2_(object2) {};
+        };
+        utility::CircularBuffer<collision_detected_t> collisions_;
 
         /**
             Get the minumum distance between an object and it's surroundings
@@ -102,6 +115,11 @@ namespace physics {
             @return A pair of distances to move. First is horisontal, second is vertical
         */
         std::pair<float, float> CollisionGetDistance(PhysicsObject * object, math::Point2D new_position);
+
+        /**
+        
+        */
+        void CallCollisionHandlers();
     };
 
 }

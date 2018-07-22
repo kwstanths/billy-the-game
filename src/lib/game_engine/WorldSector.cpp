@@ -155,11 +155,10 @@ namespace game_engine {
         return index;
     }
 
-    WorldObject * WorldSector::FindInteractNeighbour(math::Rectangle2D search_area, Real_t pos_x, Real_t pos_y) {
+    WorldObject * WorldSector::FindInteractNeighbour(math::Rectangle2D search_area, math::Point2D p, Real_t size) {
         std::vector<ph::PhysicsObject *> area_objects(10, nullptr);
         size_t nof = physics_engine_->GetObjectsArea(search_area, area_objects);
 
-        //ph::PhysicsObject * neighbour = area_objects[0];
         ph::PhysicsObject * neighbour = nullptr;
         /* Find the first interactable object in the area */
         for (size_t i = 0; i < nof; i++) {

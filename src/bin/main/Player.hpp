@@ -23,6 +23,8 @@ public:
 
     virtual void Draw(game_engine::graphics::Renderer * render);
 
+    virtual void OnCollisionDetected(size_t type);
+
 private:
     bool is_inited_;
     game_engine::Real_t radius_;

@@ -8,15 +8,31 @@
 namespace game_engine {
 namespace utility {
 
-
+    /**
+        A circular FIFO buffer to store items sequentially
+    */
     template<typename T> class CircularBuffer {
     public:
+        /**
+            Does nothing in particular, call Init()
+        */
         CircularBuffer() {
             is_inited_ = false;
         }
     
+        /**
+            Initializes the objects
+            @param buffer_size The maximum number of items to store. Will be rounded up to the next power of two number, e.g 58 -> 64
+            @return 0 = OK
+        */
         int Init(size_t buffer_size) {
+            /**
+                Find the next power of two for buffer size, so that we can avoid the modulo operatiion
+            */
             size_t size_power_of_two = game_engine::math::PowerOfTwo(buffer_size);
+            /**
+                Find the AND mask for the "modulo" operation
+            */
             modulo_mask = size_power_of_two - 1;
     
             buffer_ = std::vector<T>(size_power_of_two);
@@ -27,25 +43,67 @@ namespace utility {
             is_inited_ = true;
             return 0;
         }
-    
+        
+        /**
+            Destroy the buffer. Call Init() again
+            @return 0 = OK
+        */
+        int Destroy() {
+            buffer_.clear();
+            items_inside_ = 0;
+            buffer_index_start_ = 0;
+            buffer_index_stop_ = 0;
+
+            is_inited_ = false;
+            return 0;
+        }
+        
+        /**
+            Get whether or not the object is initialised
+            @return true = initialised, false = not initialised
+        */
+        bool IsInited() {
+            return is_inited_;
+        }
+        
+        /**
+            Get the maximum number of items possible
+            @return The maximum number of items possible
+        */
         size_t Size() {
             return buffer_.size();
         }
     
+        /**
+            Get the number of items actially stored
+            @return The number of items actially stored
+        */
         size_t Items() {
             return items_inside_;
         }
     
+        /**
+            Get whether or not the buffer is full
+            @return true = full, false = not full
+        */
         bool IsFull() {
             return items_inside_ >= buffer_.size();
         }
-    
-        int Destroy() {
-            buffer_.clear();
+
+        /**
+            Removes all items, keeps the same size
+        */
+        void Clear() {
+            items_inside_ = 0;
             buffer_index_start_ = 0;
             buffer_index_stop_ = 0;
         }
     
+        /**
+            Push an item to the buffer
+            @param item The item
+            @return 0 = OK, -1 = Not initialised or full
+        */
         int Push(T item) {
             if (!is_inited_) return -1;
             if (items_inside_ >= buffer_.size()) return -1;
@@ -57,6 +115,11 @@ namespace utility {
             return 0;
         }
     
+        /**
+            Get an item from the buffer
+            @param[out] out_item Output for the extracted item
+            @return 0 = OK, -1 = not initialised or no items
+        */
         int Get(T& out_item) {
             if (!is_inited_) return -1;
             if (items_inside_ == 0) return -1;

@@ -12,11 +12,14 @@ namespace game_engine {
 namespace utility {
 
     /**
-          TODO Implement iterator operators
+          A Hashtable
     */
     template<typename Key, typename Value> class HashTable {
     private:
 
+        /**
+            Holds an inserted element in the hashtable
+        */
         class HashElement {
             friend class HashTable;
         private:
@@ -30,6 +33,9 @@ namespace utility {
             }
         };
     
+        /**
+            Iterator to iterate through the inserted elements
+        */
         class HashIterator : public std::iterator<std::forward_iterator_tag, Key, Value> {
             friend class HashTable;
     	    friend class HashElement;
@@ -96,6 +102,7 @@ namespace utility {
     	    }
         };
     
+        /* The actual hashtable with list chaining */
         std::vector<List<HashElement> * > hashtable_;
         size_t size_, elements_;
         double max_load_;
@@ -133,7 +140,7 @@ namespace utility {
         typedef HashIterator iterator;
         
         /*
-            Initialize a hash table with size
+            Initialize a hash table with a specific size
             No matter how many elements you insert, the hashtable's size won't change
         */
         HashTable(size_t size){
@@ -145,7 +152,7 @@ namespace utility {
         }
         
         /*
-            Initialize a hash table with size and max load (elements/size) equal to max_load
+            Initialize a hash table with a specific size and max load (elements/size) equal to max_load
             When an element is inserted if elements/size > max_load then a rehashing will occur 
             with the new hashtable size equal to double the previous size
         */
@@ -163,7 +170,7 @@ namespace utility {
     
         /*
             Insert an element to the hashtable. If rehashing is enabled when HashTable was constructed 
-            then this operation might take more time then expected in some cases.
+            then this operation might take more time than expected in some cases.
             @param key The key of the value to be inserted
             @param value The value to be inserted
             @return true = Ok, false = Already inserted
@@ -195,7 +202,7 @@ namespace utility {
         }
         
         /**
-              Get the beginning of the iterator
+              Get an iterator to the beginning
         */
         HashIterator begin() {
             size_t i = 0;
@@ -207,7 +214,7 @@ namespace utility {
         }
         
         /**
-            Get the end of the iterator. Incrementing or derefercing, or in any way using it,
+            Get an iterator to the end. Incrementing or derefercing, or in any way using it,
             expect for comparison, is not recommended            
         */
         HashIterator end() {
@@ -215,8 +222,7 @@ namespace utility {
         }
         
         /*
-            Search for an element in the HashTable, if not found you get the end() of the 
-            iterator
+            Search for an element in the HashTable, if not found you get the and end() iterator
             @param key The key to be searched
             @return An iterator to the element, use GetKey(), and GetValue()
         */

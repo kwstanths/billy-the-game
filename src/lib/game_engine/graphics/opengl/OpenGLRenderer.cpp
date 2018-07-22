@@ -137,6 +137,21 @@ namespace opengl {
         return 0;
     }
 
+    int OpenGLRenderer::DrawLine(float start_x, float start_y, float start_z, float stop_x, float stop_y, float stop_z, float size) {
+
+        if (!is_inited_) return -1;
+
+        shader_simple_.Use();
+        /* Set the model Uniform */
+        shader_simple_.SetUniformMat4(shader_simple_.uni_Model_, glm::mat4());
+
+        OpenGLObject line;
+        
+        std::vector<Vertex_t> line_vertices(4);
+
+        return 0;
+    }
+
     int OpenGLRenderer::SetPointLightsNumber(unsigned int number) {
         shader_main_.SetUniformUInt(shader_main_.GetUniformLocation("number_of_point_lights"), number);
         return 0;

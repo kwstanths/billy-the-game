@@ -36,7 +36,7 @@ int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera
     /* Scale object down to half */
     Scale(0.5f, 0.5f, 1.0f);
     radius_ = radius_ * 0.5f;
-    SetCollision(radius_);
+    SetCollision(math::Circle2D(x, y, radius_));
     SetObjectType(1);
 
     camera_->Set2DPosition(GetX(), GetY());
@@ -114,7 +114,7 @@ void Player::Step(double delta_time) {
 
             if (controls.INTERACT_) {
                 math::Rectangle2D search_area(A, B, C, D);
-                WorldObject * neighbour = world_sector_->FindInteractNeighbour(search_area, GetX(), GetY());
+                WorldObject * neighbour = world_sector_->FindInteractNeighbour(search_area, math::Point2D((x1 + x2) / 2, (y1 + y2) / 2), 1);
                 if (neighbour != nullptr) neighbour->Interact();
                 else {
                     /* Spawn new wall! Just for fun! */
@@ -133,6 +133,12 @@ ge::Real_t Player::GetSpeed(bool running) {
 
 void Player::Draw(grph::Renderer * renderer) {
 
+    //engine_->GetDebugger()->DrawLine(math::Point2D(0, 0), math::Point2D(15, 15), 0.02f, 0.02);
+    //engine_->GetDebugger()->DrawLine(math::Point2D(GetX() - radius_, GetY() + radius_), math::Point2D(GetX() + radius_, GetY() + radius_), 0.02f, 0.02);
+    //engine_->GetDebugger()->DrawLine(math::Point2D(GetX() - radius_, GetY() - radius_), math::Point2D(GetX() - radius_, GetY() + radius_), 0.05f, 0.02);
+    //engine_->GetDebugger()->DrawLine(math::Point2D(GetX() - radius_, GetY() - radius_), math::Point2D(GetX() + radius_, GetY() - radius_), 0.05f, 0.02);
+    //engine_->GetDebugger()->DrawLine(math::Point2D(GetX() + radius_, GetY() - radius_), math::Point2D(GetX() + radius_, GetY() + radius_), 0.05f, 0.02);
+
     /* Get input */
     ControlInput_t controls = input_->GetControls();
 
@@ -144,6 +150,15 @@ void Player::Draw(grph::Renderer * renderer) {
         light, att);
     
     WorldObject::Draw(renderer);
+}
+
+void Player::OnCollisionDetected(size_t type) {
+
+    if (type == 2) {
+        SetPosition(0, 0, GetZ());
+        camera_->Set2DPosition(0, 0);
+    }
+
 }
 
 

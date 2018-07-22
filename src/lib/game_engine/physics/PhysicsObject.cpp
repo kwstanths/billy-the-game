@@ -87,14 +87,14 @@ namespace physics {
         collision_ = new CollisionNone();
     }
 
-    void PhysicsObject::SetCollision(ge::Real_t x_size, ge::Real_t y_size, ge::Real_t z_size) {
+    void PhysicsObject::SetCollision(math::Rectangle2D rect) {
         delete collision_;
-        collision_ = new CollisionBoundingRectangle(math::Rectangle2D(pos_x_, pos_y_, x_size, y_size));
+        collision_ = new CollisionBoundingRectangle(rect);
     }
 
-    void PhysicsObject::SetCollision(ge::Real_t radius) {
+    void PhysicsObject::SetCollision(math::Circle2D circle) {
         delete collision_;
-        collision_ = new CollisionBoundingCircle(math::Circle2D(pos_x_, pos_y_, radius));
+        collision_ = new CollisionBoundingCircle(circle);
     }
 
     CollisionType PhysicsObject::GetCollisionType() {
@@ -115,6 +115,10 @@ namespace physics {
 
     void PhysicsObject::SetObjectType(size_t type) {
         object_type_ = type;
+    }
+
+    void PhysicsObject::OnCollisionDetected(size_t type) {
+
     }
 
     bool PhysicsObject::Collides(math::Point2D new_position, PhysicsObject * other) {

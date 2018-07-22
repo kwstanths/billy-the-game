@@ -1,6 +1,6 @@
 #include "Debugger.hpp"
 
-#include "game_engine/math/Matrices.hpp"
+#include "game_engine/math/HelpFunctions.hpp"
 
 #include "ErrorCodes.hpp"
 
@@ -18,8 +18,13 @@ namespace game_engine {
         renderer_ = renderer;
 
         if (!renderer->IsInited()) return Error::ERROR_GEN_NOT_INIT;
+        
+        int ret;
+        
+        ret = debug_object_point_.Init(0, 0, 0, "assets/debug.obj");
+        if (ret) return ret;
 
-        int ret = debug_object.Init(0, 0, 0, "assets/debug.obj");
+        ret = debug_object_line_.Init(0, 0, 0, "assets/tile.obj");
         if (ret) return ret;
 
         is_inited_ = true;
@@ -28,7 +33,8 @@ namespace game_engine {
 
     int Debugger::Destroy() {
 
-        debug_object.Destroy();
+        debug_object_point_.Destroy();
+        debug_object_line_.Destroy();
         renderer_= nullptr;
 
         is_inited_ = false;
@@ -43,10 +49,17 @@ namespace game_engine {
 
         if (!is_inited_) return;
 
-        debug_object.SetPosition(x, y, z);
-        debug_object.Scale(size, size, size);
-        debug_object.SetModelMatrix();
-        renderer_->DrawSimple(&debug_object);
+        debug_object_point_.SetPosition(x, y, z);
+        debug_object_point_.Scale(size, size, size);
+        debug_object_point_.SetModelMatrix();
+        renderer_->DrawSimple(&debug_object_point_);
+    }
+
+    void Debugger::DrawLine(math::Point2D start, math::Point2D stop, Real_t z, Real_t size) {
+        
+        if (!is_inited_) return;
+
+
     }
 
 }

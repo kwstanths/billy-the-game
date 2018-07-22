@@ -120,7 +120,7 @@ namespace game_engine {
             @param pos_y currently not used
             @return nullptr if none is found, the pointer if something is found
         */
-        WorldObject * FindInteractNeighbour(game_engine::math::Rectangle2D search_area, Real_t pos_x, Real_t pos_y);
+        WorldObject * FindInteractNeighbour(game_engine::math::Rectangle2D search_area, math::Point2D p, Real_t size);
 
         /**
             Get the physics engine used in this world
