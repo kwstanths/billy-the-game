@@ -19,9 +19,9 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Line drawing - fully debug, and implement collision rectangles");
     CodeReminder("World sector, physics engine step");
     CodeReminder("Interact neighbour - ray casting");
-    CodeReminder("Line drawing");
     CodeReminder("Fix the build with double");
     CodeReminder("Add the sun to something so that step and draw are always executed");
     CodeReminder("Add the point lights so that the ones closest are always drawn");

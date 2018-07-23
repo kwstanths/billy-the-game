@@ -86,6 +86,10 @@ namespace graphics {
         return 0;
     }
 
+    int Renderer::DrawLineXY(math::Point2D start, math::Point2D stop, float z_height, float size, glm::vec3 color) {
+        return renderer_->DrawLineXY(start.x_, start.y_, stop.x_, stop.y_, z_height, size, color);
+    }
+
     int Renderer::AddPointLight(glm::vec3 position, graphics::LightProperties_t light_properties, Attenuation_t attenuation) {
         if (number_of_point_lights_ >= GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS) {
             dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");

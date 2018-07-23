@@ -22,19 +22,28 @@ namespace opengl {
     static const char shader_main_uni_camera_position_worldspace[] = "camera_position_worldspace";
 
     /* Names of the simple shader varialbes used */
-    static const char shader_simple_vertex_position[] = "vertex_position_modelspace";
-    static const char shader_simple_vertex_uv[] = "vertex_uv";
+    static const char shader_model_texture_vertex_position[] = "vertex_position_modelspace";
+    static const char shader_model_texture_vertex_uv[] = "vertex_uv";
 
-    static const char shader_simple_uni_model[] = "matrix_model";
-    static const char shader_simple_uni_view[] = "matrix_view";
-    static const char shader_simple_uni_projection[] = "matrix_projection";
-    static const char shader_simple_uni_texture[] = "sampler_texture";
+    static const char shader_model_texture_uni_model[] = "matrix_model";
+    static const char shader_model_texture_uni_view[] = "matrix_view";
+    static const char shader_model_texture_uni_projection[] = "matrix_projection";
+    static const char shader_model_texture_uni_texture[] = "sampler_texture";
 
     /* Names of the text shader variables used */
     static const char shader_text_name_vertex[] = "vertex";
+
     static const char shader_text_name_uni_projection[] = "matrix_projection";
     static const char shader_text_name_uni_texture_color[] = "texture_color";
     static const char shader_text_name_uni_texture[] = "sampler_texture";
+
+    /* Names of the vertices color shader variables used */
+    static const char shader_vertices_color_vertex_position[] = "vertex_position_modelspace";
+    
+    static const char shader_vertices_color_uni_view[] = "matrix_view";
+    static const char shader_vertices_color_uni_projection[] = "matrix_projection";
+    static const char shader_vertices_color_uni_color[] = "fragment_color";
+
 
     /**
         A shader class the encapsulates shader fuctionality
@@ -165,12 +174,12 @@ namespace opengl {
     /**
         Shader object for the simple shader
     */
-    class OpenGLShaderSimple : public OpenGLShader {
+    class OpenGLShaderModelTexture : public OpenGLShader {
     public:
         /**
             Does nothing in particular. Call Init()
         */
-        OpenGLShaderSimple();
+        OpenGLShaderModelTexture();
 
         /**
             Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
@@ -190,6 +199,34 @@ namespace opengl {
         GLuint uni_View_;
         GLuint uni_Projection_;
         GLuint uni_texture_;
+    };
+
+    /**
+        Shader object for the simple shader
+    */
+    class OpenGLShaderVerticesColor : public OpenGLShader {
+    public:
+        /**
+            Does nothing in particular. Call Init()
+        */
+        OpenGLShaderVerticesColor();
+
+        /**
+            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+            @param vertex_shader_path The path to a vertex shader file
+            @param fragment_shader_path The path to a fragment shader file
+            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+        */
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+        /* Varialbe locations for the shader varialbes used */
+        /* Attributes */
+        GLuint attr_vertex_position_;
+
+        /* Uniforms */
+        GLuint uni_View_;
+        GLuint uni_Projection_;
+        GLuint uni_fragment_color_;
     };
 
 }

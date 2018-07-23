@@ -4,6 +4,8 @@
 
 #include "debug_tools/CodeReminder.hpp"
 
+namespace dt = debug_tools;
+
 namespace game_engine {
 namespace graphics {
 namespace opengl {
@@ -52,13 +54,12 @@ namespace opengl {
         glEnable(GL_CULL_FACE);
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-        int ret;
-        ret = shader_main_.Init("shaders/VertexShader.glsl", "shaders/FragmentShader.glsl");
-        //if (ret != 0) return ret;
-        ret = shader_text_.Init("shaders/TextVertexShader.glsl", "shaders/TextFragmentShader.glsl");
-        //if (ret != 0) return ret;
-        ret = shader_simple_.Init("shaders/VertexShaderSimple.glsl", "shaders/FragmentShaderSimple.glsl");
-        //if (ret != 0) return ret;
+        int ret = 0;
+        ret += shader_main_.Init("shaders/VertexShader.glsl", "shaders/FragmentShader.glsl");
+        ret += shader_text_.Init("shaders/VertexShaderText.glsl", "shaders/FragmentShaderText.glsl");
+        ret += shader_vertices_color_.Init("shaders/VertexShaderVerticesColor.glsl", "shaders/FragmentShaderVerticesColor.glsl");
+        ret += shader_model_texture_.Init("shaders/VertexShaderModelTextureOnly.glsl", "shaders/FragmentShaderModelTextureOnly.glsl");
+        if (ret) dt::Console(dt::CRITICAL, "Shaders compilation failed");
 
         is_inited_ = true;
         return 0;
@@ -129,24 +130,6 @@ namespace opengl {
         key_controls.timestamp_ = glfwGetTime();
 
         return key_controls;
-    }
-
-    OpenGLShaderMain OpenGLContext::GetShaderMain() {
-        if (!is_inited_) return OpenGLShaderMain();
-
-        return shader_main_;
-    }
-
-    OpenGLShaderSimple OpenGLContext::GetShaderSimple() {
-        if (!is_inited_) return OpenGLShaderSimple();
-
-        return shader_simple_;
-    }
-
-    OpenGLShaderText OpenGLContext::GetShaderText() {
-        if (!is_inited_) return OpenGLShaderText();
-
-        return shader_text_;
     }
 
     std::string OpenGLContext::GetFontLocation() {

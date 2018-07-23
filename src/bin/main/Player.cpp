@@ -133,12 +133,7 @@ ge::Real_t Player::GetSpeed(bool running) {
 
 void Player::Draw(grph::Renderer * renderer) {
 
-    //engine_->GetDebugger()->DrawLine(math::Point2D(0, 0), math::Point2D(15, 15), 0.02f, 0.02);
-    //engine_->GetDebugger()->DrawLine(math::Point2D(GetX() - radius_, GetY() + radius_), math::Point2D(GetX() + radius_, GetY() + radius_), 0.02f, 0.02);
-    //engine_->GetDebugger()->DrawLine(math::Point2D(GetX() - radius_, GetY() - radius_), math::Point2D(GetX() - radius_, GetY() + radius_), 0.05f, 0.02);
-    //engine_->GetDebugger()->DrawLine(math::Point2D(GetX() - radius_, GetY() - radius_), math::Point2D(GetX() + radius_, GetY() - radius_), 0.05f, 0.02);
-    //engine_->GetDebugger()->DrawLine(math::Point2D(GetX() + radius_, GetY() - radius_), math::Point2D(GetX() + radius_, GetY() + radius_), 0.05f, 0.02);
-
+    renderer->DrawLineXY(math::Point2D(0, 0), math::Point2D(15, 15), 0.02, 0.05, { 1.0,0.0,0.0 });
     /* Get input */
     ControlInput_t controls = input_->GetControls();
 

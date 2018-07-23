@@ -48,7 +48,7 @@ namespace opengl {
         glVertexAttribPointer(shader->GetAttributeLocation(shader_main_vertex_normal), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, normal_));
     }
 
-    void OpenGLObject::SetupAttributes(OpenGLShaderSimple * shader) {
+    void OpenGLObject::SetupAttributes(OpenGLShaderModelTexture * shader) {
         /* Set shader layout attributes */
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
         /* Attribute number 0 is the object vertices */
@@ -57,6 +57,14 @@ namespace opengl {
         /* Attribute number 1 is the object's uv coordinates */
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(shader->GetAttributeLocation(shader_main_vertex_uv), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, uv_));
+    }
+
+    void OpenGLObject::SetupAttributes(OpenGLShaderVerticesColor * shader) {
+        /* Set shader layout attributes */
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
+        /* Attribute number 0 is the object vertices */
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(shader->GetAttributeLocation(shader_main_vertex_position), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)0);
     }
 
     int OpenGLObject::Destroy() {

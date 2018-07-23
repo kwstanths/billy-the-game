@@ -60,5 +60,10 @@ void Camera::MouseMove(ge::Real_t mouse_x, ge::Real_t mouse_y) {
 }
 
 void Camera::Set2DPosition(ge::Real_t x, ge::Real_t y) {
-    SetPositionVector(x, y, z_height_);
+
+    /* Get previous height values */
+    ge::Real_t prev_x, prev_y, prev_z;
+    GetPositionVector(&prev_x, &prev_y, &prev_z);    
+
+    SetPositionVector(x, y, prev_z);
 }

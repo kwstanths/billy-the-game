@@ -4,8 +4,14 @@
 
 #include "game_engine/graphics/GraphicsTypes.hpp"
 #include "game_engine/graphics/Mesh.hpp"
+#include "game_engine/math/HelpFunctions.hpp"
+
+#include "game_engine/graphics/AssetManager.hpp"
 
 #include "debug_tools/Console.hpp"
+
+namespace math = game_engine::math;
+
 
 namespace game_engine {
 namespace graphics {
@@ -26,9 +32,10 @@ namespace opengl {
             debug_tools::ConsoleInfoL(debug_tools::CRITICAL, "Font not found", "name", font_location);
 
         /* Get shader variables */
-        shader_main_ = context_->GetShaderMain();
-        shader_simple_ = context_->GetShaderSimple();
-        shader_text_ = context_->GetShaderText();
+        shader_main_ = context_->shader_main_;
+        shader_model_texture_ = context_->shader_model_texture_;
+        shader_vertices_color_ = context_->shader_vertices_color_;
+        shader_text_ = context_->shader_text_;
 
         /* Configure a VAO for the main shader */
         shader_main_.Use();
@@ -37,9 +44,9 @@ namespace opengl {
         shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.texture_specular"), 1);
 
         /* Configure a VAO for the simple shader */
-        shader_simple_.Use();
+        shader_model_texture_.Use();
         /* Set the texture ID on the 2D sampler used */
-        shader_simple_.SetUniformInt(shader_simple_.uni_texture_, 0);
+        shader_model_texture_.SetUniformInt(shader_model_texture_.uni_texture_, 0);
 
         /* Configure VAO/VBO for text shader */
         glGenVertexArrays(1, &VAO2DText_);
@@ -76,9 +83,13 @@ namespace opengl {
         shader_main_.SetUniformMat4(shader_main_.uni_Projection_, camera->projection_matrix_);
         shader_main_.SetUniformVec3(shader_main_.uni_camera_position_worldspace_, camera->config_.position_);
 
-        shader_simple_.Use();
-        shader_simple_.SetUniformMat4(shader_simple_.uni_View_, camera->view_matrix_);
-        shader_simple_.SetUniformMat4(shader_simple_.uni_Projection_, camera->projection_matrix_);
+        shader_model_texture_.Use();
+        shader_model_texture_.SetUniformMat4(shader_model_texture_.uni_View_, camera->view_matrix_);
+        shader_model_texture_.SetUniformMat4(shader_model_texture_.uni_Projection_, camera->projection_matrix_);
+
+        shader_vertices_color_.Use();
+        shader_vertices_color_.SetUniformMat4(shader_vertices_color_.uni_View_, camera->view_matrix_);
+        shader_vertices_color_.SetUniformMat4(shader_vertices_color_.uni_Projection_, camera->projection_matrix_);
     }
 
     int OpenGLRenderer::Draw(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl) {
@@ -115,13 +126,13 @@ namespace opengl {
         if (!object->IsInited()) return -1;
         if (!texture->IsInited()) return -1;
 
-        shader_simple_.Use();
+        shader_model_texture_.Use();
         /* Set the model uniform */
-        shader_simple_.SetUniformMat4(shader_simple_.uni_Model_, model);
+        shader_model_texture_.SetUniformMat4(shader_model_texture_.uni_Model_, model);
 
         glBindVertexArray(object->VAO_);
 
-        object->SetupAttributes(&shader_simple_);
+        object->SetupAttributes(&shader_model_texture_);
 
         texture->ActivateTexture(0);
 
@@ -137,17 +148,62 @@ namespace opengl {
         return 0;
     }
 
-    int OpenGLRenderer::DrawLine(float start_x, float start_y, float start_z, float stop_x, float stop_y, float stop_z, float size) {
+    int OpenGLRenderer::DrawLineXY(float start_x, float start_y, float stop_x, float stop_y, float z_height, float size, glm::vec3 color) {
 
         if (!is_inited_) return -1;
 
-        shader_simple_.Use();
-        /* Set the model Uniform */
-        shader_simple_.SetUniformMat4(shader_simple_.uni_Model_, glm::mat4());
+        float line_angle = atan(std::abs(stop_y - start_y) / std::abs(stop_x - start_x));
+        float horizontal_offset = std::abs(size * cos(math::GetRadians(90) + line_angle));
+        float vertical_offset = std::abs(size * sin(math::GetRadians(90) + line_angle));
+        float point_1_x = start_x - horizontal_offset;
+        float point_1_y = start_y + vertical_offset;
+        float point_2_x = start_x + horizontal_offset;
+        float point_2_y = start_y - vertical_offset;
+        float point_3_x = stop_x + horizontal_offset;
+        float point_3_y = stop_y - vertical_offset;
+        float point_4_x = stop_x - horizontal_offset;
+        float point_4_y = stop_y + vertical_offset;
+
+        std::vector<Vertex_t> line_vertices(4);
+        line_vertices.at(0).position_ = { point_1_x, point_1_y, z_height };
+        line_vertices.at(0).uv_ = { 0,1 };
+        line_vertices.at(0).normal_ = { 0,0,1 };
+        line_vertices.at(1).position_ = { point_2_x, point_2_y, z_height };
+        line_vertices.at(1).uv_ = { 0,0 };
+        line_vertices.at(1).normal_ = { 0,0,1 };
+        line_vertices.at(2).position_ = { point_3_x, point_3_y, z_height };
+        line_vertices.at(2).uv_ = { 1,0 };
+        line_vertices.at(2).normal_ = { 0,0,1 };
+        line_vertices.at(3).position_ = { point_4_x, point_4_y, z_height };
+        line_vertices.at(3).uv_ = { 1,1 };
+        line_vertices.at(3).normal_ = { 0,0,1 };
+        std::vector<unsigned int> line_indices(6);
+        line_indices.at(0) = 0;
+        line_indices.at(1) = 1;
+        line_indices.at(2) = 2;
+        line_indices.at(3) = 0;  
+        line_indices.at(4) = 2;
+        line_indices.at(5) = 3;
 
         OpenGLObject line;
+        line.Init(line_vertices, line_indices);
+
+        graphics::AssetManager& asset_manager = graphics::AssetManager::GetInstance();
+        OpenGLTexture * texture = asset_manager.FindTexture("assets/textures/grass.bmp");
         
-        std::vector<Vertex_t> line_vertices(4);
+        shader_vertices_color_.Use();
+        shader_vertices_color_.SetUniformVec3(shader_vertices_color_.GetUniformLocation("fragment_color"), color);
+
+        glBindVertexArray(line.VAO_);
+        line.SetupAttributes(&shader_vertices_color_);
+        
+        /* Draw with index buffer */
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, line.GetElementBufferID());
+        glDrawElements(GL_TRIANGLES, line.GetNoFElements(), GL_UNSIGNED_INT, (void*)0);
+
+        glBindVertexArray(0);
+
+        shader_main_.Use();
 
         return 0;
     }

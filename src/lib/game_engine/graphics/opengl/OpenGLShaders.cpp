@@ -217,20 +217,36 @@ namespace opengl {
         return 0;
     }
 
-    OpenGLShaderSimple::OpenGLShaderSimple() {
+    OpenGLShaderModelTexture::OpenGLShaderModelTexture() {
     }
 
-    int OpenGLShaderSimple::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
+    int OpenGLShaderModelTexture::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
         
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
         if (ret != 0) return ret;
 
-        if ((attr_vertex_position_ = GetAttributeLocation(shader_simple_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((attr_vertex_uv_ = GetAttributeLocation(shader_simple_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_Model_ = GetUniformLocation(shader_simple_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_View_ = GetUniformLocation(shader_simple_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_Projection_ = GetUniformLocation(shader_simple_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_texture_ = GetUniformLocation(shader_simple_uni_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_position_ = GetAttributeLocation(shader_model_texture_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_uv_ = GetAttributeLocation(shader_model_texture_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Model_ = GetUniformLocation(shader_model_texture_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_View_ = GetUniformLocation(shader_model_texture_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Projection_ = GetUniformLocation(shader_model_texture_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_texture_ = GetUniformLocation(shader_model_texture_uni_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+
+        return 0;
+    }
+
+    OpenGLShaderVerticesColor::OpenGLShaderVerticesColor() {
+    }
+
+    int OpenGLShaderVerticesColor::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
+
+        int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
+        if (ret != 0) return ret;
+
+        if ((attr_vertex_position_ = GetAttributeLocation(shader_vertices_color_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_View_ = GetUniformLocation(shader_vertices_color_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Projection_ = GetUniformLocation(shader_vertices_color_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_fragment_color_ = GetUniformLocation(shader_vertices_color_uni_color)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }

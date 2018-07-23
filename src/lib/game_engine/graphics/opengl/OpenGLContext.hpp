@@ -33,6 +33,7 @@ namespace opengl {
 
     class OpenGLContext {
         friend class OpenGLCamera;
+        friend class OpenGLRenderer;
     public:
         /**
             Sets the parameters to the local variable, does nothing else. Feel free to discard  the params object 
@@ -83,21 +84,6 @@ namespace opengl {
         KeyControls_t GetControlsInput();
 
         /**
-            Get the main shader
-        */
-        OpenGLShaderMain GetShaderMain();
-
-        /**
-            Get the simple shader
-        */
-        OpenGLShaderSimple GetShaderSimple();
-
-        /**
-            Get shader for 2d text
-        */
-        OpenGLShaderText GetShaderText();
-
-        /**
             Get the font file location
         */
         std::string GetFontLocation();
@@ -119,7 +105,8 @@ namespace opengl {
         OpenGLContextConfig_t config_;
 
         OpenGLShaderMain shader_main_;
-        OpenGLShaderSimple shader_simple_;
+        OpenGLShaderModelTexture shader_model_texture_;
+        OpenGLShaderVerticesColor shader_vertices_color_;
         OpenGLShaderText shader_text_;
         
         GLFWwindow * glfw_window_ = nullptr;

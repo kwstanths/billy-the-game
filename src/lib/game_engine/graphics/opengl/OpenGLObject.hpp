@@ -33,7 +33,9 @@ namespace opengl {
 
         void SetupAttributes(OpenGLShaderMain * shader);
 
-        void SetupAttributes(OpenGLShaderSimple * shader);
+        void SetupAttributes(OpenGLShaderModelTexture * shader);
+
+        void SetupAttributes(OpenGLShaderVerticesColor * shader);
 
         /**
             Deallocates the OpenGL stuf initialized

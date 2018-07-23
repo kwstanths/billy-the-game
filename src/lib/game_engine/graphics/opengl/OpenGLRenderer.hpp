@@ -72,7 +72,7 @@ namespace opengl {
         /**
             
         */
-        int DrawLine(float start_x, float start_y, float start_z, float stop_x, float stop_y, float stop_z, float size);
+        int DrawLineXY(float start_x, float start_y, float stop_x, float stop_y, float z_height, float size, glm::vec3 color);
 
         /**
             
@@ -116,10 +116,10 @@ namespace opengl {
 
         /* Main shaders */
         OpenGLShaderMain shader_main_;
-
-        /* Simple shaders */
-        GLuint VAO_simple_;
-        OpenGLShaderSimple shader_simple_;
+        /* Model texture only shaders */
+        OpenGLShaderModelTexture shader_model_texture_;
+        /* Verices coloe only shaders */
+        OpenGLShaderVerticesColor shader_vertices_color_;
         
         /* Text shaders */
         GLuint VAO2DText_, VBO2DText_;
