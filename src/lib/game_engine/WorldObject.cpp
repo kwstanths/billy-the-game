@@ -66,7 +66,16 @@ namespace game_engine {
 
     void WorldObject::Draw(grph::Renderer * renderer) {
         if (!is_inited_) return;
-        /* Is this function useless now? */
+
+        /* Physice engine debugging */
+#ifdef _DEBUG
+        math::Shape2D * shape = GetCollision()->GetShape();
+        math::Rectangle2D * brect = dynamic_cast<math::Rectangle2D *>(shape);
+        if (brect != nullptr) {
+            renderer->DrawRectangleXY(*brect, GetZ() + 0.01, 0.02, { 100,0,0 });
+        }
+#endif
+
         GraphicsObject::Draw(renderer);
     }
 

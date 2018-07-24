@@ -46,7 +46,9 @@ namespace game_engine {
         /**
         
         */
-        void DrawLine(math::Point2D start, math::Point2D stop, Real_t z, Real_t size);
+        void DrawLineXY(math::Point2D start, math::Point2D stop, Real_t z, Real_t size, glm::vec3 color);
+
+        void DrawRectangleXY(math::Rectangle2D rect, Real_t z, Real_t size, glm::vec3 color);
 
     private:
         bool is_inited_;

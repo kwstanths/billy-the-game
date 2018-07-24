@@ -133,7 +133,6 @@ ge::Real_t Player::GetSpeed(bool running) {
 
 void Player::Draw(grph::Renderer * renderer) {
 
-    renderer->DrawLineXY(math::Point2D(0, 0), math::Point2D(15, 15), 0.02, 0.05, { 1.0,0.0,0.0 });
     /* Get input */
     ControlInput_t controls = input_->GetControls();
 

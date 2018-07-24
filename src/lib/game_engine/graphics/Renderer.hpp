@@ -58,6 +58,8 @@ namespace graphics {
 
         int DrawLineXY(math::Point2D start, math::Point2D stop, float z_height, float size, glm::vec3 color);
 
+        int DrawRectangleXY(math::Rectangle2D rect, float z_height, float size, glm::vec3 color);
+
         int AddPointLight(glm::vec3 position, LightProperties_t light_properties, Attenuation_t attenuation);
 
         int AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties);

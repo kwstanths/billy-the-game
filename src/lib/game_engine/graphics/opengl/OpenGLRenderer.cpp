@@ -152,18 +152,21 @@ namespace opengl {
 
         if (!is_inited_) return -1;
 
-        float line_angle = atan(std::abs(stop_y - start_y) / std::abs(stop_x - start_x));
-        float horizontal_offset = std::abs(size * cos(math::GetRadians(90) + line_angle));
-        float vertical_offset = std::abs(size * sin(math::GetRadians(90) + line_angle));
-        float point_1_x = start_x - horizontal_offset;
+        /* Find the angle of the line, and the offsets of the four points that will create the rectangle - line */
+        float line_angle = atan((stop_y - start_y) / (stop_x - start_x));
+        float horizontal_offset = size * cos(math::GetRadians(90) + line_angle);
+        float vertical_offset = size * sin(math::GetRadians(90) + line_angle);
+        /* Create the four points, 1-2-3-4 are in circular order */
+        float point_1_x = start_x + horizontal_offset;
         float point_1_y = start_y + vertical_offset;
-        float point_2_x = start_x + horizontal_offset;
+        float point_2_x = start_x - horizontal_offset;
         float point_2_y = start_y - vertical_offset;
-        float point_3_x = stop_x + horizontal_offset;
+        float point_3_x = stop_x - horizontal_offset;
         float point_3_y = stop_y - vertical_offset;
-        float point_4_x = stop_x - horizontal_offset;
+        float point_4_x = stop_x + horizontal_offset;
         float point_4_y = stop_y + vertical_offset;
 
+        /* Create the vertices, uv and normal pay no role at all*/
         std::vector<Vertex_t> line_vertices(4);
         line_vertices.at(0).position_ = { point_1_x, point_1_y, z_height };
         line_vertices.at(0).uv_ = { 0,1 };
@@ -177,6 +180,7 @@ namespace opengl {
         line_vertices.at(3).position_ = { point_4_x, point_4_y, z_height };
         line_vertices.at(3).uv_ = { 1,1 };
         line_vertices.at(3).normal_ = { 0,0,1 };
+        /* Set the indices for the 2 triangles to draw */
         std::vector<unsigned int> line_indices(6);
         line_indices.at(0) = 0;
         line_indices.at(1) = 1;
@@ -185,25 +189,34 @@ namespace opengl {
         line_indices.at(4) = 2;
         line_indices.at(5) = 3;
 
+        /* Create an OpenGLObejct */
         OpenGLObject line;
         line.Init(line_vertices, line_indices);
 
-        graphics::AssetManager& asset_manager = graphics::AssetManager::GetInstance();
-        OpenGLTexture * texture = asset_manager.FindTexture("assets/textures/grass.bmp");
-        
+        /* Set the simplest shader possible, and set the color */
         shader_vertices_color_.Use();
         shader_vertices_color_.SetUniformVec3(shader_vertices_color_.GetUniformLocation("fragment_color"), color);
 
+        /* Set the OpenGLObject attributes to the shader */
         glBindVertexArray(line.VAO_);
         line.SetupAttributes(&shader_vertices_color_);
         
         /* Draw with index buffer */
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, line.GetElementBufferID());
+        
+        /** 
+            Disable face culling for the drawing so that are line is visible no matter the starting anf stopping point
+            Otherwise, the indexing of our triangles whould be relatively hard
+        */
+        glDisable(GL_CULL_FACE);
         glDrawElements(GL_TRIANGLES, line.GetNoFElements(), GL_UNSIGNED_INT, (void*)0);
+        glEnable(GL_CULL_FACE);
 
         glBindVertexArray(0);
 
         shader_main_.Use();
+
+        line.Destroy();
 
         return 0;
     }

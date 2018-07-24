@@ -131,7 +131,6 @@ namespace physics {
             PhysicsObject * neighbour = neighbours[i];
 
             if (object->Collides(new_position, neighbour)) {
-
                 collisions_.Push(collision_detected_t(object, neighbour));
 
                 /* TODO apply some clever mechanism to calculate remaining distance to colliding object */
@@ -147,8 +146,9 @@ namespace physics {
             collision_detected_t t;
             collisions_.Get(t);
 
-            t.object1_->OnCollisionDetected(t.object2_->object_type_);
-            t.object2_->OnCollisionDetected(t.object1_->object_type_);
+            /* If the colliding objects are still alive, then inform them of the collision */
+            if (t.object1_->IsInited()) t.object1_->OnCollisionDetected(t.object2_->object_type_);
+            if (t.object2_->IsInited()) t.object2_->OnCollisionDetected(t.object1_->object_type_);
         }
     }
 

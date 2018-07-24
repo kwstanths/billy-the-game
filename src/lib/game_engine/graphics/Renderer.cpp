@@ -90,6 +90,16 @@ namespace graphics {
         return renderer_->DrawLineXY(start.x_, start.y_, stop.x_, stop.y_, z_height, size, color);
     }
 
+    int Renderer::DrawRectangleXY(math::Rectangle2D rect, float z_height, float size, glm::vec3 color) {
+
+        renderer_->DrawLineXY(rect.A_.x_, rect.A_.y_, rect.B_.x_, rect.B_.y_, z_height, size, color);
+        renderer_->DrawLineXY(rect.B_.x_, rect.B_.y_, rect.C_.x_, rect.C_.y_, z_height, size, color);
+        renderer_->DrawLineXY(rect.C_.x_, rect.C_.y_, rect.D_.x_, rect.D_.y_, z_height, size, color);
+        renderer_->DrawLineXY(rect.D_.x_, rect.D_.y_, rect.A_.x_, rect.A_.y_, z_height, size, color);
+
+        return 0;
+    }
+
     int Renderer::AddPointLight(glm::vec3 position, graphics::LightProperties_t light_properties, Attenuation_t attenuation) {
         if (number_of_point_lights_ >= GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS) {
             dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");
