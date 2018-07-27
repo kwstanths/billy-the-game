@@ -142,7 +142,8 @@ namespace physics {
     }
 
     void PhysicsEngine::CallCollisionHandlers() {
-        for (size_t i = 0; i < collisions_.Items(); i++) {
+        size_t collisions = collisions_.Items();
+        for (size_t i = 0; i < collisions; i++) {
             collision_detected_t t;
             collisions_.Get(t);
 

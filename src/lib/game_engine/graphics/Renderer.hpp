@@ -8,6 +8,8 @@
 #include "game_engine/graphics/opengl/OpenGLObject.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 #include "game_engine/graphics/opengl/OpenGLCamera.hpp"
+#include "game_engine/utility/CircularBuffer.hpp"
+#include "game_engine/utility/QuadTree.hpp"
 
 #include "GraphicsTypes.hpp"
 #include "GraphicsObject.hpp"
@@ -74,10 +76,9 @@ namespace graphics {
 
     private:
         bool is_inited_;
-        size_t number_of_point_lights_;
-        size_t number_of_objects_to_draw_;
-        std::vector<PointLight_t> point_lights_to_draw_;
-        std::vector<GraphicsObject *> objects_to_draw_;
+        utility::CircularBuffer<PointLight_t> point_lights_to_draw_;
+        utility::CircularBuffer<GraphicsObject *> objects_to_draw_;
+        
 
         /* Variables needed for opengl drawiing */
         opengl::OpenGLContext * context_ = nullptr;

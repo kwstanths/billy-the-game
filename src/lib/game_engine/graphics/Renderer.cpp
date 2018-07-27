@@ -26,8 +26,8 @@ namespace graphics {
             renderer_->Init(context_);
         }
 
-        point_lights_to_draw_ = std::vector<PointLight_t>(GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS);
-        objects_to_draw_ = std::vector<GraphicsObject *>(GAME_ENGINE_RENDERER_MAX_OBJECTS);
+        point_lights_to_draw_.Init(GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS);
+        objects_to_draw_.Init(GAME_ENGINE_RENDERER_MAX_OBJECTS);
 
         is_inited_ = true;
         return 0;
@@ -48,9 +48,9 @@ namespace graphics {
 
     void Renderer::StartFrame() {
         context_->ClearColor();
-
-        number_of_point_lights_ = 0;
-        number_of_objects_to_draw_ = 0;
+        
+        point_lights_to_draw_.Clear();
+        objects_to_draw_.Clear();
     }
 
     void Renderer::EndFrame() {
@@ -68,12 +68,12 @@ namespace graphics {
     }
 
     int Renderer::Draw(GraphicsObject * rendering_object) {
-        if (number_of_objects_to_draw_ >= GAME_ENGINE_RENDERER_MAX_OBJECTS) {
+        if (point_lights_to_draw_.Items() >= GAME_ENGINE_RENDERER_MAX_OBJECTS) {
             dt::Console(dt::WARNING, "Renderer::Draw(): Maximum number of objects reached");
             return -1;
         }
 
-        objects_to_draw_.at(number_of_objects_to_draw_++) = rendering_object;
+        objects_to_draw_.Push(rendering_object);
         return 0;
     }
 
@@ -101,11 +101,11 @@ namespace graphics {
     }
 
     int Renderer::AddPointLight(glm::vec3 position, graphics::LightProperties_t light_properties, Attenuation_t attenuation) {
-        if (number_of_point_lights_ >= GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS) {
+        if (point_lights_to_draw_.Items() >= GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS) {
             dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");
             return -1;
         }
-        point_lights_to_draw_.at(number_of_point_lights_++) = PointLight_t(position, light_properties, attenuation);
+        point_lights_to_draw_.Push(PointLight_t(position, light_properties, attenuation));
         return 0;
     }
 
@@ -136,23 +136,29 @@ namespace graphics {
     }
 
     void Renderer::FlushDrawCalls() {
-        renderer_->SetPointLightsNumber(number_of_point_lights_);
 
+        size_t number_of_point_lights_= point_lights_to_draw_.Items();
+        renderer_->SetPointLightsNumber(number_of_point_lights_);
         for (size_t i = 0; i < number_of_point_lights_; i++) {
             std::string index = std::to_string(i);
+
+            PointLight_t light;
+            point_lights_to_draw_.Get(light);
             renderer_->SetPointLight(index,
-                point_lights_to_draw_[i].position_,
-                point_lights_to_draw_[i].properties_.ambient_,
-                point_lights_to_draw_[i].properties_.diffuse_,
-                point_lights_to_draw_[i].properties_.specular_,
-                point_lights_to_draw_[i].attenutation_.constant_,
-                point_lights_to_draw_[i].attenutation_.linear_,
-                point_lights_to_draw_[i].attenutation_.quadratic_
+                light.position_,
+                light.properties_.ambient_,
+                light.properties_.diffuse_,
+                light.properties_.specular_,
+                light.attenutation_.constant_,
+                light.attenutation_.linear_,
+                light.attenutation_.quadratic_
             );
         }
 
+        size_t number_of_objects_to_draw_ = objects_to_draw_.Items();
         for (size_t i = 0; i < number_of_objects_to_draw_; i++) {
-            GraphicsObject * rendering_object = objects_to_draw_[i];
+            GraphicsObject * rendering_object;
+            objects_to_draw_.Get(rendering_object);
             for (size_t i = 0; i < rendering_object->meshes_.size(); i++) {
                 Mesh * mesh = rendering_object->meshes_[i];
                 renderer_->Draw(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_, mesh->mat_);

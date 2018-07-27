@@ -12,6 +12,8 @@ namespace ph = game_engine::physics;
 namespace gl = game_engine::graphics::opengl;
 namespace grph = game_engine::graphics;
 
+//#define PHYSICS_ENGINE_DEBUG
+
 namespace game_engine {
 
     WorldObject::WorldObject() : ph::PhysicsObject(), grph::GraphicsObject() {
@@ -68,11 +70,11 @@ namespace game_engine {
         if (!is_inited_) return;
 
         /* Physice engine debugging */
-#ifdef _DEBUG
+#ifdef PHYSICS_ENGINE_DEBUG
         math::Shape2D * shape = GetCollision()->GetShape();
         math::Rectangle2D * brect = dynamic_cast<math::Rectangle2D *>(shape);
         if (brect != nullptr) {
-            renderer->DrawRectangleXY(*brect, GetZ() + 0.01, 0.02, { 100,0,0 });
+            renderer->DrawRectangleXY(*brect, GetZ() + 0.01, 0.02, { 1,0,0 });
         }
 #endif
 

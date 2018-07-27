@@ -20,6 +20,8 @@ namespace graphics {
     public:
         GraphicsObject();
 
+        virtual ~GraphicsObject() {};
+
         int Init(Real_t x, Real_t y, Real_t z, std::string model_file_path);
 
         int Destroy();

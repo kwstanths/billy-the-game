@@ -19,8 +19,7 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("World sector, physics engine step");
-    CodeReminder("Interact neighbour - ray casting");
+    CodeReminder("Objects interacting");
     CodeReminder("Fix the build with double");
     CodeReminder("Add the sun to something so that step and draw are always executed");
     CodeReminder("Add the point lights so that the ones closest are always drawn");
@@ -33,7 +32,7 @@ int main(int argc, char ** argv) {
     context_params.font_file_path = "fonts/KateCelebration.ttf";
     ge::GameEngineConfig_t engine_params;
     engine_params.context_params_ = context_params;
-    engine_params.frame_rate_ = 75;
+    engine_params.frame_rate_ = 60;
     ge::GameEngine engine;
     if (engine.Init(engine_params)) return false;
     
