@@ -7,8 +7,6 @@
 #include "game_engine/utility/HashTable.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 
-#include "game_engine/ErrorCodes.hpp"
-
 
 namespace game_engine {
 namespace graphics {

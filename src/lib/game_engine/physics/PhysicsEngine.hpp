@@ -1,8 +1,6 @@
 #ifndef __PhysicsEngine_hpp__
 #define __PhysicsEngine_hpp__
 
-
-#include "game_engine/memory/PoolAllocator.hpp"
 #include "game_engine/utility/QuadTree.hpp"
 #include "game_engine/utility/CircularBuffer.hpp"
 #include "game_engine/math/Types.hpp"
@@ -92,9 +90,6 @@ namespace physics {
     private:
 
         bool is_inited_;
-        
-        /* Memory to hold the objects */
-        memory_subsystem::PoolAllocator pool_quad_tree_;
         
         /* Data structure to hold the objects */
         utility::QuadTree<PhysicsObject *> world_;

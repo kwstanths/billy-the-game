@@ -8,8 +8,7 @@ namespace dt = debug_tools;
 
 
 namespace game_engine{
-
-namespace memory_subsystem {
+namespace memory {
     
     ArrayAllocator::ArrayAllocator() {  
         is_inited_ = false;

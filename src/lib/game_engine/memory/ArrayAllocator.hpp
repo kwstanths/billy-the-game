@@ -9,8 +9,7 @@
 
 
 namespace game_engine {
-
-namespace memory_subsystem {
+namespace memory {
 
     /* Page size to be used in bytes */
     static const size_t PAGE_SIZE = 8192;

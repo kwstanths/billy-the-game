@@ -10,8 +10,9 @@
 
 namespace dt = debug_tools;
 namespace ph = game_engine::physics;
-namespace ms = game_engine::memory_subsystem;
+namespace ms = game_engine::memory;
 namespace math = game_engine::math;
+namespace gr = game_engine::graphics;
 
 namespace game_engine {
 
@@ -29,10 +30,8 @@ namespace game_engine {
 
         /* Initialize the world structure */
         world_ = std::vector<std::vector<std::deque<WorldObject *> > >(height, std::vector<std::deque<WorldObject *> >(width));
-        array_allocator_ = new ms::ArrayAllocator();
-        array_allocator_->Init(500 * 500);
-        pool_allocator_ = new ms::PoolAllocator();
-        pool_allocator_->Init(sizeof(WorldObject), 1000);
+        
+        visible_world_ = std::vector<WorldObject *>(200);
 
         /* Initialize the physics engine used */
         physics_engine_->Init(math::Rectangle2D(0, 0, 250, 250), elements);
@@ -55,8 +54,6 @@ namespace game_engine {
         CodeReminder("Iterate through the world objects, and call their Destroy()");
         
         world_.clear();
-        array_allocator_->Destroy();
-        pool_allocator_->Destroy();
          
         is_inited_ = false;
         return 0;
@@ -64,6 +61,34 @@ namespace game_engine {
 
     bool WorldSector::IsInited() {
         return is_inited_;
+    }
+
+    void WorldSector::Step(math::Point2D camera_center, Real_t camera_width, double delta_time, gr::Renderer * renderer) {
+
+        /* TODO Find the visible items based on the z of the camera */
+        size_t nof = GetObjectsWindow(camera_center.x_, camera_center.y_, camera_width, visible_world_);
+
+        /* Step all the objects one frame */
+        for (size_t i = 0; i < nof; i++) {
+            visible_world_[i]->Step(delta_time);
+        }
+
+        physics_engine_->Step();
+
+        /*
+            Set camera's view before drawing, because Step() might have tempered with the camera position
+        */
+        renderer->SetView();
+
+        /* Draw visible world */
+        for (size_t i = 0; i < nof; i++) {
+            visible_world_[i]->Draw(renderer);
+        }
+        renderer->FlushDrawCalls();
+
+        /* Update world */
+        DeleteRemovedObjects();
+
     }
 
     int WorldSector::Insert(WorldObject * object, Real_t x, Real_t y, Real_t z) {
@@ -189,7 +214,9 @@ namespace game_engine {
         for (size_t i = 0; i < delete_objects_buffer_.Items(); i++) {
             WorldObject * object;
             delete_objects_buffer_.Get(object);
-            pool_allocator_->Deallocate(object);
+
+            ms::MemoryManager & memory_manager = ms::MemoryManager::GetInstance();
+            memory_manager.GetRemovableObjectsAllocator()->Deallocate(object);
         }
 
     }

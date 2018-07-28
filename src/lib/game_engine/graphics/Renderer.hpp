@@ -9,7 +9,6 @@
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 #include "game_engine/graphics/opengl/OpenGLCamera.hpp"
 #include "game_engine/utility/CircularBuffer.hpp"
-#include "game_engine/utility/QuadTree.hpp"
 
 #include "GraphicsTypes.hpp"
 #include "GraphicsObject.hpp"
@@ -19,6 +18,7 @@
 namespace game_engine {
     
     class GameEngine;
+    class WorldSector;
 
 namespace graphics {
 
@@ -26,6 +26,7 @@ namespace graphics {
 
     class Renderer {
         friend game_engine::GameEngine;
+        friend game_engine::WorldSector;
     public:
         Renderer();
 
@@ -78,7 +79,6 @@ namespace graphics {
         bool is_inited_;
         utility::CircularBuffer<PointLight_t> point_lights_to_draw_;
         utility::CircularBuffer<GraphicsObject *> objects_to_draw_;
-        
 
         /* Variables needed for opengl drawiing */
         opengl::OpenGLContext * context_ = nullptr;

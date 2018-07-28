@@ -9,10 +9,6 @@ namespace dt = debug_tools;
 namespace gl = game_engine::graphics::opengl;
 namespace grph = game_engine::graphics;
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 namespace game_engine {
 
     GameEngine::GameEngine() {
@@ -38,7 +34,6 @@ namespace game_engine {
         }
 
         config_ = config;
-        Assimp::Importer importer;
         int ret = renderer_->Init(config_.context_params_);
         if (ret) {
             last_error_ = ret;
@@ -48,8 +43,6 @@ namespace game_engine {
 
         frame_regulator_.Init(config_.frame_rate_, 10);
         debugger_->Init(renderer_);
-        CodeReminder("Find the size and margin of the visible world based on the camera");
-        visible_world_ = std::vector<WorldObject *>(200);
 
         /* Initialize standard library random numbers */
         srand(static_cast<unsigned int>(time(NULL)));
@@ -91,34 +84,11 @@ namespace game_engine {
         /* Get visible items */
         Real_t center_x, center_y, center_z;
         camera_->GetPositionVector(&center_x, &center_y, &center_z);
-
-        /* TODO Check whether sector_ is set */
         /* TODO Find the visible items based on the z of the camera */
-        size_t nof = sector_->GetObjectsWindow(center_x, center_y, 3, visible_world_);
-
-        /* Step all the objects one frame */
-        for (size_t i = 0; i < nof; i++) {
-            visible_world_[i]->Step(delta_time);
-        }
-
-        sector_->GetPhysicsEngine()->Step();
-
-        /* 
-            Set camera's view before drawing, because Step() might have tempered with the camera position
-        */
-        renderer_->SetView();
-
-        /* Draw visible world */
-        for (size_t i = 0; i < nof; i++) {
-            visible_world_[i]->Draw(renderer_);
-        }
-        renderer_->FlushDrawCalls();
+        sector_->Step(math::Point2D(center_x, center_y), 3, delta_time, renderer_);
 
         /* Render text overlay */
         renderer_->Draw2DText("Welcome!", 100, 100, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
-        
-        /* Update world */
-        sector_->DeleteRemovedObjects();
 
         renderer_->EndFrame();
 

@@ -5,13 +5,14 @@
 
 #include "game_engine/math/Types.hpp"
 #include "game_engine/math/Geometry.hpp"
-namespace mth = game_engine::math;
 
 #include "game_engine/memory/PoolAllocator.hpp"
-namespace ms = game_engine::memory_subsystem;
 
 #include "debug_tools/Assert.hpp"
 #include "debug_tools/Console.hpp"
+
+namespace mth = game_engine::math;
+namespace ms = game_engine::memory;
 namespace dt = debug_tools;
 
 

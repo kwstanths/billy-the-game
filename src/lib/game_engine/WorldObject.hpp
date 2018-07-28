@@ -34,12 +34,12 @@ namespace game_engine {
         /**
             Custom sequential alloction without single remove and delete
         */
-        void * operator new(size_t size, memory_subsystem::ArrayAllocator * array_objects) {
+        void * operator new(size_t size, memory::ArrayAllocator * array_objects) {
             void * address = array_objects->Allocate(size);
             if (address == nullptr) {
 
                 debug_tools::ConsoleInfoL(debug_tools::FATAL,
-                    "ArrayAllocator::Allocate(size): size does not fit inside the memory page used",
+                    "WorldObject memory allocation, ArrayAllocator::Allocate() failed, size does not fit inside the memory page used",
                     "Requested size: ", size);
                 
                 throw std::bad_alloc();
@@ -50,21 +50,35 @@ namespace game_engine {
         /**
             Custom sequential allocation without remove and delete
         */
-        void * operator new(size_t size, memory_subsystem::PoolAllocator * pool_objects) {
+        void * operator new(size_t size, memory::PoolAllocator * pool_objects) {
             
-            if (pool_objects->GetBlockSize() < size) throw std::bad_alloc();
+            if (pool_objects->GetBlockSize() < size) {
+            
+                debug_tools::ConsoleInfoL(debug_tools::FATAL,
+                    "WorldObject memory allocation, failed, size does not fit inside the block used",
+                    "Requested size: ", size);
+
+                throw std::bad_alloc();
+            }
 
             void * address = pool_objects->Allocate();
-            if (address == nullptr) throw std::bad_alloc();
+            if (address == nullptr) {
+             
+                debug_tools::ConsoleInfoL(debug_tools::FATAL,
+                    "WorldObject memory allocation, PoolAllocator::Allocate() failed, size does not fit inside the block used",
+                    "Requested size: ", size);
+
+                throw std::bad_alloc();
+            }
 
             return address;
         }
 
-        void operator delete(void * ptr, memory_subsystem::ArrayAllocator * array_objects) {
+        void operator delete(void * ptr, memory::ArrayAllocator * array_objects) {
             debug_tools::Console(debug_tools::FATAL, "WorldObject array allocation failed");
         }
 
-        void operator delete(void * ptr, memory_subsystem::PoolAllocator * pool_objects) {
+        void operator delete(void * ptr, memory::PoolAllocator * pool_objects) {
             debug_tools::Console(debug_tools::FATAL, "WorldObject pool allocation failed");
         }
 

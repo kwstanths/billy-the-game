@@ -114,8 +114,6 @@ namespace game_engine {
         GameEngineConfig_t config_;
         /* Latest keybaord values pressed. Updated at every engine step */
         KeyControls_t key_controls_;
-        /* Holds the visible items in each frame */
-        std::vector<WorldObject *> visible_world_;
         
         /* Instances from other parts of the system */
         FrameRateRegulator frame_regulator_;

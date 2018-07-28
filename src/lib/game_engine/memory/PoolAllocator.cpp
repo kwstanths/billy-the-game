@@ -5,9 +5,8 @@
 namespace dt = debug_tools;
 
 
-namespace game_engine{
-
-namespace memory_subsystem {
+namespace game_engine {
+namespace memory {
 
     PoolAllocator::PoolAllocator() {
         is_inited_ = false;

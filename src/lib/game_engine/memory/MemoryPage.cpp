@@ -4,8 +4,7 @@
 
 
 namespace game_engine {
-
-namespace memory_subsystem {
+namespace memory {
 
     MemoryPage::MemoryPage(size_t bytes_size) {
         size_ = bytes_size;
@@ -34,5 +33,4 @@ namespace memory_subsystem {
     }
 
 }
-
 }

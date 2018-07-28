@@ -4,9 +4,8 @@
 #include "debug_tools/Assert.hpp"
 
 
-namespace game_engine{
-
-namespace memory_subsystem {
+namespace game_engine {
+namespace memory {
 
     /* Base type */
     typedef char BYTE;

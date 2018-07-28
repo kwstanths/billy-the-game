@@ -19,10 +19,12 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Objects interacting");
-    CodeReminder("Fix the build with double");
-    CodeReminder("Add the sun to something so that step and draw are always executed");
+    CodeReminder("Add collision objects in the memory pool");
     CodeReminder("Add the point lights so that the ones closest are always drawn");
+    CodeReminder("AssetManager and MemoryManager constructor constants and values");
+    CodeReminder("Add the sun to something so that step and draw are always executed");
+    CodeReminder("Objects interaction");
+    CodeReminder("Fix the build with double");
     
     /* Configuration parameters for the engine */
     gl::OpenGLContextConfig_t context_params;

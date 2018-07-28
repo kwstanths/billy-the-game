@@ -1,5 +1,7 @@
 #include "PhysicsEngine.hpp"
 
+#include "game_engine/memory/MemoryManager.hpp"
+
 #include "game_engine/ErrorCodes.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
@@ -25,11 +27,9 @@ namespace physics {
 
         if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
-        if (!pool_quad_tree_.Init(sizeof(utility::QuadTree<PhysicsObject *>), number_of_objects)) {
-            dt::Console(dt::FATAL, "PhysicsEngine::Init(): PoolAllocato::Init() failed");
-            return Error::ERROR_PHYSICS_INIT;
-        }
-        if (!world_.Init(math::Rectangle2D(world_size), &pool_quad_tree_)) {
+        memory::MemoryManager & memory_manager = memory::MemoryManager::GetInstance();
+
+        if (!world_.Init(math::Rectangle2D(world_size), memory_manager.GetPhysicsObjectsAllocator())) {
             dt::Console(dt::FATAL, "Physicsengine::Init(): QuadTree::Init() failed");
             return Error::ERROR_PHYSICS_INIT;
         }
@@ -48,10 +48,8 @@ namespace physics {
         /* 
             TODO We have to iterate through all the PhysicsObjects held, and call their Destroy(),
             because Collision objects will be leaked
-            Or else, we could offer custom allocation to such objects, and delete them alltogether here,
-            like we do below for the quad tree
+            Or else, we could offer custom allocation to such objects, and delete them alltogether here
         */
-        pool_quad_tree_.Destroy();
 
         is_inited_ = false;
         return 0;

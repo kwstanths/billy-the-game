@@ -4,9 +4,8 @@
 #include "MemoryPage.hpp"
 
 
-namespace game_engine{
-
-namespace memory_subsystem {
+namespace game_engine {
+namespace memory {
 
     /**
         Allocate memory in blocks stored sequentially on the heap

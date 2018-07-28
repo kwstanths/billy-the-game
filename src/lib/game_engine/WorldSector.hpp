@@ -4,10 +4,10 @@
 #include <vector>
 #include <deque>
 
-#include "game_engine/memory/ArrayAllocator.hpp"
-#include "game_engine/memory/PoolAllocator.hpp"
+#include "game_engine/memory/MemoryManager.hpp"
 #include "game_engine/physics/PhysicsEngine.hpp"
 #include "game_engine/utility/CircularBuffer.hpp"
+#include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/math/Types.hpp"
 
 #include "WorldObject.hpp"
@@ -65,16 +65,27 @@ namespace game_engine {
                 return nullptr;
             }
 
-            /* Allocate memory for new object */
+            memory::MemoryManager & memory_manager = memory::MemoryManager::GetInstance();
+
             T * the_new_object;
-            if (!removable) the_new_object = new (array_allocator_) T();
-            else the_new_object = new (pool_allocator_) T();
+            try{
+            
+                /* Allocate memory for new object */
+                if (!removable) the_new_object = new (memory_manager.GetStaticObjectsAllocator()) T();
+                else the_new_object = new (memory_manager.GetRemovableObjectsAllocator()) T();
+            
+            } catch (...) {
+                dt::Console(dt::FATAL, "Memory allocation failed");
+                return nullptr;
+            }
 
             the_new_object->world_sector_ = this;
             the_new_object->removable_ = removable;
             
             return the_new_object;
         }
+
+        void Step(math::Point2D camera_center, Real_t camera_width, double delta_time, graphics::Renderer * renderer);
 
         /**
             Inserts a new object to the world. 
@@ -129,9 +140,10 @@ namespace game_engine {
         physics::PhysicsEngine * GetPhysicsEngine();
 
     private:
-        
         bool is_inited_;
         Real_t x_margin_start_, x_margin_end_, y_margin_start_, y_margin_end_;
+
+        /* Each world holds an instance of a physics engine */
         physics::PhysicsEngine * physics_engine_;
         
         /* 
@@ -139,13 +151,10 @@ namespace game_engine {
             sequentially
         */
         std::vector<std::vector<std::deque<WorldObject *> > >world_;
+        std::vector<WorldObject *> visible_world_;
 
         /* Holds objects that are removed from the world, whose memory needs deallocation */
         utility::CircularBuffer<WorldObject *> delete_objects_buffer_;
-
-        /* Sequential allocators for objects */
-        memory_subsystem::ArrayAllocator * array_allocator_;
-        memory_subsystem::PoolAllocator * pool_allocator_;
 
         /**
             Get the row in the world based in the vertical coordiate
