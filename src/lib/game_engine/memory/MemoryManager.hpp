@@ -40,13 +40,21 @@ namespace memory {
         /**
         
         */
+        PoolAllocator * GetWorldLightsAllocator();
+
+        /**
+        
+        */
         size_t GetMemoryAllocated();
 
 
     private:
         ArrayAllocator * static_objects_memory_allocator_;
         PoolAllocator * removable_objecs_memory_allocator_;
+
         PoolAllocator * physics_objects_memory_allocator_;
+
+        PoolAllocator * world_lights_memory_allocator_;
 
         /**
             Does nothing in particular. Call Init()

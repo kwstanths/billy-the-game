@@ -52,6 +52,10 @@ namespace opengl {
         *up_z = config_.up_.z;
     }
 
+    Real_t OpenGLCamera::GetPerspectiveAngle() {
+        return perspective_angle_;
+    }
+
     void OpenGLCamera::SetPositionVector(Real_t x, Real_t y, Real_t z) {
         config_.position_ = glm::vec3(x, y, z);
     }
@@ -117,7 +121,7 @@ namespace opengl {
 
     void OpenGLCamera::Project3D() {
      
-        projection_matrix_ = glm::perspective(glm::radians(45.0f),
+        projection_matrix_ = glm::perspective(perspective_angle_,
             (1.0f * context_->GetWindowWidth()) / (1.0f * context_->GetWindowHeight()),
             0.1f, 100.0f);
     }

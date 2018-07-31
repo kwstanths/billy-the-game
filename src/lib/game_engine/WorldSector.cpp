@@ -1,5 +1,6 @@
 #include "WorldSector.hpp"
 
+#include "game_engine/memory/MemoryManager.hpp"
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/math/Types.hpp"
 
@@ -31,6 +32,13 @@ namespace game_engine {
         /* Initialize the world structure */
         world_ = std::vector<std::vector<std::deque<WorldObject *> > >(height, std::vector<std::deque<WorldObject *> >(width));
         
+        ms::MemoryManager& memory_manager = ms::MemoryManager::GetInstance();
+        world_point_lights_.Init(math::Rectangle2D(
+            math::Point2D(x_margin_start, y_margin_start),
+            math::Point2D(x_margin_end, y_margin_start),
+            math::Point2D(x_margin_end, y_margin_end),
+            math::Point2D(x_margin_start, y_margin_end)), memory_manager.GetWorldLightsAllocator());
+
         visible_world_ = std::vector<WorldObject *>(200);
 
         /* Initialize the physics engine used */
@@ -63,10 +71,10 @@ namespace game_engine {
         return is_inited_;
     }
 
-    void WorldSector::Step(math::Point2D camera_center, Real_t camera_width, double delta_time, gr::Renderer * renderer) {
+    void WorldSector::Step(math::Rectangle2D rect, double delta_time, gr::Renderer * renderer) {
 
         /* TODO Find the visible items based on the z of the camera */
-        size_t nof = GetObjectsWindow(camera_center.x_, camera_center.y_, camera_width, visible_world_);
+        size_t nof = GetObjectsWindow(rect.A_.x_/2.0 + rect.C_.x_/2.0, rect.A_.y_ / 2.0 + rect.C_.y_ / 2.0, 3, visible_world_);
 
         /* Step all the objects one frame */
         for (size_t i = 0; i < nof; i++) {
@@ -84,11 +92,22 @@ namespace game_engine {
         for (size_t i = 0; i < nof; i++) {
             visible_world_[i]->Draw(renderer);
         }
+
+        std::vector<graphics::PointLight_t *> lights_(16);
+        size_t lights = world_point_lights_.QueryRange(math::Rectangle2D(rect.A_.x_ / 2.0 + rect.C_.x_ / 2.0, rect.A_.y_ / 2.0 + rect.C_.y_ / 2.0, 50, 50), lights_);
+        for (size_t i = 0; i < lights; i++)
+            renderer->AddPointLight(*(lights_[i]));
+
         renderer->FlushDrawCalls();
 
         /* Update world */
         DeleteRemovedObjects();
 
+    }
+
+    int WorldSector::AddLight(graphics::PointLight_t * light, math::Point2D point) {
+
+        return !world_point_lights_.Insert(point, light);
     }
 
     int WorldSector::Insert(WorldObject * object, Real_t x, Real_t y, Real_t z) {

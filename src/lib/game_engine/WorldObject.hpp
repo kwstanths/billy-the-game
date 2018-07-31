@@ -32,7 +32,7 @@ namespace game_engine {
         WorldObject();
 
         /**
-            Custom sequential alloction without single remove and delete
+            Custom sequential allocation. ArrayAllocator does not offer a Deallocate option
         */
         void * operator new(size_t size, memory::ArrayAllocator * array_objects) {
             void * address = array_objects->Allocate(size);
@@ -48,7 +48,7 @@ namespace game_engine {
         }
 
         /**
-            Custom sequential allocation without remove and delete
+            Custom sequential allocation. PoolAllocator does offer a Deallocate option for a single object
         */
         void * operator new(size_t size, memory::PoolAllocator * pool_objects) {
             
@@ -145,7 +145,6 @@ namespace game_engine {
 
     private:
         bool is_inited_;
-        bool removable_;
         bool interactable_;
 
     };

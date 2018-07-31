@@ -81,6 +81,11 @@ namespace opengl {
         void GetUpVector(Real_t * up_x, Real_t * up_y, Real_t * up_z);
 
         /**
+            
+        */
+        Real_t GetPerspectiveAngle();
+
+        /**
             Set camera's position vector
             @param x x coordinate
             @param y y coordinate
@@ -137,6 +142,7 @@ namespace opengl {
     
     private:
         bool is_inited_;
+        float perspective_angle_ = glm::radians(45.0f);
 
         OpenGLContext * context_;
 

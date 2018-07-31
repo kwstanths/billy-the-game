@@ -81,11 +81,19 @@ namespace game_engine {
 
         renderer_->StartFrame();
 
-        /* Get visible items */
+        /* Calculate visible rectangle upon the z=0 pane */
         Real_t center_x, center_y, center_z;
         camera_->GetPositionVector(&center_x, &center_y, &center_z);
+        Real_t ratio = (Real_t) config_.context_params_.window_width_ / (Real_t) config_.context_params_.window_height_;
+        Real_t angle = camera_->GetPerspectiveAngle();
+        Real_t width = center_z * tan(angle/2.0f);
+        /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
+        math::Rectangle2D camera_view_rectangle = math::Rectangle2D(center_x, center_y, 4 * width * ratio, 4 * width);
+
+        renderer_->DrawRectangleXY(camera_view_rectangle, 0.02, 0.01, { 1,1,1 });
+
         /* TODO Find the visible items based on the z of the camera */
-        sector_->Step(math::Point2D(center_x, center_y), 3, delta_time, renderer_);
+        sector_->Step(camera_view_rectangle, delta_time, renderer_);
 
         /* Render text overlay */
         renderer_->Draw2DText("Welcome!", 100, 100, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));

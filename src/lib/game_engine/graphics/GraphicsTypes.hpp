@@ -143,7 +143,6 @@ namespace graphics {
         Attenuation_t(Real_t c, Real_t l, Real_t q) : constant_(c), linear_(l), quadratic_(q) {};
     };
 
-
     /**
         Holds the necessary values to draw a point light
     */

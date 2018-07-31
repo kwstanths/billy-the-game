@@ -85,7 +85,12 @@ namespace game_engine {
             return the_new_object;
         }
 
-        void Step(math::Point2D camera_center, Real_t camera_width, double delta_time, graphics::Renderer * renderer);
+        void Step(math::Rectangle2D rect, double delta_time, graphics::Renderer * renderer);
+
+        /**
+        
+        */
+        int AddLight(graphics::PointLight_t * light, math::Point2D point);
 
         /**
             Inserts a new object to the world. 
@@ -152,6 +157,7 @@ namespace game_engine {
         */
         std::vector<std::vector<std::deque<WorldObject *> > >world_;
         std::vector<WorldObject *> visible_world_;
+        utility::QuadTree<graphics::PointLight_t *> world_point_lights_;
 
         /* Holds objects that are removed from the world, whose memory needs deallocation */
         utility::CircularBuffer<WorldObject *> delete_objects_buffer_;

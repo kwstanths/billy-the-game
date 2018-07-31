@@ -19,10 +19,12 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Add collision objects in the memory pool");
-    CodeReminder("Add the point lights so that the ones closest are always drawn");
+    CodeReminder("Camera height values and pixels, WorldSector");
+    CodeReminder("placement new malloc for easy allocations");
     CodeReminder("AssetManager and MemoryManager constructor constants and values");
+    CodeReminder("Light virtual superclass, and other light subclasses");
     CodeReminder("Add the sun to something so that step and draw are always executed");
+    CodeReminder("Collision objects sequential allocation");
     CodeReminder("Objects interaction");
     CodeReminder("Fix the build with double");
     

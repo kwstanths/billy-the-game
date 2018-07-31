@@ -2,8 +2,11 @@
 #define __Collision_hpp__
 
 #include <cstdlib>
+#include <exception>
 
 #include "game_engine/math/Types.hpp"
+#include "game_engine/memory/ArrayAllocator.hpp"
+#include "game_engine/memory/PoolAllocator.hpp"
 
 #include "debug_tools/Console.hpp"
 
@@ -73,6 +76,7 @@ namespace physics {
 
     class CollisionNone : public Collision {
     public:
+
         bool Check(Collision * other) {
             return other->Check(this);
         }

@@ -62,7 +62,11 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     Sun * sun = NewObj<Sun>();
     sun->Init(0.0f, 0.0f, 1000.0f, engine);
 
-    /* Create some fire lighfts */
+    /* Create some fire lights */
+    NewObj<Fire>()->Init(-3.3f, -5.8f, 1.0f, engine, sun);
+    NewObj<Fire>()->Init(-3.3f, 0.8f, 1.0f, engine, sun);
+    NewObj<Fire>()->Init(-3.3f, 10.8f, 1.0f, engine, sun);
+    NewObj<Fire>()->Init(-3.3f, 15.8f, 1.0f, engine, sun);
     NewObj<Fire>()->Init(3.3f, -5.8f, 1.0f, engine, sun);
     NewObj<Fire>()->Init(3.3f, 0.8f, 1.0f, engine, sun);
     NewObj<Fire>()->Init(3.3f, 10.8f, 1.0f, engine, sun);

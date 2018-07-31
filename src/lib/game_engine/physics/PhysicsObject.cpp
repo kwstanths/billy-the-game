@@ -13,7 +13,7 @@ namespace physics {
 
     PhysicsObject::PhysicsObject() {
         
-
+        removable_ = false;
         pos_x_ = 0.0f;
         pos_y_ = 0.0f;
         pos_z_ = 0.0f;

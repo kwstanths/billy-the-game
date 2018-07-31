@@ -100,15 +100,6 @@ namespace graphics {
         return 0;
     }
 
-    int Renderer::AddPointLight(glm::vec3 position, graphics::LightProperties_t light_properties, Attenuation_t attenuation) {
-        if (point_lights_to_draw_.Items() >= GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS) {
-            dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");
-            return -1;
-        }
-        point_lights_to_draw_.Push(PointLight_t(position, light_properties, attenuation));
-        return 0;
-    }
-
     int Renderer::AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties) {
         return renderer_->SetDirectionalLight(direction, light_properties.ambient_, light_properties.diffuse_, light_properties.specular_);
     }
@@ -132,6 +123,16 @@ namespace graphics {
         camera_ = camera;
         camera->Init(context_);
 
+        return 0;
+    }
+
+    int Renderer::AddPointLight(PointLight_t& light) {
+        if (point_lights_to_draw_.Items() >= GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS) {
+            dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");
+            return -1;
+        }
+
+        point_lights_to_draw_.Push(light);
         return 0;
     }
 

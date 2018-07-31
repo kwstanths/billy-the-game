@@ -18,8 +18,9 @@ bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, game_engine::GameEngin
     Scale(0.1f, 0.1f, 0.1f);
     SetCollision(math::Circle2D(x, y, 0.05f));
 
-    light_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));
-    att_ = ge::graphics::Attenuation_t(1, 0.02f, 0.0239f);
+    light_.position_ = glm::vec3(x, y, z + 0.5);
+    light_.properties_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));
+    light_.attenutation_ = ge::graphics::Attenuation_t(1, 0.01f, 0.0239f);
 
     attenutation_noise_ = std::vector<ge::Real_t>(201);
     math::RNGenerator gen;
@@ -29,25 +30,27 @@ bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, game_engine::GameEngin
 
     sun_ = sun;
 
+    world_sector_->AddLight(&light_, math::Point2D(x, y));
+
     return ret == 0;
 }
 
 void Fire::Step(double delta_time) {
+    
+    light_.attenutation_.linear_ = attenutation_noise_[index_++];
+    if (index_ == 200) index_ = 0;
+
+    /* If dark enough, then set the light up */
+    double hour = sun_->GetTimeOfDay();
+    if (hour < 8 || hour > 18.5)
+        light_.properties_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));
+    else 
+        light_.properties_ = ge::graphics::LightProperties_t(0);
 
 }
 
 void Fire::Draw(grph::Renderer * renderer) {
     
-    double hour = sun_->GetTimeOfDay();
-
-    grph::Attenuation_t att = att_;
-    att.linear_ = attenutation_noise_[index_++];
-    if (index_ == 200) index_ = 0;
-
-    /* If dark enough, then set the light up */
-    if (hour < 8 || hour > 18.5) renderer->AddPointLight(glm::vec3(GetX(), GetY(), GetZ()+0.5), light_, att);
-    else renderer->AddPointLight(glm::vec3(GetX(), GetY(), GetZ() + 0.5), ge::graphics::LightProperties_t(0), att_);
-
     WorldObject::Draw(renderer);
 }
 

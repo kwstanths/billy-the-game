@@ -23,8 +23,7 @@ private:
     std::vector<game_engine::Real_t> attenutation_noise_;
     size_t index_;
 
-    game_engine::graphics::LightProperties_t light_;
-    game_engine::graphics::Attenuation_t att_;
+    game_engine::graphics::PointLight_t light_;
     
     Sun * sun_;
 };

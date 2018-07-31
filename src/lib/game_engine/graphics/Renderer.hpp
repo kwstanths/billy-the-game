@@ -63,8 +63,6 @@ namespace graphics {
 
         int DrawRectangleXY(math::Rectangle2D rect, float z_height, float size, glm::vec3 color);
 
-        int AddPointLight(glm::vec3 position, LightProperties_t light_properties, Attenuation_t attenuation);
-
         int AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties);
 
         /**
@@ -91,6 +89,11 @@ namespace graphics {
             @return 0=OK, -1 = Not initialised
         */
         int SetCamera(opengl::OpenGLCamera * camera);
+
+        /**
+        
+        */
+        int AddPointLight(PointLight_t& light);
 
         /**
             Flushes the point lights into drawing, flushes the object draw calls into drawing

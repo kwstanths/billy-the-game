@@ -117,6 +117,9 @@ namespace physics {
 
         virtual void OnCollisionDetected(size_t type);
 
+    protected:
+        bool removable_;
+
     private:
         bool is_inited_;
         game_engine::Real_t pos_x_, pos_y_, pos_z_;

@@ -4,6 +4,7 @@
 
 #include "game_engine/utility/QuadTree.hpp"
 #include "game_engine/physics/PhysicsObject.hpp"
+#include "game_engine/graphics/GraphicsTypes.hpp"
 
 #include "debug_tools/Console.hpp"
 
@@ -25,6 +26,9 @@ namespace memory {
         
         physics_objects_memory_allocator_ = new PoolAllocator();
         physics_objects_memory_allocator_->Init(sizeof(utility::QuadTree<physics::PhysicsObject *>), 200000);
+
+        world_lights_memory_allocator_ = new PoolAllocator();
+        world_lights_memory_allocator_->Init(sizeof(utility::QuadTree<graphics::PointLight_t *>), 100000);
     }
 
     MemoryManager::~MemoryManager() {
@@ -42,6 +46,10 @@ namespace memory {
 
     PoolAllocator * MemoryManager::GetPhysicsObjectsAllocator() {
         return physics_objects_memory_allocator_;
+    }
+
+    PoolAllocator * MemoryManager::GetWorldLightsAllocator() {
+        return world_lights_memory_allocator_;
     }
 
     size_t MemoryManager::GetMemoryAllocated() {
