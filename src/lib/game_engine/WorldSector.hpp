@@ -121,13 +121,11 @@ namespace game_engine {
         /**
             Get a window of object in the world. Objects are assigned sequentially to the visible world 
             vector. Does not allocate any new memory
-            @param center_x The x coordinate of the window's center
-            @param center_y The y coordinate of the window's center
-            @param margin The top, down, left, right window margin
+            @param rect The rectangle-window to get the objects. The MUST be in Axis aligned - ABCD correct form
             @param[out] visible_world The vector with pointers to the objects window
             @return The number of objects assigned to the visible_world vector
         */
-        size_t GetObjectsWindow(Real_t center_x, Real_t center_y, Real_t margin, std::vector<WorldObject *> & objects);
+        size_t GetObjectsWindow(math::Rectangle2D rect, std::vector<WorldObject *> & objects);
 
         /**
             Find  the first interactable object inside the search area. pos_x, pos_y is currently not used
@@ -167,14 +165,14 @@ namespace game_engine {
             @param vertical_coordinate The vertical coordinate
             @return The row
         */    
-        size_t GetRow(Real_t vertical_coordinate);
+        int GetRow(Real_t vertical_coordinate);
         
         /**
             Get the column in the world based in the horizontal coordinate
             @param horizontal_coordiante The horizontal coordiante
             @return The column
         */
-        size_t GetColumn(Real_t horizontal_coordinate);
+        int GetColumn(Real_t horizontal_coordinate);
 
         /**
             Deallocate the removed objects

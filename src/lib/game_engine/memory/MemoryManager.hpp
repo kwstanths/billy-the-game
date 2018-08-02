@@ -8,6 +8,12 @@
 namespace game_engine {
 namespace memory {
 
+    extern size_t STATIC_OBJETCS_MEMORY_SIZE;
+    extern size_t REMOVABLE_OBJECTS_MEMORY_BLOCK_SIZE;
+    extern size_t REMOVABLE_OBJECTS_MEMORY_BLOCKS_NUMBER;
+    extern size_t PHYSICS_OBJECTS_MEMORY_BLOCKS_NUMBER;
+    extern size_t LIGHT_OBJECTS_MEMORY_BLOCKS_NUMBER;
+
     class MemoryManager {
     public:
 

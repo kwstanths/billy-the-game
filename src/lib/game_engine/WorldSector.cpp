@@ -73,19 +73,28 @@ namespace game_engine {
 
     void WorldSector::Step(math::Rectangle2D rect, double delta_time, gr::Renderer * renderer) {
 
-        /* TODO Find the visible items based on the z of the camera */
-        size_t nof = GetObjectsWindow(rect.A_.x_/2.0 + rect.C_.x_/2.0, rect.A_.y_ / 2.0 + rect.C_.y_ / 2.0, 3, visible_world_);
+        /* Draw a rectangle for the edge of this world */
+        renderer->DrawRectangleXY(math::Rectangle2D(
+            math::Point2D(x_margin_start_, y_margin_start_),
+            math::Point2D(x_margin_end_, y_margin_start_),
+            math::Point2D(x_margin_end_, y_margin_end_),
+            math::Point2D(x_margin_start_, y_margin_end_)), 0.02f, 0.01f, { 1,1,1 }
+        );
+
+        /* Draw a rectangle for the rendering window */
+        renderer->DrawRectangleXY(rect, 0.02f, 0.01f, { 1,1,1 });
+
+        size_t nof = GetObjectsWindow(rect, visible_world_);
 
         /* Step all the objects one frame */
         for (size_t i = 0; i < nof; i++) {
             visible_world_[i]->Step(delta_time);
         }
 
+        /* Currently only calls the collision handlers */
         physics_engine_->Step();
 
-        /*
-            Set camera's view before drawing, because Step() might have tempered with the camera position
-        */
+        /* Set camera's view before drawing, because Step() might have tempered with the camera position */
         renderer->SetView();
 
         /* Draw visible world */
@@ -93,8 +102,9 @@ namespace game_engine {
             visible_world_[i]->Draw(renderer);
         }
 
+        /* Draw lights */
         std::vector<graphics::PointLight_t *> lights_(16);
-        size_t lights = world_point_lights_.QueryRange(math::Rectangle2D(rect.A_.x_ / 2.0 + rect.C_.x_ / 2.0, rect.A_.y_ / 2.0 + rect.C_.y_ / 2.0, 50, 50), lights_);
+        size_t lights = world_point_lights_.QueryRange(math::Rectangle2D(rect.A_.x_ / 2.0f + rect.C_.x_ / 2.0f, rect.A_.y_ / 2.0f + rect.C_.y_ / 2.0f, 50, 50), lights_);
         for (size_t i = 0; i < lights; i++)
             renderer->AddPointLight(*(lights_[i]));
 
@@ -166,26 +176,27 @@ namespace game_engine {
         } else dt::Console(dt::WARNING, "WorldSector::Remove(): MEMORY LEAK, removing object that was not made removable");
     }
 
-    size_t WorldSector::GetObjectsWindow(Real_t center_x, Real_t center_y, Real_t margin,
-        std::vector<WorldObject*> & objects) 
-    {
+    size_t WorldSector::GetObjectsWindow(math::Rectangle2D rect, std::vector<WorldObject*> & objects)  {
         if (!is_inited_) {
             dt::Console(dt::CRITICAL, "WorldSector::GetObjectsWindow() is not initialised");
             return -1;
         }
 
-        size_t index = 0;
-        size_t center_row = GetRow(center_y);
-        size_t center_col = GetColumn(center_x);
-        size_t border = static_cast<size_t>(std::ceil(margin));
-        
-        size_t rows_start = (center_row - border >= 0) ? (center_row - border) : 0;
-        size_t rows_end = (center_row + border < world_.size()) ? (center_row + border) : (world_.size() - 1);
-        size_t col_start = (center_col - border >= 0) ? (center_col - border) : 0;
-        size_t col_end = (center_col + border < world_[0].size()) ? (center_col + border) : (world_[0].size() -1);
+        /* Find starting rows and columns basd on the rectangle */
+        int row_start = GetRow(rect.C_.y_);
+        int row_end = GetRow(rect.A_.y_);
+        int col_start = GetColumn(rect.D_.x_);
+        int col_end = GetColumn(rect.B_.x_);
 
-        for (size_t i = rows_start; i <= rows_end; i++) {
-            for (size_t j = col_start - border; j <= col_end; j++) {
+        /* Check margins */
+        if (row_start < 0) row_start = 0;
+        if (row_end >= world_.size()) row_end = world_.size() - 1;
+        if (col_start < 0) col_start = 0;
+        if (col_end >= world_[0].size()) col_end = world_[0].size() - 1;
+
+        size_t index = 0;
+        for (size_t i = row_start; i <= row_end; i++) {
+            for (size_t j = col_start; j <= col_end; j++) {
                 for (std::deque<WorldObject*>::iterator itr = world_[i][j].begin(); itr != world_[i][j].end(); ++itr) {
                     if (index > objects.size() - 1) {
                         dt::Console(dt::WARNING, "WorldSector::GetObjetcsWindow() Objects overflow");
@@ -218,14 +229,22 @@ namespace game_engine {
         return physics_engine_;
     }
 
-    size_t WorldSector::GetRow(Real_t vertical_coordinate) {
-        float index = 0.0f + (world_.size() - 1 - 0.0f) * (vertical_coordinate - y_margin_start_) / (y_margin_end_ - y_margin_start_);
-        return static_cast<size_t>(index);
+    int WorldSector::GetRow(Real_t vertical_coordinate) {
+        /* 
+            If y_margin_end is mapped to the first row, and y_margin_start is mapped to the last row, then 
+            vertical_coordinate is mapped to row index
+        */
+        Real_t index = (world_.size() - Real_t(1)) * (y_margin_end_ - vertical_coordinate) / (y_margin_end_ - y_margin_start_);
+        return static_cast<int>(index);
     }
 
-    size_t WorldSector::GetColumn(Real_t horizontal_coordinate) {
-        float index = 0.0f + (world_[0].size() - 1 - 0.0f) * (horizontal_coordinate - x_margin_start_) / (x_margin_end_ - x_margin_start_);
-        return static_cast<size_t>(index);
+    int WorldSector::GetColumn(Real_t horizontal_coordinate) {
+        /*
+            If x_margin_end is mapped to the last column, and x_margin_start is mapped to the first column, then
+            horizontal_coordinate is mapped to column index
+        */
+        Real_t index = (world_[0].size() - Real_t(1)) * (horizontal_coordinate - x_margin_start_) / (x_margin_end_ - x_margin_start_);
+        return static_cast<int>(index);
     }
 
     void WorldSector::DeleteRemovedObjects() {

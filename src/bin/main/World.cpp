@@ -22,7 +22,7 @@ World::World() : WorldSector() {
 }
 
 int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
-    int ret = WorldSector::Init(300, 300, -500.0f, 500.0f, -500.0f, 500.0f, 500 * 500);
+    int ret = WorldSector::Init(300, 300, -100.0f, 100.0f, -100.0f, 100.0f, 500 * 500);
     if (ret) return ret;
 
     /* Initialize the world */

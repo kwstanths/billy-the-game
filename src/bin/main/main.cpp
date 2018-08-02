@@ -19,9 +19,9 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Camera height values and pixels, WorldSector");
-    CodeReminder("placement new malloc for easy allocations");
     CodeReminder("AssetManager and MemoryManager constructor constants and values");
+    CodeReminder("Removing lights and check object removing pipeline");
+    CodeReminder("Insert to world without NewObj()");
     CodeReminder("Light virtual superclass, and other light subclasses");
     CodeReminder("Add the sun to something so that step and draw are always executed");
     CodeReminder("Collision objects sequential allocation");

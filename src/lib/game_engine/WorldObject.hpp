@@ -32,6 +32,13 @@ namespace game_engine {
         WorldObject();
 
         /**
+            Classic memory allocation on the heap (plain simple malloc)
+        */
+        void * operator new(size_t size) {
+            return new char[size];
+        }
+
+        /**
             Custom sequential allocation. ArrayAllocator does not offer a Deallocate option
         */
         void * operator new(size_t size, memory::ArrayAllocator * array_objects) {
@@ -72,6 +79,11 @@ namespace game_engine {
             }
 
             return address;
+        }
+
+        void operator delete(void * ptr) {
+            debug_tools::Console(debug_tools::FATAL, "WorldObject simple memory allocation failed");
+            delete ptr;
         }
 
         void operator delete(void * ptr, memory::ArrayAllocator * array_objects) {

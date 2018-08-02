@@ -1,7 +1,7 @@
 #include "GameEngine.hpp"
 
 #include "ErrorCodes.hpp"
-#include "game_engine/math/RNGenerator.hpp"
+#include "game_engine/memory/MemoryManager.hpp"
 
 #include "debug_tools/Console.hpp"
 #include "debug_tools/CodeReminder.hpp"
@@ -43,6 +43,14 @@ namespace game_engine {
 
         frame_regulator_.Init(config_.frame_rate_, 10);
         debugger_->Init(renderer_);
+
+        /* Create the one and only MemoryManager object */
+        memory::STATIC_OBJETCS_MEMORY_SIZE = 500 * 500;
+        memory::REMOVABLE_OBJECTS_MEMORY_BLOCK_SIZE = 400;
+        memory::REMOVABLE_OBJECTS_MEMORY_BLOCKS_NUMBER = 1000;
+        memory::PHYSICS_OBJECTS_MEMORY_BLOCKS_NUMBER = 20000;
+        memory::LIGHT_OBJECTS_MEMORY_BLOCKS_NUMBER = 10000;
+        memory::MemoryManager& just_create_the_object_instance = memory::MemoryManager::GetInstance();
 
         /* Initialize standard library random numbers */
         srand(static_cast<unsigned int>(time(NULL)));
@@ -90,9 +98,7 @@ namespace game_engine {
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
         math::Rectangle2D camera_view_rectangle = math::Rectangle2D(center_x, center_y, 4 * width * ratio, 4 * width);
 
-        renderer_->DrawRectangleXY(camera_view_rectangle, 0.02, 0.01, { 1,1,1 });
-
-        /* TODO Find the visible items based on the z of the camera */
+        /* Perform one step on the active sector */
         sector_->Step(camera_view_rectangle, delta_time, renderer_);
 
         /* Render text overlay */

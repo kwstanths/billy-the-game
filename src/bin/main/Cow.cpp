@@ -15,7 +15,7 @@ bool Cow::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::GameEngine * engine
     int ret = WorldObject::Init("assets/cow.obj", x, y, z, true);
     SetPosition(x, y, 0.1f);
     Scale(0.2f, 0.2f, 0.2f);
-    SetCollision(math::Circle2D(x, y + 0.5, ge::Real_t(0.5)));    
+    SetCollision(math::Circle2D(x, y + 0.5f, ge::Real_t(0.5)));    
 
     return ret == 0;
 }
