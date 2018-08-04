@@ -13,7 +13,7 @@ namespace grph = game_engine::graphics;
 
 bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, game_engine::GameEngine * engine, Sun * sun) {
 
-    int ret = WorldObject::Init("assets/debug.obj", x, y, z);
+    int ret = WorldObject::Init("assets/debug.obj", x, y, z, true);
 
     Scale(0.1f, 0.1f, 0.1f);
     SetCollision(math::Circle2D(x, y, 0.05f));
@@ -30,6 +30,7 @@ bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, game_engine::GameEngin
 
     sun_ = sun;
 
+    on_ = true;
     world_sector_->AddLight(&light_, math::Point2D(x, y));
 
     return ret == 0;
@@ -52,5 +53,14 @@ void Fire::Step(double delta_time) {
 void Fire::Draw(grph::Renderer * renderer) {
     
     WorldObject::Draw(renderer);
+}
+
+void Fire::Interact() {
+
+    /* We can just set the light values to zero, but let's just test are RemoveLight function! */
+    if (on_) world_sector_->RemoveLight(&light_, math::Point2D(GetX(), GetY()));
+    else world_sector_->AddLight(&light_, math::Point2D(GetX(), GetY()));
+
+    on_ = !on_;
 }
 

@@ -8,10 +8,13 @@ namespace gl = game_engine::graphics::opengl;
 namespace game_engine {
 namespace graphics {
 
+    size_t MESHES_NUMBER = 512;
+    size_t TEXTURES_NUMBER = 512;
+
     AssetManager::AssetManager() {
 
-        meshes_ = new utl::HashTable<std::string, Mesh *>(512, 1.0);
-        textures_ = new utl::HashTable<std::string, gl::OpenGLTexture *>(512, 1.0);
+        meshes_ = new utl::HashTable<std::string, Mesh *>(MESHES_NUMBER, 1.0);
+        textures_ = new utl::HashTable<std::string, gl::OpenGLTexture *>(TEXTURES_NUMBER, 1.0);
     }
 
     AssetManager::~AssetManager() {

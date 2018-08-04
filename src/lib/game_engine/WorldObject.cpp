@@ -40,7 +40,7 @@ namespace game_engine {
         }
 
         /* Insert in the world */
-        if (world_sector_ != nullptr) world_sector_->Insert(this, x, y, z);
+        if (world_sector_ != nullptr) world_sector_->InsertObjectToWorldStructure(this, x, y, z);
 
         interactable_ = interactable;
 
@@ -56,7 +56,9 @@ namespace game_engine {
 
         GraphicsObject::Destroy();
 
-        world_sector_->Remove(this);
+        world_sector_->RemoveObjectFromWorldStructure(this);
+
+        world_sector_->DeleteObj(this);
 
         is_inited_ = false;
         return 0;

@@ -1,6 +1,7 @@
 #include "GameEngine.hpp"
 
 #include "ErrorCodes.hpp"
+#include "game_engine/graphics/AssetManager.hpp"
 #include "game_engine/memory/MemoryManager.hpp"
 
 #include "debug_tools/Console.hpp"
@@ -41,16 +42,21 @@ namespace game_engine {
             Terminate();
         }
 
-        frame_regulator_.Init(config_.frame_rate_, 10);
-        debugger_->Init(renderer_);
-
         /* Create the one and only MemoryManager object */
         memory::STATIC_OBJETCS_MEMORY_SIZE = 500 * 500;
         memory::REMOVABLE_OBJECTS_MEMORY_BLOCK_SIZE = 400;
         memory::REMOVABLE_OBJECTS_MEMORY_BLOCKS_NUMBER = 1000;
         memory::PHYSICS_OBJECTS_MEMORY_BLOCKS_NUMBER = 20000;
         memory::LIGHT_OBJECTS_MEMORY_BLOCKS_NUMBER = 10000;
-        memory::MemoryManager& just_create_the_object_instance = memory::MemoryManager::GetInstance();
+        memory::MemoryManager& memory_manager_creation_instance = memory::MemoryManager::GetInstance();
+
+        /* Create the one and only AssetManager object */
+        graphics::MESHES_NUMBER = 512;
+        graphics::TEXTURES_NUMBER = 512;
+        graphics::AssetManager& asset_manager_creation_instance = graphics::AssetManager::GetInstance();
+
+        frame_regulator_.Init(config_.frame_rate_, 10);
+        debugger_->Init(renderer_);
 
         /* Initialize standard library random numbers */
         srand(static_cast<unsigned int>(time(NULL)));

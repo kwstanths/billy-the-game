@@ -20,6 +20,7 @@ namespace game_engine {
     */
     class WorldSector {
         friend class GameEngine;
+        friend WorldObject;
     public:
         /**
             Does nothing in particular. Call Init()
@@ -85,38 +86,30 @@ namespace game_engine {
             return the_new_object;
         }
 
+        /**
+            
+        */
         void Step(math::Rectangle2D rect, double delta_time, graphics::Renderer * renderer);
+
+        /**
+            
+        */
+        int AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z);
 
         /**
         
         */
-        int AddLight(graphics::PointLight_t * light, math::Point2D point);
+        int RemoveObject(WorldObject * object);
 
         /**
-            Inserts a new object to the world. 
-            @param object A pointer to the object to insert
-            @param x Position X coordinate
-            @param y Position Y coordinate
-            @param z Position Z coordinate
-            @return 0 = OK, -1 = Not initialised
+        
         */
-        int Insert(WorldObject * object, Real_t x, Real_t y, Real_t z);
+        int AddLight(graphics::PointLight_t * light, math::Point2D& point);
 
         /**
-            Updates the position of an object in the world
-            @param object The object
-            @param old_pos_x The old position x coordinate
-            @param old_pos_y The old position y coordinate
-            @param new_pos_x The new position x coordinate
-            @param new_pos_y The new position y coordinate
+        
         */
-        void UpdateObjectPosition(WorldObject * object, Real_t old_pos_x, Real_t old_pos_y, Real_t new_pos_x, Real_t new_pos_y);
-
-        /**
-            Remove the object from the world
-            @param object Object to remove
-        */
-        void Remove(WorldObject * object);
+        int RemoveLight(graphics::PointLight_t * light, math::Point2D& point);
 
         /**
             Get a window of object in the world. Objects are assigned sequentially to the visible world 
@@ -175,9 +168,42 @@ namespace game_engine {
         int GetColumn(Real_t horizontal_coordinate);
 
         /**
+            Inserts a new object to the world.
+            @param object A pointer to the object to insert
+            @param x Position X coordinate
+            @param y Position Y coordinate
+            @param z Position Z coordinate
+            @return 0 = OK, -1 = Not initialised
+        */
+        int InsertObjectToWorldStructure(WorldObject * object, Real_t x, Real_t y, Real_t z);
+
+
+        /**
+            Updates the position of an object in the world
+            @param object The object
+            @param old_pos_x The old position x coordinate
+            @param old_pos_y The old position y coordinate
+            @param new_pos_x The new position x coordinate
+            @param new_pos_y The new position y coordinate
+        */
+        void UpdateObjectPosition(WorldObject * object, Real_t old_pos_x, Real_t old_pos_y, Real_t new_pos_x, Real_t new_pos_y);
+
+
+        /**
+            Remove the object from the world
+            @param object Object to remove
+        */
+        void RemoveObjectFromWorldStructure(WorldObject * object);
+
+        /**
+
+        */
+        void DeleteObj(WorldObject * object);
+
+        /**
             Deallocate the removed objects
         */
-        void DeleteRemovedObjects();
+        void FlushObjectDelete();
 
     };
 

@@ -19,12 +19,15 @@ public:
 
     virtual void Draw(game_engine::graphics::Renderer * renderer) override;
 
+    virtual void Interact() override;
+
 private:
     std::vector<game_engine::Real_t> attenutation_noise_;
     size_t index_;
 
     game_engine::graphics::PointLight_t light_;
-    
+    bool on_;
+
     Sun * sun_;
 };
 

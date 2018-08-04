@@ -68,16 +68,17 @@ namespace physics {
         CallCollisionHandlers();
     }
 
-    int PhysicsEngine::Insert(PhysicsObject * object) {
-        bool ret = world_.Insert(math::Point2D(object->GetX(), object->GetY()), object);
+    int PhysicsEngine::Insert(PhysicsObject * object, math::Point2D& position) {
+        bool ret = world_.Insert(position, object);
         if (!ret) return Error::ERROR_OUT_OF_REGION;
+
+        object->physics_engine_ = this;
         return 0;
     }
 
-    int PhysicsEngine::Update(PhysicsObject * object, float new_pos_x, float new_pos_y) {
-        bool ret = world_.Update(math::Point2D(object->GetX(), object->GetY()), object, math::Point2D(new_pos_x, new_pos_y));
+    int PhysicsEngine::Update(PhysicsObject * object, math::Point2D& new_position) {
+        bool ret = world_.Update(math::Point2D(object->GetX(), object->GetY()), object, new_position);
         if (!ret) dt::Console(dt::WARNING, "PhysicsEngine::Update(): object not found");
-        
         return 0;
     }
 
@@ -85,13 +86,13 @@ namespace physics {
         bool ret = world_.Remove(math::Point2D(object->GetX(), object->GetY()), object);
         if (!ret) dt::Console(dt::WARNING, "PhysicsEngine::Remove(): object not found");
 
+        object->physics_engine_ = nullptr;
         return;
     }
 
     size_t PhysicsEngine::GetObjectsArea(math::Rectangle2D search_area, std::vector<PhysicsObject*>& objects) {
 
         size_t nof = world_.QueryRange(search_area, objects);
-
         return nof;
     }
 

@@ -111,69 +111,40 @@ namespace game_engine {
         renderer->FlushDrawCalls();
 
         /* Update world */
-        DeleteRemovedObjects();
+        FlushObjectDelete();
 
     }
 
-    int WorldSector::AddLight(graphics::PointLight_t * light, math::Point2D point) {
+    int WorldSector::AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z) {
 
-        return !world_point_lights_.Insert(point, light);
-    }
+        InsertObjectToWorldStructure(object, x, y, z);
 
-    int WorldSector::Insert(WorldObject * object, Real_t x, Real_t y, Real_t z) {
-        if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
+        physics_engine_->Insert(object, math::Point2D(x, y));
+        
+        /* Set the position in the physics layer */
+        object->PhysicsObject::SetPosition(x, y, z);
 
-        size_t index_row = GetRow(y);
-        size_t index_col = GetColumn(x);
-        world_[index_row][index_col].push_back(object);
-        /* This is probably obsolete */
-        object->world_sector_ = this;
+        /* Set the position in the graphics layer */
+        object->GraphicsObject::SetPosition(x, y, z);
+
         return 0;
     }
 
-    void WorldSector::UpdateObjectPosition(WorldObject * object, Real_t old_pos_x, Real_t old_pos_y, Real_t new_pos_x, Real_t new_pos_y) {
-        
-        /* TODO Do some checkig on th object */
-        
-        /* Find the old and new position */
-        size_t old_pos_index_row = GetRow(old_pos_y);
-        size_t old_pos_index_col = GetColumn(old_pos_x);
-        size_t new_pos_index_row = GetRow(new_pos_y);
-        size_t new_pos_index_col = GetColumn(new_pos_x);
-        /* If no moving is required then leave */
-        
-        if ((old_pos_index_row == new_pos_index_row) && (old_pos_index_col == new_pos_index_col)) return;
+    int WorldSector::RemoveObject(WorldObject * object) {
 
-        /* Remove from the old position */
-        std::deque<WorldObject *> & objects = world_[old_pos_index_row][old_pos_index_col];
-        for (std::deque<WorldObject *>::iterator itr = objects.begin(); itr != objects.end(); ++itr) {
-            if (*itr == object) {
-                objects.erase(itr);
-                break;
-            }
-        }
-        
-        /* Add to new position */
-        world_[new_pos_index_row][new_pos_index_col].push_back(object);
+        RemoveObjectFromWorldStructure(object);
+
+        physics_engine_->Remove(object);
+
+        return 0;
     }
 
-    void WorldSector::Remove(WorldObject * object) {
-        size_t index_row = GetRow(object->GetY());
-        size_t index_col = GetColumn(object->GetX());
+    int WorldSector::AddLight(graphics::PointLight_t * light, math::Point2D& point) {
+        return !world_point_lights_.Insert(point, light);
+    }
 
-        std::deque<WorldObject *> & objects = world_[index_row][index_col];
-        for (std::deque<WorldObject *>::iterator itr = objects.begin(); itr != objects.end(); ++itr) {
-            if (*itr == object) {
-                objects.erase(itr);
-                break;
-            }
-        }
-
-        if (object->removable_) {
-            int ret = delete_objects_buffer_.Push(object);
-            if (ret) dt::Console(dt::CRITICAL, "WorldSector::Remove(): MEMORY LEAK, delete buffer is full");
-
-        } else dt::Console(dt::WARNING, "WorldSector::Remove(): MEMORY LEAK, removing object that was not made removable");
+    int WorldSector::RemoveLight(graphics::PointLight_t * light, math::Point2D& point) {
+        return !world_point_lights_.Remove(point, light);
     }
 
     size_t WorldSector::GetObjectsWindow(math::Rectangle2D rect, std::vector<WorldObject*> & objects)  {
@@ -247,7 +218,70 @@ namespace game_engine {
         return static_cast<int>(index);
     }
 
-    void WorldSector::DeleteRemovedObjects() {
+
+    int WorldSector::InsertObjectToWorldStructure(WorldObject * object, Real_t x, Real_t y, Real_t z) {
+        if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
+
+        size_t index_row = GetRow(y);
+        size_t index_col = GetColumn(x);
+        world_[index_row][index_col].push_back(object);
+        object->world_sector_ = this;
+
+        return 0;
+    }
+
+
+    void WorldSector::UpdateObjectPosition(WorldObject * object, Real_t old_pos_x, Real_t old_pos_y, Real_t new_pos_x, Real_t new_pos_y) {
+
+        /* TODO Do some checkig on th object */
+
+        /* Find the old and new position */
+        size_t old_pos_index_row = GetRow(old_pos_y);
+        size_t old_pos_index_col = GetColumn(old_pos_x);
+        size_t new_pos_index_row = GetRow(new_pos_y);
+        size_t new_pos_index_col = GetColumn(new_pos_x);
+        /* If no moving is required then leave */
+
+        if ((old_pos_index_row == new_pos_index_row) && (old_pos_index_col == new_pos_index_col)) return;
+
+        /* Remove from the old position */
+        std::deque<WorldObject *> & objects = world_[old_pos_index_row][old_pos_index_col];
+        for (std::deque<WorldObject *>::iterator itr = objects.begin(); itr != objects.end(); ++itr) {
+            if (*itr == object) {
+                objects.erase(itr);
+                break;
+            }
+        }
+
+        /* Add to new position */
+        world_[new_pos_index_row][new_pos_index_col].push_back(object);
+    }
+
+    void WorldSector::RemoveObjectFromWorldStructure(WorldObject * object) {
+        size_t index_row = GetRow(object->GetY());
+        size_t index_col = GetColumn(object->GetX());
+
+        std::deque<WorldObject *> & objects = world_[index_row][index_col];
+        for (std::deque<WorldObject *>::iterator itr = objects.begin(); itr != objects.end(); ++itr) {
+            if (*itr == object) {
+                objects.erase(itr);
+                break;
+            }
+        }
+
+    }
+
+    void WorldSector::DeleteObj(WorldObject * object) {
+
+        if (object->removable_) {
+            int ret = delete_objects_buffer_.Push(object);
+            if (ret) dt::Console(dt::CRITICAL, "WorldSector::RemoveObjectFromWorldStructure(): MEMORY LEAK, delete buffer is full");
+
+        } else dt::Console(dt::WARNING, "WorldSector::RemoveObjectFromWorldStructure(): MEMORY LEAK, removing object that was not made removable");
+
+    }
+
+    void WorldSector::FlushObjectDelete() {
 
         for (size_t i = 0; i < delete_objects_buffer_.Items(); i++) {
             WorldObject * object;

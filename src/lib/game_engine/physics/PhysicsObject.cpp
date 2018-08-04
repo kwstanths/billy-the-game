@@ -35,7 +35,7 @@ namespace physics {
 
         /* Insert into the world */
         physics_engine_ = engine;
-        int ret = physics_engine_->Insert(this);
+        int ret = physics_engine_->Insert(this, math::Point2D(pos_x, pos_y));
         if (ret) return ret;
 
         is_inited_ = true;
@@ -74,7 +74,7 @@ namespace physics {
         collision_->Translate(pos_x - pos_x_, pos_y - pos_y_);
         
         /* Update the object's position inside the physics engine */
-        physics_engine_->Update(this, pos_x, pos_y);
+        physics_engine_->Update(this, math::Point2D(pos_x, pos_y));
 
         /* Set the internal parameeters */
         pos_x_ = pos_x;

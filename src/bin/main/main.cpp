@@ -19,8 +19,7 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("AssetManager and MemoryManager constructor constants and values");
-    CodeReminder("Removing lights and check object removing pipeline");
+    CodeReminder("check object removing and adding pipeline");
     CodeReminder("Insert to world without NewObj()");
     CodeReminder("Light virtual superclass, and other light subclasses");
     CodeReminder("Add the sun to something so that step and draw are always executed");

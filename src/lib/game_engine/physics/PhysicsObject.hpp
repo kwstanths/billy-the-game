@@ -5,7 +5,6 @@
 #include "Collision.hpp"
 
 namespace game_engine {
-
 namespace physics {
 
     class PhysicsEngine;
@@ -115,6 +114,9 @@ namespace physics {
         */
         void SetObjectType(size_t type);
 
+        /**
+        
+        */
         virtual void OnCollisionDetected(size_t type);
 
     protected:

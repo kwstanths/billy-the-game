@@ -11,6 +11,9 @@
 namespace game_engine {
 namespace graphics {
 
+    extern size_t MESHES_NUMBER;
+    extern size_t TEXTURES_NUMBER;
+
     /**
         Object to manage assets to only keep one copy for each and easy
         searching among them
