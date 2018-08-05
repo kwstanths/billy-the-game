@@ -222,7 +222,10 @@ namespace opengl {
     }
 
     int OpenGLRenderer::SetPointLightsNumber(unsigned int number) {
+        
+        shader_main_.Use();
         shader_main_.SetUniformUInt(shader_main_.GetUniformLocation("number_of_point_lights"), number);
+        
         return 0;
     }
 

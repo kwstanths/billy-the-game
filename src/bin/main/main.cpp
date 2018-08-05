@@ -19,8 +19,7 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("check object removing and adding pipeline");
-    CodeReminder("Insert to world without NewObj()");
+    CodeReminder("GraphicsObject::Destroy()");
     CodeReminder("Light virtual superclass, and other light subclasses");
     CodeReminder("Add the sun to something so that step and draw are always executed");
     CodeReminder("Collision objects sequential allocation");

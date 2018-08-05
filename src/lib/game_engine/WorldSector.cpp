@@ -119,9 +119,8 @@ namespace game_engine {
 
         InsertObjectToWorldStructure(object, x, y, z);
 
-        physics_engine_->Insert(object, math::Point2D(x, y));
-        
         /* Set the position in the physics layer */
+        physics_engine_->Insert(object, math::Point2D(x, y));
         object->PhysicsObject::SetPosition(x, y, z);
 
         /* Set the position in the graphics layer */

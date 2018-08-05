@@ -27,10 +27,9 @@ namespace physics {
             @param pos_x The position x
             @param pos_y The position y
             @param pos_z The position z
-            @param engine The physics engine to use
             @return 0=OK, else see ErrorCodes.hpp
         */
-        int Init(game_engine::Real_t pos_x, game_engine::Real_t pos_y, game_engine::Real_t pos_z, PhysicsEngine * engine);
+        int Init(game_engine::Real_t pos_x, game_engine::Real_t pos_y, game_engine::Real_t pos_z);
 
         /**
             Removes from the pgysics engine, TODO
@@ -63,7 +62,7 @@ namespace physics {
         game_engine::Real_t GetZ();
 
         /**
-            Set the position of the object
+            Set the position of the object. Does not update the object's position in the physics engine
             @param pos_x Position x coordinate
             @param pos_y Position y coordinate
             @param pos_z Position z coordinate
@@ -128,7 +127,6 @@ namespace physics {
         size_t object_type_ = 0;
 
         Collision * collision_ = nullptr;
-        PhysicsEngine * physics_engine_;
 
         /**
             Get wether this object collides with another object in a new position

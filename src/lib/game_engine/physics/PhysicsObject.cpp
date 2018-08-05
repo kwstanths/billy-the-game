@@ -21,22 +21,17 @@ namespace physics {
         is_inited_ = false;
     }
 
-    int PhysicsObject::Init(ge::Real_t pos_x, ge::Real_t pos_y, ge::Real_t pos_z, PhysicsEngine * engine) {
+    int PhysicsObject::Init(ge::Real_t pos_x, ge::Real_t pos_y, ge::Real_t pos_z) {
         
         if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
         /* Set the initial collision to none */
         SetCollision();
-
+        
         /* Set position */
         pos_x_ = pos_x;
         pos_y_ = pos_y;
         pos_z_ = pos_z;
-
-        /* Insert into the world */
-        physics_engine_ = engine;
-        int ret = physics_engine_->Insert(this, math::Point2D(pos_x, pos_y));
-        if (ret) return ret;
 
         is_inited_ = true;
         return 0;
@@ -46,7 +41,6 @@ namespace physics {
 
         if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
-        physics_engine_->Remove(this);
         delete collision_;
 
         is_inited_ = false;
@@ -72,9 +66,6 @@ namespace physics {
     void PhysicsObject::SetPosition(ge::Real_t pos_x, ge::Real_t pos_y, ge::Real_t pos_z) {
         /* Update the collision detection objects */
         collision_->Translate(pos_x - pos_x_, pos_y - pos_y_);
-        
-        /* Update the object's position inside the physics engine */
-        physics_engine_->Update(this, math::Point2D(pos_x, pos_y));
 
         /* Set the internal parameeters */
         pos_x_ = pos_x;

@@ -3,12 +3,15 @@
 
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/WorldObject.hpp"
+#include "game_engine/WorldSector.hpp"
 #include "game_engine/math/Types.hpp"
 
 class Wall : public game_engine::WorldObject {
 public:
 
-    bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, game_engine::GameEngine * engine);
+    bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, 
+        game_engine::WorldSector * world,
+        game_engine::GameEngine * engine);
 
     virtual void Step(double delta_time) override;
 

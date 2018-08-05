@@ -7,6 +7,7 @@
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
+#include "debug_tools/Assert.hpp"
 namespace dt = debug_tools;
 namespace ph = game_engine::physics;
 namespace gl = game_engine::graphics::opengl;
@@ -26,7 +27,7 @@ namespace game_engine {
         if (WorldObject::is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
         /* Initialize the physics layer */
-        int ret = PhysicsObject::Init(x, y, z, world_sector_->GetPhysicsEngine());
+        int ret = PhysicsObject::Init(x, y, z);
         if (ret) {
             PrintError(ret);
             return ret;
@@ -39,9 +40,6 @@ namespace game_engine {
             return ret;
         }
 
-        /* Insert in the world */
-        if (world_sector_ != nullptr) world_sector_->InsertObjectToWorldStructure(this, x, y, z);
-
         interactable_ = interactable;
 
         is_inited_ = true;
@@ -53,11 +51,11 @@ namespace game_engine {
         if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
         
         PhysicsObject::Destroy();
+        world_sector_->GetPhysicsEngine()->Remove(this);
 
         GraphicsObject::Destroy();
 
         world_sector_->RemoveObjectFromWorldStructure(this);
-
         world_sector_->DeleteObj(this);
 
         is_inited_ = false;
@@ -93,6 +91,9 @@ namespace game_engine {
 
     void WorldObject::SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, bool collision_check) {
 
+        /* Maybe not assertion but return something */
+        _assert(world_sector_ != nullptr)
+
         Real_t new_pos_x = pos_x;
         Real_t new_pos_y = pos_y;
         if (collision_check) {
@@ -107,6 +108,7 @@ namespace game_engine {
         world_sector_->UpdateObjectPosition(this, GetX(), GetY(), new_pos_x, new_pos_y);
         
         /* Set the position in the physics layer */
+        //world_sector_->GetPhysicsEngine()->Update(this, math::Point2D(new_pos_x, new_pos_y));
         PhysicsObject::SetPosition(new_pos_x, new_pos_y, pos_z);
         
         /* Set the position in the graphics layer */

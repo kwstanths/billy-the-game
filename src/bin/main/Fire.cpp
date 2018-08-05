@@ -11,9 +11,10 @@ namespace math = game_engine::math;
 namespace grph = game_engine::graphics;
 
 
-bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, game_engine::GameEngine * engine, Sun * sun) {
+bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world, ge::GameEngine * engine, Sun * sun) {
 
     int ret = WorldObject::Init("assets/debug.obj", x, y, z, true);
+    world->AddObject(this, x, y, z);
 
     Scale(0.1f, 0.1f, 0.1f);
     SetCollision(math::Circle2D(x, y, 0.05f));

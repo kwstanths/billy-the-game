@@ -9,9 +9,10 @@ namespace dt = debug_tools;
 namespace ge = game_engine;
 namespace math = game_engine::math;
 
-bool Treasure::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::GameEngine * engine, size_t id) {
+bool Treasure::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world, ge::GameEngine * engine, size_t id) {
     
     int ret = WorldObject::Init("assets/treasure.obj", x, y, z, true);
+    world->AddObject(this, x, y, z);
 
     SetCollision(math::Rectangle2D(x, y, 1.0f, 1.0f));
 

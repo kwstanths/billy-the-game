@@ -80,7 +80,6 @@ namespace game_engine {
                 return nullptr;
             }
 
-            the_new_object->world_sector_ = this;
             the_new_object->removable_ = removable;
             
             return the_new_object;

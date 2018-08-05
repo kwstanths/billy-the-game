@@ -8,7 +8,8 @@
 class Treasure : public game_engine::WorldObject {
 public:
 
-    bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, game_engine::GameEngine * engine, size_t id);
+    bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, 
+        game_engine::WorldSector * world, game_engine::GameEngine * engine, size_t id);
 
     virtual void Step(double delta_time) override;
 

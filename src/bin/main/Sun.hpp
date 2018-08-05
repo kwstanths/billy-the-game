@@ -11,7 +11,8 @@
 class Sun : public game_engine::WorldObject {
 public:
 
-    bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, game_engine::GameEngine * engine);
+    bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, 
+        game_engine::WorldSector * world, game_engine::GameEngine * engine);
 
     virtual void Step(double delta_time) override;
 
@@ -21,8 +22,8 @@ public:
 
 private:
     game_engine::Real_t day_period_;
-    game_engine::Real_t game_time_;
-    game_engine::Real_t game_hour_;
+    game_engine::Real_t game_time_ = 0.0f;
+    game_engine::Real_t game_hour_ = 0.0f;
     game_engine::graphics::LightProperties_t light_;
 
 };

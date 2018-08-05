@@ -72,7 +72,6 @@ namespace physics {
         bool ret = world_.Insert(position, object);
         if (!ret) return Error::ERROR_OUT_OF_REGION;
 
-        object->physics_engine_ = this;
         return 0;
     }
 
@@ -86,7 +85,6 @@ namespace physics {
         bool ret = world_.Remove(math::Point2D(object->GetX(), object->GetY()), object);
         if (!ret) dt::Console(dt::WARNING, "PhysicsEngine::Remove(): object not found");
 
-        object->physics_engine_ = nullptr;
         return;
     }
 

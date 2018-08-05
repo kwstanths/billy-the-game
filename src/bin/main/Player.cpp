@@ -21,13 +21,15 @@ Player::Player(): WorldObject() {
     is_inited_ = false;
 }
 
-int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera * camera, ge::GameEngine * engine) {
+int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera * camera, ge::WorldSector * world, ge::GameEngine * engine) {
 
     input_ = input;
     engine_ = engine;
     camera_ = camera;
 
     int ret = WorldObject::Init("assets/player.obj", x, y, z);
+    world->AddObject(this, x, y, z);
+
     radius_ = 0.5f;
     interact_fov_ = math::GetRadians(50.0f);
     interact_margin_ = 0.3f;
@@ -70,6 +72,7 @@ void Player::Step(double delta_time) {
         ge::Direction_t new_direction = direction_array_[lookup_index];
         if (!math::Equal(new_direction, -1.0f)) {
 
+            //dt::ConsoleInfo("offset", move_offset, "delta", delta_time * 1000);
             /* Set the rotation of the model */
             SetRotation(math::GetRadians(new_direction), { 0,0,1 });
             looking_direction_ = ge::math::GetRadians(new_direction);
@@ -117,8 +120,21 @@ void Player::Step(double delta_time) {
                 WorldObject * neighbour = world_sector_->FindInteractNeighbour(search_area, math::Point2D((x1 + x2) / 2, (y1 + y2) / 2), 1);
                 if (neighbour != nullptr) neighbour->Interact();
                 else {
+
                     /* Spawn new wall! Just for fun! */
-                    world_sector_->NewObj<Wall>(true)->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, engine_);
+                    //{
+                    //    /*
+                    //        Spawing with normal malloc allocation.
+                    //        ATTENTION you will need to deallocate the object yourself orelse memory leak
+                    //    */
+                    //    Wall * wall = new Wall();
+                    //    wall->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, world_sector_, engine_);
+                    //}
+
+                    {
+                        /* Spawn via the memory system of the game engine */
+                        world_sector_->NewObj<Wall>(true)->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, world_sector_, engine_);
+                    }
                 }
             }
         }

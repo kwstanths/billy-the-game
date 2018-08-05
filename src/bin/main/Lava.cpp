@@ -9,7 +9,7 @@ namespace ge = game_engine;
 namespace math = game_engine::math;
 
 
-bool Lava::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, game_engine::GameEngine * engine) {
+bool Lava::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world, ge::GameEngine * engine) {
 
     int ret = WorldObject::Init("assets/lava.obj", x, y, z);
 

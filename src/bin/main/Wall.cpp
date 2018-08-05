@@ -7,11 +7,11 @@ namespace math = game_engine::math;
 namespace ge = game_engine;
 namespace dt = debug_tools;
 
-bool Wall::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, game_engine::GameEngine * engine) {
+bool Wall::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world, ge::GameEngine * engine) {
 
     int ret = WorldObject::Init("assets/wall.obj", x, y, z, true);
+    world->AddObject(this, x, y, z);
 
-    SetPosition(x, y, z);
     SetCollision(math::Rectangle2D(x, y, 1.0f, 1.0f));
 
     return ret == 0;
