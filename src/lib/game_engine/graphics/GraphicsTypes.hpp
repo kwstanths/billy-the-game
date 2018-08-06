@@ -155,6 +155,7 @@ namespace graphics {
 
         PointLight_t(glm::vec3 pos, LightProperties_t prop, Attenuation_t att) : position_(pos), properties_(prop), attenutation_(att) {};
     };
+
 }
 }
 #endif

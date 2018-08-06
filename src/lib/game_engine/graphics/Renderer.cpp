@@ -126,7 +126,7 @@ namespace graphics {
         return 0;
     }
 
-    int Renderer::AddPointLight(PointLight_t& light) {
+    int Renderer::AddPointLight(PointLight_t * light) {
         if (point_lights_to_draw_.Items() >= GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS) {
             dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");
             return -1;
@@ -143,16 +143,16 @@ namespace graphics {
         for (size_t i = 0; i < number_of_point_lights_; i++) {
             std::string index = std::to_string(i);
 
-            PointLight_t light;
+            PointLight_t * light;
             point_lights_to_draw_.Get(light);
             renderer_->SetPointLight(index,
-                light.position_,
-                light.properties_.ambient_,
-                light.properties_.diffuse_,
-                light.properties_.specular_,
-                light.attenutation_.constant_,
-                light.attenutation_.linear_,
-                light.attenutation_.quadratic_
+                light->position_,
+                light->properties_.ambient_,
+                light->properties_.diffuse_,
+                light->properties_.specular_,
+                light->attenutation_.constant_,
+                light->attenutation_.linear_,
+                light->attenutation_.quadratic_
             );
         }
 

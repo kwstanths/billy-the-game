@@ -75,7 +75,7 @@ namespace graphics {
 
     private:
         bool is_inited_;
-        utility::CircularBuffer<PointLight_t> point_lights_to_draw_;
+        utility::CircularBuffer<PointLight_t *> point_lights_to_draw_;
         utility::CircularBuffer<GraphicsObject *> objects_to_draw_;
 
         /* Variables needed for opengl drawiing */
@@ -93,7 +93,7 @@ namespace graphics {
         /**
         
         */
-        int AddPointLight(PointLight_t& light);
+        int AddPointLight(PointLight_t * light);
 
         /**
             Flushes the point lights into drawing, flushes the object draw calls into drawing

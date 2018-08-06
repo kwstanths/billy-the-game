@@ -36,7 +36,8 @@ namespace graphics {
     }
 
     int GraphicsObject::Destroy() {
-        /* TODO destroy objects */
+
+
         is_inited_ = false;
         return 0;
     }

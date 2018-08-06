@@ -39,6 +39,7 @@ bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * worl
 
 void Fire::Step(double delta_time) {
     
+    index_ = 100 + 100 * sin(glfwGetTime() * 0.5);
     light_.attenutation_.linear_ = attenutation_noise_[index_++];
     if (index_ == 200) index_ = 0;
 

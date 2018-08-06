@@ -19,10 +19,10 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("GraphicsObject::Destroy()");
-    CodeReminder("Light virtual superclass, and other light subclasses");
     CodeReminder("Add the sun to something so that step and draw are always executed");
-    CodeReminder("Collision objects sequential allocation");
+    CodeReminder("Continuous memory allocation for Mesh()");
+    CodeReminder("Continuous memory allocation for Collision objects");
+    CodeReminder("Light virtual superclass, and other light subclasses");
     CodeReminder("Objects interaction");
     CodeReminder("Fix the build with double");
     

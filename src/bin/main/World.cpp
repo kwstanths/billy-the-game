@@ -28,20 +28,17 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     /* Initialize the world */
     /* Create some grass */
     for (int x = -20; x < 20; x += 5)
-        for (int y = -20; y < 20; y += 5) {
+        for (int y = -20; y < 20; y += 5)
             NewObj<Grass>()->Init(x, y, 0.0f, this, engine);
-        }
     
     /* Create a path*/
     for (int x = 0; x < 10; x += 5)
-        for (int y = 15; y < 40; y += 5)
+        for (int y = 15; y < 100; y += 5)
             NewObj<Path>()->Init(x, y, 0.0f, this, engine);
             
     /* Create a wall */
     for (int x = -15; x < 4; x += 1)
         NewObj<Wall>(true)->Init(x, 6.5f, 0.01f, this, engine);
-
-    NewObj<Lava>()->Init(-5, 15, 0.0f, this, engine);
 
     /* Create some collidable treasures with some random ids */
     NewObj<Treasure>()->Init(0.0f, 1.5f, 0.01f, this, engine, 1);
@@ -63,21 +60,30 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     sun->Init(0.0f, 0.0f, 1000.0f, this, engine);
 
     /* Create some fire lights */
-    NewObj<Fire>()->Init(-3.3f, -5.8f, 1.0f, this, engine, sun);
-    NewObj<Fire>()->Init(-3.3f, 0.8f, 1.0f, this, engine, sun);
-    NewObj<Fire>()->Init(-3.3f, 10.8f, 1.0f, this, engine, sun);
-    NewObj<Fire>()->Init(-3.3f, 15.8f, 1.0f, this, engine, sun);
-    NewObj<Fire>()->Init(3.3f, -5.8f, 1.0f, this, engine, sun);
-    NewObj<Fire>()->Init(3.3f, 0.8f, 1.0f, this, engine, sun);
-    NewObj<Fire>()->Init(3.3f, 10.8f, 1.0f, this, engine, sun);
-    NewObj<Fire>()->Init(3.3f, 15.8f, 1.0f, this, engine, sun);
+    NewObj<Fire>()->Init(-4.0f, -5.0f, 1.0f, this, engine, sun);
+    NewObj<Fire>()->Init(-4.0f, 0.0f, 1.0f, this, engine, sun);
+    NewObj<Fire>()->Init(-4.0f, 5.0f, 1.0f, this, engine, sun);
+    NewObj<Fire>()->Init(-4.0f, 10.0f, 1.0f, this, engine, sun);
+    NewObj<Fire>()->Init(4.0f, -5.0f, 1.0f, this, engine, sun);
+    NewObj<Fire>()->Init(4.0f, 0.0f, 1.0f, this, engine, sun);
+    NewObj<Fire>()->Init(4.0f, 5.0f, 1.0f, this, engine, sun);
+    NewObj<Fire>()->Init(4.0f, 10.0f, 1.0f, this, engine, sun);
+    /* Create some fire along the path */
+    for (int x = 0; x < 10; x += 5)
+        for (int y = 15; y < 100; y += 15)
+            NewObj<Fire>()->Init(x, y, 1.0f, this, engine, sun);
 
-    /* Create a main player */
+    /* Create some deadly points along the path */
+    for (int y = 20; y < 100; y += 1) 
+        NewObj<Lava>()->Init(-2.8, y, 0.1f, this, engine);
+    for (int y = 20; y < 100; y += 1)
+        NewObj<Lava>()->Init(7.8, y, 0.1f, this, engine);
+
+
+    /* Create the main player */
     Player * player = NewObj<Player>();
     player->Init(0.0f, 0.0f, 0.1f, input, camera, this, engine);
 
-    /* Create a cow */
-    NewObj<Cow>()->Init(2.0f, -2.0f, 0.1f, this, engine);
 
     is_inited_ = true;
     return 0;

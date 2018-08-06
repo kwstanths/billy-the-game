@@ -104,9 +104,9 @@ namespace game_engine {
 
         /* Draw lights */
         std::vector<graphics::PointLight_t *> lights_(16);
-        size_t lights = world_point_lights_.QueryRange(math::Rectangle2D(rect.A_.x_ / 2.0f + rect.C_.x_ / 2.0f, rect.A_.y_ / 2.0f + rect.C_.y_ / 2.0f, 50, 50), lights_);
+        size_t lights = world_point_lights_.QueryRange(math::Rectangle2D(rect.A_.x_ / 2.0f + rect.C_.x_ / 2.0f, rect.A_.y_ / 2.0f + rect.C_.y_ / 2.0f, 45, 45), lights_);
         for (size_t i = 0; i < lights; i++)
-            renderer->AddPointLight(*(lights_[i]));
+            renderer->AddPointLight(lights_[i]);
 
         renderer->FlushDrawCalls();
 
