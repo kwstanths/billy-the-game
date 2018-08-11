@@ -85,7 +85,7 @@ namespace game_engine {
         renderer->DrawRectangleXY(rect, 0.02f, 0.01f, { 1,1,1 });
 
         size_t nof = GetObjectsWindow(rect, visible_world_);
-
+        
         /* Step all the objects one frame */
         for (size_t i = 0; i < nof; i++) {
             visible_world_[i]->Step(delta_time);

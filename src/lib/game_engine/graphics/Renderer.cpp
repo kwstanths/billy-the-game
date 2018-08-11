@@ -68,7 +68,7 @@ namespace graphics {
     }
 
     int Renderer::Draw(GraphicsObject * rendering_object) {
-        if (point_lights_to_draw_.Items() >= GAME_ENGINE_RENDERER_MAX_OBJECTS) {
+        if (objects_to_draw_.IsFull()) {
             dt::Console(dt::WARNING, "Renderer::Draw(): Maximum number of objects reached");
             return -1;
         }
