@@ -39,7 +39,9 @@ namespace game_engine {
             math::Point2D(x_margin_end, y_margin_end),
             math::Point2D(x_margin_start, y_margin_end)), memory_manager.GetWorldLightsAllocator());
 
-        visible_world_ = std::vector<WorldObject *>(200);
+        visible_world_ = std::vector<WorldObject *>(200, nullptr);
+
+        npcs_ = std::vector<WorldObject *>();
 
         /* Initialize the physics engine used */
         physics_engine_->Init(math::Rectangle2D(0, 0, 250, 250), elements);
@@ -72,7 +74,7 @@ namespace game_engine {
     }
 
     void WorldSector::Step(math::Rectangle2D rect, double delta_time, gr::Renderer * renderer) {
-
+        
         /* Draw a rectangle for the edge of this world */
         renderer->DrawRectangleXY(math::Rectangle2D(
             math::Point2D(x_margin_start_, y_margin_start_),
@@ -88,7 +90,8 @@ namespace game_engine {
         
         /* Step all the objects one frame */
         for (size_t i = 0; i < nof; i++) {
-            visible_world_[i]->Step(delta_time);
+            WorldObject * visible_object = visible_world_[i];
+            if (!visible_object->npc_) visible_object->Step(delta_time);
         }
 
         /* Currently only calls the collision handlers */
@@ -100,6 +103,13 @@ namespace game_engine {
         /* Draw visible world */
         for (size_t i = 0; i < nof; i++) {
             visible_world_[i]->Draw(renderer);
+        }
+
+        /* Step and draw the npcs once */
+        for (size_t i = 0; i < npcs_.size(); i++) {
+            WorldObject * npc = npcs_[i];
+            npc->Step(delta_time);
+            npc->Draw(renderer);
         }
 
         /* Draw lights */
@@ -115,7 +125,7 @@ namespace game_engine {
 
     }
 
-    int WorldSector::AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z) {
+    int WorldSector::AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z, bool is_npc) {
 
         InsertObjectToWorldStructure(object, x, y, z);
 
@@ -125,6 +135,11 @@ namespace game_engine {
 
         /* Set the position in the graphics layer */
         object->GraphicsObject::SetPosition(x, y, z);
+
+        if (is_npc) {
+            npcs_.push_back(object);
+            object->npc_ = true;
+        }
 
         return 0;
     }

@@ -160,6 +160,7 @@ namespace game_engine {
 
         bool is_inited_;
         bool interactable_;
+        bool npc_ = false;
 
     };
 

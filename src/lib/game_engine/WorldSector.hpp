@@ -91,9 +91,9 @@ namespace game_engine {
         void Step(math::Rectangle2D rect, double delta_time, graphics::Renderer * renderer);
 
         /**
-            
+            vector.push_back comment
         */
-        int AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z);
+        int AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z, bool is_npc = false);
 
         /**
         
@@ -145,8 +145,9 @@ namespace game_engine {
             A struct that resembles the world. Holds pointers to actual objects that are stored 
             sequentially
         */
-        std::vector<std::vector<std::deque<WorldObject *> > >world_;
+        std::vector<std::vector<std::deque<WorldObject *> > > world_;
         std::vector<WorldObject *> visible_world_;
+        std::vector<WorldObject *> npcs_;
         utility::QuadTree<graphics::PointLight_t *> world_point_lights_;
 
         /* Holds objects that are removed from the world, whose memory needs deallocation */

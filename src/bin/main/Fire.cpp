@@ -21,7 +21,7 @@ bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * worl
 
     light_.position_ = glm::vec3(x, y, z + 0.5);
     light_.properties_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));
-    light_.attenutation_ = ge::graphics::Attenuation_t(1, 0.01f, 0.0239f);
+    light_.attenutation_ = ge::graphics::Attenuation_t(1, 0.01f, 0.0939f);
 
     attenutation_noise_ = std::vector<ge::Real_t>(201);
     math::RNGenerator gen;

@@ -19,7 +19,8 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Add the sun to something so that step and draw are always executed");
+    CodeReminder("Fix constant loading of assets");
+    CodeReminder("WorldSector::Init() values used");
     CodeReminder("Continuous memory allocation for Mesh()");
     CodeReminder("Continuous memory allocation for Collision objects");
     CodeReminder("Light virtual superclass, and other light subclasses");
