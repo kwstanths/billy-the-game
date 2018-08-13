@@ -8,11 +8,13 @@ namespace gl = game_engine::graphics::opengl;
 namespace game_engine {
 namespace graphics {
 
+    size_t MODELS_NUMBER = 512;
     size_t MESHES_NUMBER = 512;
     size_t TEXTURES_NUMBER = 512;
 
     AssetManager::AssetManager() {
 
+        models_ = new utl::HashTable<std::string, Model *>(MODELS_NUMBER, 1.0f);
         meshes_ = new utl::HashTable<std::string, Mesh *>(MESHES_NUMBER, 1.0);
         textures_ = new utl::HashTable<std::string, gl::OpenGLTexture *>(TEXTURES_NUMBER, 1.0);
     }
@@ -33,6 +35,23 @@ namespace graphics {
             delete texture;
         }
         delete textures_;
+
+    }
+
+    Model * AssetManager::FindModel(std::string name) {
+
+        utl::HashTable<std::string, Model *>::iterator itr = models_->Find(name);
+        if (itr != models_->end())
+            return itr.GetValue();
+
+        return nullptr;
+    }
+
+    void AssetManager::InsertModel(std::string name, Model * model) {
+
+        bool ret = models_->Insert(name, model);
+        if (!ret)
+            dt::Console(dt::WARNING, "AssetManager::InsertModel(): Model already present");
 
     }
 

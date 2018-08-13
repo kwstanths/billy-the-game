@@ -27,7 +27,7 @@ namespace graphics {
         /* opengl textures */
         for (size_t i = 0; i < textures_.size(); i++) {
 
-            /* Try to find if it wad previously allocated */
+            /* Try to find if it was previously allocated */
             AssetManager & asset_manager = AssetManager::GetInstance();
             std::string texture_path = textures_[i].path_;
             gl::OpenGLTexture * previously_allocated_texture = asset_manager.FindTexture(texture_path);

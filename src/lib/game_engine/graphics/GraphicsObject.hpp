@@ -1,14 +1,11 @@
 #ifndef __GraphicsObject_hpp__
 #define __GraphicsObject_hpp__
 
-#include <assimp/scene.h>
 
-#include "game_engine/graphics/opengl/OpenGLObject.hpp"
-#include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 #include "game_engine/math/Types.hpp"
 
 #include "GraphicsTypes.hpp"
-#include "Mesh.hpp"
+#include "Model.hpp"
 
 namespace game_engine {
 namespace graphics {
@@ -49,22 +46,12 @@ namespace graphics {
     private:
         bool is_inited_;
 
-        std::vector<Mesh *> meshes_;
-        std::string asset_file_path;
-        std::string directory_;
+        Model * model_ = nullptr;
 
         glm::mat4 translation_matrix_;
         glm::mat4 rotation_matrix_;
         glm::mat4 scale_matrix_;
-        glm::mat4 model_;
-
-        int LoadModel(std::string file_path);
-
-        int ProcessNode(aiNode *node, const aiScene *scene);
-
-        Mesh * ProcessMesh(aiMesh *mesh, const aiScene *scene);
-
-        std::vector<Texture_t> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, int texture_type);
+        glm::mat4 model_matrix_;
     };
 
 }

@@ -145,9 +145,16 @@ namespace game_engine {
     }
 
     int WorldSector::RemoveObject(WorldObject * object) {
+        
+        _assert(0 == 1);
 
+        /* Remove from npcs structures */
+        if (object->npc_) npcs_.erase(find(npcs_.begin(), npcs_.end(), object));
+
+        /* Remove from world structure */
         RemoveObjectFromWorldStructure(object);
 
+        /* Remove from the physics engine */
         physics_engine_->Remove(object);
 
         return 0;

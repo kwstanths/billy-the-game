@@ -39,7 +39,6 @@ namespace graphics {
 
         opengl::OpenGLObject opengl_object_;
         std::vector<opengl::OpenGLTexture *> opengl_textures_;
-
     };
 
 }

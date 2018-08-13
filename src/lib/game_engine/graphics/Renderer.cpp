@@ -78,10 +78,13 @@ namespace graphics {
     }
 
     int Renderer::DrawSimple(GraphicsObject * rendering_object) {
-        for (size_t i = 0; i < rendering_object->meshes_.size(); i++) {
-            Mesh * mesh = rendering_object->meshes_[i];
+
+        std::vector<Mesh *> & meshes = rendering_object->model_->meshes_;
+
+        for (size_t i = 0; i < meshes.size(); i++) {
+            Mesh * mesh = meshes[i];
             gl::OpenGLTexture * texture = mesh->opengl_textures_.at(0);
-            renderer_->Draw(&(mesh->opengl_object_), texture, rendering_object->model_);
+            renderer_->Draw(&(mesh->opengl_object_), texture, rendering_object->model_matrix_);
         }
         return 0;
     }
@@ -160,9 +163,11 @@ namespace graphics {
         for (size_t i = 0; i < number_of_objects_to_draw_; i++) {
             GraphicsObject * rendering_object;
             objects_to_draw_.Get(rendering_object);
-            for (size_t i = 0; i < rendering_object->meshes_.size(); i++) {
-                Mesh * mesh = rendering_object->meshes_[i];
-                renderer_->Draw(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_, mesh->mat_);
+            
+            std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
+            for (size_t i = 0; i < meshes.size(); i++) {
+                Mesh * mesh = meshes[i];
+                renderer_->Draw(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
             }
         }
 

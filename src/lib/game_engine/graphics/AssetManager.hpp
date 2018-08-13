@@ -3,14 +3,16 @@
 
 #include <string>
 
-#include "game_engine/graphics/Mesh.hpp"
 #include "game_engine/utility/HashTable.hpp"
+#include "game_engine/graphics/Model.hpp"
+#include "game_engine/graphics/Mesh.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 
 
 namespace game_engine {
 namespace graphics {
 
+    extern size_t MODELS_NUMBER;
     extern size_t MESHES_NUMBER;
     extern size_t TEXTURES_NUMBER;
 
@@ -32,6 +34,11 @@ namespace graphics {
             meshes themselves! Pointers to meshes may be everywhere!
         */
         ~AssetManager();
+
+
+        Model * FindModel(std::string name);
+
+        void InsertModel(std::string name, Model * model);
 
         /**
             Search for a mesh, based on the name
@@ -58,6 +65,8 @@ namespace graphics {
         void InsertTexture(std::string name, opengl::OpenGLTexture * texture);
 
     private:
+        /* Holds the models */
+        utility::HashTable<std::string, Model *> * models_;
         /* Holds the meshes */
         utility::HashTable<std::string, Mesh *> * meshes_;
         /* Holds the textures */
