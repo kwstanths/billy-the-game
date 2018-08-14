@@ -45,6 +45,8 @@ namespace memory {
     MemoryManager::~MemoryManager() {
         static_objects_memory_allocator_->Destroy();
         removable_objecs_memory_allocator_->Destroy();
+        physics_objects_memory_allocator_->Destroy();
+        world_lights_memory_allocator_->Destroy();
     }
 
     ArrayAllocator * MemoryManager::GetStaticObjectsAllocator() {

@@ -17,13 +17,21 @@ namespace graphics {
         
         int ret = LoadModel(model_file_path);
         if (ret) return ret;
+
+        is_inited_ = true;
         
         return 0;
     }
 
     int Model::Destroy() {
         
-        dt::Console(dt::FATAL, "TODO implementation");
+        if (!is_inited_) return -1;
+
+        for (size_t i = 0; i < meshes_.size(); i++) {
+            Mesh * mesh = meshes_[i];
+            mesh->Destroy();
+            delete mesh;
+        }
 
         is_inited_ = false;
 
@@ -45,7 +53,6 @@ namespace graphics {
         }
 
         directory_ = file_path.substr(0, file_path.find_last_of('/'));
-        asset_file_path = file_path.substr(0, file_path.find_last_of('.'));
 
         ProcessNode(scene->mRootNode, scene);
         return 0;
@@ -56,21 +63,9 @@ namespace graphics {
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
             aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
 
-            std::string mesh_file_path = asset_file_path + "/" + std::string(mesh->mName.C_Str());
-
-            /* Grab the instance of the asset manager, and check if we already have that Mesh */
-            AssetManager & asset_manager = AssetManager::GetInstance();
-            Mesh * previously_allocated_mesh = asset_manager.FindMesh(mesh_file_path);
-            if (!previously_allocated_mesh) {
-                Mesh * new_mesh = ProcessMesh(mesh, scene);
-                asset_manager.InsertMesh(mesh_file_path, new_mesh);
-                meshes_.push_back(new_mesh);
-            }
-            else
-                meshes_.push_back(previously_allocated_mesh);
-
+            meshes_.push_back(ProcessMesh(mesh, scene));
         }
-        // then do the same for each of its children
+        /* then do the same for each of its children */
         for (unsigned int i = 0; i < node->mNumChildren; i++) {
             ProcessNode(node->mChildren[i], scene);
         }

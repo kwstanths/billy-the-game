@@ -24,9 +24,6 @@ namespace game_engine {
         ret = debug_object_point_.Init(0, 0, 0, "assets/debug.obj");
         if (ret) return ret;
 
-        ret = debug_object_line_.Init(0, 0, 0, "assets/tile.obj");
-        if (ret) return ret;
-
         is_inited_ = true;
         return 0;
     }
@@ -34,7 +31,6 @@ namespace game_engine {
     int Debugger::Destroy() {
 
         debug_object_point_.Destroy();
-        debug_object_line_.Destroy();
         renderer_= nullptr;
 
         is_inited_ = false;
@@ -51,7 +47,6 @@ namespace game_engine {
 
         debug_object_point_.SetPosition(x, y, z);
         debug_object_point_.Scale(size, size, size);
-        debug_object_point_.SetModelMatrix();
         renderer_->DrawSimple(&debug_object_point_);
     }
 

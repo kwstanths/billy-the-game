@@ -51,7 +51,7 @@ namespace game_engine {
         memory::MemoryManager& memory_manager_creation_instance = memory::MemoryManager::GetInstance();
 
         /* Create the one and only AssetManager object */
-        graphics::MESHES_NUMBER = 512;
+        graphics::MODELS_NUMBER = 512;
         graphics::TEXTURES_NUMBER = 512;
         graphics::AssetManager& asset_manager_creation_instance = graphics::AssetManager::GetInstance();
 

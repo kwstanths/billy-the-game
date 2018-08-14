@@ -47,30 +47,67 @@ namespace graphics {
         KeyControls_t GetControlInput();
 
         /**
-            Draws an object with full lightning. If you call this function directly, and not via the call 
-            upon the rendering_object, make sure to call SetModelMatrix() on the rendering object. Also, all
-            Draw() calls will happen at the end of the frame. This means that calling this Draw() on an object 
-            multiple times within a single frame, will result it drawing the same object multiple on the last
-            object position
+            Draws an object with full lightning. All Draw() calls will happen at the end of the frame. This means 
+            that calling this Draw() on an object multiple times within a single frame, will result in drawing the 
+            same object multiple times on the last object position/scaling/rotation
             @param rendering_object The object to draw
             @return 0 = OK, -1 = rendering_object is not properly initialised
         */
         int Draw(GraphicsObject * rendering_object);
 
+        /**
+            Draws an object with no lightning, only with a diffuse texture. The first diffuse texture specified will 
+            be used as a diffuse texture
+            @param rendering_object The object to draw
+            @return 0 = OK
+        */
         int DrawSimple(GraphicsObject * rendering_object);
 
+        /**
+            Draws a line on the z pane
+            @param start Starting point
+            @param stop Stopping point
+            @param z_height The z pane height
+            @param size The size of the line
+            @param color The color of the line
+            @return 0 = OK, -1 = Not initialised
+        */
         int DrawLineXY(math::Point2D start, math::Point2D stop, float z_height, float size, glm::vec3 color);
 
+        /**
+            Draw a rectangle on the z pane
+            @param rect The rectangle
+            @param z_height The z pane height
+            @param size The size of the line
+            @param color The color of the line
+            @return 0 = OK, -1 = Not initialised
+        */
         int DrawRectangleXY(math::Rectangle2D rect, float z_height, float size, glm::vec3 color);
 
+        /**
+            Sets the directional light of the scene
+            @param direction The light direction
+            @param light_properties The properties of the light
+            @return 0 = OK
+        */
         int AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties);
 
         /**
-            @param angles in degrees
+            @param Sets a spotlight in the scene
+            @param position The light position
+            @param direction The light direction
+            @param inner_angle The inner angle of the spotlight in degrees
+            @param outer_angle The outer angle of the spotlight in degrees
+            @param light_properties The light properties
+            @param attenuation The attenuation of the light
+            @return 0 = OK
         */
         int AddSpotLight(glm::vec3 position, glm::vec3 direction, Real_t inner_angle, Real_t outer_angle,
             LightProperties_t light_properties, Attenuation_t attenuation);
 
+        /**
+            Draw 2D text
+        */
         int Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 
     private:

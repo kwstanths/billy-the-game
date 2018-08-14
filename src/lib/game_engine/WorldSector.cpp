@@ -44,7 +44,11 @@ namespace game_engine {
         npcs_ = std::vector<WorldObject *>();
 
         /* Initialize the physics engine used */
-        physics_engine_->Init(math::Rectangle2D(0, 0, 250, 250), elements);
+        physics_engine_->Init(math::Rectangle2D(
+            (x_margin_start + x_margin_end) / Real_t(2), 
+            (y_margin_start + y_margin_end) / Real_t(2), 
+            (x_margin_end - x_margin_start), 
+            (y_margin_end - y_margin_start)), elements);
 
         /* Initialize the circular buffer for deleting objects */
         delete_objects_buffer_.Init(128);
@@ -296,9 +300,9 @@ namespace game_engine {
 
         if (object->removable_) {
             int ret = delete_objects_buffer_.Push(object);
-            if (ret) dt::Console(dt::CRITICAL, "WorldSector::RemoveObjectFromWorldStructure(): MEMORY LEAK, delete buffer is full");
+            if (ret) dt::Console(dt::CRITICAL, "WorldSector::DeleteObj(): MEMORY LEAK, delete buffer is full");
 
-        } else dt::Console(dt::WARNING, "WorldSector::RemoveObjectFromWorldStructure(): MEMORY LEAK, removing object that was not made removable");
+        } else dt::Console(dt::WARNING, "WorldSector::DeleteObj(): MEMORY LEAK, removing object that was not made removable");
 
     }
 

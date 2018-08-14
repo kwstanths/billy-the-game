@@ -9,24 +9,22 @@ namespace game_engine {
 namespace graphics {
 
     size_t MODELS_NUMBER = 512;
-    size_t MESHES_NUMBER = 512;
     size_t TEXTURES_NUMBER = 512;
 
     AssetManager::AssetManager() {
 
         models_ = new utl::HashTable<std::string, Model *>(MODELS_NUMBER, 1.0f);
-        meshes_ = new utl::HashTable<std::string, Mesh *>(MESHES_NUMBER, 1.0);
         textures_ = new utl::HashTable<std::string, gl::OpenGLTexture *>(TEXTURES_NUMBER, 1.0);
     }
 
     AssetManager::~AssetManager() {
-        /* Destroy meshes */
-        for (typename utl::HashTable<std::string, Mesh *>::iterator itr = meshes_->begin(); itr != meshes_->end(); ++itr) {
-            Mesh * mesh = itr.GetValue();
-            mesh->Destroy();
-            delete mesh;
+        /* Destroy models */
+        for (typename utl::HashTable<std::string, Model *>::iterator itr = models_->begin(); itr != models_->end(); ++itr) {
+            Model * model = itr.GetValue();
+            model->Destroy();
+            delete model;
         }
-        delete meshes_;
+        delete models_;
 
         /* Destroy textures */
         for (typename utl::HashTable<std::string, gl::OpenGLTexture *>::iterator itr = textures_->begin(); itr != textures_->end(); ++itr) {
@@ -52,23 +50,6 @@ namespace graphics {
         bool ret = models_->Insert(name, model);
         if (!ret)
             dt::Console(dt::WARNING, "AssetManager::InsertModel(): Model already present");
-
-    }
-
-    Mesh * AssetManager::FindMesh(std::string name) {
-
-        utl::HashTable<std::string, Mesh *>::iterator itr = meshes_->Find(name);
-        if (itr != meshes_->end())
-            return itr.GetValue();
-
-        return nullptr;
-    }
-
-    void AssetManager::InsertMesh(std::string name, Mesh * mesh) {
-
-        bool ret = meshes_->Insert(name, mesh);
-        if (!ret)
-            dt::Console(dt::WARNING, "AssetManager::InsertMesh(): Mesh already present");
 
     }
 

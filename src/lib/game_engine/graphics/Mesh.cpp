@@ -46,6 +46,8 @@ namespace graphics {
 
     int Mesh::Destroy() {
 
+        if (!is_inited_) return -1;
+
         opengl_object_.Destroy();
         for (size_t i = 0; i < textures_.size(); i++)
             opengl_textures_[i]->Destroy();

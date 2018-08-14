@@ -41,6 +41,8 @@ namespace graphics {
 
     int GraphicsObject::Destroy() {
 
+        /* DONT Destroy or delete model_, It stil might be used by other objects */
+
         is_inited_ = false;
         return 0;
     }
@@ -51,7 +53,6 @@ namespace graphics {
 
     void GraphicsObject::Draw(Renderer * renderer) {
 
-        SetModelMatrix();
         renderer->Draw(this);
     }
 

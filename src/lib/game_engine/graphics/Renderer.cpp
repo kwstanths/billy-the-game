@@ -79,6 +79,8 @@ namespace graphics {
 
     int Renderer::DrawSimple(GraphicsObject * rendering_object) {
 
+        rendering_object->SetModelMatrix();
+
         std::vector<Mesh *> & meshes = rendering_object->model_->meshes_;
 
         for (size_t i = 0; i < meshes.size(); i++) {
@@ -94,6 +96,8 @@ namespace graphics {
     }
 
     int Renderer::DrawRectangleXY(math::Rectangle2D rect, float z_height, float size, glm::vec3 color) {
+
+        if (!renderer_->IsInited()) return -1;
 
         renderer_->DrawLineXY(rect.A_.x_, rect.A_.y_, rect.B_.x_, rect.B_.y_, z_height, size, color);
         renderer_->DrawLineXY(rect.B_.x_, rect.B_.y_, rect.C_.x_, rect.C_.y_, z_height, size, color);
@@ -164,6 +168,8 @@ namespace graphics {
             GraphicsObject * rendering_object;
             objects_to_draw_.Get(rendering_object);
             
+            rendering_object->SetModelMatrix();
+
             std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
             for (size_t i = 0; i < meshes.size(); i++) {
                 Mesh * mesh = meshes[i];

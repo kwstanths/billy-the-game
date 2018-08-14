@@ -23,7 +23,6 @@ namespace graphics {
         bool is_inited_;
 
         std::vector<Mesh *> meshes_;
-        std::string asset_file_path;
         std::string directory_;
 
         int LoadModel(std::string file_path);

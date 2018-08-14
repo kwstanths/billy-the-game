@@ -28,7 +28,7 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     /* Initialize the world */
     /* Create some grass */
     for (int x = -20; x < 20; x += 5)
-        for (int y = -20; y < 20; y += 5)
+        for (int y = -40; y < 20; y += 5)
             NewObj<Grass>()->Init(x, y, 0.0f, this, engine);
     
     /* Create a path*/

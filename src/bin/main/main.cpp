@@ -19,12 +19,10 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
-    CodeReminder("Mesh asset manager not needed anymore");
-    CodeReminder("WorldSector::Init() values used");
     CodeReminder("Continuous memory allocation for Model()");
     CodeReminder("Continuous memory allocation for Mesh()");
     CodeReminder("Continuous memory allocation for Collision objects");
-    CodeReminder("Light virtual superclass, and other light subclasses");
+    CodeReminder("Text dialogs");
     CodeReminder("Objects interaction");
     CodeReminder("Fix the build with double");
     

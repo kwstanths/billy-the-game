@@ -44,17 +44,28 @@ namespace game_engine {
         void DrawPoint(Real_t x, Real_t y, Real_t z, Real_t size);
 
         /**
-        
+            Draw a line on the z pane
+            @param start The starting point
+            @param stop The stopping point
+            @param z The z height on the z pane
+            @param size The size of the line
+            @param color The color of the line
         */
         void DrawLineXY(math::Point2D start, math::Point2D stop, Real_t z, Real_t size, glm::vec3 color);
 
+        /**
+            Draw a rectangle on the z pane
+            @param rect The rectangle coordinates
+            @param z The z height on the z pane
+            @param size The size of the rectangle lines
+            @param color The color of the rectangle lines
+        */
         void DrawRectangleXY(math::Rectangle2D rect, Real_t z, Real_t size, glm::vec3 color);
 
     private:
         bool is_inited_;
 
         graphics::GraphicsObject debug_object_point_;
-        graphics::GraphicsObject debug_object_line_;
         graphics::Renderer * renderer_ = nullptr;
     };
 

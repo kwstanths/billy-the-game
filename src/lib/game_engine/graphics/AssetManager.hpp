@@ -5,7 +5,6 @@
 
 #include "game_engine/utility/HashTable.hpp"
 #include "game_engine/graphics/Model.hpp"
-#include "game_engine/graphics/Mesh.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 
 
@@ -13,13 +12,11 @@ namespace game_engine {
 namespace graphics {
 
     extern size_t MODELS_NUMBER;
-    extern size_t MESHES_NUMBER;
     extern size_t TEXTURES_NUMBER;
 
     /**
-        Object to manage assets to only keep one copy for each and easy
-        searching among them
-        TODO Sequential memory allocation via the memory_subsystem
+        A signleton class to manage game assets. Quick search for an asset,
+        and insert new ones
     */
     class AssetManager {
     public:
@@ -35,24 +32,19 @@ namespace graphics {
         */
         ~AssetManager();
 
-
-        Model * FindModel(std::string name);
-
-        void InsertModel(std::string name, Model * model);
-
         /**
             Search for a mesh, based on the name
             @param The name of the mesh
             @return nullptr = not found, else the pointer to that object
         */
-        Mesh * FindMesh(std::string name);
+        Model * FindModel(std::string name);
 
         /**
             Insert a mesh. Produces a warning if already inserted
             @param name The name of the mesh
             @param mesh A pointer to the mesh allocation
         */
-        void InsertMesh(std::string name, Mesh * mesh);
+        void InsertModel(std::string name, Model * model);
 
         /**
         
@@ -67,8 +59,6 @@ namespace graphics {
     private:
         /* Holds the models */
         utility::HashTable<std::string, Model *> * models_;
-        /* Holds the meshes */
-        utility::HashTable<std::string, Mesh *> * meshes_;
         /* Holds the textures */
         utility::HashTable<std::string, opengl::OpenGLTexture *> * textures_;
 

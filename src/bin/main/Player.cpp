@@ -132,6 +132,7 @@ void Player::Step(double delta_time) {
                     //}
 
                     {
+
                         /* Spawn via the memory system of the game engine */
                         world_sector_->NewObj<Wall>(true)->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, world_sector_, engine_);
                     }
