@@ -5,7 +5,7 @@ management, data structures and anything else that might be used
 in the development of a game
 
 ## Current progress
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/c_tTDfsu0tY/0.jpg)](https://www.youtube.com/watch?v=c_tTDfsu0tY&index=7&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/MQp8DyZNLPo/0.jpg)](https://www.youtube.com/watch?v=c_tTDfsu0tY&index=7&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H)
 
 ## Build and run instructions
 - Create a build folder.  

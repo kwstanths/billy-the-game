@@ -82,7 +82,7 @@ void main(){
 	vec3 fragment_normal = normalize(normal);
 	vec3 view_direction = normalize(camera_position_worldspace - fragment_position_worldspace);
 		
-	
+
 	/* Calculate global illumination light */
 	vec3 global_illumination_color = CalculateDirectionalLight(global_illumination, fragment_normal,view_direction, fragment_color, fragment_specular_intensity);
 	
