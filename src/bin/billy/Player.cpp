@@ -83,7 +83,7 @@ void Player::Step(double delta_time) {
             ge::Real_t pos_z = GetZ();
             pos_x = pos_x - controls.MOVE_LEFT_ * move_offset + controls.MOVE_RIGHT_ * move_offset;
             pos_y = pos_y + controls.MOVE_UP_ * move_offset - controls.MOVE_DOWN_ * move_offset;
-            SetPosition(pos_x, pos_y, pos_z);
+            SetPosition(pos_x, pos_y, pos_z, { GetX(), GetY(),2,2 });
             camera->Set2DPosition(GetX(), GetY());
         }
     }

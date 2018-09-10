@@ -152,8 +152,8 @@ namespace opengl {
         int width, height, channels;
         unsigned char * data = stbi_load(imagepath, &width, &height, &channels, 0);
         if (!data) {
-            return Error::ERROR_ASSET_NOT_FOUND;
             stbi_image_free(data);
+            return Error::ERROR_ASSET_NOT_FOUND;
         }
 
         GLenum format;

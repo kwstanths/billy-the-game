@@ -9,7 +9,7 @@
 
 
 namespace dt = debug_tools;
-namespace ms = game_engine::memory_subsystem;
+namespace ms = game_engine::memory;
 
 class DummyClass {
 private:

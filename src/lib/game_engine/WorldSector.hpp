@@ -96,7 +96,7 @@ namespace game_engine {
         int AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z, bool is_npc = false);
 
         /**
-        
+            Does not delete from memory
         */
         int RemoveObject(WorldObject * object);
 

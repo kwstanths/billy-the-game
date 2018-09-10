@@ -39,7 +39,7 @@ namespace game_engine {
             math::Point2D(x_margin_end, y_margin_end),
             math::Point2D(x_margin_start, y_margin_end)), memory_manager.GetWorldLightsAllocator());
 
-        visible_world_ = std::vector<WorldObject *>(200, nullptr);
+        visible_world_ = std::vector<WorldObject *>(1000, nullptr);
 
         npcs_ = std::vector<WorldObject *>();
 
@@ -51,7 +51,7 @@ namespace game_engine {
             (y_margin_end - y_margin_start)), elements);
 
         /* Initialize the circular buffer for deleting objects */
-        delete_objects_buffer_.Init(128);
+        delete_objects_buffer_.Init(2048);
 
         /* Set the margins */
         x_margin_start_ = x_margin_start;
@@ -150,8 +150,6 @@ namespace game_engine {
 
     int WorldSector::RemoveObject(WorldObject * object) {
         
-        _assert(0 == 1);
-
         /* Remove from npcs structures */
         if (object->npc_) npcs_.erase(find(npcs_.begin(), npcs_.end(), object));
 

@@ -31,7 +31,10 @@ namespace graphics {
         if (model_ == nullptr) {
             /* Else load it, and insert it in the asset manager */
             model_ = new Model();
-            model_->Init(model_file_path);
+            
+            int ret = model_->Init(model_file_path);
+            if (ret) return ret;
+
             asset_manager.InsertModel(model_file_path, model_);
         }
 

@@ -135,7 +135,10 @@ namespace game_engine {
             @param pos_y Position y coordinate
             @param pos_z Position z coordinate
         */
-        void SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, bool collision_check = true);
+        void SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z);
+
+        void SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, math::Rectangle2D collision_area_check);
+
 
         /**
             Scale the object, sets the scale matrix. Collision detection is NOT changed TODO

@@ -89,30 +89,34 @@ namespace game_engine {
         /* Re-implement this function for custom interact behaviour */
     }
 
-    void WorldObject::SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, bool collision_check) {
+    void WorldObject::SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z) {
 
         /* Maybe not assertion but return something */
         _assert(world_sector_ != nullptr)
 
-        Real_t new_pos_x = pos_x;
-        Real_t new_pos_y = pos_y;
-        if (collision_check) {
-            ph::PhysicsEngine * physics_engine = world_sector_->GetPhysicsEngine();
-            ph::CollisionResult_t collision_result = physics_engine->CheckCollision(this, { pos_x, pos_y });
-            
-            new_pos_x = GetX() + collision_result.horizontal_;
-            new_pos_y = GetY() + collision_result.vertical_;
-        }
-
         /* Update the object's position inside the world sector */
-        world_sector_->UpdateObjectPosition(this, GetX(), GetY(), new_pos_x, new_pos_y);
+        world_sector_->UpdateObjectPosition(this, GetX(), GetY(), pos_x, pos_y);
         
         /* Set the position in the physics layer */
-        //world_sector_->GetPhysicsEngine()->Update(this, math::Point2D(new_pos_x, new_pos_y));
-        PhysicsObject::SetPosition(new_pos_x, new_pos_y, pos_z);
+        world_sector_->GetPhysicsEngine()->Update(this, math::Point2D(pos_x, pos_y));
+        PhysicsObject::SetPosition(pos_x, pos_y, pos_z);
         
         /* Set the position in the graphics layer */
-        GraphicsObject::SetPosition(new_pos_x, new_pos_y, pos_z);
+        GraphicsObject::SetPosition(pos_x, pos_y, pos_z);
+    }
+
+    void WorldObject::SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, math::Rectangle2D collision_area_check) {
+        
+        Real_t new_pos_x = pos_x;
+        Real_t new_pos_y = pos_y;
+
+        ph::PhysicsEngine * physics_engine = world_sector_->GetPhysicsEngine();
+        ph::CollisionResult_t collision_result = physics_engine->CheckCollision(this, { pos_x, pos_y }, collision_area_check);
+        
+        new_pos_x = GetX() + collision_result.horizontal_;
+        new_pos_y = GetY() + collision_result.vertical_;
+    
+        SetPosition(new_pos_x, new_pos_y, pos_z);
     }
 
     void WorldObject::Scale(Real_t scale_x, Real_t scale_y, Real_t scale_z) {

@@ -85,7 +85,7 @@ namespace physics {
             @param direction The direction of moving
             @return The collision result
         */
-        CollisionResult_t CheckCollision(PhysicsObject * object, math::Point2D new_position);
+        CollisionResult_t CheckCollision(PhysicsObject * object, math::Point2D new_position, math::Rectangle2D area);
     
     private:
 
@@ -109,7 +109,7 @@ namespace physics {
             @param new_position The new position of the object
             @return A pair of distances to move. First is horisontal, second is vertical
         */
-        std::pair<float, float> CollisionGetDistance(PhysicsObject * object, math::Point2D new_position);
+        std::pair<float, float> CollisionGetDistance(PhysicsObject * object, math::Point2D new_position, math::Rectangle2D area);
 
         /**
         

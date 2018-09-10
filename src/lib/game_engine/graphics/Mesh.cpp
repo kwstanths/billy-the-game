@@ -2,6 +2,8 @@
 
 #include "AssetManager.hpp"
 
+#include "game_engine/ErrorCodes.hpp"
+
 namespace gl = game_engine::graphics::opengl;
 
 namespace game_engine {
@@ -33,7 +35,10 @@ namespace graphics {
             gl::OpenGLTexture * previously_allocated_texture = asset_manager.FindTexture(texture_path);
             if (!previously_allocated_texture) {
                 previously_allocated_texture = new gl::OpenGLTexture();
-                previously_allocated_texture->Init(textures_[i].path_, textures_[i].type_);
+                
+                int ret = previously_allocated_texture->Init(textures_[i].path_, textures_[i].type_);
+                if (ret == Error::ERROR_ASSET_NOT_FOUND) dt::ConsoleInfoL(dt::WARNING, "Asset not found", "name", textures_[i].path_);
+                
                 asset_manager.InsertTexture(texture_path, previously_allocated_texture);
             }
 

@@ -94,7 +94,7 @@ namespace physics {
         return nof;
     }
 
-    CollisionResult_t PhysicsEngine::CheckCollision(PhysicsObject * object, math::Point2D new_position) {
+    CollisionResult_t PhysicsEngine::CheckCollision(PhysicsObject * object, math::Point2D new_position, math::Rectangle2D area) {
         CollisionResult_t collision_res;
 
         if (!is_inited_) {
@@ -110,13 +110,13 @@ namespace physics {
             return collision_res;
         }
 
-        collision_res.horizontal_ = CollisionGetDistance(object, { new_position.x_, object->GetY() }).first;
-        collision_res.vertical_ = CollisionGetDistance(object, { object->GetX(), new_position.y_ }).second;
+        collision_res.horizontal_ = CollisionGetDistance(object, { new_position.x_, object->GetY() }, area).first;
+        collision_res.vertical_ = CollisionGetDistance(object, { object->GetX(), new_position.y_ }, area).second;
 
         return collision_res;
     }
 
-    std::pair<float, float> PhysicsEngine::CollisionGetDistance(PhysicsObject * object, math::Point2D new_position) {
+    std::pair<float, float> PhysicsEngine::CollisionGetDistance(PhysicsObject * object, math::Point2D new_position, math::Rectangle2D area) {
         /* Get neighbours */
         std::vector<PhysicsObject *> neighbours(50);
         size_t nof = world_.QueryRange(math::Rectangle2D(object->GetX(), object->GetY(), 3, 3), neighbours);
@@ -127,7 +127,7 @@ namespace physics {
         for (size_t i = 0; i < nof; i++) {
             PhysicsObject * neighbour = neighbours[i];
 
-            if (object->Collides(new_position, neighbour)) {
+            if (object->IsInited() && object->Collides(new_position, neighbour)) {
                 collisions_.Push(collision_detected_t(object, neighbour));
 
                 /* TODO apply some clever mechanism to calculate remaining distance to colliding object */
