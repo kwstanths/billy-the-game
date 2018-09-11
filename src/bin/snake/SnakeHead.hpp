@@ -12,14 +12,17 @@
 class SnakeHead : public game_engine::WorldObject {
 public:
 
+    /**
+        @param update_time The number MILLISECONDS for updating the position. Small numbers -> high speed 
+    */
     bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z,
-        game_engine::WorldSector * world, game_engine::GameEngine * engine, Input * input);
+        game_engine::WorldSector * world, game_engine::GameEngine * engine, Input * input, game_engine::Real_t update_time);
 
     void Step(double delta_time);
 
     virtual void Draw(game_engine::graphics::Renderer * renderer) override;
 
-    virtual void OnCollisionDetected(size_t type);
+    virtual void OnCollisionDetected(game_engine::physics::PhysicsObject * other);
 
 private:
 
@@ -32,17 +35,25 @@ private:
 
     Input * input_;
 
+    /* Variables for different speeds */
     game_engine::Real_t position_update_speed_ms_;
     game_engine::Real_t ms_passed_;
 
     MOVING current_direction_;
     MOVING next_direction_;
 
+    /* Camera borders */
     game_engine::Real_t vertical_border_;
     game_engine::Real_t horizontal_border_;
 
+    /* variables for the snake tail */
     size_t body_tails_;
     std::vector<SnakeBody *> tail_;
+
+    /**
+        Advance the position of the tail. Move the head first
+    */
+    void AdvanceTail(game_engine::Real_t old_x, game_engine::Real_t old_y);
 };
 
 #endif

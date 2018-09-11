@@ -27,14 +27,14 @@ int main(int argc, char ** argv) {
     context_params.font_file_path = "fonts/KateCelebration.ttf";
     ge::GameEngineConfig_t engine_params;
     engine_params.context_params_ = context_params;
-    engine_params.frame_rate_ = 60;
+    engine_params.frame_rate_ = 100;
     ge::GameEngine engine;
     if (engine.Init(engine_params)) return false;
     
     /* Create a camera */
     camera = new Camera(context_params.window_width_, context_params.window_height_, 0.05f);
     engine.SetCamera(camera);
-    camera->SetMouceCallback(MouseCallback);
+    camera->SetMouceCallback(MouseCallbackNONE);
 
     /* Initialize the input class */
     Input input;
@@ -51,9 +51,6 @@ int main(int argc, char ** argv) {
         if (controls.QUIT_) {
             break;
         }
-
-        if (controls.ZOOM_IN_) camera->Zoom(-10 * delta_time);
-        if (controls.ZOOM_OUT_) camera->Zoom(10 * delta_time);
 
         engine.Step(delta_time);
 

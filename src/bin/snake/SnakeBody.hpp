@@ -6,6 +6,7 @@
 #include "game_engine/WorldSector.hpp"
 #include "game_engine/math/Types.hpp"
 
+
 class SnakeBody : public game_engine::WorldObject {
 public:
 

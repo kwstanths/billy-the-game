@@ -137,7 +137,7 @@ namespace game_engine {
         */
         void SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z);
 
-        void SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, math::Rectangle2D collision_area_check);
+        bool SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, math::Rectangle2D collision_area_check);
 
 
         /**

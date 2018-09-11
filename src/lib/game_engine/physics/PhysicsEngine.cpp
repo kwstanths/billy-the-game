@@ -145,8 +145,8 @@ namespace physics {
             collisions_.Get(t);
 
             /* If the colliding objects are still alive, then inform them of the collision */
-            if (t.object1_->IsInited()) t.object1_->OnCollisionDetected(t.object2_->object_type_);
-            if (t.object2_->IsInited()) t.object2_->OnCollisionDetected(t.object1_->object_type_);
+            if (t.object1_->IsInited()) t.object1_->OnCollisionDetected(t.object2_);
+            if (t.object2_->IsInited()) t.object2_->OnCollisionDetected(t.object1_);
         }
     }
 

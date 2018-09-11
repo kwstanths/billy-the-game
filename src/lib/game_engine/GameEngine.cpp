@@ -107,9 +107,6 @@ namespace game_engine {
         /* Perform one step on the active sector */
         sector_->Step(camera_view_rectangle, delta_time, renderer_);
 
-        /* Render text overlay */
-        renderer_->Draw2DText("Welcome!", 100, 100, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
-
         renderer_->EndFrame();
 
         /* End the frame */

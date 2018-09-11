@@ -11,6 +11,7 @@ bool Background::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector 
     int ret = WorldObject::Init("assets/background.obj", x, y, z);
     world->AddObject(this, x, y, z);
 
+    /* Scale to coverthe whole camera screen */
     Scale(10, 10, 10);
 
     return ret == 0;
@@ -18,6 +19,7 @@ bool Background::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector 
 
 void Background::Draw(game_engine::graphics::Renderer * renderer) {
 
+    /* Simple drawing with no lightning */
     renderer->DrawSimple(this);
 }
 

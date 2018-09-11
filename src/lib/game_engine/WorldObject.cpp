@@ -105,7 +105,7 @@ namespace game_engine {
         GraphicsObject::SetPosition(pos_x, pos_y, pos_z);
     }
 
-    void WorldObject::SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, math::Rectangle2D collision_area_check) {
+    bool WorldObject::SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, math::Rectangle2D collision_area_check) {
         
         Real_t new_pos_x = pos_x;
         Real_t new_pos_y = pos_y;
@@ -117,6 +117,8 @@ namespace game_engine {
         new_pos_y = GetY() + collision_result.vertical_;
     
         SetPosition(new_pos_x, new_pos_y, pos_z);
+
+        return !(math::Equal(pos_x, new_pos_x) && math::Equal(pos_y, new_pos_y));
     }
 
     void WorldObject::Scale(Real_t scale_x, Real_t scale_y, Real_t scale_z) {

@@ -108,7 +108,7 @@ namespace physics {
         object_type_ = type;
     }
 
-    void PhysicsObject::OnCollisionDetected(size_t type) {
+    void PhysicsObject::OnCollisionDetected(PhysicsObject * other) {
 
     }
 

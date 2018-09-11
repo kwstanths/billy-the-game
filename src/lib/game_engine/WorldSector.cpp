@@ -122,8 +122,6 @@ namespace game_engine {
         for (size_t i = 0; i < lights; i++)
             renderer->AddPointLight(lights_[i]);
 
-        renderer->FlushDrawCalls();
-
         /* Update world */
         FlushObjectDelete();
 

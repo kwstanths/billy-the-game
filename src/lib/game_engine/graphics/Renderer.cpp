@@ -28,6 +28,7 @@ namespace graphics {
 
         point_lights_to_draw_.Init(GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS);
         objects_to_draw_.Init(GAME_ENGINE_RENDERER_MAX_OBJECTS);
+        text_to_draw_.Init(512);
 
         is_inited_ = true;
         return 0;
@@ -54,6 +55,9 @@ namespace graphics {
     }
 
     void Renderer::EndFrame() {
+
+        FlushDrawCalls();
+
         context_->SwapBuffers();
 
     }
@@ -120,7 +124,13 @@ namespace graphics {
     }
 
     int Renderer::Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
-        return renderer_->Draw2DText(text, x, y, scale, color);
+
+        if (text_to_draw_.Items() >= text_to_draw_.Size()) {
+            dt::Console(dt::WARNING, "Renderer::Draw2DText(): Maximum number reached");
+            return -1;
+        }
+
+        text_to_draw_.Push({ text, x, y, scale, color });
     }
 
     int Renderer::SetCamera(gl::OpenGLCamera * camera) {
@@ -175,6 +185,14 @@ namespace graphics {
                 Mesh * mesh = meshes[i];
                 renderer_->Draw(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
             }
+        }
+
+        size_t number_of_text_to_draw = text_to_draw_.Items();
+        for (size_t i = 0; i < number_of_text_to_draw; i++) {
+            TEXT_DRAW_t temp;
+            text_to_draw_.Get(temp);
+        
+            renderer_->Draw2DText(temp.text_, temp.x, temp.y, temp.scale, temp.color);
         }
 
     }

@@ -10,6 +10,7 @@ bool SnakeBody::Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::
 
     Scale(0.19, 0.19, 0.19);
     SetCollision(ge::math::Rectangle2D(x, y, 0.19, 0.19));
+    SetObjectType(1);
 
     return ret == 0;
 }

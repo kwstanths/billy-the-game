@@ -116,7 +116,7 @@ namespace physics {
         /**
         
         */
-        virtual void OnCollisionDetected(size_t type);
+        virtual void OnCollisionDetected(PhysicsObject * other);
 
     protected:
         bool removable_;

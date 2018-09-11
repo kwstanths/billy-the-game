@@ -14,14 +14,6 @@ typedef struct {
     bool MOVE_UP_ = false;
     bool MOVE_DOWN_ = false;
 
-    bool FLASHLIGHT_ = false;
-    bool RUN_ = false;
-    bool INTERACT_ = false;
-    bool INTERACT_PRESSED = false;
-
-    bool ZOOM_IN_ = false;
-    bool ZOOM_OUT_ = false;
-
 } ControlInput_t;
 
 class Input {

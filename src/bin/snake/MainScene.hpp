@@ -7,6 +7,7 @@
 #include "Input.hpp"
 #include "Camera.hpp"
 
+
 class MainScene : public game_engine::WorldSector {
 public:
     MainScene();

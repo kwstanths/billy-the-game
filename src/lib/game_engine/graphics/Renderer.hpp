@@ -111,9 +111,19 @@ namespace graphics {
         int Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 
     private:
+
+        struct TEXT_DRAW_t {
+            std::string text_;
+            Real_t x;
+            Real_t y;
+            Real_t scale;
+            glm::vec3 color;
+        };
+
         bool is_inited_;
         utility::CircularBuffer<PointLight_t *> point_lights_to_draw_;
         utility::CircularBuffer<GraphicsObject *> objects_to_draw_;
+        utility::CircularBuffer<TEXT_DRAW_t> text_to_draw_;
 
         /* Variables needed for opengl drawiing */
         opengl::OpenGLContext * context_ = nullptr;
