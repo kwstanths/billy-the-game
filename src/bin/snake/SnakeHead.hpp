@@ -8,6 +8,7 @@
 
 #include "Input.hpp"
 #include "SnakeBody.hpp"
+#include "Food.hpp"
 
 class SnakeHead : public game_engine::WorldObject {
 public:
@@ -16,7 +17,7 @@ public:
         @param update_time The number MILLISECONDS for updating the position. Small numbers -> high speed 
     */
     bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z,
-        game_engine::WorldSector * world, game_engine::GameEngine * engine, Input * input, game_engine::Real_t update_time);
+        game_engine::WorldSector * world, Input * input, game_engine::Real_t update_time, Food * food);
 
     void Step(double delta_time);
 
@@ -34,6 +35,7 @@ private:
     };
 
     Input * input_;
+    Food * food_;
 
     /* Variables for different speeds */
     game_engine::Real_t position_update_speed_ms_;
@@ -54,6 +56,7 @@ private:
         Advance the position of the tail. Move the head first
     */
     void AdvanceTail(game_engine::Real_t old_x, game_engine::Real_t old_y);
+
 };
 
 #endif

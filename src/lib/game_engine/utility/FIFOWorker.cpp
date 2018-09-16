@@ -4,7 +4,6 @@
 namespace dt = debug_tools;
 
 namespace game_engine {
-
 namespace utility {
 
     FIFOWorker::FIFOWorker() {

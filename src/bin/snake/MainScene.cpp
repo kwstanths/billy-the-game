@@ -15,8 +15,10 @@ int MainScene::Init(Input * input, Camera * camera, game_engine::GameEngine * en
 
     /* Spaw the backgroumd the snake head, and food */
     NewObj<Background>()->Init(0, 0, 0, this, engine);
-    NewObj<SnakeHead>()->Init(0, 0, 0.1f, this, engine, input, 200);
-    NewObj<Food>(true)->Init(-1, -1, 0.1f, this);
+    Food * food = NewObj<Food>(true);
+    food->Init(-1, -1, 0.1f, this);
+
+    NewObj<SnakeHead>()->Init(0, 0, 0.1f, this, input, 200, food);
 
     return 0;
 }

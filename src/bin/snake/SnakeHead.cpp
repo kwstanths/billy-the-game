@@ -7,10 +7,12 @@ namespace ge = game_engine;
 namespace dt = debug_tools;
 
 
-bool SnakeHead::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world, ge::GameEngine * engine, Input * input, ge::Real_t update_time) {
+bool SnakeHead::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world, Input * input, ge::Real_t update_time, Food * food) {
 
     int ret = WorldObject::Init("assets/snake.obj", x, y, z);
     world->AddObject(this, x, y, z);
+
+    /* Everything is of 0.2 size */
 
     Scale(0.2, 0.2, 0.2);
     SetCollision(ge::math::Rectangle2D(x, y, 0.2, 0.2));
@@ -28,10 +30,14 @@ bool SnakeHead::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector *
     body_tails_ = 0;
 
     input_ = input;
+    food_ = food;
 
     /* Add one body to the tail */
     SnakeBody * new_body = world_sector_->NewObj<SnakeBody>(true);
     new_body->Init(x, y-0.2, GetZ(), world_sector_);
+
+    food_->MapAdd(x, y);
+    food_->MapAdd(x, y - 0.2);
 
     tail_.push_back(new_body);
     body_tails_++;
@@ -49,7 +55,7 @@ void SnakeHead::Step(double delta_time) {
 
     ms_passed_ += 1000.0 * delta_time;
     if (ms_passed_ >= position_update_speed_ms_) {
-        
+        dt::ConsoleInfo("x", GetX(), "y", GetY());
         /* Check for valid move, we can't do a 180 degrees direction change */
         if (current_direction_ == MOVING::TOP || current_direction_ == MOVING::DOWN)
             if (current_direction_ + next_direction_ != 4) current_direction_ = next_direction_;
@@ -79,6 +85,7 @@ void SnakeHead::Step(double delta_time) {
         }
 
         bool ret = SetPosition(x, y, GetZ(), ge::math::Rectangle2D(GetX(), GetY(), 0.5, 0.5));
+        food_->MapAdd(x, y);
 
         /* If no collision, adance the tail */
         if (!ret) AdvanceTail(old_x, old_y);
@@ -133,13 +140,14 @@ void SnakeHead::OnCollisionDetected(ge::physics::PhysicsObject * other) {
 
         break;
     }
-    
     }
 
-    
 }
 
 void SnakeHead::AdvanceTail(ge::Real_t old_x, ge::Real_t old_y) {
+
+    SnakeBody * last = tail_[tail_.size() - 1];
+    food_->MapRemove(last->GetX(), last->GetY());
 
     for (size_t i = tail_.size() - 1; i >= 1; i--)
         tail_[i]->Move(tail_[i - 1]->GetX(), tail_[i - 1]->GetY());

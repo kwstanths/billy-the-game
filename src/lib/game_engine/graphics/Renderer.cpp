@@ -131,6 +131,7 @@ namespace graphics {
         }
 
         text_to_draw_.Push({ text, x, y, scale, color });
+        return 0;
     }
 
     int Renderer::SetCamera(gl::OpenGLCamera * camera) {
