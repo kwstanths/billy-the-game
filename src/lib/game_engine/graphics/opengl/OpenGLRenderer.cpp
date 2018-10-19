@@ -37,13 +37,13 @@ namespace opengl {
         shader_vertices_color_ = context_->shader_vertices_color_;
         shader_text_ = context_->shader_text_;
 
-        /* Configure a VAO for the main shader */
+        /* We mainly draw with the main shader */
         shader_main_.Use();
         /* Set the texture IDs on the 2D samplers used */
         shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.texture_diffuse"), 0);
         shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.texture_specular"), 1);
 
-        /* Configure a VAO for the simple shader */
+        /* Configure simple shader as well */
         shader_model_texture_.Use();
         /* Set the texture ID on the 2D sampler used */
         shader_model_texture_.SetUniformInt(shader_model_texture_.uni_texture_, 0);
@@ -65,7 +65,7 @@ namespace opengl {
     }
 
     int OpenGLRenderer::Destroy() {
-
+        /* TODO Destroy Text rendering stuff */
         is_inited_ = false;
         return 0;
     }
@@ -94,6 +94,8 @@ namespace opengl {
 
     int OpenGLRenderer::Draw(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl) {
 
+        /* TODO Check input arguments */
+
         shader_main_.Use();
         /* Set object material */
         shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.ambient"), mtl.ambient_);
@@ -115,6 +117,7 @@ namespace opengl {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.GetElementBufferID());
         glDrawElements(GL_TRIANGLES, object.GetNoFElements(), GL_UNSIGNED_INT, (void*)0);
 
+        /* Unbind everything */
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
         return 0;
@@ -140,9 +143,9 @@ namespace opengl {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object->GetElementBufferID());
         glDrawElements(GL_TRIANGLES, object->GetNoFElements(), GL_UNSIGNED_INT, (void*)0);
 
+        /* Unbind */
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
-
         shader_main_.Use();
 
         return 0;
@@ -166,7 +169,7 @@ namespace opengl {
         float point_4_x = stop_x + horizontal_offset;
         float point_4_y = stop_y + vertical_offset;
 
-        /* Create the vertices, uv and normal pay no role at all*/
+        /* Create the vertices, uvs and normal pay no role at all */
         std::vector<Vertex_t> line_vertices(4);
         line_vertices.at(0).position_ = { point_1_x, point_1_y, z_height };
         line_vertices.at(0).uv_ = { 0,1 };
@@ -193,7 +196,7 @@ namespace opengl {
         OpenGLObject line;
         line.Init(line_vertices, line_indices);
 
-        /* Set the simplest shader possible, and set the color */
+        /* Set the simplest shader, and set the color */
         shader_vertices_color_.Use();
         shader_vertices_color_.SetUniformVec3(shader_vertices_color_.GetUniformLocation("fragment_color"), color);
 
@@ -205,15 +208,15 @@ namespace opengl {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, line.GetElementBufferID());
         
         /** 
-            Disable face culling for the drawing so that are line is visible no matter the starting anf stopping point
-            Otherwise, the indexing of our triangles whould be relatively hard
+            Disable face culling for the drawing so that our line is visible no matter the starting and stopping point
+            Otherwise, the indexing of our triangles whould be relatively hard to implement
         */
         glDisable(GL_CULL_FACE);
         glDrawElements(GL_TRIANGLES, line.GetNoFElements(), GL_UNSIGNED_INT, (void*)0);
         glEnable(GL_CULL_FACE);
 
+        /* Unbind */
         glBindVertexArray(0);
-
         shader_main_.Use();
 
         line.Destroy();

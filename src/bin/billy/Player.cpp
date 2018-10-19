@@ -163,9 +163,9 @@ void Player::Draw(grph::Renderer * renderer) {
     WorldObject::Draw(renderer);
 }
 
-void Player::OnCollisionDetected(size_t type) {
+void Player::OnCollisionDetected(game_engine::physics::PhysicsObject * object) {
 
-    if (type == 2) {
+    if (object->GetObjectType() == 2) {
         SetPosition(0, 0, GetZ());
         camera_->Set2DPosition(0, 0);
     }

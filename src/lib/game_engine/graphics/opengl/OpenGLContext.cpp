@@ -50,6 +50,7 @@ namespace opengl {
         glViewport(0, 0, config_.window_width_, config_.window_height_);
         glfwSetInputMode(glfw_window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_STENCIL_TEST);
         glDepthFunc(GL_LESS);
         glEnable(GL_CULL_FACE);
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -139,7 +140,7 @@ namespace opengl {
     int OpenGLContext::ClearColor() {
         if (!is_inited_) return -1;
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         return 0;
     }

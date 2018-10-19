@@ -62,6 +62,7 @@ namespace memory {
             if (sizeof(T) > block_size_bytes_) return nullptr;
 
             BYTE * address = Allocate();
+            if (address == nullptr) dt::Console(dt::FATAL, "PoolAllocator::Allocate() Out of free nodes");
 
             return reinterpret_cast<T *>(address);
         }
@@ -102,6 +103,8 @@ namespace memory {
         */
         size_t GetBytesUsed();
 
+        bool IsAddressInside(void * address);
+
     private:
         typedef struct node {
             struct node * next_;
@@ -118,7 +121,6 @@ namespace memory {
     };
 
 }
-
 }
 
 #endif

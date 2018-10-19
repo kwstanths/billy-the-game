@@ -6,6 +6,7 @@
 #include "game_engine/memory/MemoryPage.hpp"
 #include "game_engine/memory/ArrayAllocator.hpp"
 #include "game_engine/memory/PoolAllocator.hpp"
+#include "game_engine/memory/ExpandablePoolAllocator.hpp"
 
 
 namespace dt = debug_tools;
@@ -39,8 +40,8 @@ private:
 public:
     DummyClass_2() { }
     void Init() {
-        arg_3 = 1;
-        arg_4 = 2;
+        arg_3 = 3;
+        arg_4 = 4;
         DummyClass::Init();
     }
     void SetThree(int a) { arg_3 = a; }
@@ -217,7 +218,7 @@ void CheckArrayAllocator() {
 
 void CheckPoolAllocator() {
     ms::PoolAllocator mpool;
-    mpool.Init(20, 5);
+    mpool.Init(20,5);
 
     {
         dt::Console("Checking element allocation");
@@ -291,6 +292,82 @@ void CheckPoolAllocator() {
 
 }
 
+void CheckExpandablePoolAllocator() {
+    ms::ExpandablePoolAllocator mpool;
+    mpool.Init(20, 2);
+
+    {
+        dt::Console("Checking element allocation");
+        int * mem_1 = mpool.Allocate<int>();
+        *mem_1 = 42;
+        dt::Console(*mem_1);
+        dt::Console(&(*mem_1));
+
+        int * mem_2 = mpool.Allocate<int>();
+        *mem_2 = 43;
+        dt::Console(*mem_2);
+        dt::Console(mem_2);
+
+        int * mem_3 = mpool.Allocate<int>();
+        *mem_3 = 44;
+        dt::Console(*mem_3);
+        dt::Console(mem_3);
+
+        int * mem_4 = mpool.Allocate<int>();
+        *mem_4 = 45;
+        dt::Console(*mem_4);
+        dt::Console(mem_4);
+
+        int * mem_5 = mpool.Allocate<int>();
+        *mem_5 = 45;
+        dt::Console(*mem_5);
+        dt::Console(mem_5);
+
+        int * mem_6 = mpool.Allocate<int>();
+        if (mem_6 != nullptr) {
+            *mem_6 = 46;
+            dt::Console(*mem_6);
+            dt::Console(mem_6);
+        }
+
+        dt::Console("Checking element deallocation");
+
+        mpool.Deallocate(mem_1);
+        mpool.Deallocate(mem_4);
+        mpool.Deallocate(mem_5);
+        mpool.Deallocate(mem_3);
+        mpool.Deallocate(mem_2);
+
+        dt::Console("Checking custom types");
+
+        DummyClass * t_1 = mpool.Allocate<DummyClass>();
+        t_1->Init();
+        dt::Console(t_1->GetOne());
+        dt::Console(t_1->GetTwo());
+        t_1->PrintVector();
+        DummyClass_2 * t_2 = mpool.Allocate<DummyClass_2>();
+        if (t_2 != nullptr) {
+            t_2->Init();
+            dt::Console(t_2->GetOne());
+            dt::Console(t_2->GetTwo());
+            dt::Console(t_2->GetThree());
+            dt::Console(t_2->GetFour());
+            t_2->PrintVector();
+            t_2->SetOne(33);
+            dt::Console(t_2->GetOne());
+        }
+
+        DummyClass_2 * t_3 = mpool.Allocate<DummyClass_2>();
+        if (t_3 != nullptr) t_3->Init();
+
+        mpool.Deallocate(t_2);
+        mpool.Deallocate(t_1);
+        mpool.Deallocate(t_3);
+
+    }
+
+}
+
 int main(int argc, char ** argv) {
 
     dt::Console(dt::INFO, "Checking Memory page...", dt::DARK_CYAN);
@@ -299,6 +376,8 @@ int main(int argc, char ** argv) {
     CheckArrayAllocator();
     dt::Console(dt::INFO, "Checking Pool allocator...", dt::DARK_CYAN);
     CheckPoolAllocator();
+    dt::Console(dt::INFO, "Checking Expandable Pool allocator...", dt::DARK_CYAN);
+    CheckExpandablePoolAllocator();
     
 #ifdef _WIN32
     system("pause");

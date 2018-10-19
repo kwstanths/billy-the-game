@@ -62,7 +62,6 @@ namespace memory {
         if (!is_inited_) return nullptr;
 
         if (freelist_ == nullptr) {
-            dt::Console(dt::FATAL, "PoolAllocator::Allocate() Out of free nodes");
             return nullptr;
         }
         
@@ -110,6 +109,12 @@ namespace memory {
         return (number_of_blocks_ - free_blocks_) * block_size_bytes_;
     }
 
-}
+    bool PoolAllocator::IsAddressInside(void * address) {
+        if (address >= page_->Get(0) && address <= page_->Get((number_of_blocks_)*block_size_bytes_ - 1))
+            return true;
 
+        return false;
+    }
+
+}
 }

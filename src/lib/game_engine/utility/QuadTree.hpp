@@ -251,7 +251,10 @@ namespace utility {
 
         static void * operator new(size_t size, ms::PoolAllocator * pool) {
             void * address = pool->Allocate<T>();
-            if (address == nullptr) throw std::bad_alloc();
+            if (address == nullptr) {
+             
+                throw std::bad_alloc();
+            }
             return address;
         }
 

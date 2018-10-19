@@ -79,6 +79,8 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     for (int y = 20; y < 100; y += 1)
         NewObj<Lava>()->Init(7.8, y, 0.1f, this, engine);
 
+    //Cow * cow = NewObj<Cow>();
+    //cow->Init(0, 0, 0, this, engine);
 
     /* Create the main player */
     Player * player = NewObj<Player>();

@@ -13,6 +13,8 @@ public:
 
     virtual void Step(double delta_time) override;
 
+    virtual void Draw(game_engine::graphics::Renderer * renderer);
+
     virtual void Interact() override;
 
 private:

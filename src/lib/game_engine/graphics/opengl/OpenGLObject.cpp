@@ -57,6 +57,9 @@ namespace opengl {
         /* Attribute number 1 is the object's uv coordinates */
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(shader->GetAttributeLocation(shader_main_vertex_uv), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, uv_));
+        /* Attribute number 2 is the object's normals */
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(shader->GetAttributeLocation(shader_main_vertex_normal), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, normal_));
     }
 
     void OpenGLObject::SetupAttributes(OpenGLShaderVerticesColor * shader) {

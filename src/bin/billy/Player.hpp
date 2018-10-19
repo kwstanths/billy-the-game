@@ -6,6 +6,7 @@
 #include "game_engine/WorldSector.hpp"
 #include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/math/Types.hpp"
+#include "game_engine/physics/PhysicsObject.hpp"
 
 #include "Input.hpp"
 #include "Camera.hpp"
@@ -26,7 +27,7 @@ public:
 
     virtual void Draw(game_engine::graphics::Renderer * render);
 
-    virtual void OnCollisionDetected(size_t type);
+    virtual void OnCollisionDetected(game_engine::physics::PhysicsObject * object);
 
 private:
     bool is_inited_;
