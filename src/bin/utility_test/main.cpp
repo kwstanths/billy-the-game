@@ -3,6 +3,7 @@
 
 #include "game_engine/math/RNGenerator.hpp"
 #include "game_engine/math/Types.hpp"
+#include "game_engine/math/Vector3.hpp"
 #include "game_engine/utility/QuadTree.hpp"
 #include "game_engine/utility/List.hpp"
 #include "game_engine/utility/HashTable.hpp"
@@ -285,6 +286,12 @@ int main(int argc, char ** argv) {
     
     for(typename utl::HashTable<std::string, int>::iterator itr = testhash.begin(); itr != testhash.end(); ++itr)
         std::cout << itr.GetValue() << std::endl;
+
+    ge::math::Vector3 aaa(1, 1, 1);
+    ge::math::Vector3 bbb(2, -1, -1);
+    dt::Console(ge::math::Vector3::DotProduct(aaa, bbb));
+    ge::math::Vector3 v4 = aaa - ge::math::Vector3::Vector3(1);
+    if (v4 == ge::math::Vector3(0)) dt::Console("Zero");
 
 #ifdef _WIN32
     system("pause");

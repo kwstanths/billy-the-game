@@ -19,6 +19,9 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
     
+    /* The snake changes position every 200 ms */
+    int ms_update = 200;
+
     /* Configuration parameters for the engine */
     gl::OpenGLContextConfig_t context_params;
     context_params.window_width_ = 768;
@@ -27,7 +30,7 @@ int main(int argc, char ** argv) {
     context_params.font_file_path = "fonts/KateCelebration.ttf";
     ge::GameEngineConfig_t engine_params;
     engine_params.context_params_ = context_params;
-    engine_params.frame_rate_ = 100;
+    engine_params.frame_rate_ = 60;
     ge::GameEngine engine;
     if (engine.Init(engine_params)) return false;
     
@@ -41,7 +44,7 @@ int main(int argc, char ** argv) {
     input.Init(&engine);
 
     MainScene main_scene;
-    main_scene.Init(&input, camera, &engine);
+    main_scene.Init(&input, camera, &engine, ms_update);
 
     engine.SetWorld(&main_scene);
     do {

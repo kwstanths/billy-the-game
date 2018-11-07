@@ -75,12 +75,12 @@ namespace physics {
         void SetCollision();
 
         /**
-        
+            Set collision to bounding rectangle
         */
         void SetCollision(game_engine::math::Rectangle2D rect);
 
         /**
-        
+            Set collision to bounding circle
         */
         void SetCollision(game_engine::math::Circle2D circle);
 
@@ -104,17 +104,20 @@ namespace physics {
         void Rotate(game_engine::Real_t angle);
 
         /**
-        
+            Get the type of the object
+            @return The object type
         */
         size_t GetObjectType();
 
         /**
-        
+            Set the type of the object
+            @param Object type
         */
         void SetObjectType(size_t type);
 
         /**
-        
+            Collision handler, override this for cusom behaviour. Default behaviour = nothing
+            @param other The object of collision
         */
         virtual void OnCollisionDetected(PhysicsObject * other);
 

@@ -130,13 +130,22 @@ namespace game_engine {
         virtual void Interact();
 
         /**
-            Set the position for the object
+            Set the position for the object, no collision checking
             @param pos_x Position x coordinate
             @param pos_y Position y coordinate
             @param pos_z Position z coordinate
         */
         void SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z);
 
+        /**
+            Set the position for the object, checks collision and only moves if no collision is detected.
+            The collision is registered, and the handler will be called
+            @param pos_x Position x coordinate
+            @param pos_y Position y coordinate
+            @param pos_z Position z coordinate
+            @param The area to check for collision
+            @return true = collision detected, false = no collision
+        */
         bool SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, math::Rectangle2D collision_area_check);
 
 

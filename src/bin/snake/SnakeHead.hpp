@@ -14,7 +14,7 @@ class SnakeHead : public game_engine::WorldObject {
 public:
 
     /**
-        @param update_time The number MILLISECONDS for updating the position. Small numbers -> high speed 
+        @param update_time The number of MILLISECONDS for updating the position. Small numbers -> high speed 
     */
     bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z,
         game_engine::WorldSector * world, Input * input, game_engine::Real_t update_time, Food * food);

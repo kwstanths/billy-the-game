@@ -11,8 +11,8 @@ bool Background::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector 
     int ret = WorldObject::Init("assets/background.obj", x, y, z);
     world->AddObject(this, x, y, z);
 
-    /* Scale to coverthe whole camera screen */
-    Scale(10, 10, 10);
+    /* Scale to cover the whole camera screen */
+    Scale(25, 25, 25);
 
     return ret == 0;
 }

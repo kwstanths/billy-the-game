@@ -8,8 +8,8 @@ bool SnakeBody::Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::
     int ret = WorldObject::Init("assets/snake.obj", x, y, z);
     world->AddObject(this, x, y, z);
 
-    Scale(0.19, 0.19, 0.19);
-    SetCollision(ge::math::Rectangle2D(x, y, 0.19, 0.19));
+    Scale(0.95, 0.95, 0.95);
+    SetCollision(ge::math::Rectangle2D(x, y, 0.95, 0.95));
     SetObjectType(1);
 
     return ret == 0;

@@ -6,6 +6,7 @@
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
+#include "debug_tools/Assert.hpp"
 
 namespace dt = debug_tools;
 namespace utl = game_engine::utility;
@@ -117,6 +118,9 @@ namespace physics {
     }
 
     std::pair<float, float> PhysicsEngine::CollisionGetDistance(PhysicsObject * object, math::Point2D new_position, math::Rectangle2D area) {
+        
+        _assert(object != nullptr);
+        
         /* Get neighbours */
         std::vector<PhysicsObject *> neighbours(50);
         size_t nof = world_.QueryRange(math::Rectangle2D(object->GetX(), object->GetY(), 3, 3), neighbours);
@@ -127,7 +131,7 @@ namespace physics {
         for (size_t i = 0; i < nof; i++) {
             PhysicsObject * neighbour = neighbours[i];
 
-            if (object->IsInited() && object->Collides(new_position, neighbour)) {
+            if (neighbour->IsInited() && object->Collides(new_position, neighbour)) {
                 collisions_.Push(collision_detected_t(object, neighbour));
 
                 /* TODO apply some clever mechanism to calculate remaining distance to colliding object */

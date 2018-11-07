@@ -12,7 +12,7 @@ class MainScene : public game_engine::WorldSector {
 public:
     MainScene();
 
-    int Init(Input * input, Camera * camera, game_engine::GameEngine * engine);
+    int Init(Input * input, Camera * camera, game_engine::GameEngine * engine, size_t ms_update);
 
     int Destroy();
 

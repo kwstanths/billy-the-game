@@ -16,7 +16,7 @@ void MouseCallbackNONE(GLFWwindow * w, double x, double y) { };
 
 Camera::Camera(int width, int height, ge::Real_t mouse_sensitivity) : OpenGLCamera() {
 
-    z_height_ = 5.3;
+    z_height_ = 26.2;
     /* Configure OpenGLCamera parameters */
     config_.position_ = glm::vec3(0, 0, z_height_);
     config_.direction_ = glm::vec3(0, 0, -1);
