@@ -12,7 +12,9 @@ void MouseCallback(GLFWwindow * w, double x, double y) {
     camera->MouseMove(static_cast<ge::Real_t>(x), static_cast<ge::Real_t>(y));
 }
 
-void MouseCallbackNONE(GLFWwindow * w, double x, double y) { };
+void MouseCallbackNONE(GLFWwindow * w, double x, double y) { 
+
+};
 
 Camera::Camera(int width, int height, ge::Real_t mouse_sensitivity) : OpenGLCamera() {
 
@@ -66,4 +68,13 @@ void Camera::Set2DPosition(ge::Real_t x, ge::Real_t y) {
     GetPositionVector(&prev_x, &prev_y, &prev_z);    
 
     SetPositionVector(x, y, prev_z);
+}
+
+void Camera::SetPositionFPS(ge::Real_t x, ge::Real_t z) {
+
+    /* Get previous height values */
+    ge::Real_t prev_x, prev_y, prev_z;
+    GetPositionVector(&prev_x, &prev_y, &prev_z);
+
+    SetPositionVector(x, prev_y, z);
 }

@@ -37,6 +37,11 @@ public:
     */
     void Set2DPosition(ge::Real_t x, ge::Real_t y);
 
+    /**
+    
+    */
+    void SetPositionFPS(ge::Real_t x, ge::Real_t z);
+
 private:
     bool is_inited_;
     ge::Real_t last_cursor_position_x_, last_cursor_position_y_;

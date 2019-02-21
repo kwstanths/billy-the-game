@@ -22,4 +22,5 @@ add_executable(${NAME}
 )
 
 target_link_libraries(${NAME} ${ENGINE_LIBRARY})
+target_compile_features(${NAME} PUBLIC cxx_std_17)
 

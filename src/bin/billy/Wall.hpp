@@ -18,7 +18,7 @@ public:
     virtual void Interact() override;
 
 private:
-
+    bool delete_object_ = false;
 };
 
 #endif

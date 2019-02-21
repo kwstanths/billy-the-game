@@ -78,7 +78,10 @@ namespace physics {
 
     int PhysicsEngine::Update(PhysicsObject * object, math::Point2D& new_position) {
         bool ret = world_.Update(math::Point2D(object->GetX(), object->GetY()), object, new_position);
-        if (!ret) dt::Console(dt::WARNING, "PhysicsEngine::Update(): object not found");
+        if (!ret)
+        {
+            dt::Console(dt::WARNING, "PhysicsEngine::Update(): object not found");
+        }
         return 0;
     }
 

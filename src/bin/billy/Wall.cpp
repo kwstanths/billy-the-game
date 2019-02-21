@@ -18,11 +18,13 @@ bool Wall::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * worl
 }
 
 void Wall::Step(double delta_time) {
-
+    
+    if (delete_object_) WorldObject::Destroy();
 }
 
 void Wall::Interact() {
     dt::Console(dt::INFO, "Hello? Yes? This is wall speaking. Let's destroy ths object");
 
-    Destroy();
+    /* The object will be deleted in the next frame */
+    delete_object_ = true;
 }

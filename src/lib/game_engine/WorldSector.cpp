@@ -101,9 +101,6 @@ namespace game_engine {
         /* Currently only calls the collision handlers */
         physics_engine_->Step();
 
-        /* Set camera's view before drawing, because Step() might have tempered with the camera position */
-        renderer->SetView();
-
         /* Draw visible world */
         for (size_t i = 0; i < nof; i++) {
             visible_world_[i]->Draw(renderer);

@@ -7,6 +7,8 @@
 
 #include "Wall.hpp"
 
+#define REGULAR_CAMERA 1
+
 namespace dt = debug_tools;
 namespace ge = game_engine;
 namespace grph = game_engine::graphics;
@@ -28,7 +30,7 @@ int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera
     camera_ = camera;
 
     int ret = WorldObject::Init("assets/player.obj", x, y, z);
-    world->AddObject(this, x, y, z);
+    world->AddObject(this, x, y, z, true);
 
     radius_ = 0.5f;
     interact_fov_ = math::GetRadians(50.0f);
@@ -72,19 +74,24 @@ void Player::Step(double delta_time) {
         ge::Direction_t new_direction = direction_array_[lookup_index];
         if (!math::Equal(new_direction, -1.0f)) {
 
-            //dt::ConsoleInfo("offset", move_offset, "delta", delta_time * 1000);
             /* Set the rotation of the model */
             SetRotation(math::GetRadians(new_direction), { 0,0,1 });
             looking_direction_ = ge::math::GetRadians(new_direction);
 
+#ifdef REGULAR_CAMERA
             /* Set position */
             ge::Real_t pos_x = GetX();
             ge::Real_t pos_y = GetY();
             ge::Real_t pos_z = GetZ();
             pos_x = pos_x - controls.MOVE_LEFT_ * move_offset + controls.MOVE_RIGHT_ * move_offset;
             pos_y = pos_y + controls.MOVE_UP_ * move_offset - controls.MOVE_DOWN_ * move_offset;
+
             SetPosition(pos_x, pos_y, pos_z, { GetX(), GetY(),2,2 });
             camera->Set2DPosition(GetX(), GetY());
+#elif
+            // FPS style camera for free movement around the scene. Uncommend this line, and commend the above.
+            camera->KeyboardMove(-controls.MOVE_LEFT_ * move_offset + controls.MOVE_RIGHT_ * move_offset, 0, -controls.MOVE_UP_ * move_offset + controls.MOVE_DOWN_ * move_offset);
+#endif
         }
     }
 

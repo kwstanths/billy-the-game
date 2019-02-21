@@ -17,6 +17,7 @@ macro(SetupEnvironment)
 	set(GLFW_INCLUDE_DIRS ${PROJECT_ROOT}/src/lib/external/glfw-3.1.2/include/GLFW/) 
 	set(GLM_INCLUDE_DIRS ${PROJECT_ROOT}/src/lib/external/glm-0.9.7.1/) 
 	set(GLEW_INCLUDE_DIRS ${PROJECT_ROOT}/src/lib/external/glew-1.13.0/include/)
+    set(BOX2D_INCLUDE_DIRS ${PRJECT_ROOT}/src/lib/external/Box2D/)
 	
 	### OPENGL ###
 	add_definitions(
@@ -77,6 +78,7 @@ macro(SetupEnvironment)
 	
 	set(ENGINE_LIBS
 		debug_tools
+        Box2D
 		glfw
 		GLEW_1130
 		${ASSIMP_LIBRARY}

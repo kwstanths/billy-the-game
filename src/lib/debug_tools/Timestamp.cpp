@@ -23,13 +23,13 @@ namespace debug_tools{
            %M : minute
            %S : second
          */
-        strftime(date, sizeof(date), "%H-%M-%S", tm);
+        strftime(date, sizeof(date), "%H:%M-%S", tm);
 
         std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>
             (std::chrono::system_clock::now().time_since_epoch());
 
         int64_t milliseconds = ms.count() % 1000;
-        std::string ret = std::string(date) + "-" + std::to_string(milliseconds);
+        std::string ret = std::string(date) + "." + std::to_string(milliseconds);
         if (milliseconds < 100) ret += " "; /* Padding for better alignment */
         if (milliseconds < 10) ret += " "; 
 

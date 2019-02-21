@@ -42,3 +42,6 @@ target_link_libraries(GLEW_1130
 	${EXTRA_LIBS}
 )
 
+
+### Box2D ###
+add_subdirectory(Box2D)

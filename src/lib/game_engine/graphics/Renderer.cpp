@@ -55,7 +55,11 @@ namespace graphics {
     }
 
     void Renderer::EndFrame() {
+        
+        /* Set camera parameters */
+        Renderer::SetView();
 
+        /* Flush drawing calls */
         FlushDrawCalls();
 
         context_->SwapBuffers();
