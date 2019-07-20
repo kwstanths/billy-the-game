@@ -1,7 +1,6 @@
 #include "WorldObject.hpp"
 #include "WorldSector.hpp"
 
-#include "game_engine/physics/Collision.hpp"
 #include "game_engine/math/HelpFunctions.hpp"
 #include "ErrorCodes.hpp"
 
@@ -50,9 +49,6 @@ namespace game_engine {
         
         if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
         
-        PhysicsObject::Destroy();
-        world_sector_->GetPhysicsEngine()->Remove(this);
-
         GraphicsObject::Destroy();
 
         world_sector_->RemoveObjectFromWorldStructure(this);
@@ -96,19 +92,12 @@ namespace game_engine {
 
         Real_t new_pos_x = pos_x;
         Real_t new_pos_y = pos_y;
-        if (collision_check) {
-            ph::PhysicsEngine * physics_engine = world_sector_->GetPhysicsEngine();
-            ph::CollisionResult_t collision_result = physics_engine->CheckCollision(this, { pos_x, pos_y });
-            
-            new_pos_x = GetX() + collision_result.horizontal_;
-            new_pos_y = GetY() + collision_result.vertical_;
-        }
+        /* Collision check */
 
         /* Update the object's position inside the world sector */
         world_sector_->UpdateObjectPosition(this, GetX(), GetY(), new_pos_x, new_pos_y);
         
         /* Set the position in the physics layer */
-        //world_sector_->GetPhysicsEngine()->Update(this, math::Point2D(new_pos_x, new_pos_y));
         PhysicsObject::SetPosition(new_pos_x, new_pos_y, pos_z);
         
         /* Set the position in the graphics layer */
@@ -125,17 +114,7 @@ namespace game_engine {
 
     void WorldObject::Rotate(Real_t angle, glm::vec3 axis) {        
         
-        if (axis == glm::vec3(0, 0, 1)) {
-            /* Update physics object */
-            /*
-                Currently, rotation is done in a 2d manner only in the xy pane clockwise, i.e along the z-axis
-                This means that positive angle will actually rotate along the -z axis, and
-                negative angle will rotate along the z-axis. That's why we pass the opositve of the angle, since
-                the GetRotateMatrix has opposite behaviour
-            */
-            PhysicsObject::Rotate(-angle);
-        }
-
+        /* TODO physics rotate */
         GraphicsObject::Rotate(angle, axis);
     }
 

@@ -22,12 +22,6 @@ namespace math {
 
     int RNGenerator::Init(Real_t lcg_seed) {
         
-        /* Initialize pseudo random number generator LCG */
-        lcg_M_ = std::numeric_limits<std::size_t>::max() - 1;
-        lcg_A_ = 1664525;
-        lcg_C_ = 1;
-        lcg_Z_ = static_cast<size_t>(floor(lcg_seed * lcg_M_));
-
         is_inited_ = true;
         return 0;
     }
@@ -42,19 +36,6 @@ namespace math {
         return is_inited_;
     }
 
-    int RNGenerator::GetRand(int min, int max) {
-        return rand() % (max - min + 1) + min;
-    }
-
-    Real_t RNGenerator::GetRandFloat() {
-        return (Real_t)rand() / (Real_t)RAND_MAX;
-    }
-
-    Real_t RNGenerator::GetPseudoRandFloat() {
-        lcg_Z_ = (lcg_A_ * lcg_Z_ + lcg_C_) % lcg_M_;
-        return ((Real_t)lcg_Z_ / ((Real_t)lcg_M_));
-    }
-
     void RNGenerator::GetPerlinNoise1d(size_t n_points, Real_t height, Real_t amplitude, size_t wavelength, std::vector<Real_t>& out) {
 
         if (out.size() < n_points) {
@@ -65,16 +46,16 @@ namespace math {
         size_t index = 0;
         Real_t h2 = (Real_t)height / 2.0f;
         Real_t value = h2;
-        Real_t start = GetPseudoRandFloat() - 0.5f;
-        Real_t end = GetPseudoRandFloat() - 0.5f;
+        Real_t start = static_cast<Real_t>(rng_.rng() - 0.5f);
+        Real_t end = static_cast<Real_t>(rng_.rng() - 0.5f);
 
         while (index < n_points) {
             if (index % wavelength == 0) {
                 start = end;
-                end = GetPseudoRandFloat() - 0.5f;
+                end = static_cast<Real_t>(rng_.rng() - 0.5f);
                 value = h2 + start * amplitude;
             } else {
-                value = h2 + InterpolationCosine(start, end, ((Real_t)(index % wavelength) / (Real_t)wavelength)) * amplitude;
+                value = h2 + LerpCosine(start, end, ((Real_t)(index % wavelength) / (Real_t)wavelength)) * amplitude;
             }
             out[index] = value;
             index += 1;

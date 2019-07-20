@@ -47,6 +47,10 @@ namespace math {
         return value < low ? low : (value > high ? high : value);
     }
 
+    template<typename T, typename F> static F map_to_range(T in_a, T in_b, T in_t, F out_a, F out_b) {
+        return out_a + ((out_b - out_a) / (in_b - in_a)) * (in_t - in_a);
+    }
+
     /**
         Get radians from degrees
         @param degrees
@@ -71,12 +75,12 @@ namespace math {
     /**
 
     */
-    Real_t InterpolationLinear(Real_t start, Real_t end, Real_t percentage);
+    Real_t Lerp(Real_t start, Real_t end, Real_t percentage);
 
     /**
 
     */
-    Real_t InterpolationCosine(Real_t start, Real_t end, Real_t percentage);
+    Real_t LerpCosine(Real_t start, Real_t end, Real_t percentage);
 
 }
 }

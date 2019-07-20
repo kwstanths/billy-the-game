@@ -14,9 +14,6 @@ bool Lava::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * worl
     int ret = WorldObject::Init("assets/lava.obj", x, y, z);
     world->AddObject(this, x, y, z);
 
-    SetObjectType(2);
-    SetCollision(math::Rectangle2D(x, y, 0.8f, 0.8f));
-
     return ret == 0;
 }
 

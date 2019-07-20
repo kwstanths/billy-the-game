@@ -4,7 +4,7 @@
 in vec2 uv;
 
 /* Fragment shader output */
-out vec3 color;
+layout(location = 0) out vec3 color;
 
 /* Texture */
 uniform sampler2D sampler_texture;
@@ -12,5 +12,4 @@ uniform sampler2D sampler_texture;
 void main(){
 
     color = texture(sampler_texture, uv).rgb;
-
 }

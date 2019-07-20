@@ -103,6 +103,14 @@ namespace opengl {
         return Error::ERROR_NO_ERROR;
     }
 
+    glm::mat4 OpenGLCamera::GetViewMatrix() {
+        return view_matrix_;
+    }
+
+    glm::mat4 OpenGLCamera::GetProjectionMatrix() {
+        return projection_matrix_;
+    }
+
     int OpenGLCamera::CalculateView() {
         if (!is_inited_) return false;
 

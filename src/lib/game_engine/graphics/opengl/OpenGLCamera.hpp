@@ -136,6 +136,16 @@ namespace opengl {
         */
         int SetMouceCallback(void(*func)(GLFWwindow *, double, double));
 
+        /**
+
+        */
+        glm::mat4 GetViewMatrix();
+
+        /**
+
+        */
+        glm::mat4 GetProjectionMatrix();
+
     protected:
 
         OpenGLCameraConfig_t config_;

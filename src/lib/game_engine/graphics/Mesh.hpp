@@ -29,6 +29,8 @@ namespace graphics {
 
         bool IsInited();
 
+        game_engine::Real_t GetBoundigBoxVolume();
+
     private:
         bool is_inited_;
 

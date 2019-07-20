@@ -19,6 +19,8 @@ namespace graphics {
 
         bool IsInited();
 
+        size_t GetNumberOfMeshes();
+
     private:
         bool is_inited_;
 

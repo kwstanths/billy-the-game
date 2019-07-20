@@ -50,6 +50,8 @@ namespace graphics {
     struct Texture_t {
         std::string path_;
         int type_;
+        Texture_t() {};
+        Texture_t(std::string path, int type) : path_(path), type_(type) {};
     };
 
     /**

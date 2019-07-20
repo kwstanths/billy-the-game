@@ -5,10 +5,12 @@
 #include <deque>
 
 #include "game_engine/memory/MemoryManager.hpp"
-#include "game_engine/physics/PhysicsEngine.hpp"
 #include "game_engine/utility/CircularBuffer.hpp"
 #include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/math/Types.hpp"
+#include "game_engine/math/Vec3.hpp"
+#include "game_engine/utility/QuadTree.hpp"
+#include "game_engine/utility/UniformGrid.hpp"
 
 #include "WorldObject.hpp"
 
@@ -88,7 +90,7 @@ namespace game_engine {
         /**
             
         */
-        void Step(math::Rectangle2D rect, double delta_time, graphics::Renderer * renderer);
+        void Step(double delta_time, graphics::Renderer * renderer, math::Vec3 camera_position, math::Vec3 camera_direction, Real_t camera_ratio, Real_t camera_angle);
 
         /**
             vector.push_back comment
@@ -128,26 +130,20 @@ namespace game_engine {
         */
         WorldObject * FindInteractNeighbour(game_engine::math::Rectangle2D search_area, math::Point2D p, Real_t size);
 
-        /**
-            Get the physics engine used in this world
-            @return The physics engine. nullptr if not initialised
-        */
-        physics::PhysicsEngine * GetPhysicsEngine();
-
     private:
         bool is_inited_;
         Real_t x_margin_start_, x_margin_end_, y_margin_start_, y_margin_end_;
 
-        /* Each world holds an instance of a physics engine */
-        physics::PhysicsEngine * physics_engine_;
-        
         /* 
             A struct that resembles the world. Holds pointers to actual objects that are stored 
             sequentially
         */
-        std::vector<std::vector<std::deque<WorldObject *> > > world_;
+        utility::UniformGrid<std::deque<WorldObject *>, 2> * world_;
+        size_t grid_rows_, grid_columns_;
+
         std::vector<WorldObject *> visible_world_;
         std::vector<WorldObject *> npcs_;
+        
         utility::QuadTree<graphics::PointLight_t *> world_point_lights_;
 
         /* Holds objects that are removed from the world, whose memory needs deallocation */
@@ -158,14 +154,14 @@ namespace game_engine {
             @param vertical_coordinate The vertical coordinate
             @return The row
         */    
-        int GetRow(Real_t vertical_coordinate);
+        int GetRow(Real_t y_coordinate);
         
         /**
             Get the column in the world based in the horizontal coordinate
             @param horizontal_coordiante The horizontal coordiante
             @return The column
         */
-        int GetColumn(Real_t horizontal_coordinate);
+        int GetColumn(Real_t x_coordinate);
 
         /**
             Inserts a new object to the world.

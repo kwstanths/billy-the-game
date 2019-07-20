@@ -3,6 +3,7 @@
 
 #include "game_engine/math/Types.hpp"
 #include "game_engine/Controls.hpp"
+#include "game_engine/ConsoleParser.hpp"
 #include "game_engine/graphics/opengl/OpenGLContext.hpp"
 #include "game_engine/graphics/opengl/OpenGLRenderer.hpp"
 #include "game_engine/graphics/opengl/OpenGLObject.hpp"
@@ -111,14 +112,35 @@ namespace graphics {
         int Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 
     private:
+
+        struct TEXT_DRAW_t {
+            std::string text_;
+            Real_t x;
+            Real_t y;
+            Real_t scale;
+            glm::vec3 color;
+        };
+
         bool is_inited_;
         utility::CircularBuffer<PointLight_t *> point_lights_to_draw_;
-        utility::CircularBuffer<GraphicsObject *> objects_to_draw_;
+        std::vector<GraphicsObject *> objects_to_draw_;
+        utility::CircularBuffer<TEXT_DRAW_t> text_to_draw_;
 
         /* Variables needed for opengl drawiing */
         opengl::OpenGLContext * context_ = nullptr;
         opengl::OpenGLCamera * camera_ = nullptr;
         opengl::OpenGLRenderer * renderer_ = nullptr;
+
+        enum RENDER_MODE {
+            REGULAR,
+            VIEW_FRUSTUM_CULLING,
+            OCCLUSION_QUERIES
+        };
+        size_t frr_render_mode = RENDER_MODE::REGULAR;
+
+        bool separable_ao = false;
+        bool ssao_blur = true;
+        bool draw_ssao_texture = false;
 
         /**
             Set a camera

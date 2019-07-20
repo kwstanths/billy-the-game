@@ -110,6 +110,8 @@ namespace game_engine {
     private:
         bool is_inited_;
         int last_error_;
+        size_t fps_;
+
         /* Engine configuration values */
         GameEngineConfig_t config_;
         /* Latest keybaord values pressed. Updated at every engine step */
@@ -121,8 +123,9 @@ namespace game_engine {
         WorldSector * sector_;
         
         graphics::Renderer * renderer_ = nullptr;
-        
         graphics::opengl::OpenGLCamera * camera_ = nullptr;
+
+        void MeasureFPS(double frame_time_ms);
     };
 
 }

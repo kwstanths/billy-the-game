@@ -7,21 +7,25 @@ layout(location = 2) in vec3 vertex_normal;
 
 /* Output data to be passed to the fragment shader */
 out vec2 uv;
-out vec3 normal;
+out vec3 normal_worldspace;
 out vec3 fragment_position_worldspace;
+out vec4 shadow_coordinate;
 
 /* Values that stay constant */
 uniform mat4 matrix_model;
 uniform mat4 matrix_view;
 uniform mat4 matrix_projection;
+uniform mat4 depth_mvp;
 
 void main(){
 
 	/* Use the following in case of non uniform scaling, to calculate the normal */
-	normal = mat3(transpose(inverse(matrix_model))) * vertex_normal;
+	normal_worldspace = mat3(transpose(inverse(matrix_model))) * vertex_normal;
 
     gl_Position =  matrix_projection * matrix_view * matrix_model * vec4(vertex_position_modelspace,1);
 
+    shadow_coordinate = depth_mvp * matrix_model * vec4(vertex_position_modelspace, 1);
+    
 	/* Set output */
 	/* Calculate the position of the fragment in the global space */
 	fragment_position_worldspace = vec3(matrix_model * vec4(vertex_position_modelspace, 1.0));

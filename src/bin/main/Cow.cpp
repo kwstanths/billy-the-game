@@ -16,7 +16,6 @@ bool Cow::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world
     world->AddObject(this, x, y, z);
 
     Scale(0.2f, 0.2f, 0.2f);
-    SetCollision(math::Circle2D(x, y + 0.5f, ge::Real_t(0.5)));    
 
     return ret == 0;
 }

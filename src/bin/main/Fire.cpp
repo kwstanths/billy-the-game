@@ -11,15 +11,12 @@ namespace math = game_engine::math;
 namespace grph = game_engine::graphics;
 
 
-bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world, ge::GameEngine * engine, Sun * sun) {
+bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, std::string name, ge::WorldSector * world, ge::GameEngine * engine, Sun * sun) {
 
-    int ret = WorldObject::Init("assets/debug.obj", x, y, z, true);
+    int ret = WorldObject::Init("assets/" + name, x, y, z);
     world->AddObject(this, x, y, z);
 
-    Scale(0.1f, 0.1f, 0.1f);
-    SetCollision(math::Circle2D(x, y, 0.05f));
-
-    light_.position_ = glm::vec3(x, y, z + 0.5);
+    light_.position_ = glm::vec3(x + 0.05, y, z+  0.5);
     light_.properties_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));
     light_.attenutation_ = ge::graphics::Attenuation_t(1, 0.01f, 0.0939f);
 
@@ -50,11 +47,6 @@ void Fire::Step(double delta_time) {
     else 
         light_.properties_ = ge::graphics::LightProperties_t(0);
 
-}
-
-void Fire::Draw(grph::Renderer * renderer) {
-    
-    WorldObject::Draw(renderer);
 }
 
 void Fire::Interact() {

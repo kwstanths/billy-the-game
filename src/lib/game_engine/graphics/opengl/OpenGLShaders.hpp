@@ -8,229 +8,346 @@
 #include "OpenGLIncludes.hpp"
 
 namespace game_engine {
-namespace graphics {
-namespace opengl {
+    namespace graphics {
+        namespace opengl {
 
-    /* Names of the main shader variables used */
-    static const char shader_main_vertex_position[] = "vertex_position_modelspace";
-    static const char shader_main_vertex_uv[] = "vertex_uv";
-    static const char shader_main_vertex_normal[] = "vertex_normal";
+            /* Shader variables */
+            static const char shader_vertex_position[] = "vertex_position_modelspace";
+            static const char shader_vertex_uv[] = "vertex_uv";
+            static const char shader_vertex_normal[] = "vertex_normal";
 
-    static const char shader_main_uni_model[] = "matrix_model";
-    static const char shader_main_uni_view[] = "matrix_view";
-    static const char shader_main_uni_projection[] = "matrix_projection";
-    static const char shader_main_uni_camera_position_worldspace[] = "camera_position_worldspace";
+            static const char shader_uni_model[] = "matrix_model";
+            static const char shader_uni_view[] = "matrix_view";
+            static const char shader_uni_projection[] = "matrix_projection";
+            static const char shader_uni_depth_mvp[] = "depth_mvp";
+            static const char shader_uni_shadow_map[] = "shadow_map";
+            static const char shader_sampler_texture[] = "sampler_texture";
+            static const char shader_blur_kernel_size[] = "blur_kernel_size";
 
-    /* Names of the simple shader varialbes used */
-    static const char shader_model_texture_vertex_position[] = "vertex_position_modelspace";
-    static const char shader_model_texture_vertex_uv[] = "vertex_uv";
+            /* Names of the MAIN shader variables used */
+            static const char shader_main_uni_camera_position_worldspace[] = "camera_position_worldspace";
 
-    static const char shader_model_texture_uni_model[] = "matrix_model";
-    static const char shader_model_texture_uni_view[] = "matrix_view";
-    static const char shader_model_texture_uni_projection[] = "matrix_projection";
-    static const char shader_model_texture_uni_texture[] = "sampler_texture";
+            /* Names of the text shader variables used */
+            static const char shader_text_name_vertex[] = "vertex";
+            static const char shader_text_name_uni_texture_color[] = "texture_color";
+            static const char shader_text_name_uni_texture[] = "sampler_texture";
 
-    /* Names of the text shader variables used */
-    static const char shader_text_name_vertex[] = "vertex";
+            /* Names of the vertices color shader variables used */
+            static const char shader_vertices_color_uni_color[] = "fragment_color";
 
-    static const char shader_text_name_uni_projection[] = "matrix_projection";
-    static const char shader_text_name_uni_texture_color[] = "texture_color";
-    static const char shader_text_name_uni_texture[] = "sampler_texture";
+            /* Names of the g buffer shader variables used*/
+            static const char shader_gbuffer_position[] = "g_position";
+            static const char shader_gbuffer_normal[] = "g_normal";
+            static const char shader_gbuffer_albedo_spec[] = "g_albedo_spec";
 
-    /* Names of the vertices color shader variables used */
-    static const char shader_vertices_color_vertex_position[] = "vertex_position_modelspace";
-    
-    static const char shader_vertices_color_uni_view[] = "matrix_view";
-    static const char shader_vertices_color_uni_projection[] = "matrix_projection";
-    static const char shader_vertices_color_uni_color[] = "fragment_color";
+            /* Names of the SSAO shader variables used */
+            static const char shader_ssao_noise_texture[] = "noise_texture";
+            static const char shader_ssao_radius[] = "radius";
+            static const char shader_ssao_samples_size[] = "samples_size";
+            static const char shader_ssao_intensity[] = "intensity";
+            static const char shader_ssao_bias[] = "bias";
+
+            /* Names for the final pass shader variables used */
+            static const char shader_final_pass_ssao_texture[] = "ssao_texture";
+
+            /**
+                A shader class the encapsulates shader fuctionality
+            */
+            class OpenGLShader {
+            public:
+                OpenGLShader();
+
+                /**
+                    Initialize a vertex and a fragment shader, compile and link them
+                    @param vertex_shader_path The path to a vertex shader file
+                    @param fragment_shader_path The path to a fragment shader file
+                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+                */
+                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+                /**
+                    Destroys and deallocates. Currently does nothing
+                    @return -1 = Not initialised, 0 = OK
+                */
+                int Destroy();
+
+                /**
+                    Ask wether the object is initialised
+                    @return true = YES, false = NO
+                */
+                bool IsInited();
+
+                /**
+                    Opengl call to use this shader program
+                    @return false = not initialised, true = OK
+                */
+                bool Use();
+
+                /**
+                    Get the location in the shader of an attribute variable
+                    @param attribute_name The name of the attribute
+                    @return -1 = Not initialised, or not found, else the location
+                */
+                GLint GetAttributeLocation(std::string attribute_name);
+
+                /**
+                    Get the location in the shader of a uniform variable
+                    @param uniform_name The name of the uniform
+                    @return -1 = Not initialised, or not found, else the location
+                */
+                GLint GetUniformLocation(std::string uniform_name);
+
+                void SetUniformMat4(GLuint id, glm::mat4 & model);
+
+                void SetUniformVec3(GLuint id, glm::vec3 & vector);
+
+                void SetUniformFloat(GLuint id, float value);
+
+                void SetUniformInt(GLuint id, int value);
+
+                void SetUniformUInt(GLuint id, unsigned int value);
+
+                void SetUniformBool(GLuint id, bool value);
+
+            protected:
+                GLuint program_id_;
+            private:
+                bool is_inited_;
+
+                /**
+                    Compile and link a shader program
+                    @param vertex_shader_path The path to a vertex shader file
+                    @param fragment_shader_path The path to a fragment shader file
+                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+
+                */
+                int CompileShaders(std::string vertex_file_path, std::string fragment_file_path);
+            };
 
 
-    /**
-        A shader class the encapsulates shader fuctionality
-    */
-    class OpenGLShader {
-    public:
-        OpenGLShader();
+            /**
+                Shader object for the main shader
+            */
+            class OpenGLShaderMain : public OpenGLShader {
+            public:
+                /**
+                    Does nothing in particular. Call Init()
+                */
+                OpenGLShaderMain();
 
-        /**
-            Initialize a vertex and a fragment shader, compile and link them
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
-        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+                /**
+                    Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+                    @param vertex_shader_path The path to a vertex shader file
+                    @param fragment_shader_path The path to a fragment shader file
+                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+                */
+                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
 
-        /**
-            Destroys and deallocates. Currently does nothing
-            @return -1 = Not initialised, 0 = OK
-        */
-        int Destroy();
+                /* Varialbe locations for the shader varialbes used */
+                /* Attributes */
+                GLuint attr_vertex_position_;
+                GLuint attr_vertex_uv_;
+                GLuint attr_vertex_normal_;
 
-        /**
-            Ask wether the object is initialised
-            @return true = YES, false = NO
-        */
-        bool IsInited();
+                /* Uniforms */
+                GLuint uni_Model_;
+                GLuint uni_View_;
+                GLuint uni_Projection_;
+                GLuint uni_depth_mvp_;
+                GLuint uni_shadow_map_;
+                GLuint uni_camera_position_worldspace_;
+            };
 
-        /**
-            Opengl call to use this shader program
-            @return false = not initialised, true = OK
-        */
-        bool Use();
+            class OpenGLShaderText : public OpenGLShader {
+            public:
+                OpenGLShaderText();
 
-        /**
-            Get the location in the shader of an attribute variable
-            @param attribute_name The name of the attribute
-            @return -1 = Not initialised, or not found, else the location
-        */
-        GLint GetAttributeLocation(std::string attribute_name);
+                /**
+                    Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+                    @param vertex_shader_path The path to a vertex shader file
+                    @param fragment_shader_path The path to a fragment shader file
+                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+                */
+                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
 
-        /**
-            Get the location in the shader of a uniform variable
-            @param uniform_name The name of the uniform
-            @return -1 = Not initialised, or not found, else the location
-        */
-        GLint GetUniformLocation(std::string uniform_name);
+                /* Varialbe locations for the shader varialbes used */
+                /* Attributes */
+                GLuint attr_vertex_;
 
-        void SetUniformMat4(GLuint id, glm::mat4 & model);
+                /* Uniforms */
+                GLuint uni_Projection_;
+                GLuint uni_Texture_;
+                GLuint uni_Texture_color_;
+            };
 
-        void SetUniformVec3(GLuint id, glm::vec3 & vector);
+            /**
+                Shader object for the simple shader
+            */
+            class OpenGLShaderModelTexture : public OpenGLShader {
+            public:
+                /**
+                    Does nothing in particular. Call Init()
+                */
+                OpenGLShaderModelTexture();
 
-        void SetUniformFloat(GLuint id, float value);
+                /**
+                    Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+                    @param vertex_shader_path The path to a vertex shader file
+                    @param fragment_shader_path The path to a fragment shader file
+                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+                */
+                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
 
-        void SetUniformInt(GLuint id, int value);
+                /* Varialbe locations for the shader varialbes used */
+                /* Attributes */
+                GLuint attr_vertex_position_;
+                GLuint attr_vertex_uv_;
+                GLuint attr_vertex_normal_;
 
-        void SetUniformUInt(GLuint id, unsigned int value);
+                /* Uniforms */
+                GLuint uni_Model_;
+                GLuint uni_View_;
+                GLuint uni_Projection_;
+                GLuint uni_depth_mvp_;
+                GLuint uni_shadow_map_;
+                GLuint uni_texture_;
+            };
 
-    protected:
-        GLuint program_id_;
-    private:
-        bool is_inited_;
+            /**
+                Shader object for the simple shader
+            */
+            class OpenGLShaderVerticesColor : public OpenGLShader {
+            public:
+                /**
+                    Does nothing in particular. Call Init()
+                */
+                OpenGLShaderVerticesColor();
 
-        /**
-            Compile and link a shader program
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+                /**
+                    Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+                    @param vertex_shader_path The path to a vertex shader file
+                    @param fragment_shader_path The path to a fragment shader file
+                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+                */
+                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
 
-        */
-        int CompileShaders(std::string vertex_file_path, std::string fragment_file_path);
-    };
+                /* Varialbe locations for the shader varialbes used */
+                /* Attributes */
+                GLuint attr_vertex_position_;
 
+                /* Uniforms */
+                GLuint uni_Model_;
+                GLuint uni_View_;
+                GLuint uni_Projection_;
+                GLuint uni_fragment_color_;
+            };
 
-    /**
-        Shader object for the main shader
-    */
-    class OpenGLShaderMain : public OpenGLShader {
-    public:
-        /**
-            Does nothing in particular. Call Init()
-        */
-        OpenGLShaderMain();
+            /**
+                Shader object for shadow map
+            */
+            class OpenGLShaderGBuffer : public OpenGLShader {
+            public:
+                OpenGLShaderGBuffer();
 
-        /**
-            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
-        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+                /**
+                    Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+                    @param vertex_shader_path The path to a vertex shader file
+                    @param fragment_shader_path The path to a fragment shader file
+                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+                */
+                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
 
-        /* Varialbe locations for the shader varialbes used */
-        /* Attributes */
-        GLuint attr_vertex_position_;
-        GLuint attr_vertex_uv_;
-        GLuint attr_vertex_normal_;
+                /* Attributes */
+                GLuint attr_vertex_position_;
+                GLuint attr_vertex_uv_;
+                GLuint attr_vertex_normal_;
 
-        /* Uniforms */
-        GLuint uni_Model_;
-        GLuint uni_View_;
-        GLuint uni_Projection_;
-        GLuint uni_camera_position_worldspace_;
-    };
+                /* Uniforms */
+                GLuint uni_Model_;
+                GLuint uni_View_;
+                GLuint uni_Projection_;
+            };
 
-    class OpenGLShaderText : public OpenGLShader {
-    public:
-        OpenGLShaderText();
+            class OpenGLShaderSSAO : public OpenGLShader {
+            public:
+                OpenGLShaderSSAO();
 
-        /**
-            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
-        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+                /**
+                    Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+                    @param vertex_shader_path The path to a vertex shader file
+                    @param fragment_shader_path The path to a fragment shader file
+                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+                */
+                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
 
-        /* Varialbe locations for the shader varialbes used */
-        /* Attributes */
-        GLuint attr_vertex_;
+                /* Attributes */
+                GLuint attr_vertex_position_;
+                GLuint attr_vertex_uv_;
 
-        /* Uniforms */
-        GLuint uni_Projection_;
-        GLuint uni_Texture_;
-        GLuint uni_Texture_color_;
-    };
+                /* Uniforms */
+                GLuint uni_g_position_;
+                GLuint uni_g_normal_;
+                GLuint uni_noise_texture_;
+                GLuint uni_radius_;
+                GLuint uni_samples_size_;
+                GLuint uni_intensity_;
+                GLuint uni_bias_;
+                GLuint uni_matrix_projection_;
+            };
 
-    /**
-        Shader object for the simple shader
-    */
-    class OpenGLShaderModelTexture : public OpenGLShader {
-    public:
-        /**
-            Does nothing in particular. Call Init()
-        */
-        OpenGLShaderModelTexture();
+            class OpenGLShaderSeparableAO : public OpenGLShader {
+            public:
+                OpenGLShaderSeparableAO();
 
-        /**
-            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
-        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+                /**
+                    Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+                    @param vertex_shader_path The path to a vertex shader file
+                    @param fragment_shader_path The path to a fragment shader file
+                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+                */
+                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
 
-        /* Varialbe locations for the shader varialbes used */
-        /* Attributes */
-        GLuint attr_vertex_position_;
-        GLuint attr_vertex_uv_;
+                /* Attributes */
+                GLuint attr_vertex_position_;
+                GLuint attr_vertex_uv_;
 
-        /* Uniforms */
-        GLuint uni_Model_;
-        GLuint uni_View_;
-        GLuint uni_Projection_;
-        GLuint uni_texture_;
-    };
+                /* Uniforms */
+                GLuint uni_g_position_;
+                GLuint uni_g_normal_;
+                GLuint uni_noise_texture_;
+                GLuint uni_radius_;
+                GLuint uni_samples_size_;
+                GLuint uni_intensity_;
+                GLuint uni_bias_;
+                GLuint uni_matrix_projection_;
+            };
 
-    /**
-        Shader object for the simple shader
-    */
-    class OpenGLShaderVerticesColor : public OpenGLShader {
-    public:
-        /**
-            Does nothing in particular. Call Init()
-        */
-        OpenGLShaderVerticesColor();
+            class OpenGLShaderFinalPass : public OpenGLShader {
+            public:
+                OpenGLShaderFinalPass();
 
-        /**
-            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
-        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+                /**
+                    Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+                    @param vertex_shader_path The path to a vertex shader file
+                    @param fragment_shader_path The path to a fragment shader file
+                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+                */
+                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
 
-        /* Varialbe locations for the shader varialbes used */
-        /* Attributes */
-        GLuint attr_vertex_position_;
+                /* Attributes */
+                GLuint attr_vertex_position_;
+                GLuint attr_vertex_uv_;
 
-        /* Uniforms */
-        GLuint uni_View_;
-        GLuint uni_Projection_;
-        GLuint uni_fragment_color_;
-    };
+                /* Uniforms */
+                GLuint uni_texture_gbuffer_position_;
+                GLuint uni_texture_gbuffer_normal_;
+                GLuint uni_texture_gbuffer_albedo_spec_;
+                GLuint uni_texture_ssao_;
+                GLuint uni_matrix_view_;
+            };
 
-}
-}
+        }
+    }
 }
 
 #endif

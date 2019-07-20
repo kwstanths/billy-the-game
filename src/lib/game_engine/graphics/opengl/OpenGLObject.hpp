@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "game_engine/graphics/GraphicsTypes.hpp"
+#include "game_engine/math/Types.hpp"
 
 #include "OpenGLIncludes.hpp"
 #include "OpenGLShaders.hpp"
@@ -29,13 +30,21 @@ namespace opengl {
             @param The disk file path of the .obj file
             @return 0=OK, -1=Already initialised, else see ErrorCodes.hpp
         */
-        int Init(std::vector<game_engine::graphics::Vertex_t> & vertices, std::vector<unsigned int> & indices);
+        int Init(std::vector<game_engine::graphics::Vertex_t> & vertices, std::vector<unsigned int> & indices, bool generate_bbox_info = true);
 
         void SetupAttributes(OpenGLShaderMain * shader);
 
         void SetupAttributes(OpenGLShaderModelTexture * shader);
 
         void SetupAttributes(OpenGLShaderVerticesColor * shader);
+
+        void SetupAttributes(OpenGLShaderGBuffer * shader);
+
+        void Render();
+
+        void RenderBoundingBoxLines();
+
+        void RenderBoundingBoxFaces();
 
         /**
             Deallocates the OpenGL stuf initialized
@@ -66,13 +75,22 @@ namespace opengl {
         */
         size_t GetNoFElements();
 
+        game_engine::Real_t GetBoundingBoxVolume();
+        /* Bounding box values */
+        GLfloat min_x_, max_x_, min_y_, max_y_, min_z_, max_z_;
+
     private:        
         bool is_inited_;
 
         size_t total_indices_;
         GLuint VAO_, vertex_buffer_, element_buffer_;
 
-        
+        /* Bounding box values */
+        size_t total_indices_bbox_, total_indices_bbox_faces_;
+        GLuint VAO_bbox_, VAO_bbox_faces_, vertex_buffer_bbox_, element_buffer_bbox_, element_buffer_bbox_faces_;
+        glm::mat4 bbox_transform_;
+
+        void GenerateBoundingBox(std::vector<game_engine::graphics::Vertex_t>& vertices);
     };
 
 }

@@ -4,6 +4,8 @@
 
 #include "game_engine/math/Types.hpp"
 
+#include "game_engine/graphics/opengl/OpenGLQuery.hpp"
+
 #include "GraphicsTypes.hpp"
 #include "Model.hpp"
 
@@ -64,6 +66,8 @@ namespace graphics {
         bool is_inited_;
 
         Model * model_ = nullptr;
+
+        std::vector<opengl::OpenGLQuery> mesh_queries_;
 
         glm::mat4 translation_matrix_;
         glm::mat4 rotation_matrix_;

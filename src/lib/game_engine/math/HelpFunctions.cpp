@@ -30,12 +30,12 @@ namespace math {
         return v;
     }
 
-    Real_t InterpolationLinear(Real_t start, Real_t end, Real_t percentage) {
+    Real_t Lerp(Real_t start, Real_t end, Real_t percentage) {
         percentage = clamp(percentage, Real_t(0.0), Real_t(1.0));
-        return start * (1 - percentage) + end * percentage;
+        return start + percentage * (end - start);
     }
 
-    Real_t InterpolationCosine(Real_t start, Real_t end, Real_t percentage) {
+    Real_t LerpCosine(Real_t start, Real_t end, Real_t percentage) {
         Real_t ft = percentage * M_PI_FLOAT;
         Real_t f = (1.0f - cos(ft)) * 0.5f;
         return start * (1.0f - f) + end * f;

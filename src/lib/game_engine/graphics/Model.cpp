@@ -18,6 +18,15 @@ namespace graphics {
         int ret = LoadModel(model_file_path);
         if (ret) return ret;
 
+        /**
+    Sort meshes with decreasing volume, this means that the render will see the meshes in this order
+    it may help in occlusion queries, we render the big occluders first
+*/
+        std::sort(meshes_.begin(), meshes_.end(),
+            [](Mesh * a, Mesh * b) -> bool {
+            return a->GetBoundigBoxVolume() > b->GetBoundigBoxVolume();
+        });
+
         is_inited_ = true;
         
         return 0;
@@ -40,6 +49,10 @@ namespace graphics {
 
     bool Model::IsInited() {
         return is_inited_;
+    }
+
+    size_t Model::GetNumberOfMeshes() {
+        return meshes_.size();
     }
 
     int Model::LoadModel(std::string file_path) {
@@ -117,9 +130,11 @@ namespace graphics {
 
             std::vector<Texture_t> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP);
             textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+            if (textures.size() == 0) textures.push_back(Texture_t(std::string("assets/textures/spec_map_empty.png"), GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP));
 
             std::vector<Texture_t> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP);
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+            if (textures.size() == 1) textures.push_back(Texture_t(std::string("assets/textures/spec_map_empty.png"), GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP));
         }
 
         Mesh * temp_mesh = new Mesh();

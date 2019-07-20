@@ -89,8 +89,6 @@ namespace game_engine {
         for (size_t i = 0; i < deltas_.size() - 1; i++) deltas_[i] = deltas_[i + 1];
         deltas_[deltas_.size() - 1] = glfwGetTime() - frame_start_time_;
         
-        DisplayFPS(deltas_[deltas_.size() - 1] * 1000.0);
-            
         return 0;
     }
 
@@ -101,24 +99,6 @@ namespace game_engine {
             avg += deltas_[i] / ((double)deltas_.size());
         }
         return static_cast<Real_t>(avg);
-    }
-
-    void FrameRateRegulator::DisplayFPS(double frame_time_ms) {
-
-        /* That's so nasty */
-        static double start;
-        static unsigned int frames;
-
-        start += frame_time_ms;
-        frames++;
-        if (start >= 1000.0f) {
-
-            std::cout << "FPS: " << frames << std::endl;
-
-            start = 0.0;
-            frames = 0;
-        }
-
     }
 
 }

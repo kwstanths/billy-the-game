@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Types.hpp"
+#include "RNG.hpp"
 
 namespace game_engine {
 namespace math {
@@ -29,26 +30,6 @@ namespace math {
         bool IsInited();
 
         /**
-            Get an integer random number between two integers
-            @param min The lower bound
-            @param max The upper bound
-            @return Random number between
-        */
-        static int GetRand(int min, int max);
-
-        /**
-            Get a float random number between zero and one
-            @return Random between zero and one
-        */
-        static Real_t GetRandFloat();
-
-        /**
-            Get a float random number between zero and one with custom seed from Init()
-            @return Random between zero and one
-        */
-        Real_t GetPseudoRandFloat();
-
-        /**
             Generate Perlin noise in a one dimensional array
             @param The number of values to generate
             @param height The half of this value is the base of the generated noise
@@ -61,8 +42,7 @@ namespace math {
     private:
         bool is_inited_;
 
-        size_t lcg_M_, lcg_A_, lcg_C_, lcg_Z_;
-
+        game_engine::math::CongruentialLinearGenerator rng_;
     };
 
 }

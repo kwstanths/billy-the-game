@@ -48,12 +48,6 @@ namespace game_engine {
         */
         Real_t GetDelta();
 
-        /**
-            Writes the frame rate in the console. Just pass the frame time in milliseconds
-            @param frame_rate_ms The frame rate in milliseconds
-        */
-        void DisplayFPS(double frame_rate_ms);
-
     private:
         bool is_inited_;
         double frame_start_time_, frame_stop_time_;

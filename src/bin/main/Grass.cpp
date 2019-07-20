@@ -6,12 +6,12 @@ namespace ge = game_engine;
 namespace dt = debug_tools;
 
 
-bool Grass::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world, ge::GameEngine * engine) {
+bool Grass::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, std::string name, ge::WorldSector * world, ge::GameEngine * engine) {
     
-    int ret = WorldObject::Init("assets/grass.obj", x, y, z);
+    int ret = WorldObject::Init("assets/" + name, x, y, z);
     world->AddObject(this, x, y, z);
-    
-    Scale(5, 5, 5);
+
+    //Rotate(ge::math::GetRadians(-90.0f), glm::vec3(0, 0, 1));
 
     return ret == 0;
 }

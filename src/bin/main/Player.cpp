@@ -18,6 +18,7 @@ Player::Player(): WorldObject() {
     
     engine_ = nullptr;
 
+
     is_inited_ = false;
 }
 
@@ -29,17 +30,12 @@ int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera
 
     int ret = WorldObject::Init("assets/player.obj", x, y, z);
     world->AddObject(this, x, y, z);
+    Scale(0.8, 0.8, 0.8);
 
     radius_ = 0.5f;
     interact_fov_ = math::GetRadians(50.0f);
     interact_margin_ = 0.3f;
     looking_direction_ = 0.0f;
-
-    /* Scale object down to half */
-    Scale(0.5f, 0.5f, 1.0f);
-    radius_ = radius_ * 0.5f;
-    SetCollision(math::Circle2D(x, y, radius_));
-    SetObjectType(1);
 
     camera_->Set2DPosition(GetX(), GetY());
 
@@ -155,9 +151,9 @@ void Player::Draw(grph::Renderer * renderer) {
 
     grph::LightProperties_t light(0);
     if (controls.FLASHLIGHT_) light = grph::LightProperties_t(glm::vec3(0, 0, 0), glm::vec3(0.7, 0.7, 0.7), glm::vec3(0.8, 0.8, 0.8));
-    grph::Attenuation_t att = ge::graphics::Attenuation_t(1, 0.32f, 0.0019f);
+    grph::Attenuation_t att = ge::graphics::Attenuation_t(1, 0.22f, 0.0009f);
     
-    renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 2), glm::vec3(0, 0, -1), 50.0f, 55.0f,
+    renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 5), glm::vec3(0, 0, -1), 50.0f, 55.0f,
         light, att);
     
     WorldObject::Draw(renderer);

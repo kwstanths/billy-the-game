@@ -12,18 +12,18 @@ bool Sun::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world
     int ret = WorldObject::Init("assets/circle.obj", x, y, z);
     world->AddObject(this, x, y, z, true);
 
-    light_ = ge::graphics::LightProperties_t(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+    light_ = ge::graphics::LightProperties_t(glm::vec3(0.03f, 0.03f, 0.03f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
     //light_ = ge::graphics::LightProperties_t(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
-    /* Normal frequency of one day in seconds */
-    day_period_ = 86400.0;
+    /* Period of one day in seconds */
+    day_period_ = 24 * 60 * 60;
 
     return ret == 0;
 }
 
 void Sun::Step(double delta_time) {
     
-    /* Time passes 400 times faster in the game */
+    /* Time passes 2000 times faster in the game */
     game_time_ += 2000.0f * static_cast<float>(delta_time);
     if (game_time_ > day_period_) game_time_ = 0;
 

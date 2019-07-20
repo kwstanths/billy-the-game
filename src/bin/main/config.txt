@@ -1,0 +1,2 @@
+rendering_method=1
+ssao=0
