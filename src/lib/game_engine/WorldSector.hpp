@@ -144,7 +144,7 @@ namespace game_engine {
         std::vector<WorldObject *> visible_world_;
         std::vector<WorldObject *> npcs_;
         
-        utility::QuadTree<graphics::PointLight_t *> world_point_lights_;
+        utility::QuadTree<graphics::PointLight_t *> * world_point_lights_;
 
         /* Holds objects that are removed from the world, whose memory needs deallocation */
         utility::CircularBuffer<WorldObject *> delete_objects_buffer_;

@@ -5,8 +5,6 @@
 
 #include "debug_tools/Console.hpp"
 
-#include "Wall.hpp"
-
 namespace dt = debug_tools;
 namespace ge = game_engine;
 namespace grph = game_engine::graphics;
@@ -90,21 +88,21 @@ void Player::Step(double delta_time) {
             ge::Direction_t direction = looking_direction_;
             ge::Real_t x1 = GetX() - (radius_ + interact_margin_) * sin(direction + interact_fov_);
             ge::Real_t y1 = GetY() + (radius_ + interact_margin_) * cos(direction + interact_fov_);
-            math::Point2D A(x1, y1);
+            math::Point2D A({ x1, y1 });
 
             ge::Real_t x2 = GetX() - (radius_ + interact_margin_) * sin(direction - interact_fov_);
             ge::Real_t y2 = GetY() + (radius_ + interact_margin_) * cos(direction - interact_fov_);
-            math::Point2D B(x2, y2);
+            math::Point2D B({ x2, y2 });
 
             ge::Real_t side_size = 1.5f * (radius_ + interact_margin_) * tan(interact_fov_);
 
             ge::Real_t x3 = x2 - side_size * sin(direction);
             ge::Real_t y3 = y2 + side_size * cos(direction);
-            math::Point2D C(x3, y3);
+            math::Point2D C({x3, y3});
 
             ge::Real_t x4 = x1 - side_size * sin(direction);
             ge::Real_t y4 = y1 + side_size * cos(direction);
-            math::Point2D D(x4, y4);
+            math::Point2D D({ x4, y4 });
 
             engine_->GetDebugger()->DrawPoint(x1, y1, 0.5f, 0.08f);
             engine_->GetDebugger()->DrawPoint(x2, y2, 0.5f, 0.08f);
@@ -113,7 +111,7 @@ void Player::Step(double delta_time) {
 
             if (controls.INTERACT_) {
                 math::Rectangle2D search_area(A, B, C, D);
-                WorldObject * neighbour = world_sector_->FindInteractNeighbour(search_area, math::Point2D((x1 + x2) / 2, (y1 + y2) / 2), 1);
+                WorldObject * neighbour = world_sector_->FindInteractNeighbour(search_area, math::Point2D({(x1 + x2) / 2, (y1 + y2) / 2}), 1);
                 if (neighbour != nullptr) neighbour->Interact();
                 else {
 
@@ -130,7 +128,7 @@ void Player::Step(double delta_time) {
                     {
 
                         /* Spawn via the memory system of the game engine */
-                        world_sector_->NewObj<Wall>(true)->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, world_sector_, engine_);
+                        //world_sector_->NewObj<Wall>(true)->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, world_sector_, engine_);
                     }
                 }
             }
@@ -150,7 +148,7 @@ void Player::Draw(grph::Renderer * renderer) {
     ControlInput_t controls = input_->GetControls();
 
     grph::LightProperties_t light(0);
-    if (controls.FLASHLIGHT_) light = grph::LightProperties_t(glm::vec3(0, 0, 0), glm::vec3(0.7, 0.7, 0.7), glm::vec3(0.8, 0.8, 0.8));
+    if (controls.FLASHLIGHT_) light = grph::LightProperties_t(glm::vec3(0, 0, 0), glm::vec3(0.5, 0.5, 0.5), glm::vec3(0.8, 0.8, 0.8));
     grph::Attenuation_t att = ge::graphics::Attenuation_t(1, 0.22f, 0.0009f);
     
     renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 5), glm::vec3(0, 0, -1), 50.0f, 55.0f,

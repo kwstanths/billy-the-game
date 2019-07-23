@@ -112,7 +112,7 @@ namespace graphics {
     int Renderer::DrawLineXY(math::Point2D start, math::Point2D stop, float z_height, float size, glm::vec3 color) {
 
         renderer_->g_buffer_->Bind();
-        renderer_->DrawLine(glm::vec3(start.x_, start.y_, z_height), glm::vec3(start.x_, start.y_, z_height));
+        renderer_->DrawLine(glm::vec3(start.x(), start.y(), z_height), glm::vec3(start.x(), start.y(), z_height));
         renderer_->g_buffer_->UnBind();
 
         return 0;
@@ -124,10 +124,10 @@ namespace graphics {
 
         renderer_->g_buffer_->Bind();
         
-        renderer_->DrawLine(glm::vec3(rect.A_.x_, rect.A_.y_, z_height), glm::vec3(rect.B_.x_, rect.B_.y_, z_height));
-        renderer_->DrawLine(glm::vec3(rect.B_.x_, rect.B_.y_, z_height), glm::vec3(rect.C_.x_, rect.C_.y_, z_height));
-        renderer_->DrawLine(glm::vec3(rect.C_.x_, rect.C_.y_, z_height), glm::vec3(rect.D_.x_, rect.D_.y_, z_height));
-        renderer_->DrawLine(glm::vec3(rect.D_.x_, rect.D_.y_, z_height), glm::vec3(rect.A_.x_, rect.A_.y_, z_height));
+        renderer_->DrawLine(glm::vec3(rect.A_.x(), rect.A_.y(), z_height), glm::vec3(rect.B_.x(), rect.B_.y(), z_height));
+        renderer_->DrawLine(glm::vec3(rect.B_.x(), rect.B_.y(), z_height), glm::vec3(rect.C_.x(), rect.C_.y(), z_height));
+        renderer_->DrawLine(glm::vec3(rect.C_.x(), rect.C_.y(), z_height), glm::vec3(rect.D_.x(), rect.D_.y(), z_height));
+        renderer_->DrawLine(glm::vec3(rect.D_.x(), rect.D_.y(), z_height), glm::vec3(rect.A_.x(), rect.A_.y(), z_height));
 
         renderer_->g_buffer_->UnBind();
 

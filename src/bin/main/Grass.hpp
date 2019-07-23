@@ -16,7 +16,7 @@ public:
         game_engine::GameEngine * engine);
 
 private:
-
+    std::string tile_name;
 };
 
 #endif

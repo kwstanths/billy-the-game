@@ -13,12 +13,14 @@ namespace grph = game_engine::graphics;
 
 bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, std::string name, ge::WorldSector * world, ge::GameEngine * engine, Sun * sun) {
 
-    int ret = WorldObject::Init("assets/" + name, x, y, z);
+    tile_name = name;
+
+    int ret = WorldObject::Init("assets/" + name + ".obj", x, y, z);
     world->AddObject(this, x, y, z);
 
-    light_.position_ = glm::vec3(x + 0.05, y, z+  0.5);
+    light_.position_ = glm::vec3(x + 0.05, y, z +  0.5);
     light_.properties_ = ge::graphics::LightProperties_t(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.9f, 0.7f, 0.7f), glm::vec3(0.4f, 0.4f, 0.4f));
-    light_.attenutation_ = ge::graphics::Attenuation_t(1, 0.01f, 0.0939f);
+    light_.attenutation_ = ge::graphics::Attenuation_t(1, 0.0001f, 0.00939f);
 
     attenutation_noise_ = std::vector<ge::Real_t>(201);
     math::RNGenerator gen;
@@ -29,7 +31,7 @@ bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, std::string name, ge::
     sun_ = sun;
 
     on_ = true;
-    world_sector_->AddLight(&light_, math::Point2D(x, y));
+    world_sector_->AddLight(&light_, math::Point2D({ x, y }));
 
     return ret == 0;
 }
@@ -52,8 +54,8 @@ void Fire::Step(double delta_time) {
 void Fire::Interact() {
 
     /* We can just set the light values to zero, but let's just test are RemoveLight function! */
-    if (on_) world_sector_->RemoveLight(&light_, math::Point2D(GetX(), GetY()));
-    else world_sector_->AddLight(&light_, math::Point2D(GetX(), GetY()));
+    if (on_) world_sector_->RemoveLight(&light_, math::Point2D({ GetX(), GetY() }));
+    else world_sector_->AddLight(&light_, math::Point2D({ GetX(), GetY() }));
 
     on_ = !on_;
 }

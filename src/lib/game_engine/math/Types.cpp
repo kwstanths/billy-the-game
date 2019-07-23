@@ -9,11 +9,6 @@ namespace dt = debug_tools;
 namespace game_engine {
 namespace math {
 
-    bool Point2D::operator==(Point2D a) const {
-        if (Equal(a.x_, x_) && Equal(a.y_, y_)) return true;
-        else return false;
-    }
-
    Line2D::Line2D(Real_t a_x, Real_t a_y, Real_t b_x, Real_t b_y) {
         if (Equal(b_x, a_x)) {
             A_ = 1.0f;
@@ -27,10 +22,6 @@ namespace math {
         C_ = a_y - gradient * a_x;
     };
 
-   std::ostream & operator<<(std::ostream & os, const Point2D & p) {
-        os << "[" << p.x_ << "," << p.y_ << "]";
-        return os;
-   }
 
 }
 }

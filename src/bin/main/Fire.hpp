@@ -24,6 +24,7 @@ private:
     std::vector<game_engine::Real_t> attenutation_noise_;
     size_t index_;
 
+    std::string tile_name;
     game_engine::graphics::PointLight_t light_;
     bool on_;
 

@@ -2,72 +2,21 @@
 #define __Types_hpp__
 
 #include <iostream>
+#include <vector>
+
+#include "Real.hpp"
+#include "Point.hpp"
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
    
 
 namespace game_engine {
-
-    typedef float Real_t;
-    /* Shows a direction in degrees: 0 = top, 90 = left, 180 = bottom, 270 = right */
-    typedef float Direction_t;
-
 namespace math {
 
     class Shape2D {
         virtual void Translate(Real_t x, Real_t y) = 0;
         virtual void Rotate(Real_t th) = 0;
-    };
-
-
-    /**
-        A point in a 2D pane
-        (x,y) : point coordinates
-    */
-    class Point2D {
-    public:
-        Real_t x_;
-        Real_t y_;
-
-        Point2D() {
-            x_ = y_ = 0.0f;
-        }
-        Point2D(Real_t x, Real_t y) : x_(x), y_(y) {};
-
-        bool operator==(Point2D a) const;
-
-        /*
-            Translate the point
-            @param x Horizontal movement
-            @param y Vertical movement
-        */
-        void Translate(Real_t x, Real_t y) {
-            x_ += x;
-            y_ += y;
-        }
-
-        /**
-            Rotate the point clockwise around another point
-            @param th The rotation angle in radians
-            @param axis The point to rotate around
-        */
-        void Rotate(Real_t th, Point2D axis) {
-            Real_t c = cos(th);
-            Real_t s = sin(th);
-
-            Real_t x = x_ - axis.x_;
-            Real_t y = y_ - axis.y_;
-
-            x_ = x * c + y * s;
-            y_ = -x * s + y * c;
-
-            x_ += axis.x_;
-            y_ += axis.y_;
-        }
-
-        friend std::ostream& operator<<(std::ostream& os, const Point2D& p);
-
     };
 
     /**
@@ -83,8 +32,7 @@ namespace math {
 
         Circle2D() {};
         Circle2D(Real_t x, Real_t y, Real_t r) {
-            c_.x_ = x;
-            c_.y_ = y;
+            c_ = Point2D({ x, y });
             r_ = r;
         };
 
@@ -94,7 +42,7 @@ namespace math {
             @param y Vertical movement
         */
         void Translate(Real_t x, Real_t y) {
-            c_.Translate(x, y);
+            c_.Translate({ x, y });
         }
 
         /**
@@ -134,10 +82,10 @@ namespace math {
             Real_t xmar = x_width / 2.0f;
             Real_t ymar = y_height / 2.0f;
 
-            A_ = Point2D(center_x - xmar, center_y - ymar);
-            B_ = Point2D(center_x + xmar, center_y - ymar);
-            C_ = Point2D(center_x + xmar, center_y + ymar);
-            D_ = Point2D(center_x - xmar, center_y + ymar);
+            A_ = Point2D({center_x - xmar, center_y - ymar});
+            B_ = Point2D({center_x + xmar, center_y - ymar});
+            C_ = Point2D({center_x + xmar, center_y + ymar});
+            D_ = Point2D({center_x - xmar, center_y + ymar});
         }
 
         /*
@@ -146,10 +94,10 @@ namespace math {
             @param y Vertical movement
         */
         void Translate(Real_t x, Real_t y) {
-            A_.Translate(x, y);
-            B_.Translate(x, y);
-            C_.Translate(x, y);
-            D_.Translate(x, y);
+            A_.Translate({x, y});
+            B_.Translate({x, y});
+            C_.Translate({x, y});
+            D_.Translate({x, y});
         }
 
         /**
@@ -165,12 +113,12 @@ namespace math {
             @param th The rotation angle in radians
         */
         void Rotate(Real_t th) {
-            Point2D center((B_.x_ + D_.x_) / 2.0f, (B_.y_ + D_.y_) / 2.0f);
+            //Point2D center((B_.x() + D_.x()) / 2.0f, (B_.y() + D_.y()) / 2.0f);
 
-            A_.Rotate(th, center);
-            B_.Rotate(th, center);
-            C_.Rotate(th, center);
-            D_.Rotate(th, center);
+            //A_.Rotate(th, center);
+            //B_.Rotate(th, center);
+            //C_.Rotate(th, center);
+            //D_.Rotate(th, center);
         }
 
     };
@@ -216,6 +164,32 @@ namespace math {
         }
 
     };
+
+    /**
+        A ray in K dimensional space
+    */
+    template<int K>
+    class Ray {
+    public:
+        Ray(Point<K> origin, Point<K> direction) : origin_(origin), direction_(direction) {
+            direction_.Normalise();
+        };
+
+        Point<K>& Origin() {
+            return origin_;
+        }
+
+        Point<K>& Direction() {
+            return direction_;
+        }
+
+    private:
+        Point<K> origin_;
+        Point<K> direction_;
+    };
+    /* The octree is going to use 3D rays */
+    typedef Ray<3> Ray3D;
+    typedef Ray<2> Ray2D;
 
 }
 }

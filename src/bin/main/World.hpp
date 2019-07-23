@@ -6,6 +6,7 @@
 #include "game_engine/WorldSector.hpp"
 #include "game_engine/GameEngine.hpp"
 
+#include "MapProperties.hpp"
 #include "Input.hpp"
 #include "Camera.hpp"
 #include "Sun.hpp"
@@ -23,6 +24,8 @@ private:
     bool is_inited_;
 
     void ReadMap(std::string name, float z, game_engine::GameEngine * engine);
+
+    MapProperties map_properties_;
 
     Sun * sun_;
 };

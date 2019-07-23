@@ -2,8 +2,11 @@
 #define __QuadTree_hpp__
 
 #include <vector>
+#include <deque>
+#include <algorithm>
 
 #include "game_engine/math/Types.hpp"
+#include "game_engine/math/AABox.hpp"
 #include "game_engine/math/Geometry.hpp"
 
 #include "game_engine/memory/PoolAllocator.hpp"
@@ -15,448 +18,423 @@ namespace mth = game_engine::math;
 namespace ms = game_engine::memory;
 namespace dt = debug_tools;
 
+using namespace game_engine::math;
 
 namespace game_engine {
 namespace utility {
 
-    /* 
-        A Point region quad tree to insert elements in points, remove items from points 
-        and search for items in a region
-    */
-    template<typename T> class QuadTree {
+    template<typename Data, int BUCKET_SIZE = 1, int MAX_DEPTH = 13>
+    class QuadTree {
     private:
-
-        /* Internal struct to hold a saved element */
-        struct QuadTreeData_t {
-            /* Position in space */
-            math::Point2D p_;
-            /* The element */
-            T data_;
-            /* true, if it holds meaningfull data, false if not */
-            bool holds_data_ = false;
-        };
-
-        /* iterator for the QuadTree */
-        class QuadTreeIterator : public std::iterator<std::forward_iterator_tag, T> {
-            friend class QuadTree;
-        private:
-            /* Holds the elements inside an area */
-            std::vector<T *> elements_vector_;
-            /* The index of the pointed element inside the elements_vector_ */
-            size_t elements_vector_index_;
-            T * pointed_;
-
-            QuadTreeIterator(math::Rectangle2D brect, size_t n_elements, QuadTree * tree) {
-                /* Initialize a vector with the elements */
-                elements_vector_ = std::vector<T *>(n_elements, nullptr);
-                elements_vector_index_ = 0;
-                /* Get all elements inside the area */
-                size_t elements_found = 0;
-                tree->QueryRangePrivateDataPointers(brect, elements_vector_, elements_found);
-
-                /* Set the pointed to point to the first element */
-                pointed_ = elements_vector_[elements_vector_index_++];
-            }
-
-            QuadTreeIterator(T * pointed) : pointed_(pointed) {};
-
+        class QuadTreeNode {
         public:
-            T & operator*() {
-                return *pointed_;
+            enum NodeType {
+                LEAF,
+                INNER,
+            };
+
+            virtual ~QuadTreeNode() {
+
             }
 
-            const QuadTreeIterator & operator++() {
-                if (elements_vector_index_ >= elements_vector_.size()) pointed_ = nullptr;
-                else pointed_ = elements_vector_[elements_vector_index_++];
+            NodeType GetNodeType() { return type_; }
 
-                return *this;
+            AABox<2> GetAABox() {
+                return AABox<2>(origin_, origin_ + Point2D(length_));
             }
 
-            const QuadTreeIterator& operator+=(size_t amount) {
-                for (size_t i = 0; i < amount; i++)
-                    operator++();
+            virtual void Destroy() = 0;
+            virtual QuadTreeNode * Insert(Point2D point, Data data, size_t depth) = 0;
+            virtual size_t QueryRange(AABox<2> search_box, std::vector<Data>& results) = 0;
+            virtual QuadTreeNode * Remove(Point2D point) = 0;
+            virtual size_t Depth() = 0;
 
-                return *this;
-            }
+            virtual void RayCastProcessChild(Real_t tx0, Real_t ty0, Real_t tx1, Real_t ty1, unsigned char a, std::vector<Data>& results) = 0;
 
-            bool operator!=(const QuadTreeIterator& other) const {
-                return this->pointed_ != other.pointed_;
-            }
+        protected:
+            NodeType type_;
+            Point2D origin_;
+            Real_t length_;
 
-            bool operator==(const QuadTreeIterator& other) const {
-                return this->pointed_ == other.pointed_;
+            /**
+               Find the index of the child, and the new orign
+            */
+            std::pair<Point2D, size_t> FindChild(Point2D& point) {
+                /**
+                    Find in which quadrant this point lies to, and what's the origin
+                    point of this quadrant. Return both
+                */
+                size_t index = 0;
+                Real_t H = length_ / 2.0f;
+                Point2D new_node_origin = origin_;
+
+                Point2D center = origin_ + Point2D(H);
+                Point2D V = point - center;
+
+                if (V[0] >= 0) {
+                    index += 2;
+                    new_node_origin[0] += H;
+                }
+                if (V[1] >= 0) {
+                    index += 1;
+                    new_node_origin[1] += H;
+                }
+
+                return std::make_pair(new_node_origin, index);
             }
 
         };
 
-        /* Objects needs to be initialised first */
-        bool is_inited_;
-        /* Holds the region that this quad tree node holds elements for */
-        math::Rectangle2D brect_;
-        /* Each quad tree node holds one element */
-        QuadTreeData_t node_data_;
-        /* Each quad tree node has four children */
-        QuadTree<T> * child_nw_, * child_ne_, * child_sw_, * child_se_;
-        
-        /* The pool allocator to store the elements sequentially */
-        ms::PoolAllocator * pool_;
+        class QuadTreeLeafNode : public QuadTreeNode {
+        public:
+            QuadTreeLeafNode(Point2D origin, Real_t length) {
+                this->origin_ = origin;
+                this->length_ = length;
+                this->type_ = QuadTreeNode::NodeType::LEAF;
+            }
 
-        /**
-            Divide the area of this node into four regions and initialize 
-            the four children nodes
-        */
-        void Subdivide(){
-            child_nw_ = new (pool_) QuadTree<T>();
-            child_ne_ = new (pool_) QuadTree<T>();
-            child_se_ = new (pool_) QuadTree<T>();
-            child_sw_ = new (pool_) QuadTree<T>();
+            void Destroy() {
 
-            Real_t x_west = brect_.A_.x_;
-            Real_t x_middle = (brect_.A_.x_ + brect_.B_.x_)/2.0f;
-            Real_t x_east = brect_.B_.x_;
+            }
 
-            Real_t y_south = brect_.A_.y_;
-            Real_t y_middle = (brect_.A_.y_ + brect_.D_.y_) / 2.0f;
-            Real_t y_north = brect_.D_.y_;
-
-            child_nw_->Init(math::Rectangle2D(
-                math::Point2D(x_west, y_middle),
-                math::Point2D(x_middle, y_middle),
-                math::Point2D(x_middle, y_north),
-                math::Point2D(x_west, y_north)),
-                pool_);
-            child_ne_->Init(math::Rectangle2D(
-                math::Point2D(x_middle, y_middle),
-                math::Point2D(x_east, y_middle),
-                math::Point2D(x_east, y_north),
-                math::Point2D(x_middle, y_north)),
-                pool_);
-            child_sw_->Init(math::Rectangle2D(
-                math::Point2D(x_west, y_south),
-                math::Point2D(x_middle, y_south),
-                math::Point2D(x_middle, y_middle),
-                math::Point2D(x_west, y_middle)),
-                pool_);
-            child_se_->Init(math::Rectangle2D(
-                math::Point2D(x_middle, y_south),
-                math::Point2D(x_east, y_south),
-                math::Point2D(x_east, y_middle),
-                math::Point2D(x_middle, y_middle)),
-                pool_);
-        } 
-
-        /**
-            Search for elements inside a region
-            @param rect The region to search
-            @param[out] objects The objects found
-            @param[out] index The number of the last object found and stored inside objects
-        */
-        void QueryRangePrivate(math::Rectangle2D rect, std::vector<T>& objects, size_t& index){
-            if (!mth::IntersectRect_Rect(brect_, rect)) return;
-
-            /* Check this node's object */
-            if (node_data_.holds_data_ && mth::PointInside(node_data_.p_, rect)) {
-                if (index > objects.size() - 1) {
-                    dt::Console(dt::CRITICAL, "QuadTree::QueryRange() Objects overflow");
-                    return;
+            QuadTreeNode * Insert(Point2D point, Data data, size_t depth) {
+                /* If this leaf has enough space or maximum depth reached, store here */
+                if (buckets_.size() < BUCKET_SIZE || depth >= MAX_DEPTH) {
+                    buckets_.push_back(Bucket(point, data));
+                    return this;
                 }
-                objects[index++] = node_data_.data_;            
-            }
 
-            /* Gather your children's objects */
-            if (child_nw_ != nullptr){
-                child_nw_->QueryRangePrivate(rect, objects, index);
-                child_ne_->QueryRangePrivate(rect, objects, index);
-                child_sw_->QueryRangePrivate(rect, objects, index);
-                child_se_->QueryRangePrivate(rect, objects, index);
-            }
-        }
-
-        void QueryRangePrivateDataPointers(math::Rectangle2D rect, std::vector<T*>& objects, size_t& index) {
-            if (!mth::IntersectRect_Rect(brect_, rect)) return;
-
-            /* Check this node's object */
-            if (node_data_.holds_data_ && mth::PointInside(node_data_.p_, rect)) {
-                if (index > objects.size() - 1) {
-                    dt::Console(dt::CRITICAL, "QuadTree::QueryRange() Objects overflow");
-                    return;
+                /* Either-wise, split the leaf */
+                QuadTreeInnerNode * temp = new  QuadTreeInnerNode(this->origin_, this->length_);
+                for (size_t i = 0; i < buckets_.size(); i++) {
+                    temp->Insert(buckets_[i].point_, buckets_[i].data_, depth + 1);
                 }
-                objects[index++] = &node_data_.data_;
+                temp->Insert(point, data, depth + 1);
+
+                delete this;
+                return temp;
             }
 
-            /* Gather your children's objects */
-            if (child_nw_ != nullptr) {
-                child_nw_->QueryRangePrivateDataPointers(rect, objects, index);
-                child_ne_->QueryRangePrivateDataPointers(rect, objects, index);
-                child_sw_->QueryRangePrivateDataPointers(rect, objects, index);
-                child_se_->QueryRangePrivateDataPointers(rect, objects, index);
-            }
-        }
+            size_t QueryRange(AABox<2> search_box, std::vector<Data>& results) {
 
-        /**
-            Update the position of an element from position p to new_p
-            @param p The point position of the element
-            @param data The element itself
-            @param new_p The new position of the element
-            @param root The root of the quad tree
-            @return true = Updated, false = Element not found
-        */
-        bool UpdatePrivate(math::Point2D p, T data, math::Point2D new_p, QuadTree * root){
-            if (!mth::PointInside(p, brect_)) return false;
-
-            /* If this node has the point update here */
-            if (node_data_.data_ == data && node_data_.p_ == p){
-                /* If new position is within bounding rectangle dont move */
-                if (mth::PointInside(new_p, brect_)) node_data_.p_ = new_p;
-                else {
-                    /* else remove it and insert from the beginning */
-                    node_data_.holds_data_ = false;
-                    root->Insert(new_p, data);
+                size_t points = 0;
+                for (size_t i = 0; i < buckets_.size(); i++) {
+                    if (search_box.Inside(buckets_[i].point_)) {
+                        results.push_back(buckets_[i].data_);
+                        points++;
+                    }
                 }
-                return true;
-            }
-            
-            /* Recursively search in children */
-            if(child_nw_ != nullptr){
-                if (child_nw_->UpdatePrivate(p, data, new_p, root)) return true;
-                if (child_ne_->UpdatePrivate(p, data, new_p, root)) return true;
-                if (child_sw_->UpdatePrivate(p, data, new_p, root)) return true;
-                if (child_se_->UpdatePrivate(p, data, new_p, root)) return true;
+
+                return points;
             }
 
-            return false;
-        }
+            QuadTreeLeafNode * Remove(Point2D point) {
+                /* Check if the point is stored here, and delete it */
+                for (typename std::deque<Bucket>::iterator itr = buckets_.begin(); itr != buckets_.end(); ++itr) {
+                    if ((*itr).point_ == point) {
+                        buckets_.erase(itr);
+                        break;
+                    }
+                }
+
+                /* If leaf is empty delete leaf */
+                if (buckets_.size() == 0) {
+                    delete this;
+                    return nullptr;
+                }
+
+                return this;
+            }
+
+            size_t Depth() {
+                return 0;
+            }
+
+            void RayCastProcessChild(Real_t tx0, Real_t ty0, Real_t tx1, Real_t ty1, unsigned char a, std::vector<Data>& results) {
+
+                if (tx1 < 0 || ty1 < 0) return;
+
+                /* If ray casting hit a leaf, add all the points to the results */
+                for (size_t i = 0; i < buckets_.size(); i++)
+                    results.push_back(buckets_[i].data_);
+
+                return;
+            }
+
+        private:
+            /* Holds a data point */
+            struct Bucket {
+                Bucket(Point2D point, Data data) : point_(point), data_(data) {};
+                Point2D point_;
+                Data data_;
+            };
+            std::deque<Bucket> buckets_;
+        };
+
+        class QuadTreeInnerNode : public QuadTreeNode {
+        public:
+            QuadTreeInnerNode(Point2D origin, Real_t length) {
+                children_ = std::vector<QuadTreeNode *>(4, nullptr);
+
+                this->origin_ = origin;
+                this->length_ = length;
+                this->type_ = QuadTreeNode::NodeType::INNER;
+            }
+            ~QuadTreeInnerNode() {
+
+            }
+
+            void Destroy() {
+                for (size_t i = 0; i < children_.size(); i++) {
+                    if (children_[i] != nullptr) {
+                        children_[i]->Destroy();
+                        delete children_[i];
+                    }
+                }
+            }
+
+            QuadTreeNode * Insert(Point2D point, Data data, size_t depth) {
+                /* Find child */
+                std::pair<Point2D, size_t> child = QuadTreeNode::FindChild(point);
+
+                /* If null, create leaf */
+                if (children_[child.second] == nullptr) {
+                    children_[child.second] = new QuadTreeLeafNode(child.first, this->length_ / 2.0f);
+                }
+
+                /* Insert at that subtree */
+                children_[child.second] = children_[child.second]->Insert(point, data, depth + 1);
+
+                return this;
+            }
+
+            size_t QueryRange(AABox<2> search_box, std::vector<Data>& results) {
+                
+                /* Check the search box for overlapping with the quadrants of the children */
+                /* Recursively call on every child, if it overlaps */
+
+                size_t res = 0;
+                for (size_t i = 0; i < children_.size(); i++) {
+                    if (children_[i] != nullptr &&
+                        search_box.Overlaps(children_[i]->GetAABox())) res += children_[i]->QueryRange(search_box, results);
+                }
+
+                return res;
+            }
+
+            QuadTreeNode * Remove(Point2D point) {
+                /* Find child */
+                std::pair<Point2D, size_t> child = QuadTreeNode::FindChild(point);
+
+                if (children_[child.second] == nullptr) {
+                    return this;
+                }
+
+                /* Remove from child */
+                children_[child.second] = children_[child.second]->Remove(point);
+
+                /* Check the number of children that you have, if zero, delete this node */
+                size_t number_of_non_null_children = 0;
+                for (size_t i = 0; i < children_.size(); i++)
+                    if (children_[i] != nullptr) {
+                        number_of_non_null_children++;
+                    }
+
+                if (number_of_non_null_children == 0) {
+                    delete this;
+                    return nullptr;
+                }
+
+                return this;
+            }
+
+            size_t Depth() {
+                size_t current_depth = 0;
+                for (size_t i = 0; i < children_.size(); i++)
+                    if (children_[i] != nullptr) current_depth = std::max(current_depth, children_[i]->Depth());
+
+                return current_depth + 1;
+            }
+
+            void RayCastProcessChild(Real_t tx0, Real_t ty0, Real_t tx1, Real_t ty1, unsigned char a, std::vector<Data>& results) {
+                Real_t txm, tym, tzm;
+                int current_node;
+
+                if (tx1 < 0 || ty1 < 0) return;
+
+                /* Calculate the middle of the entry and exit point */
+                txm = Real_t(0.5)*(tx0 + tx1);
+                tym = Real_t(0.5)*(ty0 + ty1);
+
+                /* Calculate the first node to be visited */
+                current_node = RayCastFirstNode(tx0, ty0, txm, tym);
+
+                /* Iteratively visit the nodes along the ray */
+                do {
+                    int index = current_node ^ a;
+                    switch (current_node)
+                    {
+                    case 0: {
+                        if (children_[index] != nullptr) children_[index]->RayCastProcessChild(tx0, ty0, txm, tym, a, results);
+                        current_node = RayCastNewNode(txm, 2, tym, 1);
+                        break;
+                    } case 1: {
+                        if (children_[index] != nullptr) children_[index]->RayCastProcessChild(tx0, tym, txm, ty1, a, results);
+                        current_node = RayCastNewNode(txm, 3, ty1, 4);
+                        break;
+                    } case 2: {
+                        if (children_[index] != nullptr) children_[index]->RayCastProcessChild(txm, ty0, tx1, tym, a, results);
+                        current_node = RayCastNewNode(tx1, 4, tym, 3);
+                        break;
+                    } case 3: {
+                        if (children_[index] != nullptr) children_[index]->RayCastProcessChild(txm, tym, tx1, ty1, a, results);
+                        current_node = 4;
+                        break;
+                    }
+                    }
+                } while (current_node < 4);
+            }
+
+        private:
+            std::vector<QuadTreeNode *> children_;
+
+            int RayCastFirstNode(Real_t tx0, Real_t ty0, Real_t txm, Real_t tym) {
+                unsigned char answer = 0;
+
+                if (tx0 > ty0) {
+                        if (tym < tx0) answer |= 1;
+                        return (int)answer;
+                } else {
+                        if (txm < ty0) answer |= 2;
+                        return (int)answer;
+                }
+
+                return (int)answer;
+
+            }
+
+            int RayCastNewNode(Real_t txm, int x, Real_t tym, int y) {
+                if (txm < tym) {
+                    return x;
+                }   
+                return y;
+            }
+
+        };
 
     public:
 
-        /*
-            QuadTree iterator
-        */
-        typedef QuadTreeIterator iterator;
-
         /**
-            Does nothing in particular. Call Init() to initialize
+            @param origin The "bottom left" point in the quad tree area
+            @parma length The size of the quad tree region in all directions
         */
-        QuadTree() {
-            is_inited_ = false;
-            pool_ = nullptr;
+        QuadTree(Point2D origin, Real_t length) {
+            origin_ = origin;
+            length_ = length;
+            root_ = new QuadTreeLeafNode(origin, length);
         }
 
-        /**
-            Calls Destroy()
-        */
         ~QuadTree() {
-            Destroy();
-        }
-
-        static void * operator new(size_t size, ms::PoolAllocator * pool) {
-            void * address = pool->Allocate<T>();
-            if (address == nullptr) throw std::bad_alloc();
-            return address;
-        }
-
-        static void operator delete(void * ptr, ms::PoolAllocator * pool) throw() {
-            dt::Console(dt::FATAL, "QuadTree pool allocation failed");
+            delete root_;
         }
 
         /**
-            Initialize the quad tree
-            @param brect The bounding rectangle of the region of the quad tree
-            @param pool The pool allocator to store elements
-            @return true = OK, false = Already initialised
+            Delete everything, don't use after this call
         */
-        bool Init(math::Rectangle2D brect, ms::PoolAllocator * pool) {
-            if (is_inited_) return false;
+        void Destroy() {
+            root_->Destroy();
+            delete root_;
+            root_ = nullptr;
+        }
 
-            brect_ = brect;
-            child_nw_ = nullptr;
-            child_ne_ = nullptr;
-            child_sw_ = nullptr;
-            child_se_ = nullptr;
-            pool_ = pool;
-            if (!pool_->IsInited()) return false;
-            
-            is_inited_ = true;
+        /**
+            Insert a data point into the quad tree
+            @param point The position in 2D space
+            @param data The data to store
+        */
+        bool Insert(Point2D point, Data data) {
+            bool inside_x = point[0] > origin_[0] && (point[0] < origin_[0] + length_);
+            bool inside_y = point[1] > origin_[1] && (point[1] < origin_[1] + length_);
+
+            if (!inside_x || !inside_y) {
+                std::cout << "Point: " << point << " is outside quad tree region" << std::endl;
+                return false;
+            }
+
+            root_ = root_->Insert(point, data, 0);
             return true;
         }
 
         /**
-            Destroy the object, Needs init to be called again. Does not deallocate the
-            actual data held
-            @return true = OK, false = Already destroyed, or not initialised
+            Get all points inside an area
+            @param search_box The searching area
+            @param[out] The points inside the area
         */
-        bool Destroy() {
-            if (!is_inited_) return false;
+        void QueryRange(AABox<2> search_box, std::vector<Data>& results) {
 
-            if (child_nw_ != nullptr){
-                child_nw_->Destroy();
-                pool_->Deallocate(child_nw_);
-                child_nw_ = nullptr;
+            if (search_box.Overlaps(AABox<2>(origin_, origin_ + Point2D(length_))))
+                root_->QueryRange(search_box, results);
+
+        }
+
+        /**
+            Remove a point from the quad tree
+            @param point The 2D space point to remove
+        */
+        void Remove(Point2D point) {
+            root_ = root_->Remove(point);
+
+            if (root_ == nullptr) root_ = new QuadTreeLeafNode(origin_, length_);
+        }
+
+        size_t Depth() {
+            return root_->Depth();
+        }
+
+        /**
+            Perform ray traversal
+            @param r The 2D space ray
+            @param[out] results The results will be pushed back here, in first to hit order
+        */
+        void RayCast(Ray2D r, std::vector<Data>& results) {
+            unsigned char a = 0;
+
+            /**
+                If ray has negative components calculate the reflection of the ray
+            */
+            if (r.Direction()[0] < 0) {
+                r.Origin()[0] = (origin_[0] + length_ / 2.0) * 2 - r.Origin()[0];
+                r.Direction()[0] = -r.Direction()[0];
+                a |= 2;
             }
-            if (child_ne_ != nullptr){
-                child_ne_->Destroy();
-                pool_->Deallocate(child_ne_);
-                child_ne_ = nullptr;
-            }
-            if (child_sw_ != nullptr){
-                child_sw_->Destroy();
-                pool_->Deallocate(child_sw_);
-                child_sw_ = nullptr;
-            }
-            if (child_se_ != nullptr){
-                child_se_->Destroy();
-                pool_->Deallocate(child_se_);
-                child_se_ = nullptr;
+            if (r.Direction()[1] < 0) {
+                r.Origin()[1] = (origin_[1] + length_ / 2.0) - r.Origin()[1];
+                r.Direction()[1] = -r.Direction()[1];
+                a |= 1;
             }
 
-            node_data_.holds_data_ = false;
+            /*
+                Compute the starting parametric values of entry and exit for the root node
+            */
+
+            Real_t divx = Real_t(1) / r.Direction()[0];
+            Real_t divy = Real_t(1) / r.Direction()[1];
+
+            Real_t tx0 = (origin_[0] - r.Origin()[0]) * divx;
+            Real_t tx1 = (origin_[0] + length_ - r.Origin()[0]) * divx;
+            Real_t ty0 = (origin_[1] - r.Origin()[1]) * divy;
+            Real_t ty1 = (origin_[1] + length_ - r.Origin()[1]) * divy;
             
-            is_inited_ = false;
-
-            return true;
-        }
-
-        void Clear() {
-            if (!is_inited_) return;
-
-            if (child_nw_ != nullptr) child_nw_->Clear();
-            if (child_ne_ != nullptr) child_ne_->Clear();
-            if (child_sw_ != nullptr) child_sw_->Clear();
-            if (child_se_ != nullptr) child_se_->Clear();
-
-            node_data_.holds_data_ = false;
-        }
-
-        /**
-            Insert an element inside the quad tree
-            @param p The point of the element
-            @param data The actual data
-            @return true = OK, false = Out of region
-        */
-        bool Insert(math::Point2D p, T data) {
-            if (!is_inited_) return false;
-            
-            /* If point to be inserted is not inside the current quad tree rectangle, return */
-            if (!mth::PointInside(p, brect_)) return false;
-            
-            /* If the current node does not hold anything, insert here */
-            if (!node_data_.holds_data_) {
-                node_data_.p_ = p;
-                node_data_.data_ = data;
-                node_data_.holds_data_ = true;
-                return true;
-            }
-
-            /* Create four children if we dont already have them */
-            if (child_nw_ == nullptr) Subdivide();
-
-            /* Insert to children */
-            if (child_nw_->Insert(p, data)) return true;
-            if (child_ne_->Insert(p, data)) return true;
-            if (child_sw_->Insert(p, data)) return true;
-            if (child_se_->Insert(p, data)) return true;
-
-            /* We should never reach this point */
-            dt::ConsoleInfoL(dt::CRITICAL, "QuadTree::Insert(): Reached, unreachable point. Cannot insert into quad tree",
-                "point", p);
-
-            return false;
-        }
-
-        /**
-            Get the elements inside a rectangle region
-            @param rect The region
-            @param[out] objects The elements
-            @return The number of elements found
-        */
-        size_t QueryRange(math::Rectangle2D rect, std::vector<T>& objects){
-            if (!is_inited_) return 0;
-
-            size_t number_of_objects = 0;
-            QueryRangePrivate(rect, objects, number_of_objects);
-
-            return number_of_objects;
-        }
-
-        /**
-            Update the position of element data from position p to new_p
-            @param p The point position of the element
-            @param data The element itself
-            @param new_p The new position of the element
-            @return true = Updated, false = Element not found            
-        */
-        bool Update(math::Point2D p, T data, math::Point2D new_p){
-            if (!is_inited_) return 0;
-
-            return UpdatePrivate(p, data, new_p, this);
-        }
-
-        /**
-            Remove an element from the tree
-            @param p The point of the element
-            @param data The element itself
-            @return true = OK, false = Not found
-        */
-        bool Remove(math::Point2D p, T data){
-            if (!is_inited_) return false;
-
-            /* If point to be removed is not inside the current quad tree rectangle, return */
-            if (!mth::PointInside(p, brect_)) return false;
-
-            /* If the current node has the element, remove it from here */
-            if (node_data_.data_ == data && node_data_.p_ == p) {
-                node_data_.holds_data_ = false;
-                return true;
-            }
-            
-            /* Else search the children */
-            if (child_nw_ != nullptr){
-                if (child_nw_->Remove(p, data)) return true;
-                if (child_ne_->Remove(p, data)) return true;
-                if (child_sw_->Remove(p, data)) return true;
-                if (child_se_->Remove(p, data)) return true;
-            }
-
-            return false;
-        }
-
-        /**
-            Prints a "pretty" layout of the elements inside the tree
-            @param level The level of the starting node
-        */
-        void PrettyPrint(size_t level = 0){
-            if (!is_inited_) return;
-
-            for (size_t i = 0; i < level; i++) dt::CustomPrint(std::cout, "-");
-            if (node_data_.holds_data_) {
-                std::cout << "(" << std::to_string(node_data_.p_.x_) << "," << std::to_string(node_data_.p_.y_)  << "): " 
-                    << node_data_.data_ << std::endl;
-            } else dt::Console("no data");
-
-            if (child_nw_ != nullptr){
-                child_nw_->PrettyPrint(level+1);
-                child_ne_->PrettyPrint(level+1);
-                child_sw_->PrettyPrint(level+1);
-                child_se_->PrettyPrint(level+1);
+            /* If there is intersection, continue */
+            if (std::max(tx0, ty0) < std::min(tx1, ty1)) {
+                root_->RayCastProcessChild(tx0, ty0, tx1, ty1, a, results);
             }
         }
 
-        /*
-            Get an iterator to the first element in a region
-            @param brect The area to search
-            @param n_elements The max number of elements to get
-        */
-        iterator begin(math::Rectangle2D brect, size_t n_elements) {
-            return QuadTreeIterator(brect, n_elements, this);
-        }
-
-
-        /*
-            Get an iterator to the end
-        */
-        iterator end() {
-            return QuadTreeIterator(nullptr);
-        }
+    private:
+        QuadTreeNode * root_;
+        Point2D origin_;
+        Real_t length_;
     };
 
 }

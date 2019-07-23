@@ -5,16 +5,12 @@
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/utility/BasicFunctions.hpp"
 #include "debug_tools/Console.hpp"
+#include "debug_tools/Timer.hpp"
 
 #include "Grass.hpp"
-#include "Wall.hpp"
-#include "Path.hpp"
-#include "Treasure.hpp"
 #include "Player.hpp"
 #include "Sun.hpp"
 #include "Fire.hpp"
-#include "Cow.hpp"
-#include "Lava.hpp"
 
 namespace dt = debug_tools;
 namespace ge = game_engine;
@@ -25,7 +21,7 @@ World::World() : WorldSector() {
 }
 
 int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
-    int ret = WorldSector::Init(300, 300, -100.0f, 100.0f, -100.0f, 100.0f, 500 * 500);
+    int ret = WorldSector::Init(300, 300, -200.0f, 200.0f, -200.0f, 200.0f, 500 * 500);
     if (ret) return ret;
 
     //NewObj<Grass>()->Init(0.0f, 0.0f, 0.0f, "rogulikerpg_11.obj", this, engine);
@@ -34,8 +30,9 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     sun_ = NewObj<Sun>();
     sun_->Init(0.0f, 0.0f, 1000.0f, this, engine);
 
-    ReadMap("billy_map_Tile Layer 1.csv", 0.0f, engine);
-    ReadMap("billy_map_Tile Layer 2.csv", 0.1f, engine);
+    //ReadMap("billy_map_Tile Layer 1.csv", 0.0f, engine);
+    //ReadMap("billy_map_Tile Layer 2.csv", 0.01f, engine);
+    map_properties_.ReadMap("roguelikeSheet_transparent.tsx");
 
 
     /* Create some fire lights */
@@ -49,7 +46,7 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
 
     /* Create the main player */
     Player * player = NewObj<Player>();
-    player->Init(0.0f, 0.0f, 0.4f, input, camera, this, engine);
+    player->Init(25.0f, 0.0f, 0.2f, input, camera, this, engine);
 
 
     is_inited_ = true;
@@ -64,6 +61,10 @@ int World::Destroy() {
 
 void World::ReadMap(std::string name, float z, game_engine::GameEngine * engine) {
 
+    dt::Timer timer;
+    timer.Start();
+    dt::CustomPrint(std::cout, "Reading map " + name + " ... ");
+
     std::vector<std::vector<std::string>> map_;
 
     std::string line;
@@ -75,15 +76,28 @@ void World::ReadMap(std::string name, float z, game_engine::GameEngine * engine)
         myfile.close();
     }
 
-    for (int i = 0; i < 100; i++) {
-        for (int j = 0; j < 100; j++) {
+    timer.Stop();
+    dt::CustomPrint(std::cout, "DONE, " + timer.ToString() +"\n");
+    
+    timer.Start();
+    dt::CustomPrint(std::cout, "Spawing map... ");
+
+    int map_height = 154;
+    int map_width = 178;
+    float map_width_2 = ((float)map_width) / 2.0f;
+    float map_height_2 = ((float) map_height) / 2.0f;
+    for (int i = 0; i < map_height; i++) {
+        for (int j = 0; j < map_width; j++) {
             if (map_[i][j] == "-1") continue;
             if (map_[i][j] == "416")
-                NewObj<Fire>()->Init(j - 50, 50 - i, z, "rogulikerpg_" + map_[i][j] + ".obj", this, engine, sun_);
+                NewObj<Fire>()->Init(j - map_width_2, map_height_2 - i, z, "roguelikeSheet_transparent_" + map_[i][j], this, engine, sun_);
             else
-                NewObj<Grass>()->Init(j - 50, 50 -i, z, "rogulikerpg_" + map_[i][j] + ".obj", this, engine);
+                NewObj<Grass>()->Init(j - map_width_2, map_height_2 - i, z, "roguelikeSheet_transparent_" + map_[i][j], this, engine);
 
         }
     }
+
+    timer.Stop();
+    dt::CustomPrint(std::cout, "DONE, " + timer.ToString() + "\n");
 
 }

@@ -11,14 +11,14 @@ namespace game_engine {
 namespace math {
 
     Real_t DotProduct(Point2D vector_a, Point2D vector_b) {
-        return vector_a.x_* vector_b.x_ + vector_a.y_ * vector_b.y_;
+        return vector_a.x()* vector_b.x() + vector_a.y() * vector_b.y();
     }
     
     bool PointInside(Point2D point, Rectangle2D rect) {
 
-        Point2D AM(point.x_ - rect.A_.x_, point.y_ - rect.A_.y_);
-        Point2D AB(rect.B_.x_ - rect.A_.x_, rect.B_.y_ - rect.A_.y_);
-        Point2D AD(rect.D_.x_ - rect.A_.x_, rect.D_.y_ - rect.A_.y_);
+        Point2D AM({ point.x() - rect.A_.x(), point.y() - rect.A_.y() });
+        Point2D AB({ rect.B_.x() - rect.A_.x(), rect.B_.y() - rect.A_.y() });
+        Point2D AD({ rect.D_.x() - rect.A_.x(), rect.D_.y() - rect.A_.y() });
     
         Real_t dot_product_AM_AB = DotProduct(AM, AB);
         Real_t dot_product_AM_AD = DotProduct(AM, AD);
@@ -50,7 +50,7 @@ namespace math {
             return -1.0f;
         }
     
-        return std::abs(line.A_ * point.x_ + line.B_ * point.y_ + line.C_)
+        return std::abs(line.A_ * point.x() + line.B_ * point.y() + line.C_)
             / std::sqrt(line.A_ * line.A_ + line.B_*line.B_);
     
         return 0.0f;
@@ -58,8 +58,8 @@ namespace math {
     
     Real_t GetDistance(Point2D p_a, Point2D p_b) {
     
-        Real_t x_diff = p_b.x_ - p_a.x_;
-        Real_t y_diff = p_b.y_ - p_a.y_;
+        Real_t x_diff = p_b.x() - p_a.x();
+        Real_t y_diff = p_b.y() - p_a.y();
     
         return std::sqrt(x_diff * x_diff + y_diff * y_diff);
     }
@@ -77,7 +77,7 @@ namespace math {
     
     bool IntersectCircle_LineSegment(Circle2D circle, Point2D point_a, Point2D point_b) {
     
-        Line2D points_line(point_a.x_, point_a.y_, point_b.x_, point_b.y_);
+        Line2D points_line(point_a.x(), point_a.y(), point_b.x(), point_b.y());
         /* Check if we intersect at all */
         Real_t distance = GetDistance(circle.c_, points_line);
         if (distance >= circle.r_) return false;
@@ -88,25 +88,25 @@ namespace math {
         if (math::Equal(points_line_grad, Real_t(0.0))) {
             perpendicular_points_line.A_ = 1.0f;
             perpendicular_points_line.B_ = 0.0f;
-            perpendicular_points_line.C_ = -circle.c_.x_;
+            perpendicular_points_line.C_ = -circle.c_.x();
         }
         else if (isinf(points_line_grad)) {
             perpendicular_points_line.A_ = 0.0f;
             perpendicular_points_line.B_ = 1.0f;
-            perpendicular_points_line.C_ = -circle.c_.y_;
+            perpendicular_points_line.C_ = -circle.c_.y();
         }
         else {
             Real_t perpendicular_grad = -1.0f / points_line_grad;
-            perpendicular_points_line = Line2D(circle.c_.x_, circle.c_.y_, perpendicular_grad);
+            perpendicular_points_line = Line2D(circle.c_.x(), circle.c_.y(), perpendicular_grad);
         }
     
         Point2D intersection_point = IntersecLine_Line(points_line, perpendicular_points_line);
     
-        Point2D vector_from_a_to_intersect(intersection_point.x_ - point_a.x_, intersection_point.y_ - point_a.y_);
-        Point2D vector_from_b_to_intersect(intersection_point.x_ - point_b.x_, intersection_point.y_ - point_b.y_);
+        Point2D vector_from_a_to_intersect({ intersection_point.x() - point_a.x(), intersection_point.y() - point_a.y() });
+        Point2D vector_from_b_to_intersect({ intersection_point.x() - point_b.x(), intersection_point.y() - point_b.y() });
     
-        Real_t inner_product = vector_from_a_to_intersect.x_ * vector_from_b_to_intersect.x_ +
-            vector_from_a_to_intersect.y_ * vector_from_b_to_intersect.y_;
+        Real_t inner_product = vector_from_a_to_intersect.x() * vector_from_b_to_intersect.x() +
+            vector_from_a_to_intersect.y() * vector_from_b_to_intersect.y();
     
         if (inner_product <= 0 && distance <= circle.r_) return true;
     
@@ -146,7 +146,7 @@ namespace math {
             y_coord = -line_b.C_ / line_b.B_;
         }
 
-        return Point2D(x_coord, y_coord);
+        return Point2D({ x_coord, y_coord });
     }
     
     bool IntersectRect_Rect(Rectangle2D rect_a, Rectangle2D rect_b) {
@@ -180,7 +180,7 @@ namespace math {
     bool IntersectCircle_Circle(Circle2D circ_a, Circle2D circ_b) {
         Real_t r = circ_a.r_ + circ_b.r_;
         r *= r;
-        return r > std::pow(circ_a.c_.x_ - circ_b.c_.x_, 2) + std::pow(circ_a.c_.y_ - circ_b.c_.y_, 2);
+        return r > std::pow(circ_a.c_.x() - circ_b.c_.x(), 2) + std::pow(circ_a.c_.y() - circ_b.c_.y(), 2);
     }
 
 }

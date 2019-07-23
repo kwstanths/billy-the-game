@@ -57,8 +57,8 @@ int main(int argc, char ** argv) {
     float asset_width_h = (float)asset_horizontal_pixel_width / (float)horizontal_resolution;
     float asset_width_v = (float)asset_vertical_pixel_width / (float)vertical_resolution;
 
-    float asset_border_margin_h = 0.4f / (float)horizontal_resolution;
-    float asset_border_margin_v = 0.4f / (float)vertical_resolution;
+    float asset_border_margin_h = 0.2f / (float)horizontal_resolution;
+    float asset_border_margin_v = 0.2f / (float)vertical_resolution;
 
     size_t asset_index = 0;
     for (size_t i = 0; i < nrows; i++) {
@@ -82,7 +82,7 @@ int main(int argc, char ** argv) {
             std::cout << u2 << " " << v2 << std::endl;
             std::cout << u3 << " " << v3 << std::endl;
             std::cout << u4 << " " << v4 << std::endl;
-            CreateFiles("rogulikerpg_" + std::to_string(asset_index), u4, v4, u1, v1, u3, v3, u2, v2);
+            CreateFiles("roguelikeSheet_transparent_" + std::to_string(asset_index), u4, v4, u1, v1, u3, v3, u2, v2);
             asset_index++;
         }
     }

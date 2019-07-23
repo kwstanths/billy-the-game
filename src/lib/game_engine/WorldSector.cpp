@@ -42,12 +42,14 @@ namespace game_engine {
 
         world_ = new utility::UniformGrid<std::deque<WorldObject *>, 2>({ grid_rows_, grid_columns_});
 
-        ms::MemoryManager& memory_manager = ms::MemoryManager::GetInstance();
-        world_point_lights_.Init(math::Rectangle2D(
-            math::Point2D(x_margin_start, y_margin_start),
-            math::Point2D(x_margin_end, y_margin_start),
-            math::Point2D(x_margin_end, y_margin_end),
-            math::Point2D(x_margin_start, y_margin_end)), memory_manager.GetWorldLightsAllocator());
+        //ms::MemoryManager& memory_manager = ms::MemoryManager::GetInstance();
+        //world_point_lights_.Init(math::Rectangle2D(
+        //    math::Point2D(x_margin_start, y_margin_start),
+        //    math::Point2D(x_margin_end, y_margin_start),
+        //    math::Point2D(x_margin_end, y_margin_end),
+        //    math::Point2D(x_margin_start, y_margin_end)), memory_manager.GetWorldLightsAllocator());
+
+        world_point_lights_ = new utility::QuadTree<graphics::PointLight_t *>(math::Point2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
 
         visible_world_ = std::vector<WorldObject *>(500, nullptr);
 
@@ -113,13 +115,13 @@ namespace game_engine {
         }
 
         /* Draw lights */
-        width = 2.0 * camera_position.z_ * tan(camera_angle / 2.0f);
+        width = 4.0 * camera_position.z_ * tan(camera_angle / 2.0f);
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
         math::Rectangle2D camera_view_lights_rectangle = math::Rectangle2D(camera_position.x_, camera_position.y_, 2.3 * width * camera_ratio, 2.3 * width);
 
-        std::vector<graphics::PointLight_t *> lights_(16);
-        size_t lights = world_point_lights_.QueryRange(math::Rectangle2D(camera_view_lights_rectangle.A_.x_ / 2.0f + camera_view_lights_rectangle.C_.x_ / 2.0f, camera_view_lights_rectangle.A_.y_ / 2.0f + camera_view_lights_rectangle.C_.y_ / 2.0f, 45, 45), lights_);
-        for (size_t i = 0; i < lights; i++)
+        std::vector<graphics::PointLight_t *> lights_;
+        world_point_lights_->QueryRange(math::AABox<2>(Point2D({ -40, -40 }), Point2D({ 40, 40 })), lights_);
+        for (size_t i = 0; i < lights_.size(); i++)
             renderer->AddPointLight(lights_[i]);
 
         /* Update world */
@@ -156,11 +158,13 @@ namespace game_engine {
     }
 
     int WorldSector::AddLight(graphics::PointLight_t * light, math::Point2D& point) {
-        return !world_point_lights_.Insert(point, light);
+        return !world_point_lights_->Insert(point, light);
+        return 0;
     }
 
     int WorldSector::RemoveLight(graphics::PointLight_t * light, math::Point2D& point) {
-        return !world_point_lights_.Remove(point, light);
+        world_point_lights_->Remove(point);
+        return 0;
     }
 
     size_t WorldSector::GetObjectsWindow(math::Rectangle2D rect, std::vector<WorldObject*> & objects)  {
@@ -171,10 +175,10 @@ namespace game_engine {
 
         /* Find starting rows and columns basd on the rectangle */
 
-        int row_start = GetRow(rect.C_.y_);
-        int row_end = GetRow(rect.A_.y_);
-        int col_start = GetColumn(rect.D_.x_);
-        int col_end = GetColumn(rect.B_.x_);
+        int row_start = GetRow(rect.C_.y());
+        int row_end = GetRow(rect.A_.y());
+        int col_start = GetColumn(rect.D_.x());
+        int col_end = GetColumn(rect.B_.x());
         if (row_end < row_start) std::swap(row_start, row_end);
         if (col_end < col_start) std::swap(col_start, col_end);
 
