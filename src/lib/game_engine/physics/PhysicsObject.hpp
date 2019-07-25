@@ -2,14 +2,20 @@
 #define __PhysicsObject_hpp__
 
 #include "game_engine/math/Types.hpp"
+#include "game_engine/math/AABox.hpp"
+
+#include "Collision.hpp"
 
 namespace game_engine {
 namespace physics {
+
+    class PhysicsEngine;
 
     /**
         A physics object
     */
     class PhysicsObject {
+        friend PhysicsEngine;
     public:
         /**
             Does nothing in particular. Call Init()
@@ -65,14 +71,21 @@ namespace physics {
         */
         void SetPosition(game_engine::Real_t pos_x, game_engine::Real_t pos_y, game_engine::Real_t pos_z);
 
+        /**
+            Sets the collision objects, and inserts the objects into the physics engine
+        */
+        void SetCollision(physics::PhysicsEngine * engine, game_engine::math::AABox<2> box);
+
     protected:
         bool removable_;
 
     private:
         bool is_inited_;
         game_engine::Real_t pos_x_, pos_y_, pos_z_;
-        size_t object_type_ = 0;
 
+        Collision * collision_ = nullptr;
+
+        bool Collides(game_engine::math::Point2D new_position, PhysicsObject * other);
     };
 
 }

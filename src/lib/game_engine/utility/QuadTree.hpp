@@ -257,7 +257,7 @@ namespace utility {
             }
 
             void RayCastProcessChild(Real_t tx0, Real_t ty0, Real_t tx1, Real_t ty1, unsigned char a, std::vector<Data>& results) {
-                Real_t txm, tym, tzm;
+                Real_t txm, tym;
                 int current_node;
 
                 if (tx1 < 0 || ty1 < 0) return;

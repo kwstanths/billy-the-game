@@ -6,11 +6,12 @@
 
 #include "game_engine/memory/MemoryManager.hpp"
 #include "game_engine/utility/CircularBuffer.hpp"
+#include "game_engine/utility/QuadTree.hpp"
+#include "game_engine/utility/UniformGrid.hpp"
+#include "game_engine/physics/PhysicsEngine.hpp"
 #include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/math/Types.hpp"
 #include "game_engine/math/Vec3.hpp"
-#include "game_engine/utility/QuadTree.hpp"
-#include "game_engine/utility/UniformGrid.hpp"
 
 #include "WorldObject.hpp"
 
@@ -95,7 +96,7 @@ namespace game_engine {
         /**
             vector.push_back comment
         */
-        int AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z, bool is_npc = false);
+        int AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z);
 
         /**
         
@@ -130,6 +131,12 @@ namespace game_engine {
         */
         WorldObject * FindInteractNeighbour(game_engine::math::Rectangle2D search_area, math::Point2D p, Real_t size);
 
+        /**
+            Get the physics engine used in this world
+            @return The physics engine. nullptr if not initialised
+        */
+        physics::PhysicsEngine * GetPhysicsEngine();
+
     private:
         bool is_inited_;
         Real_t x_margin_start_, x_margin_end_, y_margin_start_, y_margin_end_;
@@ -140,14 +147,14 @@ namespace game_engine {
         */
         utility::UniformGrid<std::deque<WorldObject *>, 2> * world_;
         size_t grid_rows_, grid_columns_;
-
         std::vector<WorldObject *> visible_world_;
-        std::vector<WorldObject *> npcs_;
         
         utility::QuadTree<graphics::PointLight_t *> * world_point_lights_;
 
         /* Holds objects that are removed from the world, whose memory needs deallocation */
         utility::CircularBuffer<WorldObject *> delete_objects_buffer_;
+
+        physics::PhysicsEngine * physics_engine_;
 
         /**
             Get the row in the world based in the vertical coordiate
@@ -173,7 +180,6 @@ namespace game_engine {
         */
         int InsertObjectToWorldStructure(WorldObject * object, Real_t x, Real_t y, Real_t z);
 
-
         /**
             Updates the position of an object in the world
             @param object The object
@@ -182,8 +188,7 @@ namespace game_engine {
             @param new_pos_x The new position x coordinate
             @param new_pos_y The new position y coordinate
         */
-        void UpdateObjectPosition(WorldObject * object, Real_t old_pos_x, Real_t old_pos_y, Real_t new_pos_x, Real_t new_pos_y);
-
+        void UpdateObjectInWorldStructure(WorldObject * object, Real_t old_pos_x, Real_t old_pos_y, Real_t new_pos_x, Real_t new_pos_y);
 
         /**
             Remove the object from the world

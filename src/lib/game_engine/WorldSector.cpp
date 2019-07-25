@@ -18,6 +18,7 @@ namespace gr = game_engine::graphics;
 namespace game_engine {
 
     WorldSector::WorldSector() {
+        physics_engine_ = new physics::PhysicsEngine();
         is_inited_ = false;
     }
 
@@ -41,20 +42,11 @@ namespace game_engine {
         y_margin_end_ = y_margin_end;
 
         world_ = new utility::UniformGrid<std::deque<WorldObject *>, 2>({ grid_rows_, grid_columns_});
-
-        //ms::MemoryManager& memory_manager = ms::MemoryManager::GetInstance();
-        //world_point_lights_.Init(math::Rectangle2D(
-        //    math::Point2D(x_margin_start, y_margin_start),
-        //    math::Point2D(x_margin_end, y_margin_start),
-        //    math::Point2D(x_margin_end, y_margin_end),
-        //    math::Point2D(x_margin_start, y_margin_end)), memory_manager.GetWorldLightsAllocator());
+        visible_world_ = std::vector<WorldObject *>(600, nullptr);
 
         world_point_lights_ = new utility::QuadTree<graphics::PointLight_t *>(math::Point2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
 
-        visible_world_ = std::vector<WorldObject *>(500, nullptr);
-
-        npcs_ = std::vector<WorldObject *>();
-
+        physics_engine_->Init(AABox<2>(Point2D({ x_margin_start_, y_margin_start }), Point2D({ x_margin_end_, y_margin_end })), 500);
         
         /* Initialize the circular buffer for deleting objects */
         delete_objects_buffer_.Init(128);
@@ -79,9 +71,9 @@ namespace game_engine {
 
     void WorldSector::Step(double delta_time, gr::Renderer * renderer, math::Vec3 camera_position, math::Vec3 camera_direction, Real_t camera_ratio, Real_t camera_angle) {
 
-        Real_t width = camera_position.z_ * tan(camera_angle / 2.0f);
+        Real_t width = 2.3 * camera_position.z_ * tan(camera_angle / 2.0f);
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
-        math::Rectangle2D camera_view_rectangle = math::Rectangle2D(camera_position.x_, camera_position.y_, 2.3 * width * camera_ratio, 2.3 * width);
+        math::Rectangle2D camera_view_rectangle = math::Rectangle2D(camera_position.x_, camera_position.y_, width * camera_ratio, width);
 
         /* Draw a rectangle for the edge of this world */
         //renderer->DrawRectangleXY(math::Rectangle2D(
@@ -99,7 +91,7 @@ namespace game_engine {
         /* Step all the objects one frame */
         for (size_t i = 0; i < nof; i++) {
             WorldObject * visible_object = visible_world_[i];
-            if (!visible_object->npc_) visible_object->Step(delta_time);
+            visible_object->Step(delta_time);
         }
 
         /* Draw visible world */
@@ -107,20 +99,14 @@ namespace game_engine {
             visible_world_[i]->Draw(renderer);
         }
 
-        /* Step and draw the npcs once */
-        for (size_t i = 0; i < npcs_.size(); i++) {
-            WorldObject * npc = npcs_[i];
-            npc->Step(delta_time);
-            npc->Draw(renderer);
-        }
-
         /* Draw lights */
         width = 4.0 * camera_position.z_ * tan(camera_angle / 2.0f);
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
-        math::Rectangle2D camera_view_lights_rectangle = math::Rectangle2D(camera_position.x_, camera_position.y_, 2.3 * width * camera_ratio, 2.3 * width);
+        math::Rectangle2D camera_view_lights_rectangle = math::Rectangle2D(camera_position.x_, camera_position.y_, width * camera_ratio, width);
+        math::AABox<2> camera_view_lights_box = math::AABox<2>(Point2D({ camera_position.x_, camera_position.y_ }), { 2.3f * width * camera_ratio, 2.3f * width });
 
         std::vector<graphics::PointLight_t *> lights_;
-        world_point_lights_->QueryRange(math::AABox<2>(Point2D({ -40, -40 }), Point2D({ 40, 40 })), lights_);
+        world_point_lights_->QueryRange(camera_view_lights_box, lights_);
         for (size_t i = 0; i < lights_.size(); i++)
             renderer->AddPointLight(lights_[i]);
 
@@ -129,17 +115,15 @@ namespace game_engine {
 
     }
 
-    int WorldSector::AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z, bool is_npc) {
+    int WorldSector::AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z) {
 
         InsertObjectToWorldStructure(object, x, y, z);
 
         /* Set the position in the graphics layer */
         object->GraphicsObject::SetPosition(x, y, z);
 
-        if (is_npc) {
-            npcs_.push_back(object);
-            object->npc_ = true;
-        }
+        /* Set the position in the physics layer */
+        object->PhysicsObject::SetPosition(x, y, z);
 
         return 0;
     }
@@ -148,11 +132,10 @@ namespace game_engine {
         
         _assert(0 == 1);
 
-        /* Remove from npcs structures */
-        if (object->npc_) npcs_.erase(find(npcs_.begin(), npcs_.end(), object));
-
         /* Remove from world structure */
         RemoveObjectFromWorldStructure(object);
+
+        physics_engine_->Remove(object);
 
         return 0;
     }
@@ -211,6 +194,10 @@ namespace game_engine {
         return nullptr;
     }
 
+    physics::PhysicsEngine * WorldSector::GetPhysicsEngine() {
+        return physics_engine_;
+    }
+
     int WorldSector::GetRow(Real_t y_coordinate) {
         /* 
             If y_margin_end is mapped to the first row, and y_margin_start is mapped to the last row, then 
@@ -244,8 +231,7 @@ namespace game_engine {
         return 0;
     }
 
-
-    void WorldSector::UpdateObjectPosition(WorldObject * object, Real_t old_pos_x, Real_t old_pos_y, Real_t new_pos_x, Real_t new_pos_y) {
+    void WorldSector::UpdateObjectInWorldStructure(WorldObject * object, Real_t old_pos_x, Real_t old_pos_y, Real_t new_pos_x, Real_t new_pos_y) {
 
         /* TODO Do some checkig on the object */
 

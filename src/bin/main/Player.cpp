@@ -28,7 +28,10 @@ int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera
 
     int ret = WorldObject::Init("assets/player.obj", x, y, z);
     world->AddObject(this, x, y, z);
-    Scale(0.8, 0.8, 0.8);
+    Scale(0.6, 0.6, 0.6);
+
+    Point2D pos({ x, y });
+    SetCollision(world->GetPhysicsEngine(), AABox<2>(pos - 0.3, pos + 0.3));
 
     radius_ = 0.5f;
     interact_fov_ = math::GetRadians(50.0f);
@@ -77,63 +80,63 @@ void Player::Step(double delta_time) {
             ge::Real_t pos_z = GetZ();
             pos_x = pos_x - controls.MOVE_LEFT_ * move_offset + controls.MOVE_RIGHT_ * move_offset;
             pos_y = pos_y + controls.MOVE_UP_ * move_offset - controls.MOVE_DOWN_ * move_offset;
-            SetPosition(pos_x, pos_y, pos_z);
+            SetPosition(pos_x, pos_y, pos_z, true);
             camera->Set2DPosition(GetX(), GetY());
         }
     }
 
-    /* Interact with objects */
-    {
-        if (controls.INTERACT_PRESSED || controls.INTERACT_) {
-            ge::Direction_t direction = looking_direction_;
-            ge::Real_t x1 = GetX() - (radius_ + interact_margin_) * sin(direction + interact_fov_);
-            ge::Real_t y1 = GetY() + (radius_ + interact_margin_) * cos(direction + interact_fov_);
-            math::Point2D A({ x1, y1 });
+    ///* Interact with objects */
+    //{
+    //    if (controls.INTERACT_PRESSED || controls.INTERACT_) {
+    //        ge::Direction_t direction = looking_direction_;
+    //        ge::Real_t x1 = GetX() - (radius_ + interact_margin_) * sin(direction + interact_fov_);
+    //        ge::Real_t y1 = GetY() + (radius_ + interact_margin_) * cos(direction + interact_fov_);
+    //        math::Point2D A({ x1, y1 });
 
-            ge::Real_t x2 = GetX() - (radius_ + interact_margin_) * sin(direction - interact_fov_);
-            ge::Real_t y2 = GetY() + (radius_ + interact_margin_) * cos(direction - interact_fov_);
-            math::Point2D B({ x2, y2 });
+    //        ge::Real_t x2 = GetX() - (radius_ + interact_margin_) * sin(direction - interact_fov_);
+    //        ge::Real_t y2 = GetY() + (radius_ + interact_margin_) * cos(direction - interact_fov_);
+    //        math::Point2D B({ x2, y2 });
 
-            ge::Real_t side_size = 1.5f * (radius_ + interact_margin_) * tan(interact_fov_);
+    //        ge::Real_t side_size = 1.5f * (radius_ + interact_margin_) * tan(interact_fov_);
 
-            ge::Real_t x3 = x2 - side_size * sin(direction);
-            ge::Real_t y3 = y2 + side_size * cos(direction);
-            math::Point2D C({x3, y3});
+    //        ge::Real_t x3 = x2 - side_size * sin(direction);
+    //        ge::Real_t y3 = y2 + side_size * cos(direction);
+    //        math::Point2D C({x3, y3});
 
-            ge::Real_t x4 = x1 - side_size * sin(direction);
-            ge::Real_t y4 = y1 + side_size * cos(direction);
-            math::Point2D D({ x4, y4 });
+    //        ge::Real_t x4 = x1 - side_size * sin(direction);
+    //        ge::Real_t y4 = y1 + side_size * cos(direction);
+    //        math::Point2D D({ x4, y4 });
 
-            engine_->GetDebugger()->DrawPoint(x1, y1, 0.5f, 0.08f);
-            engine_->GetDebugger()->DrawPoint(x2, y2, 0.5f, 0.08f);
-            engine_->GetDebugger()->DrawPoint(x3, y3, 0.5f, 0.08f);
-            engine_->GetDebugger()->DrawPoint(x4, y4, 0.5f, 0.08f);
+    //        engine_->GetDebugger()->DrawPoint(x1, y1, 0.5f, 0.08f);
+    //        engine_->GetDebugger()->DrawPoint(x2, y2, 0.5f, 0.08f);
+    //        engine_->GetDebugger()->DrawPoint(x3, y3, 0.5f, 0.08f);
+    //        engine_->GetDebugger()->DrawPoint(x4, y4, 0.5f, 0.08f);
 
-            if (controls.INTERACT_) {
-                math::Rectangle2D search_area(A, B, C, D);
-                WorldObject * neighbour = world_sector_->FindInteractNeighbour(search_area, math::Point2D({(x1 + x2) / 2, (y1 + y2) / 2}), 1);
-                if (neighbour != nullptr) neighbour->Interact();
-                else {
+    //        if (controls.INTERACT_) {
+    //            math::Rectangle2D search_area(A, B, C, D);
+    //            WorldObject * neighbour = world_sector_->FindInteractNeighbour(search_area, math::Point2D({(x1 + x2) / 2, (y1 + y2) / 2}), 1);
+    //            if (neighbour != nullptr) neighbour->Interact();
+    //            else {
 
-                    /* Spawn new wall! Just for fun! */
-                    //{
-                    //    /*
-                    //        Spawing with normal malloc allocation.
-                    //        ATTENTION you will need to deallocate the object yourself orelse memory leak
-                    //    */
-                    //    Wall * wall = new Wall();
-                    //    wall->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, world_sector_, engine_);
-                    //}
+    //                /* Spawn new wall! Just for fun! */
+    //                //{
+    //                //    /*
+    //                //        Spawing with normal malloc allocation.
+    //                //        ATTENTION you will need to deallocate the object yourself orelse memory leak
+    //                //    */
+    //                //    Wall * wall = new Wall();
+    //                //    wall->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, world_sector_, engine_);
+    //                //}
 
-                    {
+    //                {
 
-                        /* Spawn via the memory system of the game engine */
-                        //world_sector_->NewObj<Wall>(true)->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, world_sector_, engine_);
-                    }
-                }
-            }
-        }
-    }
+    //                    /* Spawn via the memory system of the game engine */
+    //                    //world_sector_->NewObj<Wall>(true)->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, world_sector_, engine_);
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
 }
 

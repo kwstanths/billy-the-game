@@ -10,7 +10,7 @@ namespace dt = debug_tools;
 bool Sun::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world, ge::GameEngine * engine) {
 
     int ret = WorldObject::Init("assets/circle.obj", x, y, z);
-    world->AddObject(this, x, y, z, true);
+    world->AddObject(this, x, y, z);
 
     light_ = ge::graphics::LightProperties_t(glm::vec3(0.03f, 0.03f, 0.03f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
     //light_ = ge::graphics::LightProperties_t(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));

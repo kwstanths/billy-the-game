@@ -1,6 +1,7 @@
 #ifndef __AABox_hpp__
 #define __AABox_hpp__
 
+#include <vector>
 #include "Real.hpp"
 #include "Point.hpp"
 
@@ -19,6 +20,19 @@ namespace math {
         AABox(Point<K> min, Point<K> max) {
             min_ = min;
             max_ = max;
+        }
+        AABox(Point<K> center, std::vector<Real_t> length) {
+            for (size_t i = 0; i < K; i++) {
+                min_[i] = center[i] - length[i] / Real_t(2);
+                max_[i] = center[i] + length[i] / Real_t(2);
+            }
+        }
+
+        void Translate(Point<K> translation) {
+            for (size_t i = 0; i < K; i++) {
+                min_[i] += translation[i];
+                max_[i] += translation[i];
+            }
         }
 
         static bool Overlaps(AABox<K>& a, AABox<K>& b) {

@@ -24,15 +24,15 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     int ret = WorldSector::Init(300, 300, -200.0f, 200.0f, -200.0f, 200.0f, 500 * 500);
     if (ret) return ret;
 
-    //NewObj<Grass>()->Init(0.0f, 0.0f, 0.0f, "rogulikerpg_11.obj", this, engine);
 
     /* And then, there was light */
     sun_ = NewObj<Sun>();
-    sun_->Init(0.0f, 0.0f, 1000.0f, this, engine);
+    sun_->Init(25.0f, 0.0f, 1000.0f, this, engine);
 
-    //ReadMap("billy_map_Tile Layer 1.csv", 0.0f, engine);
-    //ReadMap("billy_map_Tile Layer 2.csv", 0.01f, engine);
     map_properties_.ReadMap("roguelikeSheet_transparent.tsx");
+    //NewObj<Grass>()->Init(26.0f, 0.0f, 0.0f, "roguelikeSheet_transparent_61", this, engine, map_properties_);
+    ReadMap("billy_map_Tile Layer 1.csv", 0.0f, engine);
+    ReadMap("billy_map_Tile Layer 2.csv", 0.001f, engine);
 
 
     /* Create some fire lights */
@@ -92,7 +92,7 @@ void World::ReadMap(std::string name, float z, game_engine::GameEngine * engine)
             if (map_[i][j] == "416")
                 NewObj<Fire>()->Init(j - map_width_2, map_height_2 - i, z, "roguelikeSheet_transparent_" + map_[i][j], this, engine, sun_);
             else
-                NewObj<Grass>()->Init(j - map_width_2, map_height_2 - i, z, "roguelikeSheet_transparent_" + map_[i][j], this, engine);
+                NewObj<Grass>()->Init(j - map_width_2, map_height_2 - i, z, "roguelikeSheet_transparent_" + map_[i][j], this, engine, map_properties_);
 
         }
     }

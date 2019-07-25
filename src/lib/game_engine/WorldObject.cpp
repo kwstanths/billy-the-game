@@ -2,6 +2,7 @@
 #include "WorldSector.hpp"
 
 #include "game_engine/math/HelpFunctions.hpp"
+#include "game_engine/physics/PhysicsEngine.hpp"
 #include "ErrorCodes.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
@@ -38,8 +39,6 @@ namespace game_engine {
             PrintError(ret);
             return ret;
         }
-
-        interactable_ = interactable;
 
         is_inited_ = true;
         return 0;
@@ -88,20 +87,23 @@ namespace game_engine {
     void WorldObject::SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, bool collision_check) {
 
         /* Maybe not assertion but return something */
-        _assert(world_sector_ != nullptr)
+        _assert(world_sector_ != nullptr);
 
-        Real_t new_pos_x = pos_x;
-        Real_t new_pos_y = pos_y;
-        /* Collision check */
+        math::Point2D new_pos({ pos_x, pos_y });
+        if (collision_check){
+            new_pos = world_sector_->GetPhysicsEngine()->CheckCollision(this, new_pos);
+            world_sector_->GetPhysicsEngine()->Update(this, new_pos);
+        }
 
         /* Update the object's position inside the world sector */
-        world_sector_->UpdateObjectPosition(this, GetX(), GetY(), new_pos_x, new_pos_y);
+        world_sector_->UpdateObjectInWorldStructure(this, GetX(), GetY(), new_pos[0], new_pos[1]);
         
         /* Set the position in the physics layer */
-        PhysicsObject::SetPosition(new_pos_x, new_pos_y, pos_z);
+        
+        PhysicsObject::SetPosition(new_pos[0], new_pos[1], pos_z);
         
         /* Set the position in the graphics layer */
-        GraphicsObject::SetPosition(new_pos_x, new_pos_y, pos_z);
+        GraphicsObject::SetPosition(new_pos[0], new_pos[1], pos_z);
     }
 
     void WorldObject::Scale(Real_t scale_x, Real_t scale_y, Real_t scale_z) {

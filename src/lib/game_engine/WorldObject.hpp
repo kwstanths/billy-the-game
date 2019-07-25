@@ -153,15 +153,11 @@ namespace game_engine {
         void Rotate(Real_t angle, glm::vec3 axis);
 
     protected:
-        /* TODO This should probably become private at some point */
         WorldSector * world_sector_ = nullptr;
 
     private:
 
         bool is_inited_;
-        bool interactable_;
-        bool npc_ = false;
-
     };
 
 }
