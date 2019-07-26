@@ -16,7 +16,7 @@ World::World() : WorldSector() {
 }
 
 int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
-    int ret = WorldSector::Init(100, 100, -51.0f, 51.0f, -51.0f, 51.0f, 50 * 50);
+    int ret = WorldSector::Init(10, 10, -10.0f, 10.0f, -10.0f, 10.0f, 10 * 10);
     if (ret) return ret;
 
     Player * player;

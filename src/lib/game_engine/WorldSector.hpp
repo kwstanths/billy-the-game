@@ -120,7 +120,7 @@ namespace game_engine {
             @param[out] visible_world The vector with pointers to the objects window
             @return The number of objects assigned to the visible_world vector
         */
-        size_t GetObjectsWindow(math::Rectangle2D rect, std::vector<WorldObject *> & objects);
+        size_t GetObjectsWindow(math::AABox<2> rect, std::vector<WorldObject *> & objects);
 
         /**
             Find  the first interactable object inside the search area. pos_x, pos_y is currently not used
@@ -147,6 +147,9 @@ namespace game_engine {
         */
         utility::UniformGrid<std::deque<WorldObject *>, 2> * world_;
         size_t grid_rows_, grid_columns_;
+        math::AABox<2> world_window_;
+
+        bool use_visible_world_window_ = false;
         std::vector<WorldObject *> visible_world_;
         
         utility::QuadTree<graphics::PointLight_t *> * world_point_lights_;

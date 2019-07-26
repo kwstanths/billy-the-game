@@ -22,7 +22,7 @@ namespace game_engine {
         namespace opengl {
 
             /* Maximum number of point lights allowed */
-#define GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS 16
+#define GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS 32
 
             class OpenGLRenderer {
             public:

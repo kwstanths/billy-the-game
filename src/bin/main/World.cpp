@@ -32,7 +32,7 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     map_properties_.ReadMap("roguelikeSheet_transparent.tsx");
     //NewObj<Grass>()->Init(26.0f, 0.0f, 0.0f, "roguelikeSheet_transparent_61", this, engine, map_properties_);
     ReadMap("billy_map_Tile Layer 1.csv", 0.0f, engine);
-    ReadMap("billy_map_Tile Layer 2.csv", 0.001f, engine);
+    ReadMap("billy_map_Tile Layer 2.csv", 0.1f, engine);
 
 
     /* Create some fire lights */

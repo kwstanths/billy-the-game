@@ -92,9 +92,9 @@ namespace opengl {
         config_.zoom_factor_ += factor;
 
         projection_matrix_ = glm::ortho(
-            -1.0 * context_->GetWindowWidth() / config_.zoom_factor_,  1.0 * context_->GetWindowWidth() / config_.zoom_factor_,
+            -1.0 * context_->GetWindowWidth() / config_.zoom_factor_, 1.0 * context_->GetWindowWidth() / config_.zoom_factor_,
             -1.0 * context_->GetWindowHeight() / config_.zoom_factor_, 1.0 * context_->GetWindowHeight() / config_.zoom_factor_,
-            -10.0, 10.0);
+            static_cast<double>(config_.z_near_), static_cast<double>(config_.z_far_));
     }
 
     int OpenGLCamera::SetMouceCallback(void(*func)(GLFWwindow *, double, double)) {
@@ -124,7 +124,7 @@ namespace opengl {
         projection_matrix_ = glm::ortho(
             -1.0 * context_->GetWindowWidth() / zoom_factor, 1.0 * context_->GetWindowWidth() / zoom_factor,
             -1.0 * context_->GetWindowHeight() / zoom_factor, 1.0 * context_->GetWindowHeight() / zoom_factor,
-            -10.0, 10.0);
+            0.1, 100.0);
     }
 
     void OpenGLCamera::Project3D() {

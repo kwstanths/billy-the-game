@@ -27,6 +27,8 @@ namespace opengl {
         bool orthographic_;
         /* If orthigraphic is applied, set the zoom factor */
         Real_t zoom_factor_;
+        /* z near, z far */
+        Real_t z_near_, z_far_;
     } OpenGLCameraConfig_t;
 
 

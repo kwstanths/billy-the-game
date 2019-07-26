@@ -1,5 +1,7 @@
 #include "WorldSector.hpp"
 
+#include "ConfigurationFile.hpp"
+
 #include "game_engine/memory/MemoryManager.hpp"
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/math/Types.hpp"
@@ -40,6 +42,7 @@ namespace game_engine {
         x_margin_end_ = x_margin_end;
         y_margin_start_ = y_margin_start;
         y_margin_end_ = y_margin_end;
+        world_window_ = AABox<2>(Point2D({ x_margin_start, y_margin_start }), Point2D({x_margin_end, y_margin_end}));
 
         world_ = new utility::UniformGrid<std::deque<WorldObject *>, 2>({ grid_rows_, grid_columns_});
         visible_world_ = std::vector<WorldObject *>(600, nullptr);
@@ -50,6 +53,8 @@ namespace game_engine {
         
         /* Initialize the circular buffer for deleting objects */
         delete_objects_buffer_.Init(128);
+
+        use_visible_world_window_ = ConfigurationFile::instance().UseVisibleWindow();
 
         is_inited_ = true;
         return 0;
@@ -71,9 +76,9 @@ namespace game_engine {
 
     void WorldSector::Step(double delta_time, gr::Renderer * renderer, math::Vec3 camera_position, math::Vec3 camera_direction, Real_t camera_ratio, Real_t camera_angle) {
 
-        Real_t width = 2.3 * camera_position.z_ * tan(camera_angle / 2.0f);
+        Real_t width = camera_position.z_ * tan(camera_angle / 2.0f);
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
-        math::Rectangle2D camera_view_rectangle = math::Rectangle2D(camera_position.x_, camera_position.y_, width * camera_ratio, width);
+        math::AABox<2> camera_view_box = math::AABox<2>(Point2D({ camera_position.x_, camera_position.y_ }), { 2.3f * width * camera_ratio, 2.3f * width });
 
         /* Draw a rectangle for the edge of this world */
         //renderer->DrawRectangleXY(math::Rectangle2D(
@@ -86,8 +91,12 @@ namespace game_engine {
         /* Draw a rectangle for the rendering window */
         //renderer->DrawRectangleXY(camera_view_rectangle, 0.02f, 0.01f, { 1,1,1 });
 
-        size_t nof = GetObjectsWindow(camera_view_rectangle, visible_world_);
-        
+        size_t nof;
+        if (use_visible_world_window_)
+            nof = GetObjectsWindow(camera_view_box, visible_world_);
+        else
+            nof = GetObjectsWindow(world_window_, visible_world_);
+
         /* Step all the objects one frame */
         for (size_t i = 0; i < nof; i++) {
             WorldObject * visible_object = visible_world_[i];
@@ -102,11 +111,14 @@ namespace game_engine {
         /* Draw lights */
         width = 4.0 * camera_position.z_ * tan(camera_angle / 2.0f);
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
-        math::Rectangle2D camera_view_lights_rectangle = math::Rectangle2D(camera_position.x_, camera_position.y_, width * camera_ratio, width);
         math::AABox<2> camera_view_lights_box = math::AABox<2>(Point2D({ camera_position.x_, camera_position.y_ }), { 2.3f * width * camera_ratio, 2.3f * width });
 
         std::vector<graphics::PointLight_t *> lights_;
-        world_point_lights_->QueryRange(camera_view_lights_box, lights_);
+        if (use_visible_world_window_)
+            world_point_lights_->QueryRange(camera_view_lights_box, lights_);
+        else
+            world_point_lights_->QueryRange(world_window_, lights_);
+        
         for (size_t i = 0; i < lights_.size(); i++)
             renderer->AddPointLight(lights_[i]);
 
@@ -150,7 +162,7 @@ namespace game_engine {
         return 0;
     }
 
-    size_t WorldSector::GetObjectsWindow(math::Rectangle2D rect, std::vector<WorldObject*> & objects)  {
+    size_t WorldSector::GetObjectsWindow(math::AABox<2> rect, std::vector<WorldObject*> & objects)  {
         if (!is_inited_) {
             dt::Console(dt::CRITICAL, "WorldSector::GetObjectsWindow() is not initialised");
             return -1;
@@ -158,10 +170,10 @@ namespace game_engine {
 
         /* Find starting rows and columns basd on the rectangle */
 
-        int row_start = GetRow(rect.C_.y());
-        int row_end = GetRow(rect.A_.y());
-        int col_start = GetColumn(rect.D_.x());
-        int col_end = GetColumn(rect.B_.x());
+        int row_start = GetRow(rect.max_.y());
+        int row_end = GetRow(rect.min_.y());
+        int col_start = GetColumn(rect.min_.x());
+        int col_end = GetColumn(rect.max_.x());
         if (row_end < row_start) std::swap(row_start, row_end);
         if (col_end < col_start) std::swap(col_start, col_end);
 

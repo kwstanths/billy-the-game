@@ -19,11 +19,14 @@ namespace game_engine {
 
         int GetRenderingMethod();
 
+        bool UseVisibleWindow();
+
     private:
         ConfigurationFile();
 
         int rendering_method = 0;
         bool ssao_ = false;
+        bool visible_window_ = false;
     };
 
 }

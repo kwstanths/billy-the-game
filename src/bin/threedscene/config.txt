@@ -1,0 +1,3 @@
+visible_window=0
+rendering_method=0
+ssao=1

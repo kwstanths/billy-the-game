@@ -16,6 +16,11 @@ namespace game_engine {
         return rendering_method;
     }
 
+    bool ConfigurationFile::UseVisibleWindow()
+    {
+        return visible_window_;
+    }
+
     ConfigurationFile::ConfigurationFile() {
         /* Read configuration file */
         std::string file_name = "config.txt";
@@ -29,6 +34,7 @@ namespace game_engine {
 
             if (line_split[0] == "rendering_method") rendering_method = std::stoi(line_split[1]);
             if (line_split[0] == "ssao") ssao_ = static_cast<bool>(std::stoi(line_split[1]));
+            if (line_split[0] == "visible_window") visible_window_ = static_cast<bool>(std::stoi(line_split[1]));
         }
     }
 

@@ -66,7 +66,7 @@ namespace game_engine {
 
         /* Physice engine debugging */
 #ifdef PHYSICS_ENGINE_DEBUG
-        math::Shape2D * shape = GetCollision()->GetShape();
+        
         math::Rectangle2D * brect = dynamic_cast<math::Rectangle2D *>(shape);
         if (brect != nullptr) {
             renderer->DrawRectangleXY(*brect, GetZ() + 0.01, 0.02, { 1,0,0 });

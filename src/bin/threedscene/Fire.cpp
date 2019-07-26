@@ -22,7 +22,7 @@ bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * worl
     light_.properties_ = ge::graphics::LightProperties_t(glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec3(0.3f, 0.3f, 0.3f));
     light_.attenutation_ = ge::graphics::Attenuation_t(1, 0.0001f, 0.000939f);
 
-    world_sector_->AddLight(&light_, math::Point2D(x, y));
+    world_sector_->AddLight(&light_, math::Point2D({ x, y }));
 
     return ret == 0;
 }

@@ -21,8 +21,10 @@ Camera::Camera(int width, int height, ge::Real_t mouse_sensitivity) : OpenGLCame
     config_.position_ = glm::vec3(0, 0, z_height_);
     config_.direction_ = glm::vec3(0, 0, -1);
     config_.up_ = glm::vec3(0, 1, 0);
-    config_.orthographic_ = false;
-    config_.zoom_factor_ = 75;
+    config_.orthographic_ = true;
+    config_.zoom_factor_ = 120.7;
+    config_.z_near_ = 0.1f;
+    config_.z_far_ = 100.0f;
 
     /* Configure rest */
     yaw_ = -90.0f;

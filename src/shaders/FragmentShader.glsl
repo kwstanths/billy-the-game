@@ -55,7 +55,7 @@ in vec3 fragment_position_worldspace;
 /* Fragment shader output */
 out vec3 color;
 
-#define NR_POINT_LIGHTS 16  
+#define NR_POINT_LIGHTS 24  
 
 /* Uniform values */
 uniform vec3 camera_position_worldspace;

@@ -45,7 +45,7 @@ uniform sampler2D g_albedo_spec;
 uniform sampler2D ssao_texture;
 uniform mat4 matrix_view;
 
-#define NR_POINT_LIGHTS 16  
+#define NR_POINT_LIGHTS 24
 uniform PointLight point_light[NR_POINT_LIGHTS];
 uniform uint number_of_point_lights;
 
