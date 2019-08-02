@@ -19,9 +19,9 @@ namespace graphics {
         if (ret) return ret;
 
         /**
-    Sort meshes with decreasing volume, this means that the render will see the meshes in this order
-    it may help in occlusion queries, we render the big occluders first
-*/
+            Sort meshes with decreasing volume, this means that the render will see the meshes in this order
+            it may help in occlusion queries, we render the big occluders first
+        */
         std::sort(meshes_.begin(), meshes_.end(),
             [](Mesh * a, Mesh * b) -> bool {
             return a->GetBoundigBoxVolume() > b->GetBoundigBoxVolume();
@@ -68,6 +68,7 @@ namespace graphics {
         directory_ = file_path.substr(0, file_path.find_last_of('/'));
 
         ProcessNode(scene->mRootNode, scene);
+
         return 0;
     }
 

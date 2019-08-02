@@ -8,6 +8,7 @@
 #include "game_engine/utility/CircularBuffer.hpp"
 #include "game_engine/utility/QuadTree.hpp"
 #include "game_engine/utility/UniformGrid.hpp"
+#include "game_engine/utility/QuadTreeBoxes.hpp"
 #include "game_engine/physics/PhysicsEngine.hpp"
 #include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/math/Types.hpp"
@@ -94,7 +95,7 @@ namespace game_engine {
         void Step(double delta_time, graphics::Renderer * renderer, math::Vec3 camera_position, math::Vec3 camera_direction, Real_t camera_ratio, Real_t camera_angle);
 
         /**
-            vector.push_back comment
+
         */
         int AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z);
 
@@ -112,6 +113,16 @@ namespace game_engine {
         
         */
         int RemoveLight(graphics::PointLight_t * light, math::Point2D& point);
+
+        /**
+        
+        */
+        int AddInterractableObject(WorldObject * object, AABox<2> interaction_area);
+
+        /**
+        
+        */
+        WorldObject * RayCast(math::Ray2D ray);
 
         /**
             Get a window of object in the world. Objects are assigned sequentially to the visible world 
@@ -148,16 +159,19 @@ namespace game_engine {
         utility::UniformGrid<std::deque<WorldObject *>, 2> * world_;
         size_t grid_rows_, grid_columns_;
         math::AABox<2> world_window_;
-
         bool use_visible_world_window_ = false;
+        /* A vector that holds the visible objects, updated during every frame */
         std::vector<WorldObject *> visible_world_;
         
+        /* A struct that holds the world's lights */
         utility::QuadTree<graphics::PointLight_t *> * world_point_lights_;
 
         /* Holds objects that are removed from the world, whose memory needs deallocation */
         utility::CircularBuffer<WorldObject *> delete_objects_buffer_;
 
         physics::PhysicsEngine * physics_engine_;
+        
+        utility::QuadTreeBoxes<WorldObject *> * interaction_tree_;
 
         /**
             Get the row in the world based in the vertical coordiate

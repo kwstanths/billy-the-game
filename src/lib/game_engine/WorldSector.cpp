@@ -56,6 +56,8 @@ namespace game_engine {
 
         use_visible_world_window_ = ConfigurationFile::instance().UseVisibleWindow();
 
+        interaction_tree_ = new utility::QuadTreeBoxes<WorldObject *>(math::Point2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
+
         is_inited_ = true;
         return 0;
     }
@@ -162,6 +164,17 @@ namespace game_engine {
         return 0;
     }
 
+    int WorldSector::AddInterractableObject(WorldObject * object, AABox<2> interaction_area) {
+        return interaction_tree_->Insert(object, interaction_area);
+    }
+
+    WorldObject * WorldSector::RayCast(math::Ray2D ray) {
+        std::vector<WorldObject *> results;
+        bool ret = interaction_tree_->RayCast(ray, results);
+        if (ret) return results[0];
+        return nullptr;
+    }
+
     size_t WorldSector::GetObjectsWindow(math::AABox<2> rect, std::vector<WorldObject*> & objects)  {
         if (!is_inited_) {
             dt::Console(dt::CRITICAL, "WorldSector::GetObjectsWindow() is not initialised");
@@ -216,8 +229,8 @@ namespace game_engine {
             vertical_coordinate is mapped to row index
         */
 
-        Real_t index = math::map_to_range(y_margin_start_, y_margin_end_, y_coordinate, 0, (int)grid_rows_ - 1);
-        return static_cast<int>(index);
+        int index = math::map_to_range<Real_t, int>(y_margin_start_, y_margin_end_, static_cast<int>(y_coordinate), 0, (int)grid_rows_ - 1);
+        return index;
     }
 
     int WorldSector::GetColumn(Real_t x_coordinate) {

@@ -2,8 +2,10 @@
 #define __AABox_hpp__
 
 #include <vector>
+
 #include "Real.hpp"
 #include "Point.hpp"
+#include "Types.hpp"
 
 namespace game_engine {
 namespace math {
@@ -50,6 +52,8 @@ namespace math {
             return inside;
         }
 
+        
+
         float GetDiagonalDistance() {
             return min_.Distance(max_);
         }
@@ -78,6 +82,8 @@ namespace math {
         }
 
     };
+
+    bool IntersectionAABoxRay2D(AABox<2>& box, Ray2D ray, Real_t& t);
 
 }
 }

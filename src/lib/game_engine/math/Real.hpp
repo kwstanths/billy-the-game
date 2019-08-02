@@ -4,7 +4,7 @@
 namespace game_engine {
 
     typedef float Real_t;
-    typedef Real_t Direction_t;
+ 
 }
 
 #endif

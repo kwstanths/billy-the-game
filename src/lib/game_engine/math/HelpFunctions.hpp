@@ -8,8 +8,7 @@
 #endif
 #include <cmath>
 
-#include "Types.hpp"
-
+#include "Real.hpp"
 
 namespace game_engine {
 namespace math {

@@ -171,7 +171,7 @@ namespace math {
     template<int K>
     class Ray {
     public:
-        Ray(Point<K> origin, Point<K> direction) : origin_(origin), direction_(direction) {
+        Ray(Point<K> origin, Point<K> direction) : origin_(origin), direction_(direction) { 
             direction_.Normalise();
         };
 
@@ -187,9 +187,30 @@ namespace math {
         Point<K> origin_;
         Point<K> direction_;
     };
-    /* The octree is going to use 3D rays */
-    typedef Ray<3> Ray3D;
+    
+    template<> class Ray<2> {
+    public:
+        Ray(Point<2> origin, Real_t angle): origin_(origin) {
+            direction_[0] = cos(GetRadians(angle));
+            direction_[1] = sin(GetRadians(angle));
+        }
+
+        Point<2>& Origin() {
+            return origin_;
+        }
+
+        Point<2>& Direction() {
+            return direction_;
+        }
+
+    private:
+        Point<2> origin_;
+        Point<2> direction_;
+    };
+
+
     typedef Ray<2> Ray2D;
+    typedef Ray<3> Ray3D;
 
 }
 }

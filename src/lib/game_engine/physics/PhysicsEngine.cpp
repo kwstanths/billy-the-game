@@ -77,7 +77,7 @@ namespace physics {
     }
 
     math::Point2D PhysicsEngine::CheckCollision(PhysicsObject * object, math::Point2D new_position) {
-        
+
         math::Point2D result = Point2D({ object->GetX(), object->GetY() });
 
         if (!is_inited_) {
@@ -93,30 +93,27 @@ namespace physics {
             return result;
         }
 
-        result[0] += CheckCollisionHelp(object, Point2D({ new_position.x(), object->GetY() }))[0];
-        result[1] += CheckCollisionHelp(object, Point2D({ object->GetX(), new_position.y() }))[1];
-
-        return result;
-    }
-
-    math::Point2D PhysicsEngine::CheckCollisionHelp(PhysicsObject * object, math::Point2D new_position) {
-        /* Get neighbours */
+        /* Get neighbours around a small area */
         std::vector<PhysicsObject *> neighbours;
         math::Point2D object_position = Point2D({ object->GetX(), object->GetY() });
         world_->QueryRange(math::AABox<2>(object_position - 1.5, object_position + 1.5), neighbours);
-        
-        ge::Real_t horizontal_move_offset = new_position.x() - object->GetX();
-        ge::Real_t vertical_move_offset = new_position.y() - object->GetY();
 
+        /* Calculate offset between new and old position without collision */
+        math::Point2D offset = math::Point2D({ new_position.x() - object->GetX(), new_position.y() - object->GetY() });
+
+        /* Check separately in horizontal and vertical directions for collision, and set that offset to zero */
         for (size_t i = 0; i < neighbours.size(); i++) {
             PhysicsObject * neighbour = neighbours[i];
 
-            if (object->Collides(new_position, neighbour)) {
-                return math::Point2D(0);
+            if (object->Collides(Point2D({ new_position.x(), object->GetY() }), neighbour)) {
+                offset[0] = 0;
+            }
+            if (object->Collides(Point2D({ object->GetX(), new_position.y() }), neighbour)) {
+                offset[1] = 0;
             }
         }
 
-        return math::Point2D({ horizontal_move_offset, vertical_move_offset });
+        return result + offset;
     }
 
 }

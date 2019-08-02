@@ -26,8 +26,9 @@ namespace game_engine {
         
         if (WorldObject::is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
+        int ret;
         /* Initialize the physics layer */
-        int ret = PhysicsObject::Init(x, y, z);
+        ret = PhysicsObject::Init(x, y, z);
         if (ret) {
             PrintError(ret);
             return ret;

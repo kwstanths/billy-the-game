@@ -32,7 +32,7 @@ namespace math {
         Real_t Norm() {
             Real_t a = 0;
             for (size_t i = 0; i < K; i++) {
-                a += std::pow<Real_t>(coordinates_[i], 2);
+                a += std::pow<Real_t>(coordinates_[i], Real_t(2));
             }
             return sqrt(a);
         }

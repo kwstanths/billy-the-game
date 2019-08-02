@@ -66,78 +66,30 @@ void Player::Step(double delta_time) {
         ge::Real_t move_offset = (1.0f * GetSpeed(controls.RUN_)) * static_cast<float>(delta_time);
         /* Find the moving direction based on the input */
         size_t lookup_index = controls.MOVE_UP_ * 8 + controls.MOVE_DOWN_ * 4 + controls.MOVE_LEFT_ * 2 + controls.MOVE_RIGHT_ * 1;
-        ge::Direction_t new_direction = direction_array_[lookup_index];
+        ge::Real_t new_direction = direction_array_[lookup_index];
         if (!math::Equal(new_direction, -1.0f)) {
 
             //dt::ConsoleInfo("offset", move_offset, "delta", delta_time * 1000);
             /* Set the rotation of the model */
             SetRotation(math::GetRadians(new_direction), { 0,0,1 });
-            looking_direction_ = ge::math::GetRadians(new_direction);
+            looking_direction_ = new_direction;
 
             /* Set position */
             ge::Real_t pos_x = GetX();
             ge::Real_t pos_y = GetY();
-            ge::Real_t pos_z = GetZ();
             pos_x = pos_x - controls.MOVE_LEFT_ * move_offset + controls.MOVE_RIGHT_ * move_offset;
             pos_y = pos_y + controls.MOVE_UP_ * move_offset - controls.MOVE_DOWN_ * move_offset;
-            SetPosition(pos_x, pos_y, pos_z, true);
+            SetPosition(pos_x, pos_y, GetZ(), true);
             camera->Set2DPosition(GetX(), GetY());
         }
     }
 
-    ///* Interact with objects */
-    //{
-    //    if (controls.INTERACT_PRESSED || controls.INTERACT_) {
-    //        ge::Direction_t direction = looking_direction_;
-    //        ge::Real_t x1 = GetX() - (radius_ + interact_margin_) * sin(direction + interact_fov_);
-    //        ge::Real_t y1 = GetY() + (radius_ + interact_margin_) * cos(direction + interact_fov_);
-    //        math::Point2D A({ x1, y1 });
+    if (controls.INTERACT_) {
+        Ray2D ray(Point2D({ GetX(), GetY() }), looking_direction_);
 
-    //        ge::Real_t x2 = GetX() - (radius_ + interact_margin_) * sin(direction - interact_fov_);
-    //        ge::Real_t y2 = GetY() + (radius_ + interact_margin_) * cos(direction - interact_fov_);
-    //        math::Point2D B({ x2, y2 });
-
-    //        ge::Real_t side_size = 1.5f * (radius_ + interact_margin_) * tan(interact_fov_);
-
-    //        ge::Real_t x3 = x2 - side_size * sin(direction);
-    //        ge::Real_t y3 = y2 + side_size * cos(direction);
-    //        math::Point2D C({x3, y3});
-
-    //        ge::Real_t x4 = x1 - side_size * sin(direction);
-    //        ge::Real_t y4 = y1 + side_size * cos(direction);
-    //        math::Point2D D({ x4, y4 });
-
-    //        engine_->GetDebugger()->DrawPoint(x1, y1, 0.5f, 0.08f);
-    //        engine_->GetDebugger()->DrawPoint(x2, y2, 0.5f, 0.08f);
-    //        engine_->GetDebugger()->DrawPoint(x3, y3, 0.5f, 0.08f);
-    //        engine_->GetDebugger()->DrawPoint(x4, y4, 0.5f, 0.08f);
-
-    //        if (controls.INTERACT_) {
-    //            math::Rectangle2D search_area(A, B, C, D);
-    //            WorldObject * neighbour = world_sector_->FindInteractNeighbour(search_area, math::Point2D({(x1 + x2) / 2, (y1 + y2) / 2}), 1);
-    //            if (neighbour != nullptr) neighbour->Interact();
-    //            else {
-
-    //                /* Spawn new wall! Just for fun! */
-    //                //{
-    //                //    /*
-    //                //        Spawing with normal malloc allocation.
-    //                //        ATTENTION you will need to deallocate the object yourself orelse memory leak
-    //                //    */
-    //                //    Wall * wall = new Wall();
-    //                //    wall->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, world_sector_, engine_);
-    //                //}
-
-    //                {
-
-    //                    /* Spawn via the memory system of the game engine */
-    //                    //world_sector_->NewObj<Wall>(true)->Init((x1 + x3) / 2, (y1 + y3) / 2, 0.01f, world_sector_, engine_);
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
-
+        WorldObject * object = world_sector_->RayCast(ray);
+        if (object != nullptr) object->Interact();
+    }
 }
 
 ge::Real_t Player::GetSpeed(bool running) {

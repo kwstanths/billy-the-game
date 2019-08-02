@@ -24,30 +24,19 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     int ret = WorldSector::Init(300, 300, -200.0f, 200.0f, -200.0f, 200.0f, 500 * 500);
     if (ret) return ret;
 
-
+    //NewObj<Grass>()->Init(26.0f, 0.0f, 0.0f, "roguelikeSheet_transparent_61", this, engine, map_properties_);
+    
     /* And then, there was light */
     sun_ = NewObj<Sun>();
     sun_->Init(25.0f, 0.0f, 1000.0f, this, engine);
 
     map_properties_.ReadMap("roguelikeSheet_transparent.tsx");
-    //NewObj<Grass>()->Init(26.0f, 0.0f, 0.0f, "roguelikeSheet_transparent_61", this, engine, map_properties_);
     ReadMap("billy_map_Tile Layer 1.csv", 0.0f, engine);
     ReadMap("billy_map_Tile Layer 2.csv", 0.1f, engine);
-
-
-    /* Create some fire lights */
-    //NewObj<Fire>()->Init(0.0f, 0.0f, 1.0f, this, engine, sun);
-    
-    /* Create some fire along the path */
-    //for (int x = -10; x < 10; x += 8)
-    //    for (int y = -10; y < 10; y += 8)
-    //        NewObj<Fire>()->Init(x, y, 1.0f, this, engine, sun);
-
 
     /* Create the main player */
     Player * player = NewObj<Player>();
     player->Init(25.0f, 0.0f, 0.2f, input, camera, this, engine);
-
 
     is_inited_ = true;
     return 0;
@@ -81,7 +70,6 @@ void World::ReadMap(std::string name, float z, game_engine::GameEngine * engine)
     
     timer.Start();
     dt::CustomPrint(std::cout, "Spawing map... ");
-
     int map_height = 154;
     int map_width = 178;
     float map_width_2 = ((float)map_width) / 2.0f;
@@ -89,10 +77,11 @@ void World::ReadMap(std::string name, float z, game_engine::GameEngine * engine)
     for (int i = 0; i < map_height; i++) {
         for (int j = 0; j < map_width; j++) {
             if (map_[i][j] == "-1") continue;
-            if (map_[i][j] == "416")
+            if (map_[i][j] == "416") {
                 NewObj<Fire>()->Init(j - map_width_2, map_height_2 - i, z, "roguelikeSheet_transparent_" + map_[i][j], this, engine, sun_);
-            else
+            } else {
                 NewObj<Grass>()->Init(j - map_width_2, map_height_2 - i, z, "roguelikeSheet_transparent_" + map_[i][j], this, engine, map_properties_);
+            }
 
         }
     }

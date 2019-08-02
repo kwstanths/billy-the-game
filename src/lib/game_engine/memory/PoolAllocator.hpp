@@ -102,6 +102,11 @@ namespace memory {
         */
         size_t GetBytesUsed();
 
+        /**
+            
+        */
+        bool IsAddressInside(void * address);
+
     private:
         typedef struct node {
             struct node * next_;

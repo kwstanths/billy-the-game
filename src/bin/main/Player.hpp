@@ -32,14 +32,14 @@ private:
     bool is_inited_;
     game_engine::Real_t radius_;
     game_engine::Real_t interact_fov_, interact_margin_;
-    game_engine::Direction_t looking_direction_;
+    game_engine::Real_t looking_direction_;
 
     game_engine::GameEngine * engine_;
     Input * input_;
     Camera * camera_;
 
     game_engine::Real_t speed_regular_, speed_running_;
-    ge::Direction_t direction_array_[16] = { -1, 270, 90, -1, 180, 225, 135, -1, 0, 315, 45, -1, -1, -1, -1, -1 };
+    ge::Real_t direction_array_[16] = { -1, 0.0000001, 180.00000001, -1, 270.00000001, 315, 225, -1, 90.0000001, 45, 135, -1, -1, -1, -1, -1 };
 
 };
 

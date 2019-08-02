@@ -81,15 +81,6 @@ namespace physics {
         
         /* Data structure to hold the objects */
         utility::QuadTree<PhysicsObject *> * world_;
-       
-
-        /**
-            Get the minumum distance between an object and it's surroundings
-            @param object The object to check
-            @param new_position The new position of the object
-            @return A pair of distances to move. First is horisontal, second is vertical
-        */
-        math::Point2D CheckCollisionHelp(PhysicsObject * object, math::Point2D new_position);
 
     };
 

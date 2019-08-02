@@ -5,11 +5,14 @@
 
 #include "game_engine/WorldSector.hpp"
 #include "game_engine/GameEngine.hpp"
+#include "game_engine/utility/FIFOWorker.hpp"
 
 #include "MapProperties.hpp"
 #include "Input.hpp"
 #include "Camera.hpp"
 #include "Sun.hpp"
+#include "Grass.hpp"
+#include "Fire.hpp"
 
 class World :public game_engine::WorldSector {
 public:
@@ -23,11 +26,10 @@ public:
 private:
     bool is_inited_;
 
-    void ReadMap(std::string name, float z, game_engine::GameEngine * engine);
-
     MapProperties map_properties_;
-
     Sun * sun_;
+
+    void ReadMap(std::string name, float z, game_engine::GameEngine * engine);
 };
 
 #endif

@@ -32,6 +32,7 @@ bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, std::string name, ge::
 
     on_ = true;
     world_sector_->AddLight(&light_, math::Point2D({ x, y }));
+    world_sector_->AddInterractableObject(this, AABox<2>(Point2D({ GetX(), GetY() }), { 1,1 }));
 
     return ret == 0;
 }
