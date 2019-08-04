@@ -23,16 +23,16 @@ World::World() : WorldSector() {
 int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     int ret = WorldSector::Init(300, 300, -200.0f, 200.0f, -200.0f, 200.0f, 500 * 500);
     if (ret) return ret;
-
-    //NewObj<Grass>()->Init(26.0f, 0.0f, 0.0f, "roguelikeSheet_transparent_61", this, engine, map_properties_);
     
+    game_engine::graphics::GraphicsObject::InitTextureAtlas("assets/roguelikeSheet_transparent.obj");
+
     /* And then, there was light */
     sun_ = NewObj<Sun>();
     sun_->Init(25.0f, 0.0f, 1000.0f, this, engine);
 
     map_properties_.ReadMap("roguelikeSheet_transparent.tsx");
     ReadMap("billy_map_Tile Layer 1.csv", 0.0f, engine);
-    ReadMap("billy_map_Tile Layer 2.csv", 0.1f, engine);
+    ReadMap("billy_map_Tile Layer 2.csv", 0.03f, engine);
 
     /* Create the main player */
     Player * player = NewObj<Player>();

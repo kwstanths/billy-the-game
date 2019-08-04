@@ -49,7 +49,7 @@ struct CastingLight {
 
 /* Interpolated values from the vertex shader */
 in vec2 uv;
-in vec3 normal;
+in vec3 normal_worldspace;
 in vec3 fragment_position_worldspace;
 
 /* Fragment shader output */
@@ -83,7 +83,7 @@ void main(){
 	vec3 fragment_specular_intensity = texture(object_material.texture_specular, uv).rgb + object_material.specular;
 	
 	/* Calculate necessary light stuff */
-	vec3 fragment_normal = normalize(normal);
+	vec3 fragment_normal = normalize(normal_worldspace);
 	vec3 view_direction = normalize(camera_position_worldspace - fragment_position_worldspace);
 		
 

@@ -7,6 +7,7 @@
 #include "debug_tools/CodeReminder.hpp"
 
 #include "AssetManager.hpp"
+#include "AssimpHelp.hpp"
 
 namespace math = game_engine::math;
 
@@ -40,6 +41,23 @@ namespace graphics {
             mesh_queries_[i].Init();
 
         is_inited_ = true;
+        return 0;
+    }
+
+    int GraphicsObject::InitTextureAtlas(std::string file_name) {
+
+        AssetManager& asset_manager = AssetManager::GetInstance();
+        std::string file_path = file_name.substr(0, file_name.find_last_of("."));
+
+        std::vector<Mesh *> meshes;
+        int ret = ProcessTextureAtlas(file_name, meshes);
+
+        for (size_t i = 0; i < meshes.size(); i++) {
+            Model * new_model = new Model();
+            new_model->Init({ meshes[i] });
+            asset_manager.InsertModel(file_path + "_" + std::to_string(i) + ".obj", new_model);
+        }
+
         return 0;
     }
 
