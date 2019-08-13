@@ -107,12 +107,22 @@ namespace game_engine {
         /**
         
         */
-        int AddLight(graphics::PointLight_t * light, math::Point2D& point);
+        int AddPointLight(graphics::PointLight * light, math::Point2D& point);
 
         /**
         
         */
-        int RemoveLight(graphics::PointLight_t * light, math::Point2D& point);
+        int RemovePointLight(graphics::PointLight * light, math::Point2D& point);
+
+        /**
+        
+        */
+        void SetDirectionalLight(graphics::DirectionalLight * light);
+
+        /**
+        
+        */
+        void RemoveDirectionalLight();
 
         /**
         
@@ -164,7 +174,8 @@ namespace game_engine {
         std::vector<WorldObject *> visible_world_;
         
         /* A struct that holds the world's lights */
-        utility::QuadTree<graphics::PointLight_t *> * world_point_lights_;
+        utility::QuadTree<graphics::PointLight *> * world_point_lights_;
+        graphics::DirectionalLight * directional_light_ = nullptr;
 
         /* Holds objects that are removed from the world, whose memory needs deallocation */
         utility::CircularBuffer<WorldObject *> delete_objects_buffer_;

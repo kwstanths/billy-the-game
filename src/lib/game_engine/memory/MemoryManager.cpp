@@ -5,6 +5,7 @@
 #include "game_engine/utility/QuadTree.hpp"
 #include "game_engine/physics/PhysicsObject.hpp"
 #include "game_engine/graphics/GraphicsTypes.hpp"
+#include "game_engine/graphics/Light.hpp"
 
 #include "debug_tools/Console.hpp"
 
@@ -24,7 +25,7 @@ namespace memory {
     size_t PHYSICS_OBJECTS_MEMORY_BLOCK_SIZE = sizeof(utility::QuadTree<physics::PhysicsObject *>);
     size_t PHYSICS_OBJECTS_MEMORY_BLOCKS_NUMBER = 20000;
 
-    size_t LIGHT_OBJECTS_MEMORY_BLOCKS_SIZE = sizeof(utility::QuadTree<graphics::PointLight_t *>);
+    size_t LIGHT_OBJECTS_MEMORY_BLOCKS_SIZE = sizeof(utility::QuadTree<graphics::PointLight *>);
     size_t LIGHT_OBJECTS_MEMORY_BLOCKS_NUMBER = 10000;
 
     MemoryManager::MemoryManager() {

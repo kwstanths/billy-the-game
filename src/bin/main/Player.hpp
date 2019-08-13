@@ -9,13 +9,14 @@
 
 #include "Input.hpp"
 #include "Camera.hpp"
+#include "Sun.hpp"
 
 class Player : public game_engine::WorldObject {
 public:
     Player();
 
     int Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, 
-        Input * input, Camera * camera, 
+        Input * input, Camera * camera,
         game_engine::WorldSector * world, game_engine::GameEngine * engine);
 
     int Destroy();
@@ -37,6 +38,7 @@ private:
     game_engine::GameEngine * engine_;
     Input * input_;
     Camera * camera_;
+    Sun * sun_;
 
     game_engine::Real_t speed_regular_, speed_running_;
     ge::Real_t direction_array_[16] = { -1, 0.0000001, 180.00000001, -1, 270.00000001, 315, 225, -1, 90.0000001, 45, 135, -1, -1, -1, -1, -1 };

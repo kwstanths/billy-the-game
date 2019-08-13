@@ -47,7 +47,7 @@ namespace game_engine {
         world_ = new utility::UniformGrid<std::deque<WorldObject *>, 2>({ grid_rows_, grid_columns_});
         visible_world_ = std::vector<WorldObject *>(600, nullptr);
 
-        world_point_lights_ = new utility::QuadTree<graphics::PointLight_t *>(math::Point2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
+        world_point_lights_ = new utility::QuadTree<graphics::PointLight *>(math::Point2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
 
         physics_engine_->Init(AABox<2>(Point2D({ x_margin_start_, y_margin_start }), Point2D({ x_margin_end_, y_margin_end })), 500);
         
@@ -104,25 +104,29 @@ namespace game_engine {
             WorldObject * visible_object = visible_world_[i];
             visible_object->Step(delta_time);
         }
+        if (directional_light_ != nullptr) directional_light_->StepLight(delta_time);
 
         /* Draw visible world */
         for (size_t i = 0; i < nof; i++) {
             visible_world_[i]->Draw(renderer);
         }
+        if (directional_light_ != nullptr) directional_light_->DrawLight(renderer);
 
-        /* Draw lights */
-        width = 4.0 * camera_position.z_ * tan(camera_angle / 2.0f);
+        /* Draw point lights */
+        width = 3.0 * camera_position.z_ * tan(camera_angle / 2.0f);
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
         math::AABox<2> camera_view_lights_box = math::AABox<2>(Point2D({ camera_position.x_, camera_position.y_ }), { 2.3f * width * camera_ratio, 2.3f * width });
 
-        std::vector<graphics::PointLight_t *> lights_;
+        std::vector<graphics::PointLight *> lights_;
         if (use_visible_world_window_)
             world_point_lights_->QueryRange(camera_view_lights_box, lights_);
         else
             world_point_lights_->QueryRange(world_window_, lights_);
         
-        for (size_t i = 0; i < lights_.size(); i++)
-            renderer->AddPointLight(lights_[i]);
+        for (size_t i = 0; i < lights_.size(); i++) {
+            lights_[i]->StepLight(delta_time);
+            lights_[i]->DrawLight(renderer);
+        }
 
         /* Update world */
         FlushObjectDelete();
@@ -154,14 +158,22 @@ namespace game_engine {
         return 0;
     }
 
-    int WorldSector::AddLight(graphics::PointLight_t * light, math::Point2D& point) {
+    int WorldSector::AddPointLight(graphics::PointLight * light, math::Point2D& point) {
         return !world_point_lights_->Insert(point, light);
         return 0;
     }
 
-    int WorldSector::RemoveLight(graphics::PointLight_t * light, math::Point2D& point) {
+    int WorldSector::RemovePointLight(graphics::PointLight * light, math::Point2D& point) {
         world_point_lights_->Remove(point);
         return 0;
+    }
+
+    void WorldSector::SetDirectionalLight(graphics::DirectionalLight * light) {
+        directional_light_ = light;
+    }
+
+    void WorldSector::RemoveDirectionalLight() {
+        directional_light_ = nullptr;
     }
 
     int WorldSector::AddInterractableObject(WorldObject * object, AABox<2> interaction_area) {

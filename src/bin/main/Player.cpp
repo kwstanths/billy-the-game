@@ -1,5 +1,6 @@
 #include "Player.hpp"
 
+#include "game_engine/graphics/Light.hpp"
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/math/Types.hpp"
 
@@ -90,6 +91,8 @@ void Player::Step(double delta_time) {
         WorldObject * object = world_sector_->RayCast(ray);
         if (object != nullptr) object->Interact();
     }
+
+
 }
 
 ge::Real_t Player::GetSpeed(bool running) {
@@ -102,12 +105,12 @@ void Player::Draw(grph::Renderer * renderer) {
     /* Get input */
     ControlInput_t controls = input_->GetControls();
 
-    grph::LightProperties_t light(0);
-    if (controls.FLASHLIGHT_) light = grph::LightProperties_t(glm::vec3(0, 0, 0), glm::vec3(0.5, 0.5, 0.5), glm::vec3(0.8, 0.8, 0.8));
     grph::Attenuation_t att = ge::graphics::Attenuation_t(1, 0.22f, 0.0009f);
-    
-    renderer->AddSpotLight(glm::vec3(GetX(), GetY(), GetZ() + 5), glm::vec3(0, 0, -1), 50.0f, 55.0f,
-        light, att);
+    grph::SpotLight light;
+
+    if (controls.FLASHLIGHT_) light = grph::SpotLight(glm::vec3(GetX(), GetY(), GetZ() + 5), glm::vec3(0, 0, -1), glm::vec3(0, 0, 0), glm::vec3(0.5, 0.5, 0.5), glm::vec3(0.8, 0.8, 0.8), att, 50.0f, 55.0f);
+
+    renderer->AddSpotLight(&light);
     
     WorldObject::Draw(renderer);
 }

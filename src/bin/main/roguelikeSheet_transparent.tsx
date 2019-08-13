@@ -76,6 +76,26 @@
    <property name="collision" value="0,0,1,1"/>
   </properties>
  </tile>
+ <tile id="238">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="239">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="240">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="241">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
  <tile id="290">
   <properties>
    <property name="collision" value="0,0,1,1"/>
@@ -99,6 +119,81 @@
  <tile id="294">
   <properties>
    <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="295">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="296">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="297">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="298">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="352">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="353">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="354">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="355">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="356">
+  <properties>
+   <property name="collision" value="0,0,1,0.6"/>
+  </properties>
+ </tile>
+ <tile id="357">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="358">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="359">
+  <properties>
+   <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="412">
+  <properties>
+   <property name="collision" value="0,0,1,0.6"/>
+  </properties>
+ </tile>
+ <tile id="413">
+  <properties>
+   <property name="collision" value="0,0,1,0.6"/>
+  </properties>
+ </tile>
+ <tile id="414">
+  <properties>
+   <property name="collision" value="0,0,1,0.6"/>
   </properties>
  </tile>
  <tile id="416">
@@ -424,6 +519,21 @@
  <tile id="1362">
   <properties>
    <property name="collision" value="0,0,0.2,1"/>
+  </properties>
+ </tile>
+ <tile id="1415">
+  <properties>
+   <property name="collision" value="0,0,1,0.6"/>
+  </properties>
+ </tile>
+ <tile id="1416">
+  <properties>
+   <property name="collision" value="0,0,1,0.6"/>
+  </properties>
+ </tile>
+ <tile id="1417">
+  <properties>
+   <property name="collision" value="0,0,1,0.6"/>
   </properties>
  </tile>
 </tileset>

@@ -519,8 +519,8 @@ namespace game_engine {
                 shader_final_pass_.Use();
                 shader_final_pass_.SetUniformUInt(shader_final_pass_.GetUniformLocation("number_of_point_lights"), number);
 
-                shader_main_.Use();
-                shader_main_.SetUniformUInt(shader_main_.GetUniformLocation("number_of_point_lights"), number);
+                //shader_main_.Use();
+                //shader_main_.SetUniformUInt(shader_main_.GetUniformLocation("number_of_point_lights"), number);
 
                 return 0;
             }
@@ -540,15 +540,15 @@ namespace game_engine {
                 shader_final_pass_.SetUniformFloat(shader_final_pass_.GetUniformLocation(shader_name + ".linear"), attenuation_linear);
                 shader_final_pass_.SetUniformFloat(shader_final_pass_.GetUniformLocation(shader_name + ".quadratic"), attenuation_quadratic);
 
-                shader_main_.Use();
-                shader_main_.SetUniformVec3(shader_main_.GetUniformLocation(shader_name + ".position"), position);
-                shader_main_.SetUniformVec3(shader_main_.GetUniformLocation(shader_name + ".ambient"), color_ambient);
-                shader_main_.SetUniformVec3(shader_main_.GetUniformLocation(shader_name + ".diffuse"), color_diffuse);
-                shader_main_.SetUniformVec3(shader_main_.GetUniformLocation(shader_name + ".specular"), color_specular);
-                
-                shader_main_.SetUniformFloat(shader_main_.GetUniformLocation(shader_name + ".constant"), attenuation_constant);
-                shader_main_.SetUniformFloat(shader_main_.GetUniformLocation(shader_name + ".linear"), attenuation_linear);
-                shader_main_.SetUniformFloat(shader_main_.GetUniformLocation(shader_name + ".quadratic"), attenuation_quadratic);
+                //shader_main_.Use();
+                //shader_main_.SetUniformVec3(shader_main_.GetUniformLocation(shader_name + ".position"), position);
+                //shader_main_.SetUniformVec3(shader_main_.GetUniformLocation(shader_name + ".ambient"), color_ambient);
+                //shader_main_.SetUniformVec3(shader_main_.GetUniformLocation(shader_name + ".diffuse"), color_diffuse);
+                //shader_main_.SetUniformVec3(shader_main_.GetUniformLocation(shader_name + ".specular"), color_specular);
+                //
+                //shader_main_.SetUniformFloat(shader_main_.GetUniformLocation(shader_name + ".constant"), attenuation_constant);
+                //shader_main_.SetUniformFloat(shader_main_.GetUniformLocation(shader_name + ".linear"), attenuation_linear);
+                //shader_main_.SetUniformFloat(shader_main_.GetUniformLocation(shader_name + ".quadratic"), attenuation_quadratic);
 
                 return 0;
             }

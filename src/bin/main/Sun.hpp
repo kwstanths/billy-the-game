@@ -5,18 +5,17 @@
 #include "game_engine/WorldObject.hpp"
 #include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/graphics/GraphicsTypes.hpp"
+#include "game_engine/graphics/Light.hpp"
 #include "game_engine/math/Types.hpp"
 
 
-class Sun : public game_engine::WorldObject {
+class Sun : public game_engine::WorldObject, public game_engine::graphics::DirectionalLight {
 public:
 
     bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, 
         game_engine::WorldSector * world, game_engine::GameEngine * engine);
 
-    virtual void Step(double delta_time) override;
-
-    virtual void Draw(game_engine::graphics::Renderer * renderer) override;
+    virtual void StepLight(double delta_time) override;
 
     double GetTimeOfDay();
 
@@ -24,7 +23,6 @@ private:
     game_engine::Real_t day_period_;
     game_engine::Real_t game_time_ = 0.0f;
     game_engine::Real_t game_hour_ = 0.0f;
-    game_engine::graphics::LightProperties_t light_;
 
 };
 

@@ -134,16 +134,14 @@ namespace graphics {
         return 0;
     }
 
-    int Renderer::AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties) {
-        return renderer_->SetDirectionalLight(direction, light_properties.ambient_, light_properties.diffuse_, light_properties.specular_);
+    int Renderer::AddDirectionalLight(DirectionalLight * light) {
+        return renderer_->SetDirectionalLight(light->direction_, light->ambient_, light->diffuse_, light->specular_);
     }
 
-    int Renderer::AddSpotLight(glm::vec3 position, glm::vec3 direction, Real_t inner_angle, Real_t outer_angle, 
-        LightProperties_t light_properties, Attenuation_t attenuation) 
-    {
-        return renderer_->SetSpotLight(position, direction, math::GetRadians(inner_angle), math::GetRadians(outer_angle),
-            light_properties.ambient_, light_properties.diffuse_, light_properties.specular_,
-            attenuation.constant_, attenuation.linear_, attenuation.quadratic_);
+    int Renderer::AddSpotLight(SpotLight * light)  {
+        return renderer_->SetSpotLight(light->position_, light->direction_, math::GetRadians(light->inner_angle_), math::GetRadians(light->outer_angle_),
+            light->ambient_, light->diffuse_, light->specular_,
+            light->attenuation_.constant_, light->attenuation_.linear_, light->attenuation_.quadratic_);
     }
 
     int Renderer::Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
@@ -166,7 +164,7 @@ namespace graphics {
         return 0;
     }
 
-    int Renderer::AddPointLight(PointLight_t * light) {
+    int Renderer::AddPointLight(PointLight * light) {
         if (point_lights_to_draw_.Items() >= GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS) {
             dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");
             return -1;
@@ -325,13 +323,13 @@ namespace graphics {
                 for (size_t i = 0; i < number_of_point_lights_; i++) {
                     std::string index = std::to_string(i);
 
-                    PointLight_t * light;
+                    PointLight * light;
                     point_lights_to_draw_.Get(light);
                     renderer_->SetPointLight(index,
                         light->position_,
-                        light->properties_.ambient_,
-                        light->properties_.diffuse_,
-                        light->properties_.specular_,
+                        light->ambient_,
+                        light->diffuse_,
+                        light->specular_,
                         light->attenutation_.constant_,
                         light->attenutation_.linear_,
                         light->attenutation_.quadratic_
@@ -348,13 +346,13 @@ namespace graphics {
             for (size_t i = 0; i < number_of_point_lights_; i++) {
                 std::string index = std::to_string(i);
             
-                PointLight_t * light;
+                PointLight * light;
                 point_lights_to_draw_.Get(light);
                 renderer_->SetPointLight(index,
                     light->position_,
-                    light->properties_.ambient_,
-                    light->properties_.diffuse_,
-                    light->properties_.specular_,
+                    light->ambient_,
+                    light->diffuse_,
+                    light->specular_,
                     light->attenutation_.constant_,
                     light->attenutation_.linear_,
                     light->attenutation_.quadratic_

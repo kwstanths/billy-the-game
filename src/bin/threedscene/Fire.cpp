@@ -18,11 +18,13 @@ bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * worl
 
     Scale(0.1f, 0.1f, 0.1f);
 
-    light_.position_ = glm::vec3(x, y, z);
-    light_.properties_ = ge::graphics::LightProperties_t(glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec3(0.3f, 0.3f, 0.3f));
-    light_.attenutation_ = ge::graphics::Attenuation_t(1, 0.0001f, 0.000939f);
+    PointLight::position_ = glm::vec3(x, y, z);
+    PointLight::ambient_ = glm::vec3(0.3f, 0.3f, 0.3f);
+    PointLight::diffuse_ = glm::vec3(0.7f, 0.7f, 0.7f);
+    PointLight::specular_ = glm::vec3(0.3f, 0.3f, 0.3f);
+    PointLight::attenutation_ = ge::graphics::Attenuation_t(1, 0.0001f, 0.000939f);
 
-    world_sector_->AddLight(&light_, math::Point2D({ x, y }));
+    world_sector_->AddPointLight(this, math::Point2D({ x, y }));
 
     return ret == 0;
 }

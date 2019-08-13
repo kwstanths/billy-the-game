@@ -15,6 +15,7 @@
 #include "GraphicsObject.hpp"
 #include "Mesh.hpp"
 #include "AssetManager.hpp"
+#include "Light.hpp"
 
 namespace game_engine {
     
@@ -91,7 +92,7 @@ namespace graphics {
             @param light_properties The properties of the light
             @return 0 = OK
         */
-        int AddDirectionalLight(glm::vec3 direction, LightProperties_t light_properties);
+        int AddDirectionalLight(DirectionalLight * light);
 
         /**
             @param Sets a spotlight in the scene
@@ -103,8 +104,12 @@ namespace graphics {
             @param attenuation The attenuation of the light
             @return 0 = OK
         */
-        int AddSpotLight(glm::vec3 position, glm::vec3 direction, Real_t inner_angle, Real_t outer_angle,
-            LightProperties_t light_properties, Attenuation_t attenuation);
+        int AddSpotLight(SpotLight * light);
+
+        /**
+        
+        */
+        int AddPointLight(PointLight * light);
 
         /**
             Draw 2D text
@@ -122,7 +127,7 @@ namespace graphics {
         };
 
         bool is_inited_;
-        utility::CircularBuffer<PointLight_t *> point_lights_to_draw_;
+        utility::CircularBuffer<PointLight *> point_lights_to_draw_;
         std::vector<GraphicsObject *> objects_to_draw_;
         utility::CircularBuffer<TEXT_DRAW_t> text_to_draw_;
 
@@ -148,11 +153,6 @@ namespace graphics {
             @return 0=OK, -1 = Not initialised
         */
         int SetCamera(opengl::OpenGLCamera * camera);
-
-        /**
-        
-        */
-        int AddPointLight(PointLight_t * light);
 
         /**
             Flushes the point lights into drawing, flushes the object draw calls into drawing

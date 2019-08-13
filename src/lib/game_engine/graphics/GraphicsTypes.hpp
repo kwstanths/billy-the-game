@@ -87,40 +87,6 @@ namespace graphics {
 
     };
 
-    /**
-        Holds the necessary values for the rgb properties of a light
-    */
-    struct LightProperties_t {
-        glm::vec3 ambient_;
-        glm::vec3 diffuse_;
-        glm::vec3 specular_;
-
-
-        /**
-            Creates pure white light
-        */
-        LightProperties_t() {
-            ambient_ = glm::vec3(1.0f, 1.0f, 1.0f);
-            diffuse_ = glm::vec3(1.0f, 1.0f, 1.0f);
-            specular_ = glm::vec3(1.0f, 1.0f, 1.0f);
-        }
-
-        /**
-            Creates custom light
-            @param a All light components are equal to a
-        */
-        LightProperties_t(Real_t a) {
-            ambient_ = glm::vec3(a, a, a);
-            diffuse_ = glm::vec3(a, a, a);
-            specular_ = glm::vec3(a, a, a);
-        }
-
-        /**
-            Creates a custom light
-        */
-        LightProperties_t(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
-            : ambient_(ambient), diffuse_(diffuse), specular_(specular) {};
-    };
 
     /**
         Holds the necessary values for the light attenuation aglrothim
@@ -143,19 +109,6 @@ namespace graphics {
             Create a custom attenuation struct
         */
         Attenuation_t(Real_t c, Real_t l, Real_t q) : constant_(c), linear_(l), quadratic_(q) {};
-    };
-
-    /**
-        Holds the necessary values to draw a point light
-    */
-    struct PointLight_t {
-        glm::vec3 position_ = glm::vec3(0, 0, 0);
-        LightProperties_t properties_;
-        Attenuation_t attenutation_;
-
-        PointLight_t() {};
-
-        PointLight_t(glm::vec3 pos, LightProperties_t prop, Attenuation_t att) : position_(pos), properties_(prop), attenutation_(att) {};
     };
 
 }

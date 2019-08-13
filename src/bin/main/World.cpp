@@ -24,7 +24,12 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     int ret = WorldSector::Init(300, 300, -200.0f, 200.0f, -200.0f, 200.0f, 500 * 500);
     if (ret) return ret;
     
+    dt::CustomPrint(std::cout, "Opening asset files... ");
+    dt::Timer timer;
+    timer.Start();
     game_engine::graphics::GraphicsObject::InitTextureAtlas("assets/roguelikeSheet_transparent.obj");
+    timer.Stop();
+    dt::CustomPrint(std::cout, "DONE, " + timer.ToString() + "\n");
 
     /* And then, there was light */
     sun_ = NewObj<Sun>();
