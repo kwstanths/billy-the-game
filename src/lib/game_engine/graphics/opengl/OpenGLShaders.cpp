@@ -184,26 +184,6 @@ namespace game_engine {
                 SetUniformInt(id, static_cast<int>(value));
             }
 
-            OpenGLShaderMain::OpenGLShaderMain() : OpenGLShader() {
-
-            }
-
-            int OpenGLShaderMain::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
-
-                int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
-                if (ret != 0) return ret;
-
-                if ((attr_vertex_position_ = GetAttributeLocation(shader_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-                if ((attr_vertex_uv_ = GetAttributeLocation(shader_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-                if ((attr_vertex_normal_ = GetAttributeLocation(shader_vertex_normal)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-                if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-                if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-                if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-                if ((uni_camera_position_worldspace_ = GetUniformLocation(shader_main_uni_camera_position_worldspace)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-
-                return 0;
-            }
-
             OpenGLShaderText::OpenGLShaderText() :OpenGLShader() {
 
             }
@@ -217,24 +197,6 @@ namespace game_engine {
                 if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
                 if ((uni_Texture_ = GetUniformLocation(shader_text_name_uni_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
                 if ((uni_Texture_color_ = GetUniformLocation(shader_text_name_uni_texture_color)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-
-                return 0;
-            }
-
-            OpenGLShaderModelTexture::OpenGLShaderModelTexture() {
-            }
-
-            int OpenGLShaderModelTexture::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
-
-                int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
-                if (ret != 0) return ret;
-
-                if ((attr_vertex_position_ = GetAttributeLocation(shader_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-                if ((attr_vertex_uv_ = GetAttributeLocation(shader_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-                if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-                if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-                if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-                if ((uni_texture_ = GetUniformLocation(shader_sampler_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
                 return 0;
             }
@@ -270,6 +232,8 @@ namespace game_engine {
                 if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
                 if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
                 if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+                if ((uni_Lightspace_ = GetUniformLocation(shader_uni_lightspace)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+                if ((uni_ShadowMap_ = GetUniformLocation(shader_uni_shadow_map)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
                 return 0;
             }
@@ -310,6 +274,7 @@ namespace game_engine {
                 if ((uni_texture_gbuffer_position_ = GetUniformLocation(shader_gbuffer_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
                 if ((uni_texture_gbuffer_normal_ = GetUniformLocation(shader_gbuffer_normal)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
                 if ((uni_texture_gbuffer_albedo_spec_ = GetUniformLocation(shader_gbuffer_albedo_spec)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+                if ((uni_texture_gbuffer_ambient_ = GetUniformLocation(shader_gbuffer_ambient)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
                 if ((uni_texture_ssao_ = GetUniformLocation(shader_final_pass_ssao_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
                 if ((uni_matrix_view_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
@@ -338,7 +303,21 @@ namespace game_engine {
                 return 0;
             }
 
-        }
+            OpenGLShaderShadowMap::OpenGLShaderShadowMap(){
+            }
+
+            int OpenGLShaderShadowMap::Init(std::string vertex_shader_path, std::string fragment_shader_path){
+                int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
+                if (ret != 0) return ret;
+
+                if ((attr_vertex_position_ = GetAttributeLocation(shader_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+                if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+                if ((uni_Lightspace_ = GetUniformLocation(shader_uni_lightspace)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+
+                return 0;
+            }
+
+}
     }
 }
 

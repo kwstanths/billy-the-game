@@ -37,31 +37,6 @@ namespace game_engine {
                 return 0;
             }
 
-            void OpenGLObject::SetupAttributes(OpenGLShaderMain * shader) {
-                /* Set shader layout attributes */
-                glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
-                /* Attribute number 0 is the object vertices */
-                glEnableVertexAttribArray(0);
-                glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_position), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)0);
-                /* Attribute number 1 is the object's uv coordinates */
-                glEnableVertexAttribArray(1);
-                glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_uv), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, uv_));
-                /* Attribute number 2 is the object's normals */
-                glEnableVertexAttribArray(2);
-                glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_normal), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, normal_));
-            }
-
-            void OpenGLObject::SetupAttributes(OpenGLShaderModelTexture * shader) {
-                /* Set shader layout attributes */
-                glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
-                /* Attribute number 0 is the object vertices */
-                glEnableVertexAttribArray(0);
-                glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_position), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)0);
-                /* Attribute number 1 is the object's uv coordinates */
-                glEnableVertexAttribArray(1);
-                glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_uv), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, uv_));
-            }
-
             void OpenGLObject::SetupAttributes(OpenGLShaderVerticesColor * shader) {
                 /* Set shader layout attributes */
                 glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
@@ -82,6 +57,14 @@ namespace game_engine {
                 /* Attribute number 2 is the object's normals */
                 glEnableVertexAttribArray(2);
                 glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_normal), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, normal_));
+            }
+
+            void OpenGLObject::SetupAttributes(OpenGLShaderShadowMap * shader) {
+                /* Set shader layout attributes */
+                glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
+                /* Attribute number 0 is the object vertices */
+                glEnableVertexAttribArray(0);
+                glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_position), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)0);
             }
 
             void OpenGLObject::Render() {
@@ -213,7 +196,7 @@ namespace game_engine {
                 min_x_ = max_x_ = vertices[0].position_.x;
                 min_y_ = max_y_ = vertices[0].position_.y;
                 min_z_ = max_z_ = vertices[0].position_.z;
-                for (int i = 0; i < vertices.size(); i++) {
+                for (size_t i = 0; i < vertices.size(); i++) {
                     if (vertices[i].position_.x < min_x_) min_x_ = vertices[i].position_.x;
                     if (vertices[i].position_.x > max_x_) max_x_ = vertices[i].position_.x;
                     if (vertices[i].position_.y < min_y_) min_y_ = vertices[i].position_.y;

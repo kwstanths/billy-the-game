@@ -45,7 +45,7 @@ namespace game_engine {
         world_window_ = AABox<2>(Point2D({ x_margin_start, y_margin_start }), Point2D({x_margin_end, y_margin_end}));
 
         world_ = new utility::UniformGrid<std::deque<WorldObject *>, 2>({ grid_rows_, grid_columns_});
-        visible_world_ = std::vector<WorldObject *>(600, nullptr);
+        visible_world_ = std::vector<WorldObject *>(650, nullptr);
 
         world_point_lights_ = new utility::QuadTree<graphics::PointLight *>(math::Point2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
 
@@ -113,7 +113,7 @@ namespace game_engine {
         if (directional_light_ != nullptr) directional_light_->DrawLight(renderer);
 
         /* Draw point lights */
-        width = 3.0 * camera_position.z_ * tan(camera_angle / 2.0f);
+        width = 3.0f * camera_position.z_ * tan(camera_angle / 2.0f);
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
         math::AABox<2> camera_view_lights_box = math::AABox<2>(Point2D({ camera_position.x_, camera_position.y_ }), { 2.3f * width * camera_ratio, 2.3f * width });
 
@@ -209,8 +209,8 @@ namespace game_engine {
         if (col_end >= grid_columns_) col_end = grid_columns_ - 1;
 
         size_t index = 0;
-        for (size_t i = row_start; i <= row_end; i++) {
-            for (size_t j = col_start; j <= col_end; j++) {
+        for (int i = row_start; i <= row_end; i++) {
+            for (int j = col_start; j <= col_end; j++) {
                 for (std::deque<WorldObject*>::iterator itr = world_->at(i, j).begin(); itr != world_->at(i, j).end(); ++itr) {
                     if (index > objects.size() - 1) {
                         dt::Console(dt::WARNING, "WorldSector::GetObjetcsWindow() Objects overflow");

@@ -23,6 +23,7 @@ namespace game_engine {
                 g_buffer_ = new OpenGLGBuffer();
                 frame_buffer_one_ = new OpenGLFrameBufferTexture();
                 frame_buffer_two_ = new OpenGLFrameBufferTexture();
+                shadow_map_ = new OpenGLShadowMap();
 
             }
 
@@ -38,20 +39,6 @@ namespace game_engine {
                 shader_vertices_color_ = context_->shader_vertices_color_;
 
                 {
-                    shader_main_ = context_->shader_main_;
-                    shader_main_.Use();
-                    shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.texture_diffuse"), 0);
-                    shader_main_.SetUniformInt(shader_main_.GetUniformLocation("object_material.texture_specular"), 1);
-                }
-
-                {
-                    shader_model_texture_ = context_->shader_model_texture_;
-                    shader_model_texture_.Use();
-                    shader_model_texture_.SetUniformInt(shader_model_texture_.uni_texture_, 0);
-                    shader_model_texture_.SetUniformInt(shader_model_texture_.uni_shadow_map_, 1);
-                }
-
-                {
                     /* Used to draw textures */
                     shader_quad_ = context_->shader_quad_;
                     shader_quad_.Use();
@@ -64,6 +51,12 @@ namespace game_engine {
                     shader_gbuffer_.Use();
                     shader_gbuffer_.SetUniformInt(shader_gbuffer_.GetUniformLocation("object_material.texture_diffuse"), 0);
                     shader_gbuffer_.SetUniformInt(shader_gbuffer_.GetUniformLocation("object_material.texture_specular"), 1);
+                    shader_gbuffer_.SetUniformInt(shader_gbuffer_.uni_ShadowMap_, 2);
+                }
+
+                {
+                    /* The shadow map shader */
+                    shader_shadow_map_ = context_->shader_shadow_map_;
                 }
 
                 {
@@ -161,6 +154,7 @@ namespace game_engine {
                     shader_final_pass_.SetUniformInt(shader_final_pass_.uni_texture_gbuffer_normal_, 1);
                     shader_final_pass_.SetUniformInt(shader_final_pass_.uni_texture_gbuffer_albedo_spec_, 2);
                     shader_final_pass_.SetUniformInt(shader_final_pass_.uni_texture_ssao_, 3);
+                    shader_final_pass_.SetUniformInt(shader_final_pass_.uni_texture_gbuffer_ambient_, 4);
                 }
 
                 /* Init GBuffer */
@@ -168,6 +162,8 @@ namespace game_engine {
                 /* Init other frame buffers */
                 frame_buffer_one_->Init(context_, GL_RED);
                 frame_buffer_two_->Init(context_, GL_RED);
+                /* Init the shadow map */
+                shadow_map_->Init(context, 1024, 1024);
 
 
                 /* Initialize a quad geometry */
@@ -223,20 +219,21 @@ namespace game_engine {
                 glDepthMask(enable);
             }
 
+            void OpenGLRenderer::SetShadowMap(glm::mat4 & view_matrix, glm::mat4 & projection_matrix) {
+                glm::mat4 matrix_lightspace = projection_matrix * view_matrix;
+                
+                shader_shadow_map_.Use();
+                shader_shadow_map_.SetUniformMat4(shader_shadow_map_.uni_Lightspace_, matrix_lightspace);
+
+                shader_gbuffer_.Use();
+                shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_Lightspace_, matrix_lightspace);
+            }
+
             void OpenGLRenderer::SetView(OpenGLCamera * camera) {
 
                 camera_ = camera;
 
                 camera->CalculateView();
-
-                shader_main_.Use();
-                shader_main_.SetUniformMat4(shader_main_.uni_View_, camera->view_matrix_);
-                shader_main_.SetUniformMat4(shader_main_.uni_Projection_, camera->projection_matrix_);
-                shader_main_.SetUniformVec3(shader_main_.uni_camera_position_worldspace_, camera->config_.position_);
-
-                shader_model_texture_.Use();
-                shader_model_texture_.SetUniformMat4(shader_model_texture_.uni_View_, camera->view_matrix_);
-                shader_model_texture_.SetUniformMat4(shader_model_texture_.uni_Projection_, camera->projection_matrix_);
 
                 shader_vertices_color_.Use();
                 shader_vertices_color_.SetUniformMat4(shader_vertices_color_.uni_View_, camera->view_matrix_);
@@ -256,60 +253,6 @@ namespace game_engine {
                 shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_view_, camera->view_matrix_);
             }
 
-            int OpenGLRenderer::Draw(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl) {
-
-                /* TODO Check input arguments */
-
-                shader_main_.Use();
-                /* Set object material */
-                shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.ambient"), mtl.ambient_);
-                shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.diffuse"), mtl.diffuse_);
-                shader_main_.SetUniformVec3(shader_main_.GetUniformLocation("object_material.specular"), mtl.specular_);
-                shader_main_.SetUniformFloat(shader_main_.GetUniformLocation("object_material.shininess"), mtl.shininess_);
-                /* Set the model uniform */
-                shader_main_.SetUniformMat4(shader_main_.uni_Model_, model);
-
-                glBindVertexArray(object.VAO_);
-
-                object.SetupAttributes(&shader_main_);
-
-                for (size_t i = 0; i < textures.size(); i++) {
-                    textures[i]->ActivateTexture(i);
-                }
-
-                /* Draw with index buffer */
-                object.Render();
-
-                /* Unbind everything */
-                glBindTexture(GL_TEXTURE_2D, 0);
-                glBindVertexArray(0);
-                return 0;
-            }
-
-            int OpenGLRenderer::Draw(OpenGLObject & object, OpenGLTexture * texture, glm::mat4 model) {
-
-                if (!is_inited_) return -1;
-                if (!object.IsInited()) return -1;
-                if (!texture->IsInited()) return -1;
-
-                shader_model_texture_.Use();
-                /* Set the model uniform */
-                shader_model_texture_.SetUniformMat4(shader_model_texture_.uni_Model_, model);
-
-                glBindVertexArray(object.VAO_);
-
-                object.SetupAttributes(&shader_model_texture_);
-                texture->ActivateTexture(0);
-                object.Render();
-
-                /* Unbind */
-                glBindTexture(GL_TEXTURE_2D, 0);
-                glBindVertexArray(0);
-                shader_main_.Use();
-
-                return 0;
-            }
-
             int OpenGLRenderer::DrawGBuffer(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl) {
 
                 if (!is_inited_) return -1;
@@ -318,7 +261,7 @@ namespace game_engine {
                 shader_gbuffer_.Use();
                 /* Set the model uniform */
                 shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_Model_, model);
-                //shader_gbuffer_.SetUniformVec3(shader_gbuffer_ssao_.GetUniformLocation("object_material.ambient"), mtl.ambient_);
+                shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.ambient"), mtl.ambient_);
                 shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.diffuse"), mtl.diffuse_);
                 shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.specular"), mtl.specular_);
                 //shader_gbuffer_.SetUniformFloat(shader_gbuffer_.GetUniformLocation("object_material.shininess"), mtl.shininess_);
@@ -330,12 +273,34 @@ namespace game_engine {
                 for (size_t i = 0; i < textures.size(); i++) {
                     textures[i]->ActivateTexture(i);
                 }
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, shadow_map_->output_texture_);
+
                 object.Render();
 
                 /* Unbind */
                 glBindTexture(GL_TEXTURE_2D, 0);
                 glBindVertexArray(0);
-                shader_main_.Use();
+
+                return 0;
+            }
+
+            int OpenGLRenderer::DrawShadowMap(OpenGLObject & object, glm::mat4 model) {
+
+                if (!is_inited_) return -1;
+                if (!object.IsInited()) return -1;
+
+                shader_shadow_map_.Use();
+                /* Set the model uniform */
+                shader_shadow_map_.SetUniformMat4(shader_shadow_map_.uni_Model_, model);
+                
+                glBindVertexArray(object.VAO_);
+
+                object.SetupAttributes(&shader_shadow_map_);
+                object.Render();
+
+                /* Unbind */
+                glBindVertexArray(0);
 
                 return 0;
             }
@@ -437,6 +402,10 @@ namespace game_engine {
                 glBindTexture(GL_TEXTURE_2D, g_buffer_->g_albedo_spec_texture_);
                 glActiveTexture(GL_TEXTURE3);
                 glBindTexture(GL_TEXTURE_2D, ssao_texture);
+                glActiveTexture(GL_TEXTURE4);
+                glBindTexture(GL_TEXTURE_2D, g_buffer_->g_ambient_);
+                glActiveTexture(GL_TEXTURE5);
+                glBindTexture(GL_TEXTURE_2D, shadow_map_->output_texture_);
 
                 RenderQuad();
 
@@ -470,7 +439,6 @@ namespace game_engine {
                 glDisableVertexAttribArray(0);
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
                 glBindVertexArray(0);
-                shader_main_.Use();
 
                 return 0;
             }
@@ -519,9 +487,6 @@ namespace game_engine {
                 shader_final_pass_.Use();
                 shader_final_pass_.SetUniformUInt(shader_final_pass_.GetUniformLocation("number_of_point_lights"), number);
 
-                //shader_main_.Use();
-                //shader_main_.SetUniformUInt(shader_main_.GetUniformLocation("number_of_point_lights"), number);
-
                 return 0;
             }
 
@@ -539,16 +504,6 @@ namespace game_engine {
                 shader_final_pass_.SetUniformFloat(shader_final_pass_.GetUniformLocation(shader_name + ".constant"), attenuation_constant);
                 shader_final_pass_.SetUniformFloat(shader_final_pass_.GetUniformLocation(shader_name + ".linear"), attenuation_linear);
                 shader_final_pass_.SetUniformFloat(shader_final_pass_.GetUniformLocation(shader_name + ".quadratic"), attenuation_quadratic);
-
-                //shader_main_.Use();
-                //shader_main_.SetUniformVec3(shader_main_.GetUniformLocation(shader_name + ".position"), position);
-                //shader_main_.SetUniformVec3(shader_main_.GetUniformLocation(shader_name + ".ambient"), color_ambient);
-                //shader_main_.SetUniformVec3(shader_main_.GetUniformLocation(shader_name + ".diffuse"), color_diffuse);
-                //shader_main_.SetUniformVec3(shader_main_.GetUniformLocation(shader_name + ".specular"), color_specular);
-                //
-                //shader_main_.SetUniformFloat(shader_main_.GetUniformLocation(shader_name + ".constant"), attenuation_constant);
-                //shader_main_.SetUniformFloat(shader_main_.GetUniformLocation(shader_name + ".linear"), attenuation_linear);
-                //shader_main_.SetUniformFloat(shader_main_.GetUniformLocation(shader_name + ".quadratic"), attenuation_quadratic);
 
                 return 0;
             }

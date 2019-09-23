@@ -43,9 +43,10 @@ uniform sampler2D g_position;
 uniform sampler2D g_normal;
 uniform sampler2D g_albedo_spec;
 uniform sampler2D ssao_texture;
+uniform sampler2D g_ambient;
 uniform mat4 matrix_view;
 
-#define NR_POINT_LIGHTS 32
+#define NR_POINT_LIGHTS 24
 uniform PointLight point_light[NR_POINT_LIGHTS];
 uniform uint number_of_point_lights;
 
@@ -61,12 +62,15 @@ vec3 TransformToViewSpace(vec4 vector){
 	return (matrix_view * vector).xyz;
 }
 
+float fragment_in_shadow;
+
 void main() {
     
     vec3 fragment_position_viewspace = texture(g_position, uv).xyz;
     vec3 normal_viewspace = normalize(texture(g_normal, uv).rgb);
     vec3 fragment_color = texture(g_albedo_spec, uv).rgb;
     float fragment_specular_intensity = texture(g_albedo_spec, uv).a;
+    fragment_in_shadow = texture(g_ambient, uv).a;
     float ambient_factor = texture(ssao_texture, uv).r;
     vec3 view_direction = normalize(-fragment_position_viewspace);
     
@@ -106,7 +110,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec
        //light_diffuse = clamp(light_diffuse, 0, 0);
        //light_specular = clamp(light_specular, 0, 0);
        
-	return light_ambient + light_diffuse + light_specular;
+	return light_ambient + fragment_in_shadow * (light_diffuse + light_specular);
 }
 
 vec3 CalculatePointLight(PointLight light, vec3 fragment_position, vec3 fragment_normal, vec3 view_direction, vec3 fragment_color, float fragment_specular_intensity, float ambient_factor){
@@ -136,7 +140,7 @@ vec3 CalculatePointLight(PointLight light, vec3 fragment_position, vec3 fragment
         //light_diffuse = clamp(light_diffuse, 0, 0);
         //light_specular = clamp(light_specular, 0, 0);
 		
-    return attenuation * (light_ambient + light_diffuse + light_specular);
+    return attenuation * (light_ambient + fragment_in_shadow * (light_diffuse + light_specular));
 }
 
 vec3 CalculateCastingLight(CastingLight light, vec3 fragment_position, vec3 fragment_normal, vec3 view_direction, vec3 fragment_color, float fragment_specular_intensity, float ambient_factor){
@@ -178,5 +182,5 @@ vec3 CalculateCastingLight(CastingLight light, vec3 fragment_position, vec3 frag
 							light.quadratic * (distance * distance)); 
 							
 	/* Sum components */
-	return clamp(attenuation * intensity *(light_ambient + light_diffuse + light_specular), 0, 1);
+	return clamp(attenuation * intensity *(light_ambient + fragment_in_shadow * (light_diffuse + light_specular)), 0, 1);
 }

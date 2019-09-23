@@ -109,7 +109,7 @@ namespace game_engine {
 
         /* Render text overlay */
         renderer_->Draw2DText("Welcome!", 60, 60, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
-        renderer_->Draw2DText(std::to_string(fps_), config_.context_params_.window_width_ - 35, config_.context_params_.window_height_ - 20, 0.5, glm::vec3(1, 0, 0));
+        renderer_->Draw2DText(std::to_string(fps_), config_.context_params_.window_width_ - 35, config_.context_params_.window_height_ - 20, 0.5f, glm::vec3(1, 0, 0));
 
         renderer_->EndFrame();
 

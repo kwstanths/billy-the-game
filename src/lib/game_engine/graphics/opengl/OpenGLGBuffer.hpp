@@ -22,7 +22,7 @@ namespace opengl {
 
         int UnBind();
 
-        GLuint g_position_texture_, g_normal_texture_, g_albedo_spec_texture_;
+        GLuint g_position_texture_, g_normal_texture_, g_albedo_spec_texture_, g_ambient_;
         GLuint rbo_depth_texture_;
 
     private:

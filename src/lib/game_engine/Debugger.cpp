@@ -47,7 +47,7 @@ namespace game_engine {
 
         debug_object_point_.SetPosition(x, y, z);
         debug_object_point_.Scale(size, size, size);
-        renderer_->DrawSimple(&debug_object_point_);
+        /* TODO */
     }
 
     void Debugger::DrawLineXY(math::Point2D start, math::Point2D stop, Real_t z, Real_t size, glm::vec3 color) {

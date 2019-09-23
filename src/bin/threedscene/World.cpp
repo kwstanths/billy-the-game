@@ -19,8 +19,7 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     int ret = WorldSector::Init(10, 10, -10.0f, 10.0f, -10.0f, 10.0f, 10 * 10);
     if (ret) return ret;
 
-    Player * player;
-    
+    //Player * player;
     //player = NewObj<Player>();
     //player->Init(0, 0, 0, input, camera, this, engine);
 
@@ -28,7 +27,7 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
         for (int j = -4; j <= 4; j+=4) {
             /* Create some players */
             Player * player = NewObj<Player>();
-            player->Init(i, 0, j, input, camera, this, engine);
+            player->Init(1.0f * i, 0, 1.0f * j, input, camera, this, engine);
         }
     }
 

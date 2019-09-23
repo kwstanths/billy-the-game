@@ -105,8 +105,6 @@ namespace game_engine {
                 bool is_inited_;
                 OpenGLContextConfig_t config_;
 
-                OpenGLShaderMain shader_main_;
-                OpenGLShaderModelTexture shader_model_texture_;
                 OpenGLShaderVerticesColor shader_vertices_color_;
                 OpenGLShaderText shader_text_;
                 OpenGLShader shader_quad_;
@@ -115,6 +113,7 @@ namespace game_engine {
                 OpenGLShaderSeparableAO shader_separable_ao_;
                 OpenGLShader shader_blur_;
                 OpenGLShaderFinalPass shader_final_pass_;
+                OpenGLShaderShadowMap shader_shadow_map_;
 
                 GLFWwindow * glfw_window_ = nullptr;
             };

@@ -23,7 +23,7 @@ namespace opengl {
         glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer_);
         glGenTextures(1, &output_texture_);
         glBindTexture(GL_TEXTURE_2D, output_texture_);
-        glTexImage2D(GL_TEXTURE_2D, 0, internal_format, context_->GetWindowWidth(), context_->GetWindowHeight(), 0, GL_RGB, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, internal_format, context_->GetWindowWidth(), context_->GetWindowHeight(), 0, internal_format, GL_FLOAT, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output_texture_, 0);

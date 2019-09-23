@@ -56,25 +56,25 @@ namespace game_engine {
                 glDepthFunc(GL_LESS);
                 /* Discard triangles whose normal is not facing towards the camera */
                 glEnable(GL_CULL_FACE);
-                /* Enable stencil test */
-                glEnable(GL_STENCIL_TEST);
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-                /* If */
+                /* These are not needed, I think */
+                /* Enable stencil test */
+                //glEnable(GL_STENCIL_TEST);
+                //glEnable(GL_BLEND);
+                //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
                 glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
                 int ret = 0;
-                ret += shader_main_.Init("shaders/VertexShader.glsl", "shaders/FragmentShader.glsl");
                 ret += shader_text_.Init("shaders/VertexShaderText.glsl", "shaders/FragmentShaderText.glsl");
                 ret += shader_vertices_color_.Init("shaders/VertexShaderVerticesColor.glsl", "shaders/FragmentShaderVerticesColor.glsl");
-                ret += shader_model_texture_.Init("shaders/VertexShaderModelTextureOnly.glsl", "shaders/FragmentShaderModelTextureOnly.glsl");
                 ret += shader_quad_.Init("shaders/VertexShaderQuad.glsl", "shaders/FragmentShaderQuad.glsl");
                 ret += shader_gbuffer_ssao_.Init("shaders/VertexShaderGBuffer.glsl", "shaders/FragmentShaderGBuffer.glsl");
                 ret += shader_ssao_.Init("shaders/VertexShaderSSAO.glsl", "shaders/FragmentShaderSSAO.glsl");
                 ret += shader_separable_ao_.Init("shaders/VertexShaderSeparableAO.glsl", "shaders/FragmentShaderSeparableAO.glsl");
                 ret += shader_blur_.Init("shaders/VertexShaderBlur.glsl", "shaders/FragmentShaderBlur.glsl");
                 ret += shader_final_pass_.Init("shaders/VertexShaderFinalPass.glsl", "shaders/FragmentShaderFinalPass.glsl");
+                ret += shader_shadow_map_.Init("shaders/VertexShaderShadowMap.glsl", "shaders/FragmentShaderShadowMap.glsl");
                 if (ret) dt::Console(dt::CRITICAL, "Shaders compilation failed");
 
                 is_inited_ = true;

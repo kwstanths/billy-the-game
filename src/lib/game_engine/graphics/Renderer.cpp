@@ -1,6 +1,8 @@
 #include "Renderer.hpp"
 
 #include "opengl/OpenGLIncludes.hpp"
+#include <glm/glm.hpp>
+#include "glm/gtc/matrix_transform.hpp"
 
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/ErrorCodes.hpp"
@@ -95,20 +97,6 @@ namespace graphics {
         return 0;
     }
 
-    int Renderer::DrawSimple(GraphicsObject * rendering_object) {
-
-        rendering_object->SetModelMatrix();
-
-        std::vector<Mesh *> & meshes = rendering_object->model_->meshes_;
-
-        for (size_t i = 0; i < meshes.size(); i++) {
-            Mesh * mesh = meshes[i];
-            gl::OpenGLTexture * texture = mesh->opengl_textures_.at(0);
-            renderer_->Draw(mesh->opengl_object_, texture, rendering_object->model_matrix_);
-        }
-        return 0;
-    }
-
     int Renderer::DrawLineXY(math::Point2D start, math::Point2D stop, float z_height, float size, glm::vec3 color) {
 
         renderer_->g_buffer_->Bind();
@@ -176,12 +164,59 @@ namespace graphics {
 
     void Renderer::FlushDrawCalls() {
 
+        //glDisable(GL_CULL_FACE);
+        //glBlendFunc(GL_ONE, GL_ONE);
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
+        if (command.type_ == COMMAND_SHADOW_MAPPING) shadows = static_cast<bool>(command.arg_1_);
+        
+        if (shadows) {
+
+            float scene_size = 30;
+            float near_plane = 0.1f, far_plane = scene_size;
+
+            glm::mat4 lightProjection = glm::ortho(-scene_size, scene_size, -scene_size, scene_size, near_plane, far_plane);
+            glm::mat4 lightView = glm::lookAt(glm::vec3(3.0f, 5.0f, 0.0f),
+                glm::vec3(0.0f, 0.0f, 0.0f),
+                glm::vec3(0.0f, 1.0f, 0.0f));
+            renderer_->SetShadowMap(lightView, lightProjection);
+
+            renderer_->shadow_map_->ConfigureViewport();
+            renderer_->shadow_map_->Bind();
+            renderer_->shadow_map_->ClearDepth();
+
+            size_t number_of_objects_to_draw_ = objects_to_draw_.size();
+            for (size_t i = 0; i < number_of_objects_to_draw_; i++) {
+                GraphicsObject * rendering_object = objects_to_draw_.at(i);
+                rendering_object->SetModelMatrix();
+                std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
+                for (size_t j = 0; j < meshes.size(); j++) {
+                    Mesh * mesh = meshes[j];
+                    renderer_->DrawShadowMap(mesh->opengl_object_, rendering_object->model_matrix_);
+                }
+            }
+
+            renderer_->shadow_map_->Unbind();
+
+        }
+        else {
+            renderer_->shadow_map_->Bind();
+            renderer_->shadow_map_->ClearDepth();
+            renderer_->shadow_map_->Unbind();
+        }
+
+        glViewport(0, 0, context_->GetWindowWidth(), context_->GetWindowHeight());
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glViewport(0, 0, context_->GetWindowWidth(), context_->GetWindowHeight());
+
         frr_render_mode = static_cast<RENDER_MODE>(ConfigurationFile::instance().GetRenderingMethod());
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         /* Bind the gbuffer, and draw the geometry */
         renderer_->g_buffer_->Bind();
-
 
         switch (frr_render_mode)
         {
@@ -271,7 +306,6 @@ namespace graphics {
 
         renderer_->g_buffer_->UnBind();
 
-
         bool ssao = ConfigurationFile::instance().DoSSAO();     
         if (ssao) {
             ConsoleCommand command;
@@ -338,14 +372,13 @@ namespace graphics {
 
                 renderer_->DrawFinalPass(ssao_texture);
             }
-
-        } else {
-
+        }
+        else {
             size_t number_of_point_lights_ = point_lights_to_draw_.Items();
             renderer_->SetPointLightsNumber(number_of_point_lights_);
             for (size_t i = 0; i < number_of_point_lights_; i++) {
                 std::string index = std::to_string(i);
-            
+
                 PointLight * light;
                 point_lights_to_draw_.Get(light);
                 renderer_->SetPointLight(index,
@@ -358,7 +391,6 @@ namespace graphics {
                     light->attenutation_.quadratic_
                 );
             }
-            
             renderer_->DrawFinalPass(renderer_->frame_buffer_one_->output_texture_);
         }
 

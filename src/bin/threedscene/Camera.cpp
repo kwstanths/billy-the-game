@@ -28,7 +28,7 @@ Camera::Camera(int width, int height, ge::Real_t mouse_sensitivity) : OpenGLCame
 
     /* Configure rest */
     yaw_ = -56.75f;
-    pitch_ = -20.4;
+    pitch_ = -20.4f;
 
     mouse_sensitivity_ = mouse_sensitivity;
 

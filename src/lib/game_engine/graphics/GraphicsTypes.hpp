@@ -68,8 +68,8 @@ namespace graphics {
         */
         Material_t() {
             ambient_ = glm::vec3(1.0f, 1.0f, 1.0f);
-            ambient_ = glm::vec3(1.0f, 1.0f, 1.0f);
-            ambient_ = glm::vec3(1.0f, 1.0f, 1.0f);
+            diffuse_ = glm::vec3(1.0f, 1.0f, 1.0f);
+            specular_ = glm::vec3(1.0f, 1.0f, 1.0f);
             shininess_ = 32;
         }
 

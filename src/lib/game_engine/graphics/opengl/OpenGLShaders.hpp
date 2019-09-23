@@ -19,13 +19,9 @@ namespace game_engine {
             static const char shader_uni_model[] = "matrix_model";
             static const char shader_uni_view[] = "matrix_view";
             static const char shader_uni_projection[] = "matrix_projection";
-            static const char shader_uni_depth_mvp[] = "depth_mvp";
             static const char shader_uni_shadow_map[] = "shadow_map";
             static const char shader_sampler_texture[] = "sampler_texture";
             static const char shader_blur_kernel_size[] = "blur_kernel_size";
-
-            /* Names of the MAIN shader variables used */
-            static const char shader_main_uni_camera_position_worldspace[] = "camera_position_worldspace";
 
             /* Names of the text shader variables used */
             static const char shader_text_name_vertex[] = "vertex";
@@ -39,6 +35,7 @@ namespace game_engine {
             static const char shader_gbuffer_position[] = "g_position";
             static const char shader_gbuffer_normal[] = "g_normal";
             static const char shader_gbuffer_albedo_spec[] = "g_albedo_spec";
+            static const char shader_gbuffer_ambient[] = "g_ambient";
 
             /* Names of the SSAO shader variables used */
             static const char shader_ssao_noise_texture[] = "noise_texture";
@@ -50,8 +47,11 @@ namespace game_engine {
             /* Names for the final pass shader variables used */
             static const char shader_final_pass_ssao_texture[] = "ssao_texture";
 
+            /* Names for the shadow map shader */
+            static const char shader_uni_lightspace[] = "matrix_lightspace";
+
             /**
-                A shader class the encapsulates shader fuctionality
+                A shader class the encapsulates all shader fuctionality
             */
             class OpenGLShader {
             public:
@@ -124,40 +124,9 @@ namespace game_engine {
                 int CompileShaders(std::string vertex_file_path, std::string fragment_file_path);
             };
 
+            /* Shader classes for specific shaders and their variables */
 
-            /**
-                Shader object for the main shader
-            */
-            class OpenGLShaderMain : public OpenGLShader {
-            public:
-                /**
-                    Does nothing in particular. Call Init()
-                */
-                OpenGLShaderMain();
-
-                /**
-                    Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-                    @param vertex_shader_path The path to a vertex shader file
-                    @param fragment_shader_path The path to a fragment shader file
-                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-                */
-                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
-
-                /* Varialbe locations for the shader varialbes used */
-                /* Attributes */
-                GLuint attr_vertex_position_;
-                GLuint attr_vertex_uv_;
-                GLuint attr_vertex_normal_;
-
-                /* Uniforms */
-                GLuint uni_Model_;
-                GLuint uni_View_;
-                GLuint uni_Projection_;
-                GLuint uni_depth_mvp_;
-                GLuint uni_shadow_map_;
-                GLuint uni_camera_position_worldspace_;
-            };
-
+            /* Text shader */
             class OpenGLShaderText : public OpenGLShader {
             public:
                 OpenGLShaderText();
@@ -178,39 +147,6 @@ namespace game_engine {
                 GLuint uni_Projection_;
                 GLuint uni_Texture_;
                 GLuint uni_Texture_color_;
-            };
-
-            /**
-                Shader object for the simple shader
-            */
-            class OpenGLShaderModelTexture : public OpenGLShader {
-            public:
-                /**
-                    Does nothing in particular. Call Init()
-                */
-                OpenGLShaderModelTexture();
-
-                /**
-                    Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-                    @param vertex_shader_path The path to a vertex shader file
-                    @param fragment_shader_path The path to a fragment shader file
-                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-                */
-                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
-
-                /* Varialbe locations for the shader varialbes used */
-                /* Attributes */
-                GLuint attr_vertex_position_;
-                GLuint attr_vertex_uv_;
-                GLuint attr_vertex_normal_;
-
-                /* Uniforms */
-                GLuint uni_Model_;
-                GLuint uni_View_;
-                GLuint uni_Projection_;
-                GLuint uni_depth_mvp_;
-                GLuint uni_shadow_map_;
-                GLuint uni_texture_;
             };
 
             /**
@@ -266,6 +202,28 @@ namespace game_engine {
                 GLuint uni_Model_;
                 GLuint uni_View_;
                 GLuint uni_Projection_;
+                GLuint uni_Lightspace_;
+                GLuint uni_ShadowMap_;
+            };
+
+            class OpenGLShaderShadowMap : public OpenGLShader {
+            public:
+                OpenGLShaderShadowMap();
+
+                /**
+                    Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+                    @param vertex_shader_path The path to a vertex shader file
+                    @param fragment_shader_path The path to a fragment shader file
+                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+                */
+                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+                /* Attributes */
+                GLuint attr_vertex_position_;
+                
+                /* Uniforms */
+                GLuint uni_Model_;
+                GLuint uni_Lightspace_;
             };
 
             class OpenGLShaderSSAO : public OpenGLShader {
@@ -342,6 +300,7 @@ namespace game_engine {
                 GLuint uni_texture_gbuffer_position_;
                 GLuint uni_texture_gbuffer_normal_;
                 GLuint uni_texture_gbuffer_albedo_spec_;
+                GLuint uni_texture_gbuffer_ambient_;
                 GLuint uni_texture_ssao_;
                 GLuint uni_matrix_view_;
             };

@@ -22,7 +22,7 @@ int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera
     engine_ = engine;
     camera_ = camera;
 
-    int ret = WorldObject::Init("assets/teapot.obj", x, y, z);
+    int ret = WorldObject::Init("assets/Tree.obj", x, y, z);
     world->AddObject(this, x, y, z);
 
     /*Rotate(ge::math::GetRadians(90.0f), glm::vec3(0, 1, 0));

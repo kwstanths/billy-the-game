@@ -328,12 +328,12 @@ namespace game_engine {
                     If ray has negative components calculate the reflection of the ray
                 */
                 if (r.Direction()[0] < 0) {
-                    r.Origin()[0] = (origin_[0] + length_ / 2.0) * 2 - r.Origin()[0];
+                    r.Origin()[0] = (origin_[0] + length_ / 2.0f) * 2.0f - r.Origin()[0];
                     r.Direction()[0] = -r.Direction()[0];
                     a |= 2;
                 }
                 if (r.Direction()[1] < 0) {
-                    r.Origin()[1] = (origin_[1] + length_ / 2.0) - r.Origin()[1];
+                    r.Origin()[1] = (origin_[1] + length_ / 2.0f) - r.Origin()[1];
                     r.Direction()[1] = -r.Direction()[1];
                     a |= 1;
                 }

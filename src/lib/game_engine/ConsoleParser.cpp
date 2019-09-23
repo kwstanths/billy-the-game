@@ -83,7 +83,7 @@ namespace game_engine {
         case COMMAND_SSAO_SAMPLES:
         {
             if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stoi(tokens[1]);
+            last_command_.arg_1_ = std::stof(tokens[1]);
             last_command_.type_ = COMMAND_SSAO_SAMPLES;
 
             break;
@@ -91,14 +91,14 @@ namespace game_engine {
         case COMMAND_SSAO_BLUR:
         {
             if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stoi(tokens[1]);
+            last_command_.arg_1_ = std::stof(tokens[1]);
             last_command_.type_ = COMMAND_SSAO_BLUR;
             break;
         }
         case COMMAND_SSAO_BLUR_SIZE:
         {
             if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stoi(tokens[1]);
+            last_command_.arg_1_ = std::stof(tokens[1]);
             last_command_.type_ = COMMAND_SSAO_BLUR_SIZE;
             break;
         }
@@ -112,14 +112,14 @@ namespace game_engine {
         case COMMAND_SSAO_DRAW_SSAO:
         {
             if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stoi(tokens[1]);
+            last_command_.arg_1_ = std::stof(tokens[1]);
             last_command_.type_ = COMMAND_SSAO_DRAW_SSAO;
             break;
         }
         case COMMAND_SSAO_SEPARABLE:
         {
             if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stoi(tokens[1]);
+            last_command_.arg_1_ = std::stof(tokens[1]);
             last_command_.type_ = COMMAND_SSAO_SEPARABLE;
             break;
         }
@@ -128,6 +128,13 @@ namespace game_engine {
             if (tokens.size() <= 1) return;
             last_command_.arg_1_ = std::stof(tokens[1]);
             last_command_.type_ = COMMAND_SSAO_BIAS;
+            break;
+        }
+        case COMMAND_SHADOW_MAPPING:
+        {
+            if (tokens.size() <= 1) return;
+            last_command_.arg_1_ = std::stof(tokens[1]);
+            last_command_.type_ = COMMAND_SHADOW_MAPPING;
             break;
         }
         default:

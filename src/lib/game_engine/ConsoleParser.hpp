@@ -16,6 +16,7 @@ namespace game_engine {
 #define COMMAND_SSAO_BIAS 5
 #define COMMAND_SSAO_DRAW_SSAO 6
 #define COMMAND_SSAO_SEPARABLE 7
+#define COMMAND_SHADOW_MAPPING 8
 
     /* The order between these two is very important! */
     static const std::vector<std::string> commands = { "ssao_radius", 
@@ -25,7 +26,9 @@ namespace game_engine {
         "ssao_intensity", 
         "ssao_bias",
         "ssao_draw_ssao", 
-        "ssao_separable" };
+        "ssao_separable",
+        "shadows"
+    };
 
     struct ConsoleCommand {
         int type_ = -1;

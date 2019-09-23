@@ -16,6 +16,7 @@
 #include "OpenGLCamera.hpp"
 #include "OpenGLGBuffer.hpp"
 #include "OpenGLFrameBufferTexture.hpp"
+#include "OpenGLShadowMap.hpp"
 
 namespace game_engine {
     namespace graphics {
@@ -54,82 +55,73 @@ namespace game_engine {
                 void EnableDepthWriting(bool enable);
 
                 /**
+                    Sets the necessary matrices for shadow mapping
+                */
+                void SetShadowMap(glm::mat4& view_matrix, glm::mat4& projection_matrix);
+
+                /**
                     Set the camera related matrices, for all the shaders that need them
                 */
                 void SetView(OpenGLCamera * camera);
 
                 /**
-                    Draw an object on the scene with lightning
-                    @param object The object to be drawn
-                    @param diffuse_texture The texture to draw
-                    @param specular_texture The specular texture to be used
-                    @param model The object's model
-                    @param mtl The material
-                    @return 0=OK, -1=Something's not initialised;
-                */
-                int Draw(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl);
-
-                /**
-                    Draw an object on the scene without lightning
-                    @param object The object to be drawn
-                    @param textuer The texture to be used
-                    @param model The object's model
-                */
-                int Draw(OpenGLObject & object, OpenGLTexture * texture, glm::mat4 model);
-
-                /**
                     Draws the object using a GBuffer
                 */
-                int DrawGBuffer(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl);
+                int DrawGBuffer(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl = Material_t());
 
                 /**
+                    Draws the objecet on the shadow map
+                */
+                int DrawShadowMap(OpenGLObject & object, glm::mat4 model);
 
+                /**
+                    Runs the SSAO algorithm
                 */
                 int DrawSSAO();
 
                 /**
-                    If vertical is set, the output texture of framebuffer two will be used as input for the horizontal pass
-                    So bind something else
+                    Runs the separable AO algorithm
                 */
                 int DrawSeparableAO();
 
                 /**
-
+                    Applys a bluring algorithm on a texture
                 */
                 int BlurTexture(GLuint texture_id);
 
                 /**
-
+                    Runs a the final pass shader
                 */
                 int DrawFinalPass(GLuint ssao_texture);
 
                 /**
-
+                    Draws the bounding box of an object
                 */
                 int DrawBoundingBox(OpenGLObject & object, glm::mat4 model, bool faces = true);
 
                 /**
-                
+                    Draws a line
                 */
                 int DrawLine(glm::vec3 start, glm::vec3 end);
 
                 /**
-
+                    Set the number of point lights
                 */
                 int SetPointLightsNumber(unsigned int number);
 
                 /**
-
+                    Set a point light
                 */
                 int SetPointLight(std::string index, glm::vec3 position, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular,
                     float attenuation_constant, float attenuation_linear, float attenuation_quadratic);
 
                 /**
-
+                    Set a directional light
                 */
                 int SetDirectionalLight(glm::vec3 direction, glm::vec3 color_ambient, glm::vec3 color_diffuse, glm::vec3 color_specular);
 
                 /**
+                    Set a spotlight
                     @param radius The spotlight angle between the light direction and the edge of the cone in radians
                 */
                 int SetSpotLight(glm::vec3 position, glm::vec3 direction, float inner_radius, float outer_radius,
@@ -158,6 +150,7 @@ namespace game_engine {
                 OpenGLGBuffer * g_buffer_;
                 OpenGLFrameBufferTexture * frame_buffer_one_;
                 OpenGLFrameBufferTexture * frame_buffer_two_;
+                OpenGLShadowMap * shadow_map_;
 
             private:
                 bool is_inited_;
@@ -180,10 +173,6 @@ namespace game_engine {
                 float ssao_bias_;
                 int blur_kernel_size_;
 
-                /* Main shaders */
-                OpenGLShaderMain shader_main_;
-                /* Model texture only shaders */
-                OpenGLShaderModelTexture shader_model_texture_;
                 /* Verices color only shaders */
                 OpenGLShaderVerticesColor shader_vertices_color_;
                 /* texture drawing shader */
@@ -194,6 +183,8 @@ namespace game_engine {
                 OpenGLShaderSSAO shader_ssao_;
                 /* Separable AO shader */
                 OpenGLShaderSeparableAO shader_separable_ao_;
+                /* Shadow map shader */
+                OpenGLShaderShadowMap shader_shadow_map_;
                 /* bluring shader */
                 OpenGLShader shader_blur_;
                 /* Final pass rendering */

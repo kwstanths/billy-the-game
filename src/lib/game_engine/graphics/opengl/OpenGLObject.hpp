@@ -32,13 +32,11 @@ namespace opengl {
         */
         int Init(std::vector<game_engine::graphics::Vertex_t> & vertices, std::vector<unsigned int> & indices, bool generate_bbox_info = true);
 
-        void SetupAttributes(OpenGLShaderMain * shader);
-
-        void SetupAttributes(OpenGLShaderModelTexture * shader);
-
         void SetupAttributes(OpenGLShaderVerticesColor * shader);
 
         void SetupAttributes(OpenGLShaderGBuffer * shader);
+
+        void SetupAttributes(OpenGLShaderShadowMap * shader);
 
         void Render();
 

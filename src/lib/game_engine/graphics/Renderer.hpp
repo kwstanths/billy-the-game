@@ -58,14 +58,6 @@ namespace graphics {
         int Draw(GraphicsObject * rendering_object);
 
         /**
-            Draws an object with no lightning, only with a diffuse texture. The first diffuse texture specified will 
-            be used as a diffuse texture
-            @param rendering_object The object to draw
-            @return 0 = OK
-        */
-        int DrawSimple(GraphicsObject * rendering_object);
-
-        /**
             Draws a line on the z pane
             @param start Starting point
             @param stop Stopping point
@@ -146,6 +138,7 @@ namespace graphics {
         bool separable_ao = false;
         bool ssao_blur = true;
         bool draw_ssao_texture = false;
+        bool shadows = false;
 
         /**
             Set a camera
