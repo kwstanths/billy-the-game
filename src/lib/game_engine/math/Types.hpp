@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "Real.hpp"
-#include "Point.hpp"
+#include "Vector.hpp"
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
@@ -26,13 +26,13 @@ namespace math {
     */
     class Circle2D : public Shape2D {
     public:
-        Point2D c_;
+        Vector2D c_;
         Real_t r_;
 
 
         Circle2D() {};
         Circle2D(Real_t x, Real_t y, Real_t r) {
-            c_ = Point2D({ x, y });
+            c_ = Vector2D({ x, y });
             r_ = r;
         };
 
@@ -69,23 +69,23 @@ namespace math {
     */
     class Rectangle2D : public Shape2D {
     public:
-        Point2D A_;
-        Point2D B_;
-        Point2D C_;
-        Point2D D_;
+        Vector2D A_;
+        Vector2D B_;
+        Vector2D C_;
+        Vector2D D_;
 
         Rectangle2D() {};
 
-        Rectangle2D(Point2D A, Point2D B, Point2D C, Point2D D) : A_(A), B_(B), C_(C), D_(D) {};
+        Rectangle2D(Vector2D A, Vector2D B, Vector2D C, Vector2D D) : A_(A), B_(B), C_(C), D_(D) {};
 
         Rectangle2D(Real_t center_x, Real_t center_y, Real_t x_width, Real_t y_height) {
             Real_t xmar = x_width / 2.0f;
             Real_t ymar = y_height / 2.0f;
 
-            A_ = Point2D({center_x - xmar, center_y - ymar});
-            B_ = Point2D({center_x + xmar, center_y - ymar});
-            C_ = Point2D({center_x + xmar, center_y + ymar});
-            D_ = Point2D({center_x - xmar, center_y + ymar});
+            A_ = Vector2D({center_x - xmar, center_y - ymar});
+            B_ = Vector2D({center_x + xmar, center_y - ymar});
+            C_ = Vector2D({center_x + xmar, center_y + ymar});
+            D_ = Vector2D({center_x - xmar, center_y + ymar});
         }
 
         /*
@@ -171,41 +171,41 @@ namespace math {
     template<int K>
     class Ray {
     public:
-        Ray(Point<K> origin, Point<K> direction) : origin_(origin), direction_(direction) { 
+        Ray(Vector<K> origin, Vector<K> direction) : origin_(origin), direction_(direction) {
             direction_.Normalise();
         };
 
-        Point<K>& Origin() {
+        Vector<K>& Origin() {
             return origin_;
         }
 
-        Point<K>& Direction() {
+        Vector<K>& Direction() {
             return direction_;
         }
 
     private:
-        Point<K> origin_;
-        Point<K> direction_;
+        Vector<K> origin_;
+        Vector<K> direction_;
     };
     
     template<> class Ray<2> {
     public:
-        Ray(Point<2> origin, Real_t angle): origin_(origin) {
+        Ray(Vector<2> origin, Real_t angle): origin_(origin) {
             direction_[0] = cos(GetRadians(angle));
             direction_[1] = sin(GetRadians(angle));
         }
 
-        Point<2>& Origin() {
+        Vector<2>& Origin() {
             return origin_;
         }
 
-        Point<2>& Direction() {
+        Vector<2>& Direction() {
             return direction_;
         }
 
     private:
-        Point<2> origin_;
-        Point<2> direction_;
+        Vector<2> origin_;
+        Vector<2> direction_;
     };
 
 

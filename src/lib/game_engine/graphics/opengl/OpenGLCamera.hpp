@@ -64,7 +64,7 @@ namespace opengl {
             @param[out] pos_y Y
             @param[out] pos_z Z
         */
-        void GetPositionVector(Real_t * pos_x, Real_t * pos_y, Real_t * pos_z);
+        void GetPositionVector(Real_t & pos_x, Real_t & pos_y, Real_t & pos_z);
 
         /**
             Get camera's direction vector
@@ -72,7 +72,7 @@ namespace opengl {
             @param[out] dir_y Y
             @param[out] dir_z Z
         */
-        void GetDirectionVector(Real_t * dir_x, Real_t * dir_y, Real_t * dir_z);
+        void GetDirectionVector(Real_t & dir_x, Real_t & dir_y, Real_t & dir_z);
 
         /**
             Get camera's up vector
@@ -80,7 +80,7 @@ namespace opengl {
             @param[out] up_y Y
             @param[out] up_z Z
         */
-        void GetUpVector(Real_t * up_x, Real_t * up_y, Real_t * up_z);
+        void GetUpVector(Real_t & up_x, Real_t & up_y, Real_t & up_z);
 
         /**
             

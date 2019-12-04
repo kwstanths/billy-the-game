@@ -17,7 +17,7 @@ namespace math {
         @param vector_a Second vector
         @return The inner product
     */
-    Real_t DotProduct(Point2D vector_a, Point2D vector_b);
+    Real_t DotProduct(Vector2D vector_a, Vector2D vector_b);
     
     /**
         Check whether a point is inside a rectangle in a 2D pane
@@ -25,7 +25,7 @@ namespace math {
         @param rect The rectangle
         @return true = inside, false = not inside
     */
-    bool PointInside(Point2D point, Rectangle2D rect);
+    bool PointInside(Vector2D point, Rectangle2D rect);
     
     /**
         Check whether a point is inside a circle in a 2D pane
@@ -33,7 +33,7 @@ namespace math {
         @param circle The circle
         @return true = inside, false = not inside
     */
-    bool PointInside(Point2D point, Circle2D circle);
+    bool PointInside(Vector2D point, Circle2D circle);
     
     /**
         Get the distance between a point and line in a 2D pane
@@ -41,7 +41,7 @@ namespace math {
         @param line The line
         @return The distance
     */
-    Real_t GetDistance(Point2D point, Line2D line);
+    Real_t GetDistance(Vector2D point, Line2D line);
     
     /**
         Get the distance between two points
@@ -49,7 +49,7 @@ namespace math {
         @param p_b The second point
         @return The distance
     */
-    Real_t GetDistance(Point2D p_a, Point2D p_b);
+    Real_t GetDistance(Vector2D p_a, Vector2D p_b);
     
     /**
         Check whether a line intersects with a circle, the line is an infinite line
@@ -67,7 +67,7 @@ namespace math {
         @param point_b The line segment second point
         @return true = intersects, false = Does not intersect
     */
-    bool IntersectCircle_LineSegment(Circle2D circle, Point2D point_a, Point2D point_b);
+    bool IntersectCircle_LineSegment(Circle2D circle, Vector2D point_a, Vector2D point_b);
     
     /**
         Get the point of intersection between two lines
@@ -75,7 +75,7 @@ namespace math {
         @param line_b The second line
         @return The intersection point, infs will be returned in parallel lines
     */
-    Point2D IntersecLine_Line(Line2D line_a, Line2D line_b);
+    Vector2D IntersecLine_Line(Line2D line_a, Line2D line_b);
     
     /**
         Check for intersection between two rectangles

@@ -50,20 +50,4 @@ namespace game_engine {
         /* TODO */
     }
 
-    void Debugger::DrawLineXY(math::Point2D start, math::Point2D stop, Real_t z, Real_t size, glm::vec3 color) {
-        
-        if (!is_inited_) return;
-
-        renderer_->DrawLineXY(start, stop, z, size, color);
-    }
-
-    void Debugger::DrawRectangleXY(math::Rectangle2D rect, Real_t z, Real_t size, glm::vec3 color) {
-        if (!is_inited_) return;
-
-        renderer_->DrawLineXY(rect.A_, rect.B_, z, size, color);
-        renderer_->DrawLineXY(rect.B_, rect.C_, z, size, color);
-        renderer_->DrawLineXY(rect.C_, rect.D_, z, size, color);
-        renderer_->DrawLineXY(rect.D_, rect.A_, z, size, color);
-    }
-
 }

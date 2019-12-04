@@ -57,6 +57,8 @@ namespace graphics {
         */
         int Draw(GraphicsObject * rendering_object);
 
+        int DrawTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 = { 1, 1, 1 });
+
         /**
             Draws a line on the z pane
             @param start Starting point
@@ -66,7 +68,7 @@ namespace graphics {
             @param color The color of the line
             @return 0 = OK, -1 = Not initialised
         */
-        int DrawLineXY(math::Point2D start, math::Point2D stop, float z_height, float size, glm::vec3 color);
+        int DrawLine(math::Vector3D start, math::Vector3D stop, float size, glm::vec3 color);
 
         /**
             Draw a rectangle on the z pane
@@ -107,6 +109,8 @@ namespace graphics {
             Draw 2D text
         */
         int Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
+
+        void SetShadowMap(glm::mat4& light_view_matrix, glm::mat4& light_projection_matrix);
 
     private:
 

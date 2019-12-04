@@ -70,6 +70,11 @@ namespace game_engine {
                 int DrawGBuffer(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl = Material_t());
 
                 /**
+                
+                */
+                int DrawGBufferTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 color = { 1,1,1 });
+
+                /**
                     Draws the objecet on the shadow map
                 */
                 int DrawShadowMap(OpenGLObject & object, glm::mat4 model);
@@ -102,7 +107,7 @@ namespace game_engine {
                 /**
                     Draws a line
                 */
-                int DrawLine(glm::vec3 start, glm::vec3 end);
+                int DrawLine(glm::vec3 start, glm::vec3 end, glm::vec3 color = glm::vec3(1, 1, 1));
 
                 /**
                     Set the number of point lights
@@ -194,6 +199,9 @@ namespace game_engine {
                 GLuint VAO_Quad_;
                 GLuint VBO_Quad_;
 
+                /* Textures */
+                OpenGLTexture * texture_empty_ = nullptr;
+                
                 /**
                     Sends a quad geometry to the currently bound shader
                     Location 0 is position, Location 1 is uv coordinates

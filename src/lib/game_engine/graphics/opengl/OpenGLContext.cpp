@@ -39,6 +39,8 @@ namespace game_engine {
                     return Error::ERROR_GLFW_WINDOW;
                 }
 
+                glfwSetWindowPos(glfw_window_, 20, 50);
+
                 /* Initialize GLEW */
                 glfwMakeContextCurrent(glfw_window_);
                 glewExperimental = true; /* Needed for core profile */

@@ -17,9 +17,9 @@ bool Grass::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, std::string name, ge:
     std::string collision_string;
     if (map_properties.HasCollision(name, collision_string)) {
         std::vector<std::string> spl = ge::utility::split(collision_string, ",");
-        Point2D pos({ x - 0.5f, y - 0.5f});
-        Point2D min({ std::stof(spl[0]), std::stof(spl[1]) });
-        Point2D max({ std::stof(spl[2]), std::stof(spl[3]) });
+        Vector2D pos({ x - 0.5f, y - 0.5f});
+        Vector2D min({ std::stof(spl[0]), std::stof(spl[1]) });
+        Vector2D max({ std::stof(spl[2]), std::stof(spl[3]) });
         SetCollision(world->GetPhysicsEngine(), AABox<2>(pos + min, pos + max));
     }
 

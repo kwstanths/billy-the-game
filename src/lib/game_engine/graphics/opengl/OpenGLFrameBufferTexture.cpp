@@ -63,11 +63,11 @@ namespace opengl {
         return 0;
     }
 
-    int OpenGLFrameBufferTexture::ClearColor() {
+    int OpenGLFrameBufferTexture::ClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
 
         Bind();
-        GLuint clear_color[4] = { 0, 0, 0, 0 };
-        glClearBufferuiv(GL_COLOR, 0, clear_color);
+        glClearColor(red, green, blue, alpha);
+        glClear(GL_COLOR_BUFFER_BIT);
         Unbind();
 
         return 0;

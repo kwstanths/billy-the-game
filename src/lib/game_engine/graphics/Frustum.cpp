@@ -4,224 +4,6 @@
 #include <iostream>
 
 #define ANG2RAD 3.14159265358979323846/180.0
-//
-//Vec3::Vec3(float x, float y, float z) {
-//
-//    this->x = x;
-//    this->y = y;
-//    this->z = z;
-//
-//}
-//
-//Vec3::Vec3(const Vec3 &v) {
-//
-//    x = v.x;
-//    y = v.y;
-//    z = v.z;
-//
-//}
-//
-//
-//Vec3::Vec3() {
-//
-//    x = 0;
-//    y = 0;
-//    z = 0;
-//
-//}
-//
-//
-//Vec3::~Vec3()
-//{
-//
-//}
-//
-////////////////////////////////////////////////////////////////////////
-//// Methods
-////////////////////////////////////////////////////////////////////////
-//
-//Vec3 Vec3::operator+(Vec3 &v) {
-//
-//    Vec3 res;
-//
-//    res.x = x + v.x;
-//    res.y = y + v.y;
-//    res.z = z + v.z;
-//
-//    return(res);
-//}
-//
-//Vec3 Vec3::operator-(const Vec3 &v) {
-//
-//    Vec3 res;
-//
-//    res.x = x - v.x;
-//    res.y = y - v.y;
-//    res.z = z - v.z;
-//
-//    return(res);
-//}
-//
-//Vec3 Vec3::operator-(void) {
-//
-//    Vec3 res;
-//
-//    res.x = -x;
-//    res.y = -y;
-//    res.z = -z;
-//
-//    return(res);
-//}
-//
-//// cross product
-//Vec3 Vec3::operator*(Vec3 &v) {
-//
-//    Vec3 res;
-//
-//    res.x = y * v.z - z * v.y;
-//    res.y = z * v.x - x * v.z;
-//    res.z = x * v.y - y * v.x;
-//
-//    return (res);
-//}
-//
-//Vec3 Vec3::operator*(float t) {
-//
-//    Vec3 res;
-//
-//    res.x = x * t;
-//    res.y = y * t;
-//    res.z = z * t;
-//
-//    return (res);
-//}
-//
-//
-//Vec3 Vec3::operator/(float t) {
-//
-//    Vec3 res;
-//
-//    res.x = x / t;
-//    res.y = y / t;
-//    res.z = z / t;
-//
-//    return (res);
-//}
-//
-//
-//
-//float Vec3::length() {
-//
-//    return((float)std::sqrt(x*x + y * y + z * z));
-//}
-//
-//void Vec3::normalize() {
-//
-//    float len;
-//
-//    len = length();
-//    if (len) {
-//        x /= len;;
-//        y /= len;
-//        z /= len;
-//    }
-//}
-//
-//
-//float Vec3::innerProduct(Vec3 &v) {
-//
-//    return (x * v.x + y * v.y + z * v.z);
-//}
-//
-//void Vec3::copy(const Vec3 &v) {
-//
-//    x = v.x;
-//    y = v.y;
-//    z = v.z;
-//}
-//
-//void Vec3::set(float x, float y, float z) {
-//
-//    this->x = x;
-//    this->y = y;
-//    this->z = z;
-//}
-//
-//Vec3 Vec3::scalarMult(float a) {
-//
-//    Vec3 res;
-//
-//    res.x = x * a;
-//    res.y = y * a;
-//    res.z = z * a;
-//
-//    return res;
-//}
-//
-//
-//// -----------------------------------------------------------------------
-//// For debug pruposes: Prints a vector
-//// -----------------------------------------------------------------------
-//
-//
-//void Vec3::print() {
-//    printf("Vec3(%f, %f, %f)", x, y, z);
-//}
-
-Plane::Plane(Vec3 &v1, Vec3 &v2, Vec3 &v3) {
-
-    set3Points(v1, v2, v3);
-}
-
-
-Plane::Plane() {}
-
-Plane::~Plane() {}
-
-
-void Plane::set3Points(Vec3 &v1, Vec3 &v2, Vec3 &v3) {
-
-
-    Vec3 aux1, aux2;
-
-    aux1 = v1 - v2;
-    aux2 = v3 - v2;
-
-    normal = aux2.CrossProduct(aux1);
-
-    normal.Normalize();
-    point = v2;
-    d = -(normal.DotProduct(point));
-}
-
-void Plane::setNormalAndPoint(Vec3 &normal, Vec3 &point) {
-
-    this->normal = normal;
-    this->normal.Normalize();
-    d = -(this->normal.DotProduct(point));
-}
-
-void Plane::setCoefficients(float a, float b, float c, float d) {
-
-    // set the normal vector
-    normal.Set(a, b, c);
-    //compute the lenght of the vector
-    float l = normal.Norm();
-    // normalize the vector
-    normal.Set(a / l, b / l, c / l);
-    // and divide d by th length as well
-    this->d = d / l;
-}
-
-float Plane::distance(Vec3 &p) {
-
-    return (d + normal.DotProduct(p));
-}
-
-void Plane::print() {
-
-    //printf("Plane("); normal.print(); printf("# %f)", d);
-}
 
 AABox::AABox(Vec3 &corner, float x, float y, float z) {
 
@@ -298,32 +80,32 @@ FrustumG::~FrustumG() {}
 #define m(row,col)  m[col*4+row-5]
 
 void FrustumG::setFrustum(float * m) {
-    pl[NEARP].setCoefficients(
+    pl[NEARP].SetCoefficients(
         m(3, 1) + m(4, 1),
         m(3, 2) + m(4, 2),
         m(3, 3) + m(4, 3),
         m(3, 4) + m(4, 4));
-    pl[FARP].setCoefficients(
+    pl[FARP].SetCoefficients(
         -m(3, 1) + m(4, 1),
         -m(3, 2) + m(4, 2),
         -m(3, 3) + m(4, 3),
         -m(3, 4) + m(4, 4));
-    pl[BOTTOM].setCoefficients(
+    pl[BOTTOM].SetCoefficients(
         m(2, 1) + m(4, 1),
         m(2, 2) + m(4, 2),
         m(2, 3) + m(4, 3),
         m(2, 4) + m(4, 4));
-    pl[TOP].setCoefficients(
+    pl[TOP].SetCoefficients(
         -m(2, 1) + m(4, 1),
         -m(2, 2) + m(4, 2),
         -m(2, 3) + m(4, 3),
         -m(2, 4) + m(4, 4));
-    pl[LEFT].setCoefficients(
+    pl[LEFT].SetCoefficients(
         m(1, 1) + m(4, 1),
         m(1, 2) + m(4, 2),
         m(1, 3) + m(4, 3),
         m(1, 4) + m(4, 4));
-    pl[RIGHT].setCoefficients(
+    pl[RIGHT].SetCoefficients(
         -m(1, 1) + m(4, 1),
         -m(1, 2) + m(4, 2),
         -m(1, 3) + m(4, 3),
@@ -373,12 +155,12 @@ void FrustumG::setCamDef(Vec3 &p, Vec3 &l, Vec3 &u) {
     fbl = fc - Y * fh - X * fw;
     fbr = fc - Y * fh + X * fw;
 
-    pl[TOP].set3Points(ntr, ntl, ftl);
-    pl[BOTTOM].set3Points(nbl, nbr, fbr);
-    pl[LEFT].set3Points(ntl, nbl, fbl);
-    pl[RIGHT].set3Points(nbr, ntr, fbr);
-    pl[NEARP].set3Points(ntl, ntr, nbr);
-    pl[FARP].set3Points(ftr, ftl, fbl);
+    pl[TOP].SetPoints(Vector3D(ntr), Vector3D(ntl), Vector3D(ftl));
+    pl[BOTTOM].SetPoints(Vector3D(nbl), Vector3D(nbr), Vector3D(fbr));
+    pl[LEFT].SetPoints(Vector3D(ntl), Vector3D(nbl), Vector3D(fbl));
+    pl[RIGHT].SetPoints(Vector3D(nbr), Vector3D(ntr), Vector3D(fbr));
+    pl[NEARP].SetPoints(Vector3D(ntl), Vector3D(ntr), Vector3D(nbr));
+    pl[FARP].SetPoints(Vector3D(ftr), Vector3D(ftl), Vector3D(fbl));
 }
 
 int FrustumG::pointInFrustum(Vec3 &p) {
@@ -386,7 +168,7 @@ int FrustumG::pointInFrustum(Vec3 &p) {
     int result = INSIDE;
     for (int i = 0; i < 6; i++) {
 
-        if (pl[i].distance(p) < 0)
+        if (pl[i].Distance(Vector3D(p)) < 0)
             return OUTSIDE;
     }
     return(result);
@@ -399,7 +181,7 @@ int FrustumG::sphereInFrustum(Vec3 &p, float raio) {
     float distance;
 
     for (int i = 0; i < 6; i++) {
-        distance = pl[i].distance(p);
+        distance = pl[i].Distance(Vector3D(p));
         if (distance < -raio)
             return OUTSIDE;
         else if (distance < raio)
@@ -412,10 +194,11 @@ int FrustumG::boxInFrustum(AABox &b) {
 
     int result = INSIDE;
     for (int i = 0; i < 6; i++) {
+        Vec3 norma = Vec3(pl[i].normal_.x(), pl[i].normal_.y(), pl[i].normal_.z());
 
-        if (pl[i].distance(b.getVertexP(pl[i].normal)) < 0)
+        if (pl[i].Distance(Vector3D(b.getVertexP(norma))) < 0)
             return OUTSIDE;
-        else if (pl[i].distance(b.getVertexN(pl[i].normal)) < 0)
+        else if (pl[i].Distance(Vector3D(b.getVertexN(norma))) < 0)
             result = INTERSECT;
     }
     return(result);

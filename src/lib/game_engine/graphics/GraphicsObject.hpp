@@ -57,7 +57,7 @@ namespace graphics {
         /**
             Set the rotation matrix of the model.
         */
-        void SetRotation(Real_t angle, glm::vec3 axis);
+        void SetRotation(glm::mat4 rotation);
 
         /** 
             Rotate the model around the axis, takes in mind previous rotations

@@ -72,11 +72,11 @@ namespace physics {
     }
 
     void PhysicsObject::SetCollision(physics::PhysicsEngine * engine, game_engine::math::AABox<2> box) {
-        engine->Insert(this, Point2D({ pos_x_, pos_y_ }));
+        engine->Insert(this, Vector2D({ pos_x_, pos_y_ }));
         collision_ = new CollisionBoundingBox(box);
     }
 
-    bool PhysicsObject::Collides(game_engine::math::Point2D new_position, PhysicsObject * other) {
+    bool PhysicsObject::Collides(game_engine::math::Vector2D new_position, PhysicsObject * other) {
         if (!is_inited_) return false;
 
         /* We do not collide with ourselves */

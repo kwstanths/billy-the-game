@@ -43,7 +43,8 @@ uniform sampler2D g_position;
 uniform sampler2D g_normal;
 uniform sampler2D g_albedo_spec;
 uniform sampler2D ssao_texture;
-uniform sampler2D g_ambient;
+uniform sampler2D g_position_light;
+uniform sampler2D shadow_map;
 uniform mat4 matrix_view;
 
 #define NR_POINT_LIGHTS 24
@@ -64,16 +65,40 @@ vec3 TransformToViewSpace(vec4 vector){
 
 float fragment_in_shadow;
 
+float ShadowCalculation(vec3 fragment_position_lightspace) {
+    vec3 projCoords = fragment_position_lightspace.xyz;
+    projCoords = projCoords * 0.5 + 0.5;
+    float currentDepth = projCoords.z;
+    
+    vec2 texelSize = 1.0 / textureSize(shadow_map, 0);
+    float shadow = 0;
+    for(int x = -1; x <= 1; ++x) {
+        for(int y = -1; y <= 1; ++y) {
+            float pcfDepth = texture(shadow_map, projCoords.xy + vec2(x, y) * texelSize).r;
+            shadow += currentDepth - 0.005 > pcfDepth  ? 1.0f : 0.0;             
+        }    
+    }
+    shadow /= 9.0;
+    return 1.0f - shadow;
+}
+
 void main() {
     
     vec3 fragment_position_viewspace = texture(g_position, uv).xyz;
-    vec3 normal_viewspace = normalize(texture(g_normal, uv).rgb);
+    vec3 normal_viewspace = texture(g_normal, uv).rgb;
     vec3 fragment_color = texture(g_albedo_spec, uv).rgb;
+    if (length(normal_viewspace) < 0.9){
+        FragColor = fragment_color;
+        return;
+    }
+    normalize(normal_viewspace);
+    
     float fragment_specular_intensity = texture(g_albedo_spec, uv).a;
-    fragment_in_shadow = texture(g_ambient, uv).a;
+    fragment_in_shadow = ShadowCalculation(texture(g_position_light, uv).xyz);
     float ambient_factor = texture(ssao_texture, uv).r;
     vec3 view_direction = normalize(-fragment_position_viewspace);
-    
+
+
 	/* Calculate directional light color contribution */
 	vec3 directional_light_color = CalculateDirectionalLight(directional_light, normal_viewspace, view_direction, fragment_color, fragment_specular_intensity, ambient_factor);
 	
@@ -165,7 +190,7 @@ vec3 CalculateCastingLight(CastingLight light, vec3 fragment_position, vec3 frag
 	vec3 light_reflect_vector = reflect(-light_direction_inv, fragment_normal);
 	float light_specular_strength = pow(max(dot(view_direction, light_reflect_vector), 0.0), 16.0);
 	vec3 light_specular = light.specular * light_specular_strength * fragment_specular_intensity;
-		
+    
 	/* 
 		Calculate edges factor
 		theta angles lower than the cast light inner radius get intensity of 1

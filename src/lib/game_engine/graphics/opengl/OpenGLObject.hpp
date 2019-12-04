@@ -32,6 +32,8 @@ namespace opengl {
         */
         int Init(std::vector<game_engine::graphics::Vertex_t> & vertices, std::vector<unsigned int> & indices, bool generate_bbox_info = true);
 
+        void SetVertices(std::vector<game_engine::graphics::Vertex_t> & vertices);
+
         void SetupAttributes(OpenGLShaderVerticesColor * shader);
 
         void SetupAttributes(OpenGLShaderGBuffer * shader);
@@ -77,8 +79,10 @@ namespace opengl {
         /* Bounding box values */
         GLfloat min_x_, max_x_, min_y_, max_y_, min_z_, max_z_;
 
-    private:        
+    protected:
         bool is_inited_;
+
+    private:        
 
         size_t total_indices_;
         GLuint VAO_, vertex_buffer_, element_buffer_;
@@ -89,6 +93,14 @@ namespace opengl {
         glm::mat4 bbox_transform_;
 
         void GenerateBoundingBox(std::vector<game_engine::graphics::Vertex_t>& vertices);
+    };
+
+    class OpenGLTriangle : public OpenGLObject {
+        friend class OpenGLRenderer;
+    public:
+        OpenGLTriangle();
+
+        int Init(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);
     };
 
 }

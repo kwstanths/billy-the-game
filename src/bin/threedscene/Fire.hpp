@@ -8,7 +8,7 @@
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/WorldObject.hpp"
 
-class Fire : public game_engine::WorldObject, public::game_engine::graphics::PointLight {
+class Fire : public game_engine::WorldObject, public::game_engine::graphics::DirectionalLight {
 public:
 
     bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, 

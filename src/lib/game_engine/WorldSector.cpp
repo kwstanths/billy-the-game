@@ -42,21 +42,21 @@ namespace game_engine {
         x_margin_end_ = x_margin_end;
         y_margin_start_ = y_margin_start;
         y_margin_end_ = y_margin_end;
-        world_window_ = AABox<2>(Point2D({ x_margin_start, y_margin_start }), Point2D({x_margin_end, y_margin_end}));
+        world_window_ = AABox<2>(Vector2D({ x_margin_start, y_margin_start }), Vector2D({x_margin_end, y_margin_end}));
 
         world_ = new utility::UniformGrid<std::deque<WorldObject *>, 2>({ grid_rows_, grid_columns_});
         visible_world_ = std::vector<WorldObject *>(650, nullptr);
 
-        world_point_lights_ = new utility::QuadTree<graphics::PointLight *>(math::Point2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
+        world_point_lights_ = new utility::QuadTree<graphics::PointLight *>(math::Vector2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
 
-        physics_engine_->Init(AABox<2>(Point2D({ x_margin_start_, y_margin_start }), Point2D({ x_margin_end_, y_margin_end })), 500);
+        physics_engine_->Init(AABox<2>(Vector2D({ x_margin_start_, y_margin_start }), Vector2D({ x_margin_end_, y_margin_end })), 500);
         
         /* Initialize the circular buffer for deleting objects */
         delete_objects_buffer_.Init(128);
 
         use_visible_world_window_ = ConfigurationFile::instance().UseVisibleWindow();
 
-        interaction_tree_ = new utility::QuadTreeBoxes<WorldObject *>(math::Point2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
+        interaction_tree_ = new utility::QuadTreeBoxes<WorldObject *>(math::Vector2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
 
         is_inited_ = true;
         return 0;
@@ -76,11 +76,11 @@ namespace game_engine {
         return is_inited_;
     }
 
-    void WorldSector::Step(double delta_time, gr::Renderer * renderer, math::Vec3 camera_position, math::Vec3 camera_direction, Real_t camera_ratio, Real_t camera_angle) {
+    void WorldSector::Step(double delta_time, gr::Renderer * renderer, math::Vector3D camera_position, math::Vector3D camera_direction, Real_t camera_ratio, Real_t camera_angle) {
 
-        Real_t width = camera_position.z_ * tan(camera_angle / 2.0f);
+        Real_t width = camera_position.z() * tan(camera_angle / 2.0f);
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
-        math::AABox<2> camera_view_box = math::AABox<2>(Point2D({ camera_position.x_, camera_position.y_ }), { 2.3f * width * camera_ratio, 2.3f * width });
+        math::AABox<2> camera_view_box = math::AABox<2>(Vector2D({ camera_position.x(), camera_position.y() }), { 2.3f * width * camera_ratio, 2.3f * width });
 
         /* Draw a rectangle for the edge of this world */
         //renderer->DrawRectangleXY(math::Rectangle2D(
@@ -113,9 +113,9 @@ namespace game_engine {
         if (directional_light_ != nullptr) directional_light_->DrawLight(renderer);
 
         /* Draw point lights */
-        width = 3.0f * camera_position.z_ * tan(camera_angle / 2.0f);
+        width = 3.0f * camera_position.z() * tan(camera_angle / 2.0f);
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
-        math::AABox<2> camera_view_lights_box = math::AABox<2>(Point2D({ camera_position.x_, camera_position.y_ }), { 2.3f * width * camera_ratio, 2.3f * width });
+        math::AABox<2> camera_view_lights_box = math::AABox<2>(Vector2D({ camera_position.x(), camera_position.y() }), { 2.3f * width * camera_ratio, 2.3f * width });
 
         std::vector<graphics::PointLight *> lights_;
         if (use_visible_world_window_)
@@ -158,12 +158,12 @@ namespace game_engine {
         return 0;
     }
 
-    int WorldSector::AddPointLight(graphics::PointLight * light, math::Point2D& point) {
+    int WorldSector::AddPointLight(graphics::PointLight * light, math::Vector2D& point) {
         return !world_point_lights_->Insert(point, light);
         return 0;
     }
 
-    int WorldSector::RemovePointLight(graphics::PointLight * light, math::Point2D& point) {
+    int WorldSector::RemovePointLight(graphics::PointLight * light, math::Vector2D& point) {
         world_point_lights_->Remove(point);
         return 0;
     }
@@ -195,10 +195,10 @@ namespace game_engine {
 
         /* Find starting rows and columns basd on the rectangle */
 
-        int row_start = GetRow(rect.max_.y());
-        int row_end = GetRow(rect.min_.y());
-        int col_start = GetColumn(rect.min_.x());
-        int col_end = GetColumn(rect.max_.x());
+        int row_start = GetRow(rect.max_[1]);
+        int row_end = GetRow(rect.min_[1]);
+        int col_start = GetColumn(rect.min_[0]);
+        int col_end = GetColumn(rect.max_[0]);
         if (row_end < row_start) std::swap(row_start, row_end);
         if (col_end < col_start) std::swap(col_start, col_end);
 
@@ -224,7 +224,7 @@ namespace game_engine {
         return index;
     }
 
-    WorldObject * WorldSector::FindInteractNeighbour(math::Rectangle2D search_area, math::Point2D p, Real_t size) {
+    WorldObject * WorldSector::FindInteractNeighbour(math::Rectangle2D search_area, math::Vector2D p, Real_t size) {
 
         /* TODO */
 

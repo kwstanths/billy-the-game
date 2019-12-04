@@ -5,7 +5,7 @@
 #include <exception>
 
 #include "game_engine/math/Types.hpp"
-#include "game_engine/math/Point.hpp"
+#include "game_engine/math/Vector.hpp"
 #include "game_engine/math/AABox.hpp"
 #include "game_engine/memory/ArrayAllocator.hpp"
 #include "game_engine/memory/PoolAllocator.hpp"
@@ -102,7 +102,7 @@ namespace physics {
 
         bool Check(CollisionBoundingCircle * other);
         void Translate(game_engine::Real_t x, game_engine::Real_t y) {
-            bbox_.Translate(math::Point2D({ x, y }));
+            bbox_.Translate(math::Vector2D({ x, y }));
         }
         CollisionType GetType();
 

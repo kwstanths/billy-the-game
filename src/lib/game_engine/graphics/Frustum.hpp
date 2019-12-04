@@ -4,53 +4,10 @@
 void multMat(float *res, float *a, float *b);
 
 #include "game_engine/math/Vec3.hpp"
-
-//class Vec3 {
-//public:
-//
-//    float x, y, z;
-//
-//    Vec3::Vec3(float x, float y, float z);
-//    Vec3::Vec3(const Vec3 &v);
-//    Vec3::Vec3();
-//    Vec3::~Vec3();
-//
-//    Vec3 Vec3::operator +(Vec3 &v);
-//    Vec3 Vec3::operator -(const Vec3 &v);
-//    Vec3 Vec3::operator *(Vec3 &v);
-//    Vec3 Vec3::operator *(float t);
-//    Vec3 Vec3::operator /(float t);
-//    Vec3 Vec3::operator -(void);
-//
-//    float Vec3::length();
-//    void Vec3::normalize();
-//    float Vec3::innerProduct(Vec3  &v);
-//    void copy(const Vec3 &v);
-//    void set(float x, float y, float z);
-//    Vec3 scalarMult(float a);
-//
-//    void Vec3::print();
-//};
+#include "game_engine/math/Vector.hpp"
+#include "game_engine/math/Plane.hpp"
 
 using namespace game_engine::math;
-
-class Plane {
-public:
-
-    Vec3 normal, point;
-    float d;
-
-    Plane::Plane(Vec3 &v1, Vec3 &v2, Vec3 &v3);
-    Plane::Plane(void);
-    Plane::~Plane();
-
-    void set3Points(Vec3 &v1, Vec3 &v2, Vec3 &v3);
-    void setNormalAndPoint(Vec3 &normal, Vec3 &point);
-    void setCoefficients(float a, float b, float c, float d);
-    float distance(Vec3 &p);
-
-    void print();
-};
 
 class AABox {
 public:

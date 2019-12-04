@@ -12,7 +12,7 @@
 #include "game_engine/physics/PhysicsEngine.hpp"
 #include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/math/Types.hpp"
-#include "game_engine/math/Vec3.hpp"
+#include "game_engine/math/Vector.hpp"
 
 #include "WorldObject.hpp"
 
@@ -92,7 +92,7 @@ namespace game_engine {
         /**
             
         */
-        void Step(double delta_time, graphics::Renderer * renderer, math::Vec3 camera_position, math::Vec3 camera_direction, Real_t camera_ratio, Real_t camera_angle);
+        void Step(double delta_time, graphics::Renderer * renderer, math::Vector3D camera_position, math::Vector3D camera_direction, Real_t camera_ratio, Real_t camera_angle);
 
         /**
 
@@ -107,12 +107,12 @@ namespace game_engine {
         /**
         
         */
-        int AddPointLight(graphics::PointLight * light, math::Point2D& point);
+        int AddPointLight(graphics::PointLight * light, math::Vector2D& point);
 
         /**
         
         */
-        int RemovePointLight(graphics::PointLight * light, math::Point2D& point);
+        int RemovePointLight(graphics::PointLight * light, math::Vector2D& point);
 
         /**
         
@@ -150,7 +150,7 @@ namespace game_engine {
             @param pos_y currently not used
             @return nullptr if none is found, the pointer if something is found
         */
-        WorldObject * FindInteractNeighbour(game_engine::math::Rectangle2D search_area, math::Point2D p, Real_t size);
+        WorldObject * FindInteractNeighbour(game_engine::math::Rectangle2D search_area, math::Vector2D p, Real_t size);
 
         /**
             Get the physics engine used in this world

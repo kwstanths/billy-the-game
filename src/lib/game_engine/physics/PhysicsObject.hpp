@@ -85,7 +85,7 @@ namespace physics {
 
         Collision * collision_ = nullptr;
 
-        bool Collides(game_engine::math::Point2D new_position, PhysicsObject * other);
+        bool Collides(game_engine::math::Vector2D new_position, PhysicsObject * other);
     };
 
 }

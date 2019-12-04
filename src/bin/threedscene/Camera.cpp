@@ -45,17 +45,17 @@ void Camera::KeyboardMove(ge::Real_t x, ge::Real_t y, ge::Real_t z) {
 void Camera::KeyboardMoveFlightMode(ge::Real_t front, ge::Real_t left) {
     /* Get current direction */
     glm::vec3 curr_direction;
-    GetDirectionVector(&curr_direction.x, &curr_direction.y, &curr_direction.z);
+    GetDirectionVector(curr_direction.x, curr_direction.y, curr_direction.z);
     /* Get current position */
     glm::vec3 curr_position;
-    GetPositionVector(&curr_position.x, &curr_position.y, &curr_position.z);
+    GetPositionVector(curr_position.x, curr_position.y, curr_position.z);
 
     /* Calculate the amount of front movement */
     glm::vec3 new_position = curr_position + front * curr_direction;
 
     /* Calculate the left vector */
     glm::vec3 up_vector;
-    GetUpVector(&up_vector.x, &up_vector.y, &up_vector.z);
+    GetUpVector(up_vector.x, up_vector.y, up_vector.z);
     glm::vec3 left_vector = glm::cross(curr_direction, up_vector);
 
     /* Calculate the amount of left movement */
@@ -99,7 +99,7 @@ void Camera::Set2DPosition(ge::Real_t x, ge::Real_t y) {
 
     /* Get previous height values */
     ge::Real_t prev_x, prev_y, prev_z;
-    GetPositionVector(&prev_x, &prev_y, &prev_z);    
+    GetPositionVector(prev_x, prev_y, prev_z);    
 
     SetPositionVector(x, y, prev_z);
 }

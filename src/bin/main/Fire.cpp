@@ -33,8 +33,8 @@ bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, std::string name, ge::
     sun_ = sun;
 
     on_ = true;
-    world_sector_->AddPointLight(this, math::Point2D({ x, y }));
-    world_sector_->AddInterractableObject(this, AABox<2>(Point2D({ GetX(), GetY() }), { 1,1 }));
+    world_sector_->AddPointLight(this, math::Vector2D({ x, y }));
+    world_sector_->AddInterractableObject(this, AABox<2>(Vector2D({ GetX(), GetY() }), { 1,1 }));
 
     return ret == 0;
 }
@@ -62,8 +62,8 @@ void Fire::StepLight(double delta_time) {
 void Fire::Interact() {
 
     /* We can just set the light values to zero, but let's just test are RemoveLight function! */
-    if (on_) world_sector_->RemovePointLight(this, math::Point2D({ GetX(), GetY() }));
-    else world_sector_->AddPointLight(this, math::Point2D({ GetX(), GetY() }));
+    if (on_) world_sector_->RemovePointLight(this, math::Vector2D({ GetX(), GetY() }));
+    else world_sector_->AddPointLight(this, math::Vector2D({ GetX(), GetY() }));
 
     on_ = !on_;
 }

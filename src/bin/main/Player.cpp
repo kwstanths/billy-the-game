@@ -3,6 +3,7 @@
 #include "game_engine/graphics/Light.hpp"
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/math/Types.hpp"
+#include "game_engine/math/Matrices.hpp"
 
 #include "debug_tools/Console.hpp"
 
@@ -31,7 +32,7 @@ int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera
     world->AddObject(this, x, y, z);
     Scale(0.6, 0.6, 0.6);
 
-    Point2D pos({ x, y });
+    Vector2D pos({ x, y });
     SetCollision(world->GetPhysicsEngine(), AABox<2>(pos - 0.3, pos + 0.3));
 
     radius_ = 0.5f;
@@ -72,7 +73,7 @@ void Player::Step(double delta_time) {
 
             //dt::ConsoleInfo("offset", move_offset, "delta", delta_time * 1000);
             /* Set the rotation of the model */
-            SetRotation(math::GetRadians(new_direction), { 0,0,1 });
+            SetRotation(ge::math::GetRotateMatrix(math::GetRadians(new_direction), 0, 0, 1));
             looking_direction_ = new_direction;
 
             /* Set position */
@@ -86,7 +87,7 @@ void Player::Step(double delta_time) {
     }
 
     if (controls.INTERACT_) {
-        Ray2D ray(Point2D({ GetX(), GetY() }), looking_direction_);
+        Ray2D ray(Vector2D({ GetX(), GetY() }), looking_direction_);
 
         WorldObject * object = world_sector_->RayCast(ray);
         if (object != nullptr) object->Interact();

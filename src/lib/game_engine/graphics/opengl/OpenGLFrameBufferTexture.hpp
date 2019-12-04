@@ -22,7 +22,7 @@ namespace opengl {
 
         int Unbind();
 
-        int ClearColor();
+        int ClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
 
         GLuint output_texture_;
     private:

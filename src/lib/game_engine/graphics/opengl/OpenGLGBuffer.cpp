@@ -49,12 +49,13 @@ namespace opengl {
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, g_albedo_spec_texture_, 0);
 
         /* Store ambient color and shadow visibility */
-        glGenTextures(1, &g_ambient_);
-        glBindTexture(GL_TEXTURE_2D, g_ambient_);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, context_->GetWindowWidth(), context_->GetWindowHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glGenTextures(1, &g_position_light_);
+        glBindTexture(GL_TEXTURE_2D, g_position_light_);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, context_->GetWindowWidth(), context_->GetWindowHeight(), 0, GL_RGB, GL_FLOAT, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, g_ambient_, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, g_position_light_, 0);
+
 
         /* Configure the render targets */
         unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
@@ -95,6 +96,19 @@ namespace opengl {
         return 0;
     }
 
+    void OpenGLGBuffer::ClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
+        static const float pos[4] = { 0, 0, 0, 1 };
+        glClearTexImage(g_position_texture_, 0, GL_RGBA, GL_FLOAT, pos);
+
+        static const float norm[4] = { 0, 0, 0, 1 };
+        glClearTexImage(g_normal_texture_, 0, GL_RGBA, GL_FLOAT, norm);
+
+        static const float light[4] = { 0, 0, 0, 1 };
+        glClearTexImage(g_position_light_, 0, GL_RGBA, GL_FLOAT, light);
+
+        static const float color[4] = { red, green, blue, alpha };
+        glClearTexImage(g_albedo_spec_texture_, 0, GL_RGBA, GL_FLOAT, color);
+    }
 }
 }
 }

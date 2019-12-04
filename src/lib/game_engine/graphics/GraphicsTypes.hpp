@@ -42,6 +42,8 @@ namespace graphics {
         A struct to hold vertex data
     */
     struct Vertex_t {
+        Vertex_t() {};
+        Vertex_t(glm::vec3 pos, glm::vec3 norm, glm::vec2 uv) : position_(pos), normal_(norm), uv_(uv) {};
         glm::vec3 position_;
         glm::vec3 normal_;
         glm::vec2 uv_;

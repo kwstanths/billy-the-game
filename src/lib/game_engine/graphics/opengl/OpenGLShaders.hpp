@@ -35,7 +35,7 @@ namespace game_engine {
             static const char shader_gbuffer_position[] = "g_position";
             static const char shader_gbuffer_normal[] = "g_normal";
             static const char shader_gbuffer_albedo_spec[] = "g_albedo_spec";
-            static const char shader_gbuffer_ambient[] = "g_ambient";
+            static const char shader_gbuffer_position_light[] = "g_position_light";
 
             /* Names of the SSAO shader variables used */
             static const char shader_ssao_noise_texture[] = "noise_texture";
@@ -203,7 +203,6 @@ namespace game_engine {
                 GLuint uni_View_;
                 GLuint uni_Projection_;
                 GLuint uni_Lightspace_;
-                GLuint uni_ShadowMap_;
             };
 
             class OpenGLShaderShadowMap : public OpenGLShader {
@@ -300,8 +299,9 @@ namespace game_engine {
                 GLuint uni_texture_gbuffer_position_;
                 GLuint uni_texture_gbuffer_normal_;
                 GLuint uni_texture_gbuffer_albedo_spec_;
-                GLuint uni_texture_gbuffer_ambient_;
+                GLuint uni_texture_gbuffer_position_light_;
                 GLuint uni_texture_ssao_;
+                GLuint uni_shadow_map_;
                 GLuint uni_matrix_view_;
             };
 

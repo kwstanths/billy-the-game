@@ -7,33 +7,32 @@
 namespace dt = debug_tools;
 namespace math = game_engine::math;
 
-namespace game_engine {
-namespace math {
+namespace game_engine { namespace math {
 
-    Real_t DotProduct(Point2D vector_a, Point2D vector_b) {
+    Real_t DotProduct(Vector2D vector_a, Vector2D vector_b) {
         return vector_a.x()* vector_b.x() + vector_a.y() * vector_b.y();
     }
     
-    bool PointInside(Point2D point, Rectangle2D rect) {
-
-        Point2D AM({ point.x() - rect.A_.x(), point.y() - rect.A_.y() });
-        Point2D AB({ rect.B_.x() - rect.A_.x(), rect.B_.y() - rect.A_.y() });
-        Point2D AD({ rect.D_.x() - rect.A_.x(), rect.D_.y() - rect.A_.y() });
+    bool PointInside(Vector2D point, Rectangle2D rect) {
+    
+        Vector2D AM({ point.x() - rect.A_.x(), point.y() - rect.A_.y() });
+        Vector2D AB({ rect.B_.x() - rect.A_.x(), rect.B_.y() - rect.A_.y() });
+        Vector2D AD({ rect.D_.x() - rect.A_.x(), rect.D_.y() - rect.A_.y() });
     
         Real_t dot_product_AM_AB = DotProduct(AM, AB);
         Real_t dot_product_AM_AD = DotProduct(AM, AD);
         Real_t dot_product_AB_AB = DotProduct(AB, AB);
         Real_t dot_product_AD_AD = DotProduct(AD, AD);
-
-        if (0 <= dot_product_AM_AB && 
+    
+        if (0 <= dot_product_AM_AB &&
             dot_product_AM_AB <= dot_product_AB_AB &&
-            0 <= dot_product_AM_AD && 
+            0 <= dot_product_AM_AD &&
             dot_product_AM_AD <= dot_product_AD_AD) return true;
     
         return false;
     }
     
-    bool PointInside(Point2D point, Circle2D circle) {
+    bool PointInside(Vector2D point, Circle2D circle) {
     
         Real_t distance_to_center = GetDistance(point, circle.c_);
     
@@ -44,7 +43,7 @@ namespace math {
         return false;
     }
     
-    Real_t GetDistance(Point2D point, Line2D line) {
+    Real_t GetDistance(Vector2D point, Line2D line) {
         if (math::Equal(line.A_, Real_t(0.0)) && math::Equal(line.B_, Real_t(0.0))) {
             debug_tools::Console(debug_tools::CRITICAL, "GetDistancePointToLine(): line.A_ and line.B_ are zero");
             return -1.0f;
@@ -56,7 +55,7 @@ namespace math {
         return 0.0f;
     }
     
-    Real_t GetDistance(Point2D p_a, Point2D p_b) {
+    Real_t GetDistance(Vector2D p_a, Vector2D p_b) {
     
         Real_t x_diff = p_b.x() - p_a.x();
         Real_t y_diff = p_b.y() - p_a.y();
@@ -75,7 +74,7 @@ namespace math {
         return false;
     }
     
-    bool IntersectCircle_LineSegment(Circle2D circle, Point2D point_a, Point2D point_b) {
+    bool IntersectCircle_LineSegment(Circle2D circle, Vector2D point_a, Vector2D point_b) {
     
         Line2D points_line(point_a.x(), point_a.y(), point_b.x(), point_b.y());
         /* Check if we intersect at all */
@@ -100,10 +99,10 @@ namespace math {
             perpendicular_points_line = Line2D(circle.c_.x(), circle.c_.y(), perpendicular_grad);
         }
     
-        Point2D intersection_point = IntersecLine_Line(points_line, perpendicular_points_line);
+        Vector2D intersection_point = IntersecLine_Line(points_line, perpendicular_points_line);
     
-        Point2D vector_from_a_to_intersect({ intersection_point.x() - point_a.x(), intersection_point.y() - point_a.y() });
-        Point2D vector_from_b_to_intersect({ intersection_point.x() - point_b.x(), intersection_point.y() - point_b.y() });
+        Vector2D vector_from_a_to_intersect({ intersection_point.x() - point_a.x(), intersection_point.y() - point_a.y() });
+        Vector2D vector_from_b_to_intersect({ intersection_point.x() - point_b.x(), intersection_point.y() - point_b.y() });
     
         Real_t inner_product = vector_from_a_to_intersect.x() * vector_from_b_to_intersect.x() +
             vector_from_a_to_intersect.y() * vector_from_b_to_intersect.y();
@@ -113,7 +112,7 @@ namespace math {
         return false;
     }
     
-    Point2D IntersecLine_Line(Line2D line_a, Line2D line_b) {
+    Vector2D IntersecLine_Line(Line2D line_a, Line2D line_b) {
         Real_t gradient_a = line_a.GetGradient();
         Real_t gradient_b = line_b.GetGradient();
         Real_t yinter_a = line_a.GetYIntercept();
@@ -122,21 +121,22 @@ namespace math {
         if (math::Equal(gradient_a, gradient_b)) {
             debug_tools::Console(debug_tools::CRITICAL, "IntersecLine_Line(): gradients are almost equal");
         }
-
+    
         /* Calculate general solution */
         Real_t x_coord, y_coord;
         x_coord = (yinter_b - yinter_a) / (gradient_a - gradient_b);
         y_coord = gradient_a * x_coord + yinter_a;
-
+    
         /* Special cases */
         if (math::Equal(line_a.B_, Real_t(0.0))) {
             /* Line a is perpendicular to the x-axis */
             x_coord = -line_a.C_ / line_a.A_;
-        } else if (math::Equal(line_b.B_, Real_t(0.0))) {
+        }
+        else if (math::Equal(line_b.B_, Real_t(0.0))) {
             /* Line b is perpendicular to the x-axis */
             x_coord = -line_b.C_ / line_b.A_;
         }
-
+    
         if (math::Equal(gradient_a, Real_t(0.0))) {
             /* Line a is perpendicular to the y-axis */
             y_coord = -line_a.C_ / line_a.B_;
@@ -145,10 +145,10 @@ namespace math {
             /* line b is perpendicular to the y-axis */
             y_coord = -line_b.C_ / line_b.B_;
         }
-
-        return Point2D({ x_coord, y_coord });
-    }
     
+        return Vector2D({ x_coord, y_coord });
+    }
+
     bool IntersectRect_Rect(Rectangle2D rect_a, Rectangle2D rect_b) {
     
         if (PointInside(rect_a.A_, rect_b)) return true;
@@ -184,5 +184,4 @@ namespace math {
     }
 
 }
-
 }

@@ -111,6 +111,11 @@ namespace math {
         };
     
         /**
+            Initialize with time
+        */
+        MersenneTwisterGenerator();
+
+        /**
             Initialize with seed
         */
         MersenneTwisterGenerator(unsigned long seed);

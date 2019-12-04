@@ -47,7 +47,7 @@ namespace physics {
             Insert an object to the engine. Will use the object parameters at the moment of calling
             @return 0 = OK, else see ErrorCodes.hpp
         */
-        int Insert(PhysicsObject * object, math::Point2D& position);
+        int Insert(PhysicsObject * object, math::Vector2D& position);
 
         /**
             Update the position of an object inside the engine
@@ -56,7 +56,7 @@ namespace physics {
             @param new_pos_y The new position vertical coordinate
             @return always 0. If object not found produces a console warning
         */
-        int Update(PhysicsObject * object, math::Point2D& new_position);
+        int Update(PhysicsObject * object, math::Vector2D& new_position);
 
         /**
             Remove an object from the physics engine
@@ -73,7 +73,7 @@ namespace physics {
             @param direction The direction of moving
             @return The collision result
         */
-        math::Point2D CheckCollision(PhysicsObject * object, math::Point2D new_position);
+        math::Vector2D CheckCollision(PhysicsObject * object, math::Vector2D new_position);
     
     private:
 

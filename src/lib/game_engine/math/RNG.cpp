@@ -103,6 +103,7 @@ switch.
 
 #include <string.h>
 #include <stdexcept>
+#include <ctime>
 
 #include "HelpFunctions.hpp"
 
@@ -311,6 +312,11 @@ namespace math {
         return gcd(b, fmod(a, b));
     }
     
+    MersenneTwisterGenerator::MersenneTwisterGenerator()
+    {
+        init_genrand(time(NULL));
+    }
+
     MersenneTwisterGenerator::MersenneTwisterGenerator(unsigned long seed) {
         init_genrand(seed);
     }

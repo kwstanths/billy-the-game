@@ -98,9 +98,9 @@ namespace game_engine {
 
         MeasureFPS(1000.0f * delta_time);
 
-        math::Vec3 camera_pos, camera_dir;
-        camera_->GetPositionVector(&camera_pos.x_, &camera_pos.y_, &camera_pos.z_);
-        camera_->GetDirectionVector(&camera_dir.x_, &camera_dir.y_, &camera_dir.z_);
+        math::Vector3D camera_pos, camera_dir;
+        camera_->GetPositionVector(camera_pos.x(), camera_pos.y(), camera_pos.z());
+        camera_->GetDirectionVector(camera_dir.x(), camera_dir.y(), camera_dir.z());
         Real_t ratio = (Real_t)config_.context_params_.window_width_ / (Real_t)config_.context_params_.window_height_;
         Real_t angle = camera_->GetPerspectiveAngle();
 
