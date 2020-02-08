@@ -56,7 +56,6 @@ namespace opengl {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, g_position_light_, 0);
 
-
         /* Configure the render targets */
         unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
         glDrawBuffers(4, attachments);
@@ -96,19 +95,20 @@ namespace opengl {
         return 0;
     }
 
-    void OpenGLGBuffer::ClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
-        static const float pos[4] = { 0, 0, 0, 1 };
+    void OpenGLGBuffer::ClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {        
+        static const float pos[4] = { 0, 0, 0, 1};
         glClearTexImage(g_position_texture_, 0, GL_RGBA, GL_FLOAT, pos);
-
+        
         static const float norm[4] = { 0, 0, 0, 1 };
         glClearTexImage(g_normal_texture_, 0, GL_RGBA, GL_FLOAT, norm);
 
-        static const float light[4] = { 0, 0, 0, 1 };
+        static const float light[4] = { 0, 0, 0, 1};
         glClearTexImage(g_position_light_, 0, GL_RGBA, GL_FLOAT, light);
 
         static const float color[4] = { red, green, blue, alpha };
         glClearTexImage(g_albedo_spec_texture_, 0, GL_RGBA, GL_FLOAT, color);
     }
+
 }
 }
 }

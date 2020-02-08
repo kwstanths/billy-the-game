@@ -20,11 +20,15 @@ namespace game_engine {
 
     void FrameRateRegulator::Init(size_t frame_rate, size_t frame_averages) {
 
-        if (frame_rate == 0) frame_time_required_ = 0;
-        else frame_time_required_ = 1.0 / (1.0 * frame_rate);
+        if (frame_rate == 0) {
+            frame_time_required_ = 0;
+            deltas_ = std::vector<double>(frame_averages, 0.016);
+        } else {
+            frame_time_required_ = 1.0 / (1.0 * frame_rate);
+            deltas_ = std::vector<double>(frame_averages, frame_time_required_);
+        }
 
         /* Initialize the deltas vector with the frame time needed in seconds */
-        deltas_ = std::vector<double>(frame_averages, frame_time_required_);
 
         /* If not push as many frames as possible, then setup timer */
         if (!math::Equal(frame_time_required_, 0.0)) {

@@ -34,22 +34,22 @@ namespace opengl {
         return 0;
     }
 
-    void OpenGLCamera::GetPositionVector(Real_t & pos_x, Real_t & pos_y, Real_t & pos_z) {
-        pos_x = config_.position_.x;
-        pos_y = config_.position_.y;
-        pos_z = config_.position_.z;
+    void OpenGLCamera::GetPositionVector(Real_t * pos_x, Real_t * pos_y, Real_t * pos_z) {
+        *pos_x = config_.position_.x;
+        *pos_y = config_.position_.y;
+        *pos_z = config_.position_.z;
     }
 
-    void OpenGLCamera::GetDirectionVector(Real_t & dir_x, Real_t & dir_y, Real_t & dir_z) {
-        dir_x = config_.direction_.x;
-        dir_y = config_.direction_.y;
-        dir_z = config_.direction_.z;
+    void OpenGLCamera::GetDirectionVector(Real_t * dir_x, Real_t * dir_y, Real_t * dir_z) {
+        *dir_x = config_.direction_.x;
+        *dir_y = config_.direction_.y;
+        *dir_z = config_.direction_.z;
     }
 
-    void OpenGLCamera::GetUpVector(Real_t & up_x, Real_t & up_y, Real_t & up_z) {
-        up_x = config_.up_.x;
-        up_y = config_.up_.y;
-        up_z = config_.up_.z;
+    void OpenGLCamera::GetUpVector(Real_t * up_x, Real_t * up_y, Real_t * up_z) {
+        *up_x = config_.up_.x;
+        *up_y = config_.up_.y;
+        *up_z = config_.up_.z;
     }
 
     Real_t OpenGLCamera::GetPerspectiveAngle() {

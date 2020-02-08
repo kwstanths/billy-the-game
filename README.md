@@ -7,12 +7,14 @@ in the development of a game
 ## Current progress - billy the game
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/RobalKH8GVY/0.jpg)](https://www.youtube.com/watch?v=RobalKH8GVY&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=9)
 
-## Current progress - AO
+## Current progress - Ambient Occlusion
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jtVoM0I_rxw/0.jpg)](https://www.youtube.com/watch?v=jtVoM0I_rxw&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=10)
 
 ## Particles branch
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GZs0-xvkecA/0.jpg)](https://www.youtube.com/watch?v=GZs0-xvkecA)
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/LectfDOBszc/0.jpg)](https://www.youtube.com/watch?v=LectfDOBszc)
+
+Fluid simulation with grids
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GZs0-xvkecA/0.jpg)](https://www.youtube.com/watch?v=GZs0-xvkecA)
 
 ## Animation branch
 

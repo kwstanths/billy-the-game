@@ -3,12 +3,12 @@
 
 newmtl Floor
 Ns 2.000000
-Ka 0.000000 0.000000 0.000000
-Kd 0.000000 0.000000 0.000000
+Ka 0 0.5, 0.16
+Kd 0 0.5, 0.16
 Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
-illum 0
-map_Kd textures/wood.jpg
-map_Ks textures/spec_map_empty.png
+illum 2
+map_Kd textures/spec_map_empty.png
+map_Ks textures/spec_map_full.png

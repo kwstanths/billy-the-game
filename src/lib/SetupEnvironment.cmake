@@ -47,6 +47,11 @@ macro(SetupEnvironment)
 		#Assimp TODO assimp library is used
 		set(ASSIMP_INCLUDE_DIRS ${PROJECT_ROOT}/src/lib/external/assimp-4.1.0/Windows/include/)
 		set(ASSIMP_LIBRARY ${PROJECT_ROOT}/src/lib/external/assimp-4.1.0/Windows/lib/Debug/assimp-vc140-mt.lib)
+        
+        #Cal3D
+        set(CAL3D_INCLUDE_DIRS ${PROJECT_ROOT}/src/lib/external/cal3d/include/)
+        set(CAL3D_LIBRARY ${PROJECT_ROOT}/src/lib/external/cal3d/lib/Win32/cal3d.lib)
+        
 		
 	elseif(UNIX)
 		#Prepare the building environment for Linux G++
@@ -73,6 +78,7 @@ macro(SetupEnvironment)
 		${GLEW_INCLUDE_DIRS}
 		${FREETYPE_INCLUDE_DIRS}
 		${ASSIMP_INCLUDE_DIRS}
+        ${CAL3D_INCLUDE_DIRS}
 	)
 	
 	set(ENGINE_LIBS
@@ -81,6 +87,7 @@ macro(SetupEnvironment)
 		GLEW_1130
 		${ASSIMP_LIBRARY}
 		${FREETYPE_LIBRARY}
+        ${CAL3D_LIBRARY}
 		${OPENGL_LIBRARY}
 	)
 	

@@ -29,6 +29,7 @@ namespace utility {
     }
 
     void FIFOWorker::Schedule(std::function<void()> func) {
+        executing_ = true;
         {
             std::unique_lock<std::mutex> l(lock_);
             tasks_.push(Task(func));

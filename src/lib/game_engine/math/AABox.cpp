@@ -27,35 +27,5 @@ namespace math {
         return true;
     }
 
-    Vector3D AAboxGetVertexPositive(AABox<3>& box, Vector3D& normal) {
-        Vector3D temp = box.min_;
-
-        if (normal.x() > 0)
-            temp.x() += box.max_[0] - box.min_[0];
-
-        if (normal.y() > 0)
-            temp.y() += box.max_[1] - box.min_[1];
-
-        if (normal.z() > 0)
-            temp.z() += box.max_[2] - box.min_[2];
-
-        return temp;
-    }
-
-    Vector3D AAboxGetVertexNegative(AABox<3>& box, Vector3D& normal) {
-        Vector3D temp = box.min_;
-
-        if (normal.x() < 0)
-            temp.x() += box.max_[0] - box.min_[0];
-
-        if (normal.y() < 0)
-            temp.y() += box.max_[1] - box.min_[1];
-
-        if (normal.z() < 0)
-            temp.z() += box.max_[2] - box.min_[2];
-
-        return temp;
-    }
-
 }
 }

@@ -8,7 +8,6 @@
 
 #include "Real.hpp"
 #include "HelpFunctions.hpp"
-#include "Vec3.hpp"
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
@@ -56,10 +55,10 @@ namespace math {
             return std::sqrt(sum);
         }
 
-        Real_t DotProduct(Vector<K>& a) {
+        Real_t DotProduct(Vector<K>& other) {
             Real_t sum = 0;
             for (size_t i = 0; i < K; i++) {
-                sum += coordinates_[i] * a.coordinates_[i];
+                sum += coordinates_[i] * other.coordinates_[i]l
             }
             return sum;
         }
@@ -191,20 +190,6 @@ namespace math {
             coordinates_[0] = v[0];
             coordinates_[1] = v[1];
             coordinates_[2] = v[2];
-        }
-
-        Vector3D(Vec3& v) : Vector() {
-            coordinates_[0] = v.x_;
-            coordinates_[1] = v.y_;
-            coordinates_[2] = v.z_;
-        }
-
-        static Vector3D CrossProduct(Vector3D& a, Vector3D& b) {
-            return Vector3D(
-                { a.y()*b.z() - a.z()*b.y(),
-                a.z()*b.x() - a.x()*b.z(),
-                a.x()*b.y() - a.y()*b.x()
-                });
         }
 
         Vector3D& operator = (Vector<3>& v) {

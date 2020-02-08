@@ -142,7 +142,7 @@ namespace graphics {
         bool separable_ao = false;
         bool ssao_blur = true;
         bool draw_ssao_texture = false;
-        bool shadows = false;
+        bool shadows = true;
 
         /**
             Set a camera
@@ -155,6 +155,7 @@ namespace graphics {
             Flushes the point lights into drawing, flushes the object draw calls into drawing
         */
         void FlushDrawCalls();
+
     };
 
 }

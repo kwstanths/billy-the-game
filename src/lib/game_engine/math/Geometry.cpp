@@ -7,14 +7,15 @@
 namespace dt = debug_tools;
 namespace math = game_engine::math;
 
-namespace game_engine { namespace math {
+namespace game_engine {
+namespace math {
 
     Real_t DotProduct(Vector2D vector_a, Vector2D vector_b) {
         return vector_a.x()* vector_b.x() + vector_a.y() * vector_b.y();
     }
     
     bool PointInside(Vector2D point, Rectangle2D rect) {
-    
+
         Vector2D AM({ point.x() - rect.A_.x(), point.y() - rect.A_.y() });
         Vector2D AB({ rect.B_.x() - rect.A_.x(), rect.B_.y() - rect.A_.y() });
         Vector2D AD({ rect.D_.x() - rect.A_.x(), rect.D_.y() - rect.A_.y() });
@@ -23,10 +24,10 @@ namespace game_engine { namespace math {
         Real_t dot_product_AM_AD = DotProduct(AM, AD);
         Real_t dot_product_AB_AB = DotProduct(AB, AB);
         Real_t dot_product_AD_AD = DotProduct(AD, AD);
-    
-        if (0 <= dot_product_AM_AB &&
+
+        if (0 <= dot_product_AM_AB && 
             dot_product_AM_AB <= dot_product_AB_AB &&
-            0 <= dot_product_AM_AD &&
+            0 <= dot_product_AM_AD && 
             dot_product_AM_AD <= dot_product_AD_AD) return true;
     
         return false;
@@ -121,22 +122,21 @@ namespace game_engine { namespace math {
         if (math::Equal(gradient_a, gradient_b)) {
             debug_tools::Console(debug_tools::CRITICAL, "IntersecLine_Line(): gradients are almost equal");
         }
-    
+
         /* Calculate general solution */
         Real_t x_coord, y_coord;
         x_coord = (yinter_b - yinter_a) / (gradient_a - gradient_b);
         y_coord = gradient_a * x_coord + yinter_a;
-    
+
         /* Special cases */
         if (math::Equal(line_a.B_, Real_t(0.0))) {
             /* Line a is perpendicular to the x-axis */
             x_coord = -line_a.C_ / line_a.A_;
-        }
-        else if (math::Equal(line_b.B_, Real_t(0.0))) {
+        } else if (math::Equal(line_b.B_, Real_t(0.0))) {
             /* Line b is perpendicular to the x-axis */
             x_coord = -line_b.C_ / line_b.A_;
         }
-    
+
         if (math::Equal(gradient_a, Real_t(0.0))) {
             /* Line a is perpendicular to the y-axis */
             y_coord = -line_a.C_ / line_a.B_;
@@ -145,10 +145,10 @@ namespace game_engine { namespace math {
             /* line b is perpendicular to the y-axis */
             y_coord = -line_b.C_ / line_b.B_;
         }
-    
+
         return Vector2D({ x_coord, y_coord });
     }
-
+    
     bool IntersectRect_Rect(Rectangle2D rect_a, Rectangle2D rect_b) {
     
         if (PointInside(rect_a.A_, rect_b)) return true;
@@ -184,4 +184,5 @@ namespace game_engine { namespace math {
     }
 
 }
+
 }
