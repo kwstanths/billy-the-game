@@ -154,7 +154,10 @@ namespace graphics {
                 float z_offset = rendering_object->translation_matrix_[3][2];
             
                 opengl::OpenGLObject & gl_object = mesh->opengl_object_;
-                int ret = f.boxInFrustum(AABox(Vec3(gl_object.min_x_ + x_offset, gl_object.min_y_ + y_offset, gl_object.min_z_ + z_offset), gl_object.max_x_ - gl_object.min_x_, gl_object.max_y_ - gl_object.min_y_, gl_object.max_z_ - gl_object.min_z_));
+                Vector3D min({ gl_object.min_x_ + x_offset, gl_object.min_y_ + y_offset, gl_object.min_z_ + z_offset });
+                Vector3D max({ gl_object.max_x_ + x_offset, gl_object.max_y_ + y_offset, gl_object.max_z_ + z_offset });
+                AABox<3> box(min, max);
+                int ret = f.boxInFrustum(box);
                 if (ret != FrustumG::OUTSIDE) renderer_->DrawGBuffer(gl_object, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
             }
             

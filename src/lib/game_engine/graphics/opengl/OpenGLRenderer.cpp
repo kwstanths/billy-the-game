@@ -164,7 +164,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         /* Init the shadow map */
         shadow_map_->Init(context, 1248, 1248);
     
-    
         /* Initialize a quad geometry */
         {
             float quadVertices[] = {

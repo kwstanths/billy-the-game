@@ -6,25 +6,10 @@ void multMat(float *res, float *a, float *b);
 #include "game_engine/math/Vec3.hpp"
 #include "game_engine/math/Vector.hpp"
 #include "game_engine/math/Plane.hpp"
+#include "game_engine/math/AABox.hpp"
 
 using namespace game_engine::math;
 
-class AABox {
-public:
-
-    Vec3 corner;
-    float x, y, z;
-
-    AABox::AABox(Vec3 &corner, float x, float y, float z);
-    AABox::AABox(void);
-    AABox::~AABox();
-
-    void AABox::setBox(Vec3 &corner, float x, float y, float z);
-
-    // for use in frustum computations
-    Vec3 AABox::getVertexP(Vec3 &normal);
-    Vec3 AABox::getVertexN(Vec3 &normal);
-};
 
 class FrustumG{
 private:
@@ -56,7 +41,7 @@ public:
     void FrustumG::setCamDef(Vec3 &p, Vec3 &l, Vec3 &u);
     int FrustumG::pointInFrustum(Vec3 &p);
     int FrustumG::sphereInFrustum(Vec3 &p, float raio);
-    int FrustumG::boxInFrustum(AABox &b);
+    int FrustumG::boxInFrustum(AABox<3> &b);
 };
 
 

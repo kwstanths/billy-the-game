@@ -80,6 +80,24 @@ namespace game_engine { namespace math {
     };
     
     bool IntersectionAABoxRay2D(AABox<2>& box, Ray2D ray, Real_t& t);
+
+    /**
+        Consider the box, and normal vector. The positive point returned from this function
+        is the point on the box that is further along the normal. 
+        See here http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes-ii/
+        @param normal The normal
+        @return The closest point
+    */
+    Vector3D AAboxGetVertexPositive(AABox<3>& box, Vector3D& normal);
+
+    /**
+        Consider the box, and normal vector. The negative point returned from this function
+        is the point on the box that is further away from the normal. 
+        See here http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes-ii/
+        @param normal The normal
+        @return The closest point
+    */
+    Vector3D AAboxGetVertexNegative(AABox<3>& box, Vector3D& normal);
 }
 }
 

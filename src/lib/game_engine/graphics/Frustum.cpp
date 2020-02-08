@@ -5,74 +5,6 @@
 
 #define ANG2RAD 3.14159265358979323846/180.0
 
-AABox::AABox(Vec3 &corner, float x, float y, float z) {
-
-    setBox(corner, x, y, z);
-}
-
-AABox::AABox(void) {
-    corner.x_ = 0; corner.y_ = 0; corner.z_ = 0;
-
-    x = 1.0f;
-    y = 1.0f;
-    z = 1.0f;
-
-}
-
-AABox::~AABox() {}
-
-void AABox::setBox(Vec3 &corner, float x, float y, float z) {
-    this->corner = corner;
-
-    if (x < 0.0) {
-        x = -x;
-        this->corner.x_ -= x;
-    }
-    if (y < 0.0) {
-        y = -y;
-        this->corner.y_ -= y;
-    }
-    if (z < 0.0) {
-        z = -z;
-        this->corner.z_ -= z;
-    }
-    this->x = x;
-    this->y = y;
-    this->z = z;
-}
-
-Vec3 AABox::getVertexP(Vec3 &normal) {
-
-    Vec3 res = corner;
-
-    if (normal.x_ > 0)
-        res.x_ += x;
-
-    if (normal.y_ > 0)
-        res.y_ += y;
-
-    if (normal.z_ > 0)
-        res.z_ += z;
-
-    return(res);
-}
-
-Vec3 AABox::getVertexN(Vec3 &normal) {
-
-    Vec3 res = corner;
-
-    if (normal.x_ < 0)
-        res.x_ += x;
-
-    if (normal.y_ < 0)
-        res.y_ += y;
-
-    if (normal.z_ < 0)
-        res.z_ += z;
-
-    return(res);
-}
-
 FrustumG::FrustumG() {}
 
 FrustumG::~FrustumG() {}
@@ -190,15 +122,15 @@ int FrustumG::sphereInFrustum(Vec3 &p, float raio) {
     return(result);
 }
 
-int FrustumG::boxInFrustum(AABox &b) {
+int FrustumG::boxInFrustum(AABox<3> &b) {
 
     int result = INSIDE;
     for (int i = 0; i < 6; i++) {
-        Vec3 norma = Vec3(pl[i].normal_.x(), pl[i].normal_.y(), pl[i].normal_.z());
+        //Vec3 norma = Vec3(pl[i].normal_.x(), pl[i].normal_.y(), pl[i].normal_.z());
 
-        if (pl[i].Distance(Vector3D(b.getVertexP(norma))) < 0)
+        if (pl[i].Distance(AAboxGetVertexPositive(b, pl[i].normal_)) < 0)
             return OUTSIDE;
-        else if (pl[i].Distance(Vector3D(b.getVertexN(norma))) < 0)
+        else if (pl[i].Distance(AAboxGetVertexNegative(b, pl->normal_)) < 0)
             result = INTERSECT;
     }
     return(result);

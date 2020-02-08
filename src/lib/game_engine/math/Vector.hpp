@@ -40,11 +40,12 @@ namespace math {
             return sqrt(a);
         }
 
-        void Normalise() {
+        Vector& Normalise() {
             Real_t norm = Norm();
             for (size_t i = 0; i < K; i++) {
                 coordinates_[i] = coordinates_[i] / norm;
             }
+            return *this;
         }
 
         static Real_t Distance(Vector<K>& a, Vector<K>& b) {
@@ -52,7 +53,7 @@ namespace math {
             for (size_t i = 0; i < K; i++) {
                 sum += std::pow<Real_t>(a[i] - b[i], 2);
             }
-
+            return std::sqrt(sum);
         }
 
         Real_t DotProduct(Vector<K>& a) {
@@ -68,9 +69,11 @@ namespace math {
                 coordinates_[i] += rhs.coordinates_[i];
             return *this;
         }
-        friend Vector operator+(Vector lhs, const Vector& rhs) {
-            lhs += rhs;
-            return lhs;
+        friend Vector operator+(const Vector& lhs, const Vector& rhs) {
+            Vector<K> temp;
+            for (size_t i = 0; i < K; i++)
+                temp[i] = lhs.coordinates_[i] + rhs.coordinates_[i];
+            return temp;
         }
 
         Vector& operator-=(const Vector& rhs) {
@@ -84,20 +87,20 @@ namespace math {
         }
 
         friend Vector operator*(Real_t v, const Vector& rhs) {
-            Vector3D temp = rhs;
+            Vector temp = rhs;
             for (size_t i = 0; i < K; i++)
                 temp.coordinates_[i] = temp.coordinates_[i] * v;
             return temp;
         }
         friend Vector operator*(const Vector& lhs, Real_t v) {
-            Vector3D temp = lhs;
+            Vector temp = lhs;
             for (size_t i = 0; i < K; i++)
                 temp.coordinates_[i] = temp.coordinates_[i] * v;
             return temp;
         }
 
         friend Vector operator/(const Vector& lhs, Real_t v) {
-            Vector3D temp = lhs;
+            Vector temp = lhs;
             for (size_t i = 0; i < K; i++)
                 temp.coordinates_[i] = temp.coordinates_[i] / v;
             return temp;

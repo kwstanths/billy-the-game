@@ -58,6 +58,7 @@ namespace utility {
         std::vector<game_engine::Real_t> g_forward_, g_backwards_;
         CELL start_, goal_, current_forward_, current_backwards_, meeting_cell_;
         size_t nodes_visited_ = 0;
+        std::vector<std::pair<CELL, game_engine::Real_t>> neighbors_;
 
         bool StepForward();
         bool StepBackwards();

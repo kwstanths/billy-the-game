@@ -34,6 +34,17 @@ namespace utility {
         g_forward_[GetCellIndex(start_)] = 0;
         g_backwards_ = std::vector<game_engine::Real_t>(dimensions[0] * dimensions[1], std::numeric_limits<game_engine::Real_t>::infinity());
         g_backwards_[GetCellIndex(goal_)] = 0;
+
+        Real_t sqrt2 = std::sqrt(2);
+        neighbors_ = std::vector<std::pair<CELL, game_engine::Real_t>>(8);
+        neighbors_.push_back(std::make_pair(CELL(0, 1), 1));
+        neighbors_.push_back(std::make_pair(CELL(0, -1), 1));
+        neighbors_.push_back(std::make_pair(CELL(1, 0), 1));
+        neighbors_.push_back(std::make_pair(CELL(-1, 0), 1));
+        neighbors_.push_back(std::make_pair(CELL(1, 1), sqrt2));
+        neighbors_.push_back(std::make_pair(CELL(-1, 1), sqrt2));
+        neighbors_.push_back(std::make_pair(CELL(1, -1), sqrt2));
+        neighbors_.push_back(std::make_pair(CELL(-1, -1), sqrt2));
     }
 
     bool BidirectionalAstar::StepF() {
@@ -53,8 +64,8 @@ namespace utility {
             reached = StepBI();
         }
 
-        if (reached) {
-            dt::Console("Bidirectional nodes visited: " + std::to_string(nodes_visited_));
+        if (!reached) {
+            dt::ConsoleInfoL(dt::WARNING, "Failed to find path...", "start i", start_.i_, "start j", start_.j_, "goal i", goal_.i_, "goal j", goal_.j_);
         }
         return reached;
     }
@@ -65,8 +76,8 @@ namespace utility {
             reached = StepF();
         }
 
-        if (reached) {
-            dt::Console("Forward nodes visited: " + std::to_string(nodes_visited_));
+        if (!reached) {
+            dt::ConsoleInfoL(dt::WARNING, "Failed to find path...", "start i", start_.i_, "start j", start_.j_, "goal i", goal_.i_, "goal j", goal_.j_);
         }
         return reached;
     }
@@ -76,11 +87,11 @@ namespace utility {
     }
 
     game_engine::Real_t BidirectionalAstar::heuristicF(CELL cell) {
-        return 1.001*(g_forward_[GetCellIndex(cell)] + std::abs((int)cell.i_ - (int)goal_.i_) + std::abs((int)cell.j_ - (int)goal_.j_));
+        return /*1.001**/(g_forward_[GetCellIndex(cell)] + std::abs((int)cell.i_ - (int)goal_.i_) + std::abs((int)cell.j_ - (int)goal_.j_));
     }
 
     game_engine::Real_t BidirectionalAstar::heuristicB(CELL cell) {
-        return 1.001*(g_backwards_[GetCellIndex(cell)] + std::abs((int)cell.i_ - (int)start_.i_) + std::abs((int)cell.j_ - (int)start_.j_));
+        return /*1.001**/(g_backwards_[GetCellIndex(cell)] + std::abs((int)cell.i_ - (int)start_.i_) + std::abs((int)cell.j_ - (int)start_.j_));
     }
 
     bool BidirectionalAstar::StepForward() {
@@ -94,21 +105,12 @@ namespace utility {
             return true;
         }
 
-        std::vector<CELL> neighbors(4);
-        neighbors[0] = CELL(0, 1);
-        neighbors[1] = CELL(0, -1);
-        neighbors[2] = CELL(1, 0);
-        neighbors[3] = CELL(-1, 0);
-        //neighbors[4] = CELL(-1, -1);
-        //neighbors[5] = CELL(-1, 1);
-        //neighbors[6] = CELL(1, -1);
-        //neighbors[7] = CELL(1, 1);
-        for (size_t n = 0; n < neighbors.size(); n++) {
-            CELL neighbor = current_forward_ + neighbors[n];
+        for (size_t n = 0; n < neighbors_.size(); n++) {
+            CELL neighbor = current_forward_ + neighbors_[n].first;
             size_t neighbor_index = GetCellIndex(neighbor);
             if (grid_->at(neighbor.i_, neighbor.j_) == -1) continue;
 
-            Real_t tentative_score = g_forward_[GetCellIndex(current_forward_)] + 1;
+            Real_t tentative_score = g_forward_[GetCellIndex(current_forward_)] + neighbors_[n].second;
             /* If this new cost is better for that node */
             if (tentative_score < g_forward_[neighbor_index]) {
                 /* Store how we got here */
@@ -133,21 +135,12 @@ namespace utility {
             return true;
         }
 
-        std::vector<CELL> neighbors(4);
-        neighbors[0] = CELL(0, 1);
-        neighbors[1] = CELL(0, -1);
-        neighbors[2] = CELL(1, 0);
-        neighbors[3] = CELL(-1, 0);
-        //neighbors[4] = CELL(-1, -1);
-        //neighbors[5] = CELL(-1, 1);
-        //neighbors[6] = CELL(1, -1);
-        //neighbors[7] = CELL(1, 1);
-        for (size_t n = 0; n < neighbors.size(); n++) {
-            CELL neighbor = current_backwards_ + neighbors[n];
+        for (size_t n = 0; n < neighbors_.size(); n++) {
+            CELL neighbor = current_backwards_ + neighbors_[n].first;
             size_t neighbor_index = GetCellIndex(neighbor);
             if (grid_->at(neighbor.i_, neighbor.j_) == -1) continue;
 
-            Real_t tentative_score = g_backwards_[GetCellIndex(current_backwards_)] + 1;
+            Real_t tentative_score = g_backwards_[GetCellIndex(current_backwards_)] + neighbors_[n].second;
             /* If this new cost is better for that node */
             if (tentative_score < g_backwards_[neighbor_index]) {
                 /* Store how we got here */
