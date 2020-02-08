@@ -17,6 +17,7 @@ namespace utility {
             Does nothing in particular, call Init()
         */
         CircularBuffer() {
+            items_inside_ = 0;
             is_inited_ = false;
         }
     

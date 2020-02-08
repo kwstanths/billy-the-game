@@ -1,11 +1,9 @@
 #ifndef __Vec3_hpp__
 #define __Vec3_hpp__
 
-#include <iostream>
-
 #include <glm/glm.hpp>
 
-#include "Real.hpp"
+#include "Types.hpp"
 
 namespace game_engine {
 namespace math {

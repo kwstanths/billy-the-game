@@ -7,7 +7,9 @@
 
 #include <map>
 
-namespace game_engine { namespace graphics { namespace opengl {
+namespace game_engine {
+namespace graphics {
+namespace opengl {
 
     OpenGLObject::OpenGLObject() {
         is_inited_ = false;
@@ -34,11 +36,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         is_inited_ = true;
         return 0;
     }
-
-    void OpenGLObject::SetVertices(std::vector<game_engine::graphics::Vertex_t>& vertices) {
-        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex_t), &vertices[0], GL_STATIC_DRAW);
-    }
     
     void OpenGLObject::SetupAttributes(OpenGLShaderVerticesColor * shader) {
         /* Set shader layout attributes */
@@ -61,13 +58,24 @@ namespace game_engine { namespace graphics { namespace opengl {
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_normal), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, normal_));
     }
-
+    
     void OpenGLObject::SetupAttributes(OpenGLShaderShadowMap * shader) {
         /* Set shader layout attributes */
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
         /* Attribute number 0 is the object vertices */
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_position), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)0);
+    }
+
+    void OpenGLObject::SetupAttributes(OpenGLShaderWater * shader) {
+        /* Set shader layout attributes */
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
+        /* Attribute number 0 is the object vertices */
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_position), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)0);
+        /* Attribute number 1 is the object's uv coordinates */
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_uv), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, uv_));
     }
     
     void OpenGLObject::Render() {
@@ -114,7 +122,7 @@ namespace game_engine { namespace graphics { namespace opengl {
     bool OpenGLObject::IsInited() {
         return is_inited_;
     }
-
+    
     GLuint OpenGLObject::GetVertexBufferID() {
         return vertex_buffer_;
     }
@@ -212,18 +220,18 @@ namespace game_engine { namespace graphics { namespace opengl {
         bbox_transform_ = glm::translate(glm::mat4(1), center) * glm::scale(glm::mat4(1), size);
     
     }
-
+    
     OpenGLTriangle::OpenGLTriangle() {
         is_inited_ = false;
     }
-
+    
     int OpenGLTriangle::Init(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3) {
-
+        
         glm::vec3 normal = glm::normalize(glm::cross(v2 - v1, v3 - v1));
 
         /* TODO QUICK HACK!!!!, FIX ME!!!!, I DONT BELONG HERE!!! */
         if (normal.y < 0) normal.y *= -1;
-
+        
         std::vector<Vertex_t> vertices;
         vertices.push_back(Vertex_t(v1, normal, glm::vec2()));
         vertices.push_back(Vertex_t(v2, normal, glm::vec2()));

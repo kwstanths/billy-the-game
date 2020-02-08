@@ -38,8 +38,7 @@ namespace game_engine {
                     glfwTerminate();
                     return Error::ERROR_GLFW_WINDOW;
                 }
-
-                glfwSetWindowPos(glfw_window_, 20, 50);
+                glfwSetWindowPos(glfw_window_, 120, 50);
 
                 /* Initialize GLEW */
                 glfwMakeContextCurrent(glfw_window_);
@@ -77,6 +76,7 @@ namespace game_engine {
                 ret += shader_blur_.Init("shaders/VertexShaderBlur.glsl", "shaders/FragmentShaderBlur.glsl");
                 ret += shader_final_pass_.Init("shaders/VertexShaderFinalPass.glsl", "shaders/FragmentShaderFinalPass.glsl");
                 ret += shader_shadow_map_.Init("shaders/VertexShaderShadowMap.glsl", "shaders/FragmentShaderShadowMap.glsl");
+                ret += shader_water_.Init("shaders/VertexShaderWater.glsl", "shaders/FragmentShaderWater.glsl");
                 if (ret) dt::Console(dt::CRITICAL, "Shaders compilation failed");
 
                 is_inited_ = true;

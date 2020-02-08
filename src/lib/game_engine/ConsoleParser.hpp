@@ -6,6 +6,8 @@
 #include <vector>
 #include <unordered_map>
 
+#include "debug_tools/Timestamp.hpp"
+
 namespace game_engine {
 
 #define COMMAND_SSAO_RADIUS 0
@@ -17,6 +19,18 @@ namespace game_engine {
 #define COMMAND_SSAO_DRAW_SSAO 6
 #define COMMAND_SSAO_SEPARABLE 7
 #define COMMAND_SHADOW_MAPPING 8
+#define COMMAND_CA_RESET 9
+#define COMMAND_CA_SPAWN 10
+#define COMMAND_CA_INTEGRATION 11
+#define COMMAND_CA_BOUNCING 12
+#define COMMAND_CA_FRICTION 13
+#define COMMAND_CA_ELASTICITY 14
+#define COMMAND_CA_DAMPING 15
+#define COMMAND_CA_WORLD 16
+#define COMMAND_CA_DRAW_PARTICLES 17
+#define COMMAND_CA_DRAW_SPRING_LINES 18
+#define COMMAND_CA_DRAW_SPRING_TRIANGLES 19
+#define COMMAND_CA_PAUSE 20
 
     /* The order between these two is very important! */
     static const std::vector<std::string> commands = { "ssao_radius", 
@@ -27,13 +41,35 @@ namespace game_engine {
         "ssao_bias",
         "ssao_draw_ssao", 
         "ssao_separable",
-        "shadows"
+        "shadows",
+
+        "reset",
+        "spawn",
+        "integration",
+        "bouncing",
+        "friction",
+        "elasticity",
+        "damping",
+        "world",
+        "draw_particles",
+        "draw_lines",
+        "draw_triangles",
+        "pause",
     };
 
     struct ConsoleCommand {
+        uint64_t timestamp_ = 0;
         int type_ = -1;
         float arg_1_;
         float arg_2_;
+
+        bool operator==(const ConsoleCommand& other) {
+            return other.timestamp_ == timestamp_;
+        }
+
+        bool operator!=(const ConsoleCommand& other) {
+            return other.timestamp_ != timestamp_;
+        }
     };
 
     class ConsoleParser {
@@ -46,6 +82,8 @@ namespace game_engine {
         ~ConsoleParser();
 
         ConsoleCommand GetLastCommand();
+
+        void ClearLastCommand();
 
     private:
         std::thread parser_thread_;

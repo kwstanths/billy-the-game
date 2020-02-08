@@ -85,20 +85,13 @@ float ShadowCalculation(vec3 fragment_position_lightspace) {
 void main() {
     
     vec3 fragment_position_viewspace = texture(g_position, uv).xyz;
-    vec3 normal_viewspace = texture(g_normal, uv).rgb;
+    vec3 normal_viewspace = normalize(texture(g_normal, uv).rgb);
     vec3 fragment_color = texture(g_albedo_spec, uv).rgb;
-    if (length(normal_viewspace) < 0.9){
-        FragColor = fragment_color;
-        return;
-    }
-    normalize(normal_viewspace);
-    
     float fragment_specular_intensity = texture(g_albedo_spec, uv).a;
     fragment_in_shadow = ShadowCalculation(texture(g_position_light, uv).xyz);
     float ambient_factor = texture(ssao_texture, uv).r;
     vec3 view_direction = normalize(-fragment_position_viewspace);
-
-
+    
 	/* Calculate directional light color contribution */
 	vec3 directional_light_color = CalculateDirectionalLight(directional_light, normal_viewspace, view_direction, fragment_color, fragment_specular_intensity, ambient_factor);
 	

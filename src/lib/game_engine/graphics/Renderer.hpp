@@ -59,6 +59,12 @@ namespace graphics {
 
         int DrawTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 = { 1, 1, 1 });
 
+        void AddDropplet(glm::vec2 drop);
+
+        float GetAverageWaterDisplacement();
+
+        int DrawWater(GraphicsObject * rendering_object, bool update_water = true);
+
         /**
             Draws a line on the z pane
             @param start Starting point
@@ -142,7 +148,7 @@ namespace graphics {
         bool separable_ao = false;
         bool ssao_blur = true;
         bool draw_ssao_texture = false;
-        bool shadows = false;
+        bool shadows = true;
 
         /**
             Set a camera
@@ -155,6 +161,7 @@ namespace graphics {
             Flushes the point lights into drawing, flushes the object draw calls into drawing
         */
         void FlushDrawCalls();
+
     };
 
 }

@@ -34,7 +34,6 @@ namespace game_engine {
         ERROR_FREETYPE_GLYPH,
 
         ERROR_OUT_OF_REGION,
-        ERROR_PHYSICS_INIT,
     };
 
     void PrintError(int error);

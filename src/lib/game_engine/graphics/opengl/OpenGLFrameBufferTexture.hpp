@@ -16,6 +16,8 @@ namespace opengl {
 
         int Init(OpenGLContext * context, GLint internal_format);
 
+        int Init(OpenGLContext * context, GLuint texture);
+
         int Destroy();
 
         int Bind();

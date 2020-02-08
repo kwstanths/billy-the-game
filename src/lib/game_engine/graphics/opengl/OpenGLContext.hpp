@@ -114,6 +114,7 @@ namespace game_engine {
                 OpenGLShader shader_blur_;
                 OpenGLShaderFinalPass shader_final_pass_;
                 OpenGLShaderShadowMap shader_shadow_map_;
+                OpenGLShaderWater shader_water_;
 
                 GLFWwindow * glfw_window_ = nullptr;
             };

@@ -8,7 +8,7 @@
 #include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/graphics/GraphicsObject.hpp"
 #include "game_engine/math/Types.hpp"
-#include "game_engine/physics/PhysicsObject.hpp"
+#include "game_engine/math/Vector.hpp"
 #include "game_engine/memory/ArrayAllocator.hpp"
 #include "game_engine/memory/PoolAllocator.hpp"
 
@@ -22,7 +22,7 @@ namespace game_engine {
         A WorldObject is an entity inside a WorldSector. Override this class, call the function
         Init(... , ...), and provide your custom behaviour in the Step() and Interact function
     */
-    class WorldObject : public physics::PhysicsObject, public graphics::GraphicsObject {
+    class WorldObject : public graphics::GraphicsObject {
         friend WorldSector;
     public:
 
@@ -98,7 +98,12 @@ namespace game_engine {
             Initialize the object. Sets the OpenGL model and texture of the object. Sets the initial position
             @return 0=OK, else see ErrorCodes.hpp
         */
-        int Init(std::string model_file_path, Real_t x, Real_t y, Real_t z, bool interactable = false);
+        int Init(std::string model_file_path, Real_t x, Real_t y, Real_t z);
+
+        /**
+        
+        */
+        int Init(Real_t x, Real_t y, Real_t z);
 
         /**
             Does nothing in particular yet
@@ -135,10 +140,10 @@ namespace game_engine {
             @param pos_y Position y coordinate
             @param pos_z Position z coordinate
         */
-        void SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, bool collision_check = true);
+        void SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z);
 
         /**
-            Scale the object, sets the scale matrix. Collision detection is NOT changed TODO
+            Scale the object, sets the scale matrix.
             @param Scale amount in axis x
             @param Scale amount in axis y
             @param Scale amount in axis z
@@ -146,18 +151,25 @@ namespace game_engine {
         void Scale(Real_t scale_x, Real_t scale_y, Real_t scale_z);
 
         /**
-            Rotate the object around an axis. Changes collision detection as well
+            Rotate the object around an axis.
             @param angle The angle of rotation in radians, can be negative
             @param axis The axis to rotate around
         */
         void Rotate(Real_t angle, glm::vec3 axis);
+
+        Real_t WorldObject::GetX();
+
+        Real_t WorldObject::GetY();
+
+        Real_t WorldObject::GetZ();
 
     protected:
         WorldSector * world_sector_ = nullptr;
 
     private:
 
-        bool is_inited_;
+        bool is_inited_, removable_;
+        math::Vector3D position_;
     };
 
 }

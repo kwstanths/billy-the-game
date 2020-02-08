@@ -88,8 +88,8 @@ namespace graphics {
         scale_matrix_ = math::GetScaleMatrix(scale_x, scale_y, scale_z);
     }
 
-    void GraphicsObject::SetRotation(glm::mat4 rotation) {
-        rotation_matrix_ = rotation;
+    void GraphicsObject::SetRotation(Real_t angle, glm::vec3 axis) {
+        rotation_matrix_ = math::GetRotateMatrix(angle, axis.x, axis.y, axis.z);
     }
 
     void GraphicsObject::Rotate(Real_t angle, glm::vec3 axis) {

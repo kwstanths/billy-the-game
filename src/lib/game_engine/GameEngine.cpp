@@ -45,9 +45,8 @@ namespace game_engine {
 
         /* Create the one and only MemoryManager object */
         memory::STATIC_OBJETCS_MEMORY_SIZE = 500 * 500;
-        memory::REMOVABLE_OBJECTS_MEMORY_BLOCK_SIZE = 400;
+        memory::REMOVABLE_OBJECTS_MEMORY_BLOCK_SIZE = 500;
         memory::REMOVABLE_OBJECTS_MEMORY_BLOCKS_NUMBER = 1000;
-        memory::PHYSICS_OBJECTS_MEMORY_BLOCKS_NUMBER = 20000;
         memory::LIGHT_OBJECTS_MEMORY_BLOCKS_NUMBER = 10000;
         memory::MemoryManager& memory_manager_creation_instance = memory::MemoryManager::GetInstance();
 
@@ -98,9 +97,9 @@ namespace game_engine {
 
         MeasureFPS(1000.0f * delta_time);
 
-        math::Vector3D camera_pos, camera_dir;
-        camera_->GetPositionVector(camera_pos.x(), camera_pos.y(), camera_pos.z());
-        camera_->GetDirectionVector(camera_dir.x(), camera_dir.y(), camera_dir.z());
+        math::Vec3 camera_pos, camera_dir;
+        camera_->GetPositionVector(&camera_pos.x_, &camera_pos.y_, &camera_pos.z_);
+        camera_->GetDirectionVector(&camera_dir.x_, &camera_dir.y_, &camera_dir.z_);
         Real_t ratio = (Real_t)config_.context_params_.window_width_ / (Real_t)config_.context_params_.window_height_;
         Real_t angle = camera_->GetPerspectiveAngle();
 
@@ -108,8 +107,7 @@ namespace game_engine {
         sector_->Step(delta_time, renderer_, camera_pos, camera_dir, ratio, angle);
 
         /* Render text overlay */
-        renderer_->Draw2DText("Welcome!", 60, 60, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
-        renderer_->Draw2DText(std::to_string(fps_), config_.context_params_.window_width_ - 35, config_.context_params_.window_height_ - 20, 0.5f, glm::vec3(1, 0, 0));
+        renderer_->Draw2DText(std::to_string(fps_), config_.context_params_.window_width_ - 40, config_.context_params_.window_height_ - 20, 0.4f, glm::vec3(1, 0, 0));
 
         renderer_->EndFrame();
 

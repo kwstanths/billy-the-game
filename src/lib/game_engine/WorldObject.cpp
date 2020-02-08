@@ -2,37 +2,28 @@
 #include "WorldSector.hpp"
 
 #include "game_engine/math/HelpFunctions.hpp"
-#include "game_engine/physics/PhysicsEngine.hpp"
 #include "ErrorCodes.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
 #include "debug_tools/Assert.hpp"
 namespace dt = debug_tools;
-namespace ph = game_engine::physics;
 namespace gl = game_engine::graphics::opengl;
 namespace grph = game_engine::graphics;
 
-//#define PHYSICS_ENGINE_DEBUG
 
 namespace game_engine {
 
-    WorldObject::WorldObject() : ph::PhysicsObject(), grph::GraphicsObject() {
+    WorldObject::WorldObject() : grph::GraphicsObject() {
 
         is_inited_ = false;
     }
 
-    int WorldObject::Init(std::string model_file_path, Real_t x, Real_t y, Real_t z, bool interactable) {
+    int WorldObject::Init(std::string model_file_path, Real_t x, Real_t y, Real_t z) {
         
         if (WorldObject::is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
         int ret;
-        /* Initialize the physics layer */
-        ret = PhysicsObject::Init(x, y, z);
-        if (ret) {
-            PrintError(ret);
-            return ret;
-        }
 
         /* Initialize the graphics layer */
         ret = GraphicsObject::Init(x, y, z, model_file_path);
@@ -40,6 +31,13 @@ namespace game_engine {
             PrintError(ret);
             return ret;
         }
+
+        is_inited_ = true;
+        return 0;
+    }
+
+    int WorldObject::Init(Real_t x, Real_t y, Real_t z) {
+        if (WorldObject::is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
         is_inited_ = true;
         return 0;
@@ -65,15 +63,6 @@ namespace game_engine {
     void WorldObject::Draw(grph::Renderer * renderer) {
         if (!is_inited_) return;
 
-        /* Physice engine debugging */
-#ifdef PHYSICS_ENGINE_DEBUG
-        
-        math::Rectangle2D * brect = dynamic_cast<math::Rectangle2D *>(shape);
-        if (brect != nullptr) {
-            renderer->DrawRectangleXY(*brect, GetZ() + 0.01, 0.02, { 1,0,0 });
-        }
-#endif
-
         GraphicsObject::Draw(renderer);
     }
 
@@ -85,40 +74,41 @@ namespace game_engine {
         /* Re-implement this function for custom interact behaviour */
     }
 
-    void WorldObject::SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z, bool collision_check) {
+    void WorldObject::SetPosition(Real_t pos_x, Real_t pos_y, Real_t pos_z) {
 
         /* Maybe not assertion but return something */
         _assert(world_sector_ != nullptr);
 
-        math::Vector2D new_pos({ pos_x, pos_y });
-        if (collision_check){
-            new_pos = world_sector_->GetPhysicsEngine()->CheckCollision(this, new_pos);
-            world_sector_->GetPhysicsEngine()->Update(this, new_pos);
-        }
-
         /* Update the object's position inside the world sector */
-        world_sector_->UpdateObjectInWorldStructure(this, GetX(), GetY(), new_pos[0], new_pos[1]);
-        
-        /* Set the position in the physics layer */
-        
-        PhysicsObject::SetPosition(new_pos[0], new_pos[1], pos_z);
+        world_sector_->UpdateObjectInWorldStructure(this, position_[0], position_[2], pos_x, pos_z);
         
         /* Set the position in the graphics layer */
-        GraphicsObject::SetPosition(new_pos[0], new_pos[1], pos_z);
+        GraphicsObject::SetPosition(pos_x, pos_y, pos_z);
+        
+        position_ = math::Vector3D({ pos_x, pos_y, pos_z });
     }
 
     void WorldObject::Scale(Real_t scale_x, Real_t scale_y, Real_t scale_z) {
-        if (!(math::Equal(scale_x, scale_y) && math::Equal(scale_y, scale_z))) dt::Console(dt::WARNING, "Non uniform scale");
+        //if (!(math::Equal(scale_x, scale_y) && math::Equal(scale_y, scale_z))) dt::Console(dt::WARNING, "Non uniform scale");
         
-        /* TODO Maybe scale in the physics layer as well? */
-    
         GraphicsObject::Scale(scale_x, scale_y, scale_z);
     }
 
     void WorldObject::Rotate(Real_t angle, glm::vec3 axis) {        
         
-        /* TODO physics rotate */
         GraphicsObject::Rotate(angle, axis);
+    }
+
+    Real_t WorldObject::GetX() {
+        return position_[0];
+    }
+
+    Real_t WorldObject::GetY() {
+        return position_[1];
+    }
+
+    Real_t WorldObject::GetZ() {
+        return position_[2];
     }
 
 }

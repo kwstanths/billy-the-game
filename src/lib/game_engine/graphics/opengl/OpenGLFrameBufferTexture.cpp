@@ -44,6 +44,26 @@ namespace opengl {
         return 0;
     }
 
+    int OpenGLFrameBufferTexture::Init(OpenGLContext * context, GLuint texture) {
+        context_ = context;
+        output_texture_ = texture;
+
+        glGenFramebuffers(1, &frame_buffer_);
+        glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer_);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output_texture_, 0);
+        glDrawBuffer(GL_COLOR_ATTACHMENT0);
+        
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            dt::Console(dt::CRITICAL, "Texture frame buffer not complete");
+            Unbind();
+            return -1;
+        }
+
+        Unbind();
+        is_inited_ = true;
+        return 0;
+    }
+
     int OpenGLFrameBufferTexture::Destroy() {
         /* TODO */
         return 0;

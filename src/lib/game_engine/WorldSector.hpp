@@ -9,10 +9,9 @@
 #include "game_engine/utility/QuadTree.hpp"
 #include "game_engine/utility/UniformGrid.hpp"
 #include "game_engine/utility/QuadTreeBoxes.hpp"
-#include "game_engine/physics/PhysicsEngine.hpp"
 #include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/math/Types.hpp"
-#include "game_engine/math/Vector.hpp"
+#include "game_engine/math/Vec3.hpp"
 
 #include "WorldObject.hpp"
 
@@ -42,9 +41,9 @@ namespace game_engine {
             @param elements The maximum number of elements to hold
             @return 0=OK, -1 = Not initialised
         */
-        int Init(size_t width, size_t height, 
+        int Init(size_t columns_width, size_t rows_height, 
             Real_t x_margin_start, Real_t x_margin_end,
-            Real_t y_margin_start, Real_t y_margin_end, 
+            Real_t z_margin_start, Real_t z_margin_end, 
             size_t elements);
 
         /**
@@ -92,7 +91,7 @@ namespace game_engine {
         /**
             
         */
-        void Step(double delta_time, graphics::Renderer * renderer, math::Vector3D camera_position, math::Vector3D camera_direction, Real_t camera_ratio, Real_t camera_angle);
+        void Step(double delta_time, graphics::Renderer * renderer, math::Vec3 camera_position, math::Vec3 camera_direction, Real_t camera_ratio, Real_t camera_angle);
 
         /**
 
@@ -152,15 +151,9 @@ namespace game_engine {
         */
         WorldObject * FindInteractNeighbour(game_engine::math::Rectangle2D search_area, math::Vector2D p, Real_t size);
 
-        /**
-            Get the physics engine used in this world
-            @return The physics engine. nullptr if not initialised
-        */
-        physics::PhysicsEngine * GetPhysicsEngine();
-
     private:
         bool is_inited_;
-        Real_t x_margin_start_, x_margin_end_, y_margin_start_, y_margin_end_;
+        Real_t x_margin_start_, x_margin_end_, z_margin_start_, z_margin_end_;
 
         /* 
             A struct that resembles the world. Holds pointers to actual objects that are stored 
@@ -180,8 +173,6 @@ namespace game_engine {
         /* Holds objects that are removed from the world, whose memory needs deallocation */
         utility::CircularBuffer<WorldObject *> delete_objects_buffer_;
 
-        physics::PhysicsEngine * physics_engine_;
-        
         utility::QuadTreeBoxes<WorldObject *> * interaction_tree_;
 
         /**
@@ -189,7 +180,7 @@ namespace game_engine {
             @param vertical_coordinate The vertical coordinate
             @return The row
         */    
-        int GetRow(Real_t y_coordinate);
+        int GetRow(Real_t z_coordinate);
         
         /**
             Get the column in the world based in the horizontal coordinate
@@ -216,7 +207,7 @@ namespace game_engine {
             @param new_pos_x The new position x coordinate
             @param new_pos_y The new position y coordinate
         */
-        void UpdateObjectInWorldStructure(WorldObject * object, Real_t old_pos_x, Real_t old_pos_y, Real_t new_pos_x, Real_t new_pos_y);
+        void UpdateObjectInWorldStructure(WorldObject * object, Real_t old_pos_x, Real_t old_pos_z, Real_t new_pos_x, Real_t new_pos_z);
 
         /**
             Remove the object from the world

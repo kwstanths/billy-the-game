@@ -32,6 +32,10 @@ namespace game_engine {
         return last_command_;
     }
 
+    void ConsoleParser::ClearLastCommand() {
+        last_command_ = ConsoleCommand();
+    }
+
     void ConsoleParser::Parse() {
 
         while (!abort_) {
@@ -70,71 +74,39 @@ namespace game_engine {
 
         int type = itr->second;
         
+        last_command_.timestamp_ = debug_tools::GetMSecondsSinceEpoch();
         switch (type)
         {
         case COMMAND_SSAO_RADIUS:
-        {
-            if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stof(tokens[1]);
-            last_command_.type_ = COMMAND_SSAO_RADIUS;
-
-            break;
-        }
         case COMMAND_SSAO_SAMPLES:
+        case COMMAND_SSAO_BLUR:
+        case COMMAND_SSAO_BLUR_SIZE:
+        case COMMAND_SSAO_INTENSITY:
+        case COMMAND_SSAO_DRAW_SSAO:
+        case COMMAND_SSAO_SEPARABLE:
+        case COMMAND_SSAO_BIAS:
+        case COMMAND_SHADOW_MAPPING:
+        case COMMAND_CA_SPAWN:
+        case COMMAND_CA_INTEGRATION:
+        case COMMAND_CA_BOUNCING:
+        case COMMAND_CA_FRICTION:
+        case COMMAND_CA_ELASTICITY:
+        case COMMAND_CA_DAMPING:
+        case COMMAND_CA_WORLD:
+        case COMMAND_CA_DRAW_PARTICLES:
+        case COMMAND_CA_DRAW_SPRING_LINES:
+        case COMMAND_CA_DRAW_SPRING_TRIANGLES:
         {
             if (tokens.size() <= 1) return;
             last_command_.arg_1_ = std::stof(tokens[1]);
-            last_command_.type_ = COMMAND_SSAO_SAMPLES;
+            last_command_.type_ = type;
 
             break;
         }
-        case COMMAND_SSAO_BLUR:
+        case COMMAND_CA_RESET:
+        case COMMAND_CA_PAUSE:
         {
-            if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stof(tokens[1]);
-            last_command_.type_ = COMMAND_SSAO_BLUR;
-            break;
-        }
-        case COMMAND_SSAO_BLUR_SIZE:
-        {
-            if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stof(tokens[1]);
-            last_command_.type_ = COMMAND_SSAO_BLUR_SIZE;
-            break;
-        }
-        case COMMAND_SSAO_INTENSITY:
-        {
-            if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stof(tokens[1]);
-            last_command_.type_ = COMMAND_SSAO_INTENSITY;
-            break;
-        }
-        case COMMAND_SSAO_DRAW_SSAO:
-        {
-            if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stof(tokens[1]);
-            last_command_.type_ = COMMAND_SSAO_DRAW_SSAO;
-            break;
-        }
-        case COMMAND_SSAO_SEPARABLE:
-        {
-            if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stof(tokens[1]);
-            last_command_.type_ = COMMAND_SSAO_SEPARABLE;
-            break;
-        }
-        case COMMAND_SSAO_BIAS:
-        {
-            if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stof(tokens[1]);
-            last_command_.type_ = COMMAND_SSAO_BIAS;
-            break;
-        }
-        case COMMAND_SHADOW_MAPPING:
-        {
-            if (tokens.size() <= 1) return;
-            last_command_.arg_1_ = std::stof(tokens[1]);
-            last_command_.type_ = COMMAND_SHADOW_MAPPING;
+            last_command_.type_ = type;
             break;
         }
         default:

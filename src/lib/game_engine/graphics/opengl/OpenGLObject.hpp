@@ -32,13 +32,13 @@ namespace opengl {
         */
         int Init(std::vector<game_engine::graphics::Vertex_t> & vertices, std::vector<unsigned int> & indices, bool generate_bbox_info = true);
 
-        void SetVertices(std::vector<game_engine::graphics::Vertex_t> & vertices);
-
         void SetupAttributes(OpenGLShaderVerticesColor * shader);
 
         void SetupAttributes(OpenGLShaderGBuffer * shader);
 
         void SetupAttributes(OpenGLShaderShadowMap * shader);
+
+        void SetupAttributes(OpenGLShaderWater * shader);
 
         void Render();
 
@@ -79,11 +79,10 @@ namespace opengl {
         /* Bounding box values */
         GLfloat min_x_, max_x_, min_y_, max_y_, min_z_, max_z_;
 
-    protected:
+    protected:        
         bool is_inited_;
 
-    private:        
-
+    private:
         size_t total_indices_;
         GLuint VAO_, vertex_buffer_, element_buffer_;
 

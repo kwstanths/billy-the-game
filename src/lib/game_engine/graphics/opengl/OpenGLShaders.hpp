@@ -36,6 +36,8 @@ namespace game_engine {
             static const char shader_gbuffer_normal[] = "g_normal";
             static const char shader_gbuffer_albedo_spec[] = "g_albedo_spec";
             static const char shader_gbuffer_position_light[] = "g_position_light";
+            static const char shader_gbuffer_displacement_texture[] = "displacement_texture";
+            static const char shader_gbuffer_displacement_mult[] = "displacement_mult";
 
             /* Names of the SSAO shader variables used */
             static const char shader_ssao_noise_texture[] = "noise_texture";
@@ -49,6 +51,9 @@ namespace game_engine {
 
             /* Names for the shadow map shader */
             static const char shader_uni_lightspace[] = "matrix_lightspace";
+
+            /* Names for water shaer */
+            static const char shader_uni_u_texture[] = "u_texture";
 
             /**
                 A shader class the encapsulates all shader fuctionality
@@ -100,6 +105,8 @@ namespace game_engine {
                 void SetUniformMat4(GLuint id, glm::mat4 & model);
 
                 void SetUniformVec3(GLuint id, glm::vec3 & vector);
+
+                void SetUniformVec2(GLuint id, glm::vec2 & vector);
 
                 void SetUniformFloat(GLuint id, float value);
 
@@ -203,6 +210,8 @@ namespace game_engine {
                 GLuint uni_View_;
                 GLuint uni_Projection_;
                 GLuint uni_Lightspace_;
+                GLuint uni_displacement_texture_;
+                GLuint uni_displacement_mult_;
             };
 
             class OpenGLShaderShadowMap : public OpenGLShader {
@@ -303,6 +312,27 @@ namespace game_engine {
                 GLuint uni_texture_ssao_;
                 GLuint uni_shadow_map_;
                 GLuint uni_matrix_view_;
+            };
+
+            class OpenGLShaderWater : public OpenGLShader {
+            public:
+                OpenGLShaderWater();
+
+                /**
+                    Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
+                    @param vertex_shader_path The path to a vertex shader file
+                    @param fragment_shader_path The path to a fragment shader file
+                    @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+                */
+                int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+                /* Attributes */
+                GLuint attr_vertex_position_;
+                GLuint attr_vertex_uv_;
+
+                /* Uniforms */
+                GLuint uni_u_texture_;
+                GLuint uni_v_texture_;
             };
 
         }

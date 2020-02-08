@@ -91,10 +91,6 @@ namespace game_engine {
             text = "Object is out of region";
             level = debug_tools::WARNING;
             break;
-        case ERROR_PHYSICS_INIT:
-            text = "Physics engine initialization failed";
-            level = debug_tools::FATAL;
-            break;
         default:
             text = "Unkown error";
             level = debug_tools::WARNING;

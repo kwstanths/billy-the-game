@@ -8,11 +8,11 @@
 
 #include "debug_tools/Console.hpp"
 #include "debug_tools/CodeReminder.hpp"
+#include "debug_tools/Assert.hpp"
 
 #include "ErrorCodes.hpp"
 
 namespace dt = debug_tools;
-namespace ph = game_engine::physics;
 namespace ms = game_engine::memory;
 namespace math = game_engine::math;
 namespace gr = game_engine::graphics;
@@ -20,13 +20,12 @@ namespace gr = game_engine::graphics;
 namespace game_engine {
 
     WorldSector::WorldSector() {
-        physics_engine_ = new physics::PhysicsEngine();
         is_inited_ = false;
     }
 
-    int WorldSector::Init(size_t width, size_t height, 
+    int WorldSector::Init(size_t columns_width, size_t rows_height,
         Real_t x_margin_start, Real_t x_margin_end,
-        Real_t y_margin_start, Real_t y_margin_end,
+        Real_t z_margin_start, Real_t z_margin_end,
         size_t elements) 
     {
         if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
@@ -35,28 +34,26 @@ namespace game_engine {
         /* x direction traverses the columns, y direction traverses the rows */
 
         /* Set the margins */
-        grid_rows_ = height;
-        grid_columns_ = width;
+        grid_rows_ = rows_height;
+        grid_columns_ = columns_width;
 
         x_margin_start_ = x_margin_start;
         x_margin_end_ = x_margin_end;
-        y_margin_start_ = y_margin_start;
-        y_margin_end_ = y_margin_end;
-        world_window_ = AABox<2>(Vector2D({ x_margin_start, y_margin_start }), Vector2D({x_margin_end, y_margin_end}));
+        z_margin_start_ = z_margin_start;
+        z_margin_end_ = z_margin_end;
+        world_window_ = AABox<2>(Vector2D({ x_margin_start, z_margin_start }), Vector2D({x_margin_end, z_margin_end}));
 
         world_ = new utility::UniformGrid<std::deque<WorldObject *>, 2>({ grid_rows_, grid_columns_});
         visible_world_ = std::vector<WorldObject *>(650, nullptr);
 
-        world_point_lights_ = new utility::QuadTree<graphics::PointLight *>(math::Vector2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
+        world_point_lights_ = new utility::QuadTree<graphics::PointLight *>(math::Vector2D({ x_margin_start_, z_margin_start_ }), std::max(z_margin_end_ - z_margin_start_, x_margin_end_ - x_margin_start_));
 
-        physics_engine_->Init(AABox<2>(Vector2D({ x_margin_start_, y_margin_start }), Vector2D({ x_margin_end_, y_margin_end })), 500);
-        
         /* Initialize the circular buffer for deleting objects */
         delete_objects_buffer_.Init(128);
 
         use_visible_world_window_ = ConfigurationFile::instance().UseVisibleWindow();
 
-        interaction_tree_ = new utility::QuadTreeBoxes<WorldObject *>(math::Vector2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
+        interaction_tree_ = new utility::QuadTreeBoxes<WorldObject *>(math::Vector2D({ x_margin_start_, z_margin_start_ }), std::max(z_margin_end_ - z_margin_start_, x_margin_end_ - x_margin_start_));
 
         is_inited_ = true;
         return 0;
@@ -76,11 +73,11 @@ namespace game_engine {
         return is_inited_;
     }
 
-    void WorldSector::Step(double delta_time, gr::Renderer * renderer, math::Vector3D camera_position, math::Vector3D camera_direction, Real_t camera_ratio, Real_t camera_angle) {
+    void WorldSector::Step(double delta_time, gr::Renderer * renderer, math::Vec3 camera_position, math::Vec3 camera_direction, Real_t camera_ratio, Real_t camera_angle) {
 
-        Real_t width = camera_position.z() * tan(camera_angle / 2.0f);
+        Real_t width = camera_position.z_ * tan(camera_angle / 2.0f);
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
-        math::AABox<2> camera_view_box = math::AABox<2>(Vector2D({ camera_position.x(), camera_position.y() }), { 2.3f * width * camera_ratio, 2.3f * width });
+        math::AABox<2> camera_view_box = math::AABox<2>(Vector2D({ camera_position.x_, camera_position.z_ }), { 2.3f * width * camera_ratio, 2.3f * width });
 
         /* Draw a rectangle for the edge of this world */
         //renderer->DrawRectangleXY(math::Rectangle2D(
@@ -113,9 +110,9 @@ namespace game_engine {
         if (directional_light_ != nullptr) directional_light_->DrawLight(renderer);
 
         /* Draw point lights */
-        width = 3.0f * camera_position.z() * tan(camera_angle / 2.0f);
+        width = 3.0f * camera_position.z_ * tan(camera_angle / 2.0f);
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
-        math::AABox<2> camera_view_lights_box = math::AABox<2>(Vector2D({ camera_position.x(), camera_position.y() }), { 2.3f * width * camera_ratio, 2.3f * width });
+        math::AABox<2> camera_view_lights_box = math::AABox<2>(Vector2D({ camera_position.x_, camera_position.y_ }), { 2.3f * width * camera_ratio, 2.3f * width });
 
         std::vector<graphics::PointLight *> lights_;
         if (use_visible_world_window_)
@@ -130,7 +127,6 @@ namespace game_engine {
 
         /* Update world */
         FlushObjectDelete();
-
     }
 
     int WorldSector::AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z) {
@@ -140,8 +136,7 @@ namespace game_engine {
         /* Set the position in the graphics layer */
         object->GraphicsObject::SetPosition(x, y, z);
 
-        /* Set the position in the physics layer */
-        object->PhysicsObject::SetPosition(x, y, z);
+        object->position_ = Vector3D({ x,y,z });
 
         return 0;
     }
@@ -152,8 +147,6 @@ namespace game_engine {
 
         /* Remove from world structure */
         RemoveObjectFromWorldStructure(object);
-
-        physics_engine_->Remove(object);
 
         return 0;
     }
@@ -231,17 +224,13 @@ namespace game_engine {
         return nullptr;
     }
 
-    physics::PhysicsEngine * WorldSector::GetPhysicsEngine() {
-        return physics_engine_;
-    }
-
-    int WorldSector::GetRow(Real_t y_coordinate) {
+    int WorldSector::GetRow(Real_t z_coordinate) {
         /* 
             If y_margin_end is mapped to the first row, and y_margin_start is mapped to the last row, then 
             vertical_coordinate is mapped to row index
         */
 
-        int index = math::map_to_range<Real_t, int>(y_margin_start_, y_margin_end_, static_cast<int>(y_coordinate), 0, (int)grid_rows_ - 1);
+        int index = math::map_to_range<Real_t, int>(z_margin_start_, z_margin_end_, static_cast<int>(z_coordinate), 0, (int)grid_rows_ - 1);
         return index;
     }
 
@@ -259,7 +248,7 @@ namespace game_engine {
     int WorldSector::InsertObjectToWorldStructure(WorldObject * object, Real_t x, Real_t y, Real_t z) {
         if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
-        size_t index_row = GetRow(y);
+        size_t index_row = GetRow(z);
         size_t index_col = GetColumn(x);
 
         world_->at(index_row, index_col).push_back(object);
@@ -268,16 +257,28 @@ namespace game_engine {
         return 0;
     }
 
-    void WorldSector::UpdateObjectInWorldStructure(WorldObject * object, Real_t old_pos_x, Real_t old_pos_y, Real_t new_pos_x, Real_t new_pos_y) {
+    void WorldSector::UpdateObjectInWorldStructure(WorldObject * object, Real_t old_pos_x, Real_t old_pos_z, Real_t new_pos_x, Real_t new_pos_z) {
 
         /* TODO Do some checkig on the object */
 
         /* Find the old and new position */
-        size_t old_pos_index_row = GetRow(old_pos_y);
+        size_t old_pos_index_row = GetRow(old_pos_z);
         size_t old_pos_index_col = GetColumn(old_pos_x);
-        size_t new_pos_index_row = GetRow(new_pos_y);
+        size_t new_pos_index_row = GetRow(new_pos_z);
         size_t new_pos_index_col = GetColumn(new_pos_x);
         /* If no moving is required then leave */
+
+        if (new_pos_index_col < 0 || new_pos_index_col >= grid_columns_)
+            dt::ConsoleInfoL(dt::FATAL, "Object out of world", 
+                "new column", new_pos_index_col, "new x", new_pos_x,
+                "old column", old_pos_index_col, "old x", old_pos_x);
+        if (new_pos_index_row < 0 || new_pos_index_row >= grid_rows_)
+            dt::ConsoleInfoL(dt::FATAL, "Object out of world",
+                "new row", new_pos_index_row, "new z", new_pos_z,
+                "old row", old_pos_index_row, "old z", old_pos_z);
+
+        _assert(new_pos_index_row > 0 && new_pos_index_row < grid_rows_);
+        _assert(new_pos_index_col > 0 && new_pos_index_col < grid_columns_);
 
         if ((old_pos_index_row == new_pos_index_row) && (old_pos_index_col == new_pos_index_col)) return;
 
@@ -295,7 +296,7 @@ namespace game_engine {
     }
 
     void WorldSector::RemoveObjectFromWorldStructure(WorldObject * object) {
-        size_t index_row = GetRow(object->GetY());
+        size_t index_row = GetRow(object->GetZ());
         size_t index_col = GetColumn(object->GetX());
 
         std::deque<WorldObject *> & objects = world_->at(index_row, index_col);

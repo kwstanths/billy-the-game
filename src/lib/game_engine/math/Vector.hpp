@@ -8,7 +8,6 @@
 
 #include "Real.hpp"
 #include "HelpFunctions.hpp"
-#include "Vec3.hpp"
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
@@ -40,28 +39,19 @@ namespace math {
             return sqrt(a);
         }
 
-        Vector& Normalise() {
+        void Normalise() {
             Real_t norm = Norm();
             for (size_t i = 0; i < K; i++) {
                 coordinates_[i] = coordinates_[i] / norm;
             }
-            return *this;
         }
 
-        static Real_t Distance(Vector<K>& a, Vector<K>& b) {
+        Real_t Distance(Vector<K>& a, Vector<K>& b) {
             Real_t sum = 0;
             for (size_t i = 0; i < K; i++) {
                 sum += std::pow<Real_t>(a[i] - b[i], 2);
             }
-            return std::sqrt(sum);
-        }
 
-        Real_t DotProduct(Vector<K>& a) {
-            Real_t sum = 0;
-            for (size_t i = 0; i < K; i++) {
-                sum += coordinates_[i] * a.coordinates_[i];
-            }
-            return sum;
         }
 
         Vector& operator+=(const Vector& rhs) {
@@ -69,11 +59,9 @@ namespace math {
                 coordinates_[i] += rhs.coordinates_[i];
             return *this;
         }
-        friend Vector operator+(const Vector& lhs, const Vector& rhs) {
-            Vector<K> temp;
-            for (size_t i = 0; i < K; i++)
-                temp[i] = lhs.coordinates_[i] + rhs.coordinates_[i];
-            return temp;
+        friend Vector operator+(Vector lhs, const Vector& rhs) {
+            lhs += rhs;
+            return lhs;
         }
 
         Vector& operator-=(const Vector& rhs) {
@@ -87,20 +75,20 @@ namespace math {
         }
 
         friend Vector operator*(Real_t v, const Vector& rhs) {
-            Vector temp = rhs;
+            Vector3D temp = rhs;
             for (size_t i = 0; i < K; i++)
                 temp.coordinates_[i] = temp.coordinates_[i] * v;
             return temp;
         }
         friend Vector operator*(const Vector& lhs, Real_t v) {
-            Vector temp = lhs;
+            Vector3D temp = lhs;
             for (size_t i = 0; i < K; i++)
                 temp.coordinates_[i] = temp.coordinates_[i] * v;
             return temp;
         }
 
         friend Vector operator/(const Vector& lhs, Real_t v) {
-            Vector temp = lhs;
+            Vector3D temp = lhs;
             for (size_t i = 0; i < K; i++)
                 temp.coordinates_[i] = temp.coordinates_[i] / v;
             return temp;
@@ -191,20 +179,6 @@ namespace math {
             coordinates_[0] = v[0];
             coordinates_[1] = v[1];
             coordinates_[2] = v[2];
-        }
-
-        Vector3D(Vec3& v) : Vector() {
-            coordinates_[0] = v.x_;
-            coordinates_[1] = v.y_;
-            coordinates_[2] = v.z_;
-        }
-
-        static Vector3D CrossProduct(Vector3D& a, Vector3D& b) {
-            return Vector3D(
-                { a.y()*b.z() - a.z()*b.y(),
-                a.z()*b.x() - a.x()*b.z(),
-                a.x()*b.y() - a.y()*b.x()
-                });
         }
 
         Vector3D& operator = (Vector<3>& v) {

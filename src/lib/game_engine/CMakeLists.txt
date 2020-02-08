@@ -14,8 +14,6 @@ include_directories(${ENGINE_INCLUDE_DIRS})
 # Sources
 file(GLOB ${NAME}_HEADERS *.hpp)
 file(GLOB ${NAME}_SOURCES *.cpp)
-file(GLOB ${NAME}_PHY_HEADERS physics/*.hpp)
-file(GLOB ${NAME}_PHY_SOURCES physics/*.cpp)
 file(GLOB ${NAME}_MATH_HEADERS math/*.hpp)
 file(GLOB ${NAME}_MATH_SOURCES math/*.cpp)
 file(GLOB ${NAME}_MEM_HEADERS memory/*.hpp)
@@ -40,8 +38,6 @@ add_library(
 
 source_group("core\\Headers"		FILES	${${NAME}_HEADERS})
 source_group("core\\Sources"		FILES	${${NAME}_SOURCES})
-source_group("physics\\Headers"		FILES	${${NAME}_PHY_HEADERS})
-source_group("physics\\Sources"		FILES	${${NAME}_PHY_SOURCES})
 source_group("math\\Headers"		FILES	${${NAME}_MATH_HEADERS})
 source_group("math\\Sources"		FILES	${${NAME}_MATH_SOURCES})
 source_group("memory\\Headers"		FILES	${${NAME}_MEM_HEADERS})

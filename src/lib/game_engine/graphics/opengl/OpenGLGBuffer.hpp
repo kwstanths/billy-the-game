@@ -25,8 +25,6 @@ namespace opengl {
         GLuint g_position_texture_, g_normal_texture_, g_albedo_spec_texture_, g_position_light_;
         GLuint rbo_depth_texture_;
 
-        void ClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
-
     private:
         bool is_inited_;
 

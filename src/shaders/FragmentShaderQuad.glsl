@@ -19,7 +19,7 @@ void main()
         float temp1 = texture(sampler_texture, TexCoords).r;
         FragColor = vec3(temp1, temp1, temp1);
     }else{
-        FragColor = texture(sampler_texture, TexCoords).rgb;
+        FragColor = texture(sampler_texture, TexCoords).rgb / 190;
     }
     
 }

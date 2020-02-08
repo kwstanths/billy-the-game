@@ -5,8 +5,10 @@
 
 #include "glm/glm.hpp"
 
+#include "game_engine/ConsoleParser.hpp"
+#include "game_engine/math/RNG.hpp"
 #include "game_engine/graphics/GraphicsTypes.hpp"
-
+#include "game_engine/utility/CircularBuffer.hpp"
 #include "OpenGLIncludes.hpp"
 #include "OpenGLContext.hpp"
 #include "OpenGLShaders.hpp"
@@ -69,10 +71,11 @@ namespace game_engine {
                 */
                 int DrawGBuffer(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl = Material_t());
 
-                /**
-                
-                */
                 int DrawGBufferTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 color = { 1,1,1 });
+
+                int DrawWater();
+
+                int DrawGBufferWater(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl = Material_t());
 
                 /**
                     Draws the objecet on the shadow map
@@ -156,6 +159,13 @@ namespace game_engine {
                 OpenGLFrameBufferTexture * frame_buffer_one_;
                 OpenGLFrameBufferTexture * frame_buffer_two_;
                 OpenGLShadowMap * shadow_map_;
+                OpenGLFrameBufferTexture * frame_buffer_water_one_ = nullptr;
+                OpenGLFrameBufferTexture * frame_buffer_water_two_ = nullptr;
+                std::vector<float> values_;
+                int width_, height_, format_;
+                game_engine::ConsoleCommand last_command_;
+                game_engine::utility::CircularBuffer<glm::vec2> droplet_buffer_;
+                float average_displacement_ = 0;
 
             private:
                 bool is_inited_;
@@ -166,6 +176,7 @@ namespace game_engine {
 
                 size_t number_of_samples_;
                 std::vector<glm::vec3> random_samples_kernel_;
+                math::MersenneTwisterGenerator rng_;
 
                 size_t noise_size_;
                 std::vector<glm::vec3> noise_;
@@ -194,6 +205,8 @@ namespace game_engine {
                 OpenGLShader shader_blur_;
                 /* Final pass rendering */
                 OpenGLShaderFinalPass shader_final_pass_;
+                /* Water shader */
+                OpenGLShaderWater shader_water_;
 
                 /* Framebuffer object */
                 GLuint VAO_Quad_;
@@ -201,7 +214,7 @@ namespace game_engine {
 
                 /* Textures */
                 OpenGLTexture * texture_empty_ = nullptr;
-                
+
                 /**
                     Sends a quad geometry to the currently bound shader
                     Location 0 is position, Location 1 is uv coordinates
