@@ -11,6 +11,7 @@
 #include "Input.hpp"
 #include "Camera.hpp"
 #include "World.hpp"
+#include "World0.hpp"
 #include "World1.hpp"
 #include "World2.hpp"
 #include "World3.hpp"
@@ -48,6 +49,8 @@ int main(int argc, char ** argv) {
     /* Create a world */
     World world;
     world.Init(&input, camera, &engine);
+    World0 world0;
+    world0.Init(&input, camera, &engine);
     World1 world1;
     world1.Init(&input, camera, &engine);
     World2 world2;
@@ -58,7 +61,7 @@ int main(int argc, char ** argv) {
     world4.Init(&input, camera, &engine);
 
     /* Set the active world in the engine */
-    engine.SetWorld(&world);
+    engine.SetWorld(&world0);
     do {
         float delta_time = engine.GetFrameDelta();
         
