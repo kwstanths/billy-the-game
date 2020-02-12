@@ -14,6 +14,9 @@ in the development of a game
 Fluid simulation  
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GZs0-xvkecA/0.jpg)](https://www.youtube.com/watch?v=GZs0-xvkecA)
 
+Rope and cloth  
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/JzwKVZXjkoE/0.jpg)](https://www.youtube.com/watch?v=JzwKVZXjkoE)
+
 3D jelly object  
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/LectfDOBszc/0.jpg)](https://www.youtube.com/watch?v=LectfDOBszc)
 
