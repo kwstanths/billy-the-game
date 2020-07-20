@@ -1,5 +1,5 @@
 # billy-the-game
-Billy the game is a personal project to create an open world 2D game. 
+Billy the game is a personal project to create an open world 2D game, by using C++, OpenGL and other similar libraries to ease development. 
 The goal is to learn basic rendering techniques, physics, memory 
 management, data structures and anything else that might be used 
 in the development of a game
