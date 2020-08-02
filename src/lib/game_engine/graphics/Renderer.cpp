@@ -35,7 +35,7 @@ namespace graphics {
         }
 
         point_lights_to_draw_.Init(GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS);
-        //objects_to_draw_.Init(GAME_ENGINE_RENDERER_MAX_OBJECTS);
+        gbuffer_objects_.Init(GAME_ENGINE_RENDERER_MAX_OBJECTS);
         text_to_draw_.Init(512);
 
         is_inited_ = true;
@@ -68,7 +68,7 @@ namespace graphics {
         renderer_->g_buffer_->UnBind();
 
         point_lights_to_draw_.Clear();
-        objects_to_draw_.clear();
+        gbuffer_objects_.Clear();
         text_to_draw_.Clear();
     }
 
@@ -91,116 +91,17 @@ namespace graphics {
         return context_->GetControlsInput();
     }
 
+
     int Renderer::Draw(GraphicsObject * rendering_object) {
         if (!rendering_object->IsInited()) return -1;
 
-        ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
-        if (command.type_ == COMMAND_SHADOW_MAPPING) shadows = static_cast<bool>(command.arg_1_);
-        
+        if (gbuffer_objects_.IsFull()) {
+            dt::Console(dt::CRITICAL, "GBuffer objects vector full");
+            return -1;
+        }
+        gbuffer_objects_.Push(rendering_object);
         rendering_object->SetModelMatrix();
-        if (shadows) {
-        
-            renderer_->shadow_map_->ConfigureViewport();
-            renderer_->shadow_map_->Bind();
-        
-            //glCullFace(GL_FRONT);
-            glDisable(GL_CULL_FACE);
-            std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
-            for (size_t j = 0; j < meshes.size(); j++) {
-                Mesh * mesh = meshes[j];
-                renderer_->DrawShadowMap(mesh->opengl_object_, rendering_object->model_matrix_);
-            }
-        
-            //glCullFace(GL_BACK);
-            glEnable(GL_CULL_FACE);
-        
-            renderer_->shadow_map_->Unbind();
-        }
 
-        glViewport(0, 0, context_->GetWindowWidth(), context_->GetWindowHeight());
-        
-        frr_render_mode = static_cast<RENDER_MODE>(ConfigurationFile::instance().GetRenderingMethod());
-        
-        /* Bind the gbuffer, and draw the geometry */
-        renderer_->g_buffer_->Bind();
-        
-        switch (frr_render_mode)
-        {
-        case RENDER_MODE::REGULAR:
-        {
-            std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
-            for (size_t j = 0; j < meshes.size(); j++) {
-                Mesh * mesh = meshes[j];
-                renderer_->DrawGBuffer(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
-            }
-        
-            break;
-        }
-        case RENDER_MODE::VIEW_FRUSTUM_CULLING:
-        {
-            FrustumG f;
-            float * p = (float*)glm::value_ptr(camera_->GetProjectionMatrix());
-            float * v = (float*)glm::value_ptr(camera_->GetViewMatrix());
-            float m[16];
-            multMat(m, v, p);
-            f.setFrustum(m);
-        
-            std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
-            for (size_t i = 0; i < meshes.size(); i++) {
-                Mesh * mesh = meshes[i];
-            
-                float x_offset = rendering_object->translation_matrix_[3][0];
-                float y_offset = rendering_object->translation_matrix_[3][1];
-                float z_offset = rendering_object->translation_matrix_[3][2];
-            
-                opengl::OpenGLObject & gl_object = mesh->opengl_object_;
-                Vector3D min({ gl_object.min_x_ + x_offset, gl_object.min_y_ + y_offset, gl_object.min_z_ + z_offset });
-                Vector3D max({ gl_object.max_x_ + x_offset, gl_object.max_y_ + y_offset, gl_object.max_z_ + z_offset });
-                AABox<3> box(min, max);
-                int ret = f.boxInFrustum(box);
-                if (ret != FrustumG::OUTSIDE) renderer_->DrawGBuffer(gl_object, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
-            }
-            
-            break;
-        }
-        case RENDER_MODE::OCCLUSION_QUERIES:
-        {
-            
-            std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
-            for (size_t j = 0; j < meshes.size(); j++) {
-                Mesh * mesh = meshes[j];
-            
-                GLint pixel_count = rendering_object->mesh_queries_[j].GetResult();
-                bool visible = pixel_count > 0;
-            
-                rendering_object->mesh_queries_[j].Begin(GL_SAMPLES_PASSED);
-            
-                if (visible) {
-                    renderer_->EnableColorWriting(true);
-                    renderer_->EnableDepthWriting(true);
-            
-                    renderer_->DrawGBuffer(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
-            
-                }
-                else {
-                    renderer_->EnableColorWriting(false);
-                    renderer_->EnableDepthWriting(false);
-            
-                    renderer_->DrawBoundingBox(mesh->opengl_object_, rendering_object->model_matrix_);
-                }
-            
-                rendering_object->mesh_queries_[j].End();
-            }
-        
-            renderer_->EnableColorWriting(true);
-            renderer_->EnableDepthWriting(true);
-        
-            break;
-        }
-        }
-        
-        renderer_->g_buffer_->UnBind();
-        
         return 0;
     }
 
@@ -296,6 +197,95 @@ namespace graphics {
         return 0;
     }
 
+    int Renderer::RenderGBuffer(GraphicsObject * rendering_object) {
+
+        glViewport(0, 0, context_->GetWindowWidth(), context_->GetWindowHeight());
+
+        frr_render_mode = static_cast<RENDER_MODE>(ConfigurationFile::instance().GetRenderingMethod());
+
+        /* Bind the gbuffer, and draw the geometry */
+        renderer_->g_buffer_->Bind();
+
+        switch (frr_render_mode)
+        {
+        case RENDER_MODE::REGULAR:
+        {
+            std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
+            for (size_t j = 0; j < meshes.size(); j++) {
+                Mesh * mesh = meshes[j];
+                renderer_->DrawGBuffer(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
+            }
+
+            break;
+        }
+        case RENDER_MODE::VIEW_FRUSTUM_CULLING:
+        {
+            FrustumG f;
+            float * p = (float*)glm::value_ptr(camera_->GetProjectionMatrix());
+            float * v = (float*)glm::value_ptr(camera_->GetViewMatrix());
+            float m[16];
+            multMat(m, v, p);
+            f.setFrustum(m);
+
+            std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
+            for (size_t i = 0; i < meshes.size(); i++) {
+                Mesh * mesh = meshes[i];
+
+                float x_offset = rendering_object->translation_matrix_[3][0];
+                float y_offset = rendering_object->translation_matrix_[3][1];
+                float z_offset = rendering_object->translation_matrix_[3][2];
+
+                opengl::OpenGLObject & gl_object = mesh->opengl_object_;
+                Vector3D min({ gl_object.min_x_ + x_offset, gl_object.min_y_ + y_offset, gl_object.min_z_ + z_offset });
+                Vector3D max({ gl_object.max_x_ + x_offset, gl_object.max_y_ + y_offset, gl_object.max_z_ + z_offset });
+                AABox<3> box(min, max);
+                int ret = f.boxInFrustum(box);
+                if (ret != FrustumG::OUTSIDE) renderer_->DrawGBuffer(gl_object, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
+            }
+
+            break;
+        }
+        case RENDER_MODE::OCCLUSION_QUERIES:
+        {
+
+            std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
+            for (size_t j = 0; j < meshes.size(); j++) {
+                Mesh * mesh = meshes[j];
+
+                GLint pixel_count = rendering_object->mesh_queries_[j].GetResult();
+                bool visible = pixel_count > 0;
+
+                rendering_object->mesh_queries_[j].Begin(GL_SAMPLES_PASSED);
+
+                if (visible) {
+                    renderer_->EnableColorWriting(true);
+                    renderer_->EnableDepthWriting(true);
+
+                    renderer_->DrawGBuffer(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
+
+                }
+                else {
+                    renderer_->EnableColorWriting(false);
+                    renderer_->EnableDepthWriting(false);
+
+                    renderer_->DrawBoundingBox(mesh->opengl_object_, rendering_object->model_matrix_);
+                }
+
+                rendering_object->mesh_queries_[j].End();
+            }
+
+            renderer_->EnableColorWriting(true);
+            renderer_->EnableDepthWriting(true);
+
+            break;
+        }
+        }
+
+        renderer_->g_buffer_->UnBind();
+
+        return 0;
+    }
+
     int Renderer::AddPointLight(PointLight * light) {
         if (point_lights_to_draw_.Items() >= GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS) {
             dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");
@@ -311,6 +301,42 @@ namespace graphics {
         //glDisable(GL_CULL_FACE);
         //glBlendFunc(GL_ONE, GL_ONE);
 
+        /* Check if shadows are enabled or not */
+        ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
+        if (command.type_ == COMMAND_SHADOW_MAPPING) shadows = static_cast<bool>(command.arg_1_);
+
+        // Render shadow map for all objects in the gbuffer queue
+        if (shadows) {
+
+            renderer_->shadow_map_->ConfigureViewport();
+            renderer_->shadow_map_->Bind();
+
+            //glCullFace(GL_FRONT);
+            glDisable(GL_CULL_FACE);
+
+            for (utility::CircularBuffer<GraphicsObject *>::iterator itr = gbuffer_objects_.begin(); itr != gbuffer_objects_.end(); ++itr) {
+                GraphicsObject * rendering_object = *itr;
+
+                std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
+                for (size_t j = 0; j < meshes.size(); j++) {
+                    Mesh * mesh = meshes[j];
+                    renderer_->DrawShadowMap(mesh->opengl_object_, rendering_object->model_matrix_);
+                }
+            }
+
+            //glCullFace(GL_BACK);
+            glEnable(GL_CULL_FACE);
+
+            renderer_->shadow_map_->Unbind();
+        }
+
+        // Render GBuffer
+        for (utility::CircularBuffer<GraphicsObject *>::iterator itr = gbuffer_objects_.begin(); itr != gbuffer_objects_.end(); ++itr) {
+            GraphicsObject * rendering_object = *itr;
+            RenderGBuffer(rendering_object);
+        }
+
+        // Is AO enabled?
         bool ssao = ConfigurationFile::instance().DoSSAO();
         if (ssao) {
             ConsoleCommand command;
@@ -335,7 +361,7 @@ namespace graphics {
                 renderer_->frame_buffer_one_->Unbind();
             }
 
-            /* Do bluring or not? */
+            /* Do AO bluring or not? */
             command = ConsoleParser::GetInstance().GetLastCommand();
             if (command.type_ == COMMAND_SSAO_BLUR && ssao_blur != static_cast<bool>(command.arg_1_)) {
                 ssao_blur = static_cast<bool>(command.arg_1_);
@@ -355,7 +381,7 @@ namespace graphics {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-            /* What should I draw? */
+            /* What should I draw? the AO texture for debugging, or the final scene? */
             if (command.type_ == COMMAND_SSAO_DRAW_SSAO && draw_ssao_texture != static_cast<bool>(command.arg_1_)) {
                 draw_ssao_texture = static_cast<bool>(command.arg_1_);
             }
@@ -408,6 +434,7 @@ namespace graphics {
             renderer_->DrawFinalPass(renderer_->frame_buffer_one_->output_texture_);
         }
 
+        // Render text with forward rendering
         std::string occlusion_text;
         if (frr_render_mode == RENDER_MODE::REGULAR) occlusion_text = "Regular";
         else if (frr_render_mode == RENDER_MODE::VIEW_FRUSTUM_CULLING) occlusion_text = "View frustum culling";

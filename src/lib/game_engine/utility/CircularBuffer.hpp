@@ -130,7 +130,7 @@ namespace utility {
     
             return 0;
         }
-    
+
     private:
         bool is_inited_;
     
@@ -140,6 +140,54 @@ namespace utility {
         size_t items_inside_;
         size_t buffer_index_start_;
         size_t buffer_index_stop_;
+
+        class CBiterator : public std::iterator<std::forward_iterator_tag, T> {
+            friend class CircularBuffer;
+        private:
+            std::vector<T>& buffer_;
+            int index_ = -1;
+
+            /* Start and stop indices included as valid vector indices */
+            int start_ = -1;
+            int stop_ = -1;
+            CBiterator(int start, int stop, std::vector<T>& buffer) : start_(start), stop_(stop), buffer_(buffer) {
+                index_ = start;
+            };
+
+        public:
+            T& operator*() {
+                return buffer_[index_];
+            }
+
+            const CBiterator& operator++() {
+
+                index_++;
+                index_ = index_ % buffer_.size();
+                if (index_ == stop_) index_ = -1;
+
+                return *this;
+            }
+
+            bool operator!=(const CBiterator& other) const {
+                return this->index_ != other.index_;
+            }
+
+            bool operator==(const CBiterator& other) const {
+                return this->index_ == other.index_;
+            }
+
+        };
+
+    public:
+        typedef CBiterator iterator;
+
+        CBiterator begin() {
+            return CBiterator(buffer_index_start_, buffer_index_stop_, buffer_);
+        }
+        
+        CBiterator end() {
+            return CBiterator(-1, buffer_index_stop_, buffer_);
+        }
     };
 
 }

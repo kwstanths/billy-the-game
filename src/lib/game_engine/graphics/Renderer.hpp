@@ -24,7 +24,7 @@ namespace game_engine {
 
 namespace graphics {
 
-#define GAME_ENGINE_RENDERER_MAX_OBJECTS 100
+#define GAME_ENGINE_RENDERER_MAX_OBJECTS 600
 
     class Renderer {
         friend game_engine::GameEngine;
@@ -124,7 +124,7 @@ namespace graphics {
 
         bool is_inited_;
         utility::CircularBuffer<PointLight *> point_lights_to_draw_;
-        std::vector<GraphicsObject *> objects_to_draw_;
+        utility::CircularBuffer<GraphicsObject *> gbuffer_objects_;
         utility::CircularBuffer<TEXT_DRAW_t> text_to_draw_;
 
         /* Variables needed for opengl drawiing */
@@ -152,7 +152,13 @@ namespace graphics {
         int SetCamera(opengl::OpenGLCamera * camera);
 
         /**
-            Flushes the point lights into drawing, flushes the object draw calls into drawing
+            Render an object in the GBuffer
+            @param rendering_object The object to draw
+        */
+        int RenderGBuffer(GraphicsObject * rendering_object);
+
+        /**
+            Main rendering pipeline, Gbuffer rendering, AO calculation, final pass
         */
         void FlushDrawCalls();
     };

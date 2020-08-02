@@ -160,9 +160,9 @@ namespace game_engine {
             private:
                 bool is_inited_;
 
-                OpenGLContext * context_;
-                OpenGLText * text_renderer_;
-                OpenGLCamera * camera_;
+                OpenGLContext * context_ = nullptr;
+                OpenGLText * text_renderer_ = nullptr;
+                OpenGLCamera * camera_ = nullptr;
 
                 size_t number_of_samples_;
                 std::vector<glm::vec3> random_samples_kernel_;

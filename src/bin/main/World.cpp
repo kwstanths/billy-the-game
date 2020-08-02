@@ -31,7 +31,6 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     timer.Stop();
     dt::CustomPrint(std::cout, "DONE, " + timer.ToString() + "\n");
 
-    /* And then, there was light */
     sun_ = NewObj<Sun>();
     sun_->Init(25.0f, 0.0f, 1000.0f, this, engine);
 
