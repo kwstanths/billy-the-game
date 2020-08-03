@@ -61,7 +61,7 @@ void Fire::StepLight(double delta_time) {
 
 void Fire::Interact() {
 
-    /* We can just set the light values to zero, but let's just test are RemoveLight function! */
+    /* We can just set the light values to zero, but let's just test the RemoveLight function! */
     if (on_) world_sector_->RemovePointLight(this, math::Vector2D({ GetX(), GetY() }));
     else world_sector_->AddPointLight(this, math::Vector2D({ GetX(), GetY() }));
 
