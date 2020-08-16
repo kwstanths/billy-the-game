@@ -80,7 +80,7 @@ namespace game_engine {
 
         Real_t width = camera_position.z() * tan(camera_angle / 2.0f);
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
-        math::AABox<2> camera_view_box = math::AABox<2>(Vector2D({ camera_position.x(), camera_position.y() }), { 2.3f * width * camera_ratio, 2.3f * width });
+        math::AABox<2> camera_view_box = math::AABox<2>(Vector2D({ camera_position.x(), camera_position.y() }), { 5.0f * width * camera_ratio, 5.0f * width });
 
         /* Draw a rectangle for the edge of this world */
         //renderer->DrawRectangleXY(math::Rectangle2D(
@@ -241,8 +241,8 @@ namespace game_engine {
             vertical_coordinate is mapped to row index
         */
 
-        int index = math::map_to_range<Real_t, int>(y_margin_start_, y_margin_end_, static_cast<int>(y_coordinate), 0, (int)grid_rows_ - 1);
-        return index;
+        int index = math::map_to_range<Real_t, int>(y_margin_start_, y_margin_end_, y_coordinate, 0, (int)grid_rows_ - 1);
+        return static_cast<int>(std::round(index));
     }
 
     int WorldSector::GetColumn(Real_t x_coordinate) {
@@ -252,7 +252,7 @@ namespace game_engine {
         */
 
         Real_t index = math::map_to_range(x_margin_start_, x_margin_end_, x_coordinate, 0, (int)grid_columns_ - 1);
-        return static_cast<int>(index);
+        return static_cast<int>(std::round(index));
     }
 
 

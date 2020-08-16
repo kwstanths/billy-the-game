@@ -59,71 +59,202 @@ Tile CreateTile(float u1, float v1, float u2, float v2, float u3, float v3, floa
     return temp;
 }
 
-/**
-    Reads a map file, and generates tiles for every tile in the map. Adds the vertices, uvs, and triangles into data structures, to be exported to a single .obj
-*/
-int PackMapLayer(std::string name, float z, std::unordered_map<int, Tile> tiles, std::vector<Vector3D>& vertices, std::vector<Vector2D>& uvs, std::vector<Vector3D>& triangles, int index) {
+/* Hold the map width and height */
+static int MAP_HEIGHT;
+static int MAP_WIDTH;
 
-    dt::Console("Packing map " + name + " layer: " + std::to_string(z));
+/* Used for hashing the packed map structure */
+struct pair_hash {
+    template <class T1, class T2>
+    std::size_t operator () (const std::pair<T1, T2> &p) const {
+        auto h1 = std::hash<T1>{}(p.first);
+        auto h2 = std::hash<T2>{}(p.second);
 
-    std::vector<std::vector<std::string>> map;
+        return h1 * MAP_HEIGHT + h2;
+    }
+};
+class PackedMap {
+public:
+    PackedMap() {
 
-    std::string line;
-    std::ifstream myfile(name);
-    if (myfile.is_open()) {
-        while (getline(myfile, line)) {
-            map.push_back(utility::split(line, ","));
+        /* Read map layers, init map structures */
+        {
+            std::string name = "billy_map_Tile Layer 1.csv";
+            std::string line;
+            std::ifstream myfile(name);
+            if (myfile.is_open()) {
+                while (getline(myfile, line)) {
+                    map_1_.push_back(utility::split(line, ","));
+                }
+                myfile.close();
+            } else {
+                dt::Console(dt::WARNING, "Can't open map file: " + name);
+            }
         }
-        myfile.close();
-    }
-    else {
-        dt::Console(dt::WARNING, "Can't open map file: " + name);
-        return 0;
+
+        {
+            std::string name = "billy_map_Tile Layer 2.csv";
+            std::string line;
+            std::ifstream myfile(name);
+            if (myfile.is_open()) {
+                while (getline(myfile, line)) {
+                    map_2_.push_back(utility::split(line, ","));
+                }
+                myfile.close();
+            } else {
+                dt::Console(dt::WARNING, "Can't open map file: " + name);
+            }
+        }
+
+        MAP_HEIGHT  = map_1_.size();
+        MAP_WIDTH = map_1_[0].size();
+
+        map_width_2 = ((float)MAP_HEIGHT) / 2.0f;
+        map_height_2 = ((float)MAP_WIDTH) / 2.0f;
     }
 
-    /* Map sizes */
-    int map_height = 154;
-    int map_width = 178;
-    float map_width_2 = ((float)map_width) / 2.0f;
-    float map_height_2 = ((float)map_height) / 2.0f;
+    /* Pack all the objects in the world map inside a region, into a single object, given a position and a width and a height, that represents a region in the world
     
-    int tile_index = index;
-    for (int i = 0; i < map_height; i++) {
-        for (int j = 0; j < map_width; j++) {
-            Real_t x = j - map_width_2;
-            Real_t y = map_height_2 - i;
-
-            /* If its a valid tile */
-            int id = std::stoi(map[i][j]);
-            if (id == -1) continue;
-            
-            if (tiles.find(id) == tiles.end()) continue;
-            
-            /* Get the unique tile that this map position corresponds to */
-            Tile tile = tiles[id];
-            
-            /* Get the position of the tile in the map */
-            Vector3D tile_position({ x, y, z });
-            
-            /* Transform the vertices of the tile, to reflect the position in the map */
-            for (size_t i = 0; i < tile.vertices_.size(); i++) {
-                vertices.push_back(tile.vertices_[i] + tile_position);
-            }
-
-            for (size_t i = 0; i < tile.uv_.size(); i++) {
-                uvs.push_back(tile.uv_[i]);
-            }
-
-            /* Add the index for each triangle, since all tiles are exported into a single mesh */
-            for (size_t i = 0; i < tile.triangles_.size(); i++) {
-                triangles.push_back(tile.triangles_[i] + Vector3D(tile_index));
-            }
-            
-            tile_index += tile.vertices_.size();
-        }
+    */
+    void PackMapLayer(std::unordered_map<int, Tile>& tiles, int pos_i, size_t i_width2, int pos_j, size_t j_height2) {
+        int tile_index = 0;
+        /* Read map layers */
+        tile_index = PackMapLayer(map_1_, 0.0f, tiles, tile_index, pos_i, i_width2, pos_j, j_height2);
+        tile_index = PackMapLayer(map_2_, 0.03f, tiles, tile_index, pos_i, i_width2, pos_j, j_height2);
     }
-    return tile_index;
-}
+
+    void ExportMapFiles() {
+        /* Prepare a small file to hold the correspondence between packed tile regions and positions in the world */
+        dt::Console("Preparing the packed map files... ");
+        std::ofstream packed_map_tiles_file;
+        packed_map_tiles_file.open("packed_map_tiles.txt");
+        /* Create a single .obj file to hold all tile regions */
+        std::ofstream map_obj_file;
+        map_obj_file.open("static_map.obj");
+        map_obj_file << "mtllib materials/static_map.mtl\n";
+
+        int vertex_index = 0;
+        int uv_index = 0;
+        int map_index = 0;
+        for (auto itr = packed_map_.begin(); itr != packed_map_.end(); ++itr) {
+            TileRegion& region = itr->second;
+
+            if (region.vertices_.size() == 0) continue;
+            /* 
+                Write the data for a single packed region, naming static_map.NUMBER
+            */
+            map_obj_file << "o static_map." + std::to_string(map_index) +"\n";
+            
+            /* Write geometry */
+            for (size_t i = 0; i < region.vertices_.size(); i++) {
+                map_obj_file << "v " << region.vertices_[i].x() << " " << region.vertices_[i].y() << " " << region.vertices_[i].z() << "\n";
+            }
+            
+            for (size_t i = 0; i < region.uv_.size(); i++) {
+                map_obj_file << "vt " << region.uv_[i].x() << " " << region.uv_[i].y() << "\n";
+            }
+            
+            map_obj_file << "vn 0.0000 0.0000 1.0000\n";
+            map_obj_file << "usemtl static_map_mtl\n";
+            map_obj_file << "s off\n";
+            
+            /* Write triangles, reflect the fact that everything is written in a singile file, thus, vertex_index, uv_index */
+            for (size_t i = 0; i < region.triangles_.size(); i++) {
+                // v/vt/vn
+                map_obj_file << "f " << region.triangles_[i].x() + vertex_index  << "/" << region.triangles_[i].x() + uv_index << "/1 " 
+                    << region.triangles_[i].y() + vertex_index << "/" << region.triangles_[i].y() + uv_index << "/1 " 
+                    << region.triangles_[i].z() + vertex_index << "/" << region.triangles_[i].z() + uv_index << "/1\n";
+            }
+
+            vertex_index += region.vertices_.size();
+            uv_index += region.uv_.size();
+
+            /* Write the correspondence in the map .txt */
+            packed_map_tiles_file << itr->first.first << " " << itr->first.second << " static_map_" + std::to_string(map_index) + "\n";
+            map_index++;
+        }
+
+        /* Write the material file for the map object */
+        std::ofstream map_mtl_file;
+        map_mtl_file.open("static_map.mtl");
+        map_mtl_file << "newmtl static_map_mtl\n";
+        map_mtl_file << "Ns 2.000000\n";
+        map_mtl_file << "Ka 0.000000 0.000000 0.000000\n";
+        map_mtl_file << "Kd 0.000000 0.000000 0.000000\n";
+        map_mtl_file << "Ks 0.000000 0.000000 0.000000\n";
+        map_mtl_file << "Ke 0.000000 0.000000 0.000000\n";
+        map_mtl_file << "Ni 1.000000\n";
+        map_mtl_file << "d 1.000000\n";
+        map_mtl_file << "illum 0\n";
+        map_mtl_file << "map_Kd textures/roguelikeSheet_transparent.png\n";
+        map_mtl_file << "map_Ks textures/spec_map_empty.png\n";
+        map_mtl_file << "\n";
+    }
+
+private:
+    /* holds the .csv map layers */
+    std::vector<std::vector<std::string>> map_1_;
+    std::vector<std::vector<std::string>> map_2_;
+    float map_width_2;
+    float map_height_2;
+
+    typedef Tile TileRegion;
+    /* Holds the packed region tiles */
+    std::unordered_map<std::pair<int, int>, TileRegion, pair_hash> packed_map_;
+
+    /**
+        Reads a map file, and generates tiles for every tile in the map. Adds the vertices, uvs, and triangles into data structures, to be exported to a single .obj
+    */
+    int PackMapLayer(std::vector<std::vector<std::string>>& map, float z, std::unordered_map<int, Tile>& tiles, int index, int pos_i, int i_width2, int pos_j, int j_height2) {
+
+        /*  Get the position of the big packed region inside the world map */
+        int center_x = pos_j - map_width_2;
+        int center_y = map_height_2 - pos_i;
+
+        /* Get the tile region from the packed map */
+        TileRegion& region = packed_map_[std::make_pair(center_x, center_y)];
+
+        /* Pack all the unique tiles inside that region, into the single packed tile map */
+        int tile_index = index;
+        for (int i = -i_width2; i < i_width2; i++) {
+            for (int j = -j_height2; j < j_height2; j++) {
+
+                /* If index is valid */
+                if (pos_i + i >= MAP_HEIGHT) continue;
+                if (pos_j + j >= MAP_WIDTH) continue;
+                int id = std::stoi(map[pos_i + i][pos_j + j]);
+                /* and its a valid tile */
+                if (id == -1) continue;
+                if (tiles.find(id) == tiles.end()) continue;
+
+                /* Get the unique tile that should be placed in that point in the world */
+                Tile tile = tiles[id];
+
+                /* Get the position of the tile in the map, invert the coordinates */
+                Vector3D tile_position({ (Real_t)(j), (Real_t)(-i), z });
+
+                /* Transform the vertices of the tile, to reflect the position in the map */
+                for (size_t v = 0; v < tile.vertices_.size(); v++) {
+                    region.vertices_.push_back(tile.vertices_[v] + tile_position);
+                }
+
+                for (size_t uv = 0; uv < tile.uv_.size(); uv++) {
+                    region.uv_.push_back(tile.uv_[uv]);
+                }
+
+                /* Add the index for each triangle, since all tiles are exported into a single packed mesh */
+                for (size_t t = 0; t < tile.triangles_.size(); t++) {
+                    region.triangles_.push_back(tile.triangles_[t] + Vector3D(tile_index));
+                }
+
+                tile_index += tile.vertices_.size();
+            }
+        }
+        return tile_index;
+    }
+};
+
+
 
 
 int main(int argc, char ** argv) {
@@ -202,61 +333,20 @@ int main(int argc, char ** argv) {
     mtl_file << "map_Ks textures/spec_map_empty.png\n";
     mtl_file << "\n";
 
-    /* 
-        Prepare the map files 
-        The map files spawn all the tiles inside the map, in their respective positions with a single .obj file with all the geometry for all tiles inside the map
-    */
-    dt::Console("Preparing the map... ");
-    std::ofstream map_obj_file;
-    map_obj_file.open("static_map.obj");
-    map_obj_file << "mtllib materials/static_map.mtl\n";
-    map_obj_file << "o static_map\n";
+    /* Init packed map */
+    PackedMap packed_map;
 
-    /* Hold all vertices, uvs, and triangles for all tiles inside the map */
-    std::vector<Vector3D> vertices;
-    std::vector<Vector2D> uvs;
-    std::vector<Vector3D> triangles;
-    int tile_index = 0;
-    /* Read maps */
-    tile_index = PackMapLayer("billy_map_Tile Layer 1.csv", 0.0f, tiles, vertices, uvs, triangles, tile_index);
-    tile_index = PackMapLayer("billy_map_Tile Layer 2.csv", 0.03f, tiles, vertices, uvs, triangles, tile_index);
+    /* Pack regions of the world, with a width and a height of 20, into packed meshes */
+    size_t strive = 20;
+    size_t strive2 = 10;
 
-    /* Write geometry into the map object file */
-    dt::CustomPrint(std::cout, "Writing " + std::to_string(vertices.size()) + " vertices\n");
-    for (size_t i = 0; i < vertices.size(); i++) {
-        map_obj_file << "v " << vertices[i].x() << " " << vertices[i].y() << " " << vertices[i].z() << "\n";
+    for (int i = strive2; i < MAP_HEIGHT; i+= strive) {
+        for (int j = strive2; j < MAP_WIDTH; j+=strive) {
+            packed_map.PackMapLayer(tiles, i, strive2, j, strive2);
+        }
     }
 
-    dt::CustomPrint(std::cout, "Writing " + std::to_string(uvs.size()) + " uv coordinates\n");
-    for (size_t i = 0; i < uvs.size(); i++) {
-        map_obj_file << "vt " << uvs[i].x() << " " << uvs[i].y() << "\n";
-    }
-
-    map_obj_file << "vn 0.0000 0.0000 1.0000\n";
-    map_obj_file << "usemtl static_map_mtl\n";
-    map_obj_file << "s off\n";
-
-    dt::Console("Writing triangles... ");
-    for (size_t i = 0; i < triangles.size(); i++) {
-        map_obj_file << "f " << triangles[i].x()  << "/" << triangles[i].x() << "/1 " << triangles[i].y() << "/" << triangles[i].y() << "/1 " << triangles[i].z() << "/" << triangles[i].z() << "/1\n";
-    }
-    map_obj_file.close();
-
-    /* Write the material file for the map object */
-    std::ofstream map_mtl_file;
-    map_mtl_file.open("static_map.mtl");
-    map_mtl_file << "newmtl static_map_mtl\n";
-    map_mtl_file << "Ns 2.000000\n";
-    map_mtl_file << "Ka 0.000000 0.000000 0.000000\n";
-    map_mtl_file << "Kd 0.000000 0.000000 0.000000\n";
-    map_mtl_file << "Ks 0.000000 0.000000 0.000000\n";
-    map_mtl_file << "Ke 0.000000 0.000000 0.000000\n";
-    map_mtl_file << "Ni 1.000000\n";
-    map_mtl_file << "d 1.000000\n";
-    map_mtl_file << "illum 0\n";
-    map_mtl_file << "map_Kd textures/roguelikeSheet_transparent.png\n";
-    map_mtl_file << "map_Ks textures/spec_map_empty.png\n";
-    map_mtl_file << "\n";
+    packed_map.ExportMapFiles();
 
 #ifdef _WIN32
     system("pause");

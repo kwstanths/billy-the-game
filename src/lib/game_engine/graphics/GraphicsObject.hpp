@@ -30,7 +30,7 @@ namespace graphics {
         */
         int Init(Real_t x, Real_t y, Real_t z, std::string model_file_path);
 
-        static int InitTextureAtlas(std::string file_name);
+        static int InitObjectAtlas(std::string file_name);
 
         int Destroy();
 

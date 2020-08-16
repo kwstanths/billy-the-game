@@ -44,7 +44,7 @@ namespace graphics {
         return 0;
     }
 
-    int GraphicsObject::InitTextureAtlas(std::string file_name) {
+    int GraphicsObject::InitObjectAtlas(std::string file_name) {
 
         AssetManager& asset_manager = AssetManager::GetInstance();
         std::string file_path = file_name.substr(0, file_name.find_last_of("."));

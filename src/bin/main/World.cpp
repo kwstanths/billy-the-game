@@ -4,6 +4,7 @@
 
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/utility/BasicFunctions.hpp"
+#include "game_engine/graphics/AssimpHelp.hpp"
 #include "debug_tools/Console.hpp"
 #include "debug_tools/Timer.hpp"
 
@@ -22,28 +23,65 @@ World::World() : WorldSector() {
 }
 
 int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
-    int ret = WorldSector::Init(300, 300, -200.0f, 200.0f, -200.0f, 200.0f, 500 * 500);
+    int ret = WorldSector::Init(30, 30, -200.0f, 200.0f, -200.0f, 200.0f, 200 * 200);
     if (ret) return ret;
     
+    {
+        dt::Timer timer;
+        dt::CustomPrint(std::cout, "Reading map files... ");
+        
+        timer.Start();
+        game_engine::graphics::GraphicsObject::InitObjectAtlas("assets/static_map.obj");
+        timer.Stop();
+        
+        dt::CustomPrint(std::cout, "DONE, " + timer.ToString() + "\n");
+    }
 
-    dt::CustomPrint(std::cout, "Reading map... ");
-    dt::Timer timer;
-    timer.Start();
-    
-    /* Read map properties */
-    map_properties_.ReadMap("roguelikeSheet_transparent.tsx");
-    /* Spawn map object */
-    NewObj<StaticMap>()->Init(25.0f, 0.0f, 0, "static_map", this, engine);
+    {
+        dt::Timer timer;
+        
+        timer.Start();
+        dt::CustomPrint(std::cout, "Reading map properties... ");
+        map_properties_.ReadMap("roguelikeSheet_transparent.tsx");
+        timer.Stop();
 
-    timer.Stop();
-    dt::CustomPrint(std::cout, "DONE, " + timer.ToString() + "\n");
+        dt::CustomPrint(std::cout, "DONE, " + timer.ToString() + "\n");
+    }
+
+    {
+        dt::Timer timer;
+        timer.Start();
+        dt::CustomPrint(std::cout, "Spawning map... ");
+        
+        /* Read correspondence tile region-position correspondence file */
+        std::vector<std::vector<std::string>> tile_map;
+        std::string line;
+        std::ifstream myfile("packed_map_tiles.txt");
+        if (myfile.is_open()) {
+            while (getline(myfile, line)) {
+                tile_map.push_back(ge::utility::split(line, " "));
+            }
+            myfile.close();
+        }
+
+        /* Spawn tile regions */
+        for (size_t i = 0; i < tile_map.size(); i++) {
+            ge::Real_t x = std::stof(tile_map[i][0]);
+            ge::Real_t y = std::stof(tile_map[i][1]);
+            std::string name = tile_map[i][2];
+            NewObj<StaticMap>()->Init(x, y, 0, name, this, engine);
+        }
+        
+        timer.Stop();
+        dt::CustomPrint(std::cout, "DONE, " + timer.ToString() + "\n");
+    }
 
     sun_ = NewObj<Sun>();
     sun_->Init(25.0f, 0.0f, 1000.0f, this, engine);
 
     /* Create the main player */
     Player * player = NewObj<Player>();
-    player->Init(25.0f, 0.0f, 0.2f, input, camera, this, engine);
+    player->Init(25, 0, 0.2f, input, camera, this, engine);
 
     is_inited_ = true;
     return 0;
@@ -55,6 +93,8 @@ int World::Destroy() {
     return true;
 }
 
+
+/* Not used */
 void World::ReadMap(std::string name, float z, game_engine::GameEngine * engine) {
 
     dt::Timer timer;
