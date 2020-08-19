@@ -207,9 +207,10 @@ private:
     */
     int PackMapLayer(std::vector<std::vector<std::string>>& map, float z, std::unordered_map<int, Tile>& tiles, int index, int pos_i, int i_width2, int pos_j, int j_height2) {
 
-        /*  Get the position of the big packed region inside the world map */
-        int center_x = pos_j - map_width_2;
-        int center_y = map_height_2 - pos_i;
+        /* Get the position of the big packed region inside the world map */
+        /* TODO: There is a shift happening on the tiles of the map for some reason... */
+        int center_x = pos_j - map_width_2 - 12;
+        int center_y = map_height_2 - pos_i - 12;
 
         /* Get the tile region from the packed map */
         TileRegion& region = packed_map_[std::make_pair(center_x, center_y)];

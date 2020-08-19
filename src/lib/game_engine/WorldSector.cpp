@@ -44,11 +44,14 @@ namespace game_engine {
         y_margin_end_ = y_margin_end;
         world_window_ = AABox<2>(Vector2D({ x_margin_start, y_margin_start }), Vector2D({x_margin_end, y_margin_end}));
 
+        /* Initialize the world grid */
         world_ = new utility::UniformGrid<std::deque<WorldObject *>, 2>({ grid_rows_, grid_columns_});
         visible_world_ = std::vector<WorldObject *>(650, nullptr);
 
+        /* Initialize point lights data structure */
         world_point_lights_ = new utility::QuadTree<graphics::PointLight *>(math::Vector2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
 
+        /* Initialize physics engine */
         physics_engine_->Init(AABox<2>(Vector2D({ x_margin_start_, y_margin_start }), Vector2D({ x_margin_end_, y_margin_end })), 500);
         
         /* Initialize the circular buffer for deleting objects */
@@ -56,7 +59,8 @@ namespace game_engine {
 
         use_visible_world_window_ = ConfigurationFile::instance().UseVisibleWindow();
 
-        interaction_tree_ = new utility::QuadTreeBoxes<WorldObject *>(math::Vector2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
+        /* Initialize acceleration data structure for ray casting */
+        interaction_tree_ = new utility::QuadTreeBoxes<Interactablebject *>(math::Vector2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
 
         is_inited_ = true;
         return 0;
@@ -93,6 +97,7 @@ namespace game_engine {
         /* Draw a rectangle for the rendering window */
         //renderer->DrawRectangleXY(camera_view_rectangle, 0.02f, 0.01f, { 1,1,1 });
 
+        /* Draw everything? or only the visiable part based on the 2D grid */
         size_t nof;
         if (use_visible_world_window_)
             nof = GetObjectsWindow(camera_view_box, visible_world_);
@@ -117,6 +122,7 @@ namespace game_engine {
         /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
         math::AABox<2> camera_view_lights_box = math::AABox<2>(Vector2D({ camera_position.x(), camera_position.y() }), { 2.3f * width * camera_ratio, 2.3f * width });
 
+        /* Get all point lights within the visible world */
         std::vector<graphics::PointLight *> lights_;
         if (use_visible_world_window_)
             world_point_lights_->QueryRange(camera_view_lights_box, lights_);
@@ -130,7 +136,6 @@ namespace game_engine {
 
         /* Update world */
         FlushObjectDelete();
-
     }
 
     int WorldSector::AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z) {
@@ -160,7 +165,6 @@ namespace game_engine {
 
     int WorldSector::AddPointLight(graphics::PointLight * light, math::Vector2D& point) {
         return !world_point_lights_->Insert(point, light);
-        return 0;
     }
 
     int WorldSector::RemovePointLight(graphics::PointLight * light, math::Vector2D& point) {
@@ -176,12 +180,12 @@ namespace game_engine {
         directional_light_ = nullptr;
     }
 
-    int WorldSector::AddInterractableObject(WorldObject * object, AABox<2> interaction_area) {
+    int WorldSector::AddInterractableObject(Interactablebject * object, AABox<2> interaction_area) {
         return interaction_tree_->Insert(object, interaction_area);
     }
 
-    WorldObject * WorldSector::RayCast(math::Ray2D ray) {
-        std::vector<WorldObject *> results;
+    Interactablebject * WorldSector::RayCast(math::Ray2D ray) {
+        std::vector<Interactablebject *> results;
         bool ret = interaction_tree_->RayCast(ray, results);
         if (ret) return results[0];
         return nullptr;
@@ -222,13 +226,6 @@ namespace game_engine {
             }
         }
         return index;
-    }
-
-    WorldObject * WorldSector::FindInteractNeighbour(math::Rectangle2D search_area, math::Vector2D p, Real_t size) {
-
-        /* TODO */
-
-        return nullptr;
     }
 
     physics::PhysicsEngine * WorldSector::GetPhysicsEngine() {

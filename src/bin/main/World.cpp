@@ -83,6 +83,10 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     Player * player = NewObj<Player>();
     player->Init(25, 0, 0.2f, input, camera, this, engine);
 
+    /* */
+    ReadMap("billy_map_Tile Layer 1.csv", 0.02f, engine);
+    ReadMap("billy_map_Tile Layer 2.csv", 0.02f, engine);
+
     is_inited_ = true;
     return 0;
 }
@@ -125,9 +129,11 @@ void World::ReadMap(std::string name, float z, game_engine::GameEngine * engine)
         for (int j = 0; j < map_width; j++) {
             if (map_[i][j] == "-1") continue;
             if (map_[i][j] == "416") {
-                NewObj<Fire>()->Init(j - map_width_2, map_height_2 - i, z, "roguelikeSheet_transparent_" + map_[i][j], this, engine, sun_);
+                /* Spawn a point light, continous memory allocation for point lights is not set up */
+                Fire * fire = new Fire();
+                fire->Init(j - map_width_2, map_height_2 - i, z, this, engine, sun_);
             } else {
-                NewObj<Grass>()->Init(j - map_width_2, map_height_2 - i, z, "roguelikeSheet_transparent_" + map_[i][j], this, engine, map_properties_);
+                //NewObj<Grass>()->Init(j - map_width_2, map_height_2 - i, z, "roguelikeSheet_transparent_" + map_[i][j], this, engine, map_properties_);
             }
 
         }

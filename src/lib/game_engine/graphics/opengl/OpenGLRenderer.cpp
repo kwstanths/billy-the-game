@@ -188,7 +188,7 @@ namespace game_engine { namespace graphics { namespace opengl {
             glBindVertexArray(0);
         }
     
-        /* */
+        /* Initialize an empty texture, used in several places */
         std::string empty_texture_path = "assets/textures/spec_map_empty.png";
         AssetManager& instance = AssetManager::GetInstance();
         texture_empty_ = instance.FindTexture(empty_texture_path);

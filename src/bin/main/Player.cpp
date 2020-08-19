@@ -7,6 +7,8 @@
 
 #include "debug_tools/Console.hpp"
 
+#include "game_engine/InteractableObject.hpp"
+
 namespace dt = debug_tools;
 namespace ge = game_engine;
 namespace grph = game_engine::graphics;
@@ -56,9 +58,8 @@ int Player::Destroy() {
 void Player::Step(double delta_time) {
     /* TODO Remove these checks maybe */
     if (!is_inited_) return;
-
     if (!WorldObject::IsInited())
-        dt::Console(dt::WARNING, "Player::MovePositionVector(): WorldObject is not initialised");
+        dt::Console(dt::WARNING, "Player::Step(): WorldObject is not initialised");
 
     /* Get input */
     ControlInput_t controls = input_->GetControls();
@@ -86,14 +87,13 @@ void Player::Step(double delta_time) {
         }
     }
 
+    /* If interact button is pressed, perform ray casting, and interact with an object in the world */
     if (controls.INTERACT_) {
         Ray2D ray(Vector2D({ GetX(), GetY() }), looking_direction_);
 
-        WorldObject * object = world_sector_->RayCast(ray);
+        game_engine::Interactablebject * object = world_sector_->RayCast(ray);
         if (object != nullptr) object->Interact();
     }
-
-
 }
 
 ge::Real_t Player::GetSpeed(bool running) {
@@ -107,7 +107,7 @@ void Player::Draw(grph::Renderer * renderer) {
     ControlInput_t controls = input_->GetControls();
 
     grph::Attenuation_t att = ge::graphics::Attenuation_t(1, 0.22f, 0.0009f);
-    grph::SpotLight light;
+    grph::SpotLight light(glm::vec3(GetX(), GetY(), GetZ() + 5), glm::vec3(0, 0, -1), glm::vec3(0, 0, 0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 0.0), att, 50.0f, 55.0f);
 
     if (controls.FLASHLIGHT_) light = grph::SpotLight(glm::vec3(GetX(), GetY(), GetZ() + 5), glm::vec3(0, 0, -1), glm::vec3(0, 0, 0), glm::vec3(0.5, 0.5, 0.5), glm::vec3(0.8, 0.8, 0.8), att, 50.0f, 55.0f);
 
@@ -117,7 +117,7 @@ void Player::Draw(grph::Renderer * renderer) {
 }
 
 void Player::OnCollisionDetected(size_t type) {
-
+    /* Not used, collision and physics need to be reworked */
     if (type == 2) {
         SetPosition(0, 0, GetZ());
         camera_->Set2DPosition(0, 0);

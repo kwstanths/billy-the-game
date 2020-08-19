@@ -15,7 +15,7 @@
 #include "game_engine/math/Vector.hpp"
 
 #include "WorldObject.hpp"
-
+#include "InteractableObject.hpp"
 
 namespace game_engine {
     
@@ -90,49 +90,49 @@ namespace game_engine {
         }
 
         /**
-            
+            Steps the world  
         */
         void Step(double delta_time, graphics::Renderer * renderer, math::Vector3D camera_position, math::Vector3D camera_direction, Real_t camera_ratio, Real_t camera_angle);
 
         /**
-
+            Add an object in the world
         */
         int AddObject(WorldObject * object, Real_t x, Real_t y, Real_t z);
 
         /**
-        
+            Remove an object from the world
         */
         int RemoveObject(WorldObject * object);
 
         /**
-        
+            Add a point light to the world
         */
         int AddPointLight(graphics::PointLight * light, math::Vector2D& point);
 
         /**
-        
+            Remove a point light from the world
         */
         int RemovePointLight(graphics::PointLight * light, math::Vector2D& point);
 
         /**
-        
+            Set a directional light
         */
         void SetDirectionalLight(graphics::DirectionalLight * light);
 
         /**
-        
+            Remove a directional light
         */
         void RemoveDirectionalLight();
 
         /**
-        
+            Add an interactable object
         */
-        int AddInterractableObject(WorldObject * object, AABox<2> interaction_area);
+        int AddInterractableObject(Interactablebject * object, AABox<2> interaction_area);
 
         /**
-        
+            Perform ray casting among the interactable objects 
         */
-        WorldObject * RayCast(math::Ray2D ray);
+        Interactablebject * RayCast(math::Ray2D ray);
 
         /**
             Get a window of object in the world. Objects are assigned sequentially to the visible world 
@@ -142,15 +142,6 @@ namespace game_engine {
             @return The number of objects assigned to the visible_world vector
         */
         size_t GetObjectsWindow(math::AABox<2> rect, std::vector<WorldObject *> & objects);
-
-        /**
-            Find  the first interactable object inside the search area. pos_x, pos_y is currently not used
-            @param search_area The area to search for objects
-            @param pos_x currently not used
-            @param pos_y currently not used
-            @return nullptr if none is found, the pointer if something is found
-        */
-        WorldObject * FindInteractNeighbour(game_engine::math::Rectangle2D search_area, math::Vector2D p, Real_t size);
 
         /**
             Get the physics engine used in this world
@@ -163,18 +154,21 @@ namespace game_engine {
         Real_t x_margin_start_, x_margin_end_, y_margin_start_, y_margin_end_;
 
         /* 
-            A struct that resembles the world. Holds pointers to actual objects that are stored 
+            A 2x2 uniform grid that resembles the world. Holds pointers to actual objects that are stored 
             sequentially
         */
         utility::UniformGrid<std::deque<WorldObject *>, 2> * world_;
         size_t grid_rows_, grid_columns_;
+        /* Holds the AABox of the 2D world */
         math::AABox<2> world_window_;
+        /* Use the whole world, or the visible part only for rendering? */
         bool use_visible_world_window_ = false;
         /* A vector that holds the visible objects, updated during every frame */
         std::vector<WorldObject *> visible_world_;
         
         /* A struct that holds the world's lights */
         utility::QuadTree<graphics::PointLight *> * world_point_lights_;
+        /* The directional light of the world */
         graphics::DirectionalLight * directional_light_ = nullptr;
 
         /* Holds objects that are removed from the world, whose memory needs deallocation */
@@ -182,7 +176,8 @@ namespace game_engine {
 
         physics::PhysicsEngine * physics_engine_;
         
-        utility::QuadTreeBoxes<WorldObject *> * interaction_tree_;
+        /* Acceleration data structure for ray casting */
+        utility::QuadTreeBoxes<Interactablebject *> * interaction_tree_;
 
         /**
             Get the row in the world based in the vertical coordiate
@@ -225,7 +220,7 @@ namespace game_engine {
         void RemoveObjectFromWorldStructure(WorldObject * object);
 
         /**
-
+            Delete a world object
         */
         void DeleteObj(WorldObject * object);
 

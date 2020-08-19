@@ -10,11 +10,13 @@
 
 #include "Sun.hpp"
 
-
-class Fire : public game_engine::WorldObject, public game_engine::graphics::PointLight {
+/**
+    Represents the torch object in the world, It is a point a light, and an interactable object
+*/
+class Fire : public game_engine::graphics::PointLight, game_engine::Interactablebject {
 public:
 
-    bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, std::string name,
+    bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z,
         game_engine::WorldSector * world, game_engine::GameEngine * engine, Sun * sun);
 
     virtual void StepLight(double delta_time) override;
@@ -25,10 +27,10 @@ private:
     std::vector<game_engine::Real_t> attenutation_noise_;
     size_t index_;
 
-    std::string tile_name;
     bool on_;
 
     Sun * sun_;
+    game_engine::WorldSector * world_;
 };
 
 #endif
