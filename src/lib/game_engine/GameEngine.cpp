@@ -35,6 +35,7 @@ namespace game_engine {
             return -1;
         }
 
+        /* Init renderer */
         config_ = config;
         int ret = renderer_->Init(config_.context_params_);
         if (ret) {
@@ -56,6 +57,7 @@ namespace game_engine {
         graphics::TEXTURES_NUMBER = 512;
         graphics::AssetManager& asset_manager_creation_instance = graphics::AssetManager::GetInstance();
 
+        /* Init other systems */
         frame_regulator_.Init(config_.frame_rate_, 10);
         debugger_->Init(renderer_);
 
@@ -91,13 +93,14 @@ namespace game_engine {
         /* Start calculating frame time */
         frame_regulator_.FrameStart();
 
-        /* Get latest control values */
+        /* Get latest control values, as returned by the OpenGL API */
         key_controls_ = renderer_->GetControlInput();
 
         renderer_->StartFrame();
 
         MeasureFPS(1000.0f * delta_time);
 
+        /* Get some camera info, to be used to calculate the visible window */
         math::Vector3D camera_pos, camera_dir;
         camera_->GetPositionVector(camera_pos.x(), camera_pos.y(), camera_pos.z());
         camera_->GetDirectionVector(camera_dir.x(), camera_dir.y(), camera_dir.z());
@@ -107,13 +110,13 @@ namespace game_engine {
         /* Perform one step on the active sector */
         sector_->Step(delta_time, renderer_, camera_pos, camera_dir, ratio, angle);
 
-        /* Render text overlay */
+        /* Render a welcome overlay and the frame counter */
         renderer_->Draw2DText("Welcome!", 60, 60, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f));
         renderer_->Draw2DText(std::to_string(fps_), config_.context_params_.window_width_ - 35, config_.context_params_.window_height_ - 20, 0.5f, glm::vec3(1, 0, 0));
 
+        /* End the frame */
         renderer_->EndFrame();
 
-        /* End the frame */
         frame_regulator_.FrameEnd();
     }
 

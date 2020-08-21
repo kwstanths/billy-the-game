@@ -47,7 +47,7 @@ uniform sampler2D g_position_light;
 uniform sampler2D shadow_map;
 uniform mat4 matrix_view;
 
-#define NR_POINT_LIGHTS 24
+#define NR_POINT_LIGHTS 36
 uniform PointLight point_light[NR_POINT_LIGHTS];
 uniform uint number_of_point_lights;
 

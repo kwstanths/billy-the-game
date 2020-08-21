@@ -11,7 +11,6 @@
 #include "Input.hpp"
 #include "Camera.hpp"
 #include "Sun.hpp"
-#include "Grass.hpp"
 #include "Fire.hpp"
 
 class World :public game_engine::WorldSector {
@@ -21,7 +20,6 @@ public:
     int Init(Input * input, Camera * camera, game_engine::GameEngine * engine);
 
     int Destroy();
-
 
 private:
     bool is_inited_;

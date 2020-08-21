@@ -19,11 +19,11 @@ namespace dt = debug_tools;
 
 int main(int argc, char ** argv) {
 
+    CodeReminder("Delete all physics things, use some 3rd party library")
     CodeReminder("Continuous memory allocation for Model()");
     CodeReminder("Continuous memory allocation for Mesh()");
     CodeReminder("Continuous memory allocation for Collision objects");
     CodeReminder("Text dialogs");
-    CodeReminder("Objects interaction");
     CodeReminder("Fix the build with double");
     
     /* Configuration parameters for the engine */

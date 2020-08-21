@@ -20,7 +20,6 @@ Player::Player(): WorldObject() {
     
     engine_ = nullptr;
 
-
     is_inited_ = false;
 }
 
@@ -56,7 +55,7 @@ int Player::Destroy() {
 }
 
 void Player::Step(double delta_time) {
-    /* TODO Remove these checks maybe */
+    /* TODO Remove these checks maybe? */
     if (!is_inited_) return;
     if (!WorldObject::IsInited())
         dt::Console(dt::WARNING, "Player::Step(): WorldObject is not initialised");

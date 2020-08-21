@@ -76,7 +76,7 @@ namespace graphics {
         /* Set camera parameters */
         Renderer::SetView();
 
-        /* Flush drawing calls */
+        /* Flush draw calls */
         FlushDrawCalls();
 
         context_->SwapBuffers();
@@ -336,6 +336,7 @@ namespace graphics {
             RenderGBuffer(rendering_object);
         }
 
+        // Post processing stack should go here
         // Is AO enabled?
         bool ssao = ConfigurationFile::instance().DoSSAO();
         if (ssao) {

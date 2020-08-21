@@ -60,7 +60,7 @@ namespace game_engine {
         bool IsInited();
 
         /**
-            Spawn a new object. Allocates the memory, and returns a pointer to it
+            Spawn a new object. Allocates the memory, and returns a pointer to the object
             @param removable If true, when the object is removed from the world no memory leak will occur
             @return A pointer to the object. If nullptr, then allocation failed
         */

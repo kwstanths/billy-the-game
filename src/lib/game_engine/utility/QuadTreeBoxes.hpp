@@ -20,6 +20,11 @@ using namespace game_engine::math;
 
 namespace game_engine { namespace utility {
 
+    /**
+        A Quad tree data structure that holds 2D boxes, to accelereate ray casting in 2D space
+        BUCKET_SIZE = How many boxes to hold at last depth
+        MAX_DEPTH = The max depth of the tree
+    */
     template<typename Data, int BUCKET_SIZE = 1, int MAX_DEPTH = 13>
     class QuadTreeBoxes {
     private:
@@ -134,6 +139,10 @@ namespace game_engine { namespace utility {
                     AABox<2> box = boxes[buckets_[i].data_];
                     Real_t t;
                     bool ret = IntersectionAABoxRay2D(box, ray, t);
+                    /* 
+                        t < 1: Make sure that the intersection of the ray with the box is within distance 1, Don't return intersection that
+                        are further away
+                    */
                     if (ret && t < 1) {
                         results.push_back(buckets_[i].data_);
                         return true;

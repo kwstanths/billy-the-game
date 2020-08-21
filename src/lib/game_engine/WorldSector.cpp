@@ -82,8 +82,9 @@ namespace game_engine {
 
     void WorldSector::Step(double delta_time, gr::Renderer * renderer, math::Vector3D camera_position, math::Vector3D camera_direction, Real_t camera_ratio, Real_t camera_angle) {
 
+        /* Caclulate visible window, camera looks down the z axis, and the world is at z=0 on the xy pane */
         Real_t width = camera_position.z() * tan(camera_angle / 2.0f);
-        /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
+        /* (2 * width) whould be exactly inside the camera view, 5 times should be more than enough */
         math::AABox<2> camera_view_box = math::AABox<2>(Vector2D({ camera_position.x(), camera_position.y() }), { 5.0f * width * camera_ratio, 5.0f * width });
 
         /* Draw a rectangle for the edge of this world */
@@ -97,7 +98,7 @@ namespace game_engine {
         /* Draw a rectangle for the rendering window */
         //renderer->DrawRectangleXY(camera_view_rectangle, 0.02f, 0.01f, { 1,1,1 });
 
-        /* Draw everything? or only the visiable part based on the 2D grid */
+        /* Draw everything? or only the visible part based on the 2D grid logic? */
         size_t nof;
         if (use_visible_world_window_)
             nof = GetObjectsWindow(camera_view_box, visible_world_);
@@ -117,9 +118,9 @@ namespace game_engine {
         }
         if (directional_light_ != nullptr) directional_light_->DrawLight(renderer);
 
-        /* Draw point lights */
+        /* Draw all point lights */
         width = 3.0f * camera_position.z() * tan(camera_angle / 2.0f);
-        /* 2 * width whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
+        /* (2 * width) whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
         math::AABox<2> camera_view_lights_box = math::AABox<2>(Vector2D({ camera_position.x(), camera_position.y() }), { 2.3f * width * camera_ratio, 2.3f * width });
 
         /* Get all point lights within the visible world */
@@ -129,12 +130,12 @@ namespace game_engine {
         else
             world_point_lights_->QueryRange(world_window_, lights_);
         
+        /* Step and draw the lights */
         for (size_t i = 0; i < lights_.size(); i++) {
             lights_[i]->StepLight(delta_time);
             lights_[i]->DrawLight(renderer);
         }
 
-        /* Update world */
         FlushObjectDelete();
     }
 
@@ -187,6 +188,8 @@ namespace game_engine {
     Interactablebject * WorldSector::RayCast(math::Ray2D ray) {
         std::vector<Interactablebject *> results;
         bool ret = interaction_tree_->RayCast(ray, results);
+        
+        /* Return the first result */
         if (ret) return results[0];
         return nullptr;
     }

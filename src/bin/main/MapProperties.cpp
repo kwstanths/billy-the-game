@@ -8,8 +8,8 @@
 namespace utl = game_engine::utility;
 
 MapProperties::MapProperties() {
-    tile_collisions_ = new utl::HashTable<std::string, std::string>(256);
-    tile_lights_ = new utl::HashTable<std::string, int>(256);
+    tile_collisions_ = new utl::HashTable<int, std::string>(256);
+    tile_lights_ = new utl::HashTable<int, int>(256);
 }
 
 void MapProperties::ReadMap(std::string map_file) {
@@ -46,7 +46,7 @@ void MapProperties::ReadMap(std::string map_file) {
             quote_1 = quote_2 + 8;
             quote_2 = lines[line].find("\"", quote_1 + 1);
             std::string collision_value = lines[line].substr(quote_1 + 1, quote_2 - quote_1 - 1);
-            tile_collisions_->Insert(tileset_name + "_" + std::to_string(tile), collision_value);
+            tile_collisions_->Insert(tile, collision_value);
         }
 
         line++;
@@ -57,15 +57,15 @@ void MapProperties::ReadMap(std::string map_file) {
         }
         quote_2 = lines[line].find("\"", quote_1 + 1);
         prop= lines[line].substr(quote_1 + 1, quote_2 - quote_1 - 1);
-        tile_lights_->Insert(tileset_name + "_" + std::to_string(tile), 1);
+        tile_lights_->Insert(tile, 1);
 
         line += 3;
     }
 
 }
 
-bool MapProperties::HasCollision(std::string name, std::string& collision_string) {
-    utl::HashTable<std::string, std::string>::iterator itr = tile_collisions_->Find(name);
+bool MapProperties::HasCollision(int tile_id, std::string& collision_string) {
+    utl::HashTable<int, std::string>::iterator itr = tile_collisions_->Find(tile_id);
     if (itr != tile_collisions_->end()) {
         collision_string = itr.GetValue();
         return true;
@@ -73,8 +73,8 @@ bool MapProperties::HasCollision(std::string name, std::string& collision_string
     return false;
 }
 
-bool MapProperties::IsLight(std::string name) {
-    utl::HashTable<std::string, int>::iterator itr = tile_lights_->Find(name);
+bool MapProperties::IsLight(int tile_id) {
+    utl::HashTable<int, int>::iterator itr = tile_lights_->Find(tile_id);
     if (itr != tile_lights_->end()) return true;
     return false;
 }

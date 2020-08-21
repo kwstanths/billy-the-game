@@ -1,10 +1,28 @@
 #include "FileIO.hpp"
 
+#include <fstream>
+
 #include "ErrorCodes.hpp"
 
 #include "debug_tools/Console.hpp"
 
 namespace game_engine {
+
+    int LoadFile(std::string input_file, std::vector<std::string>& data)
+    {
+        data.clear();
+
+        std::string line;
+        std::ifstream myfile(input_file);
+        if (myfile.is_open()) {
+            while (getline(myfile, line)) {
+                data.push_back(line);
+            }
+            myfile.close();
+            return 0;
+        }
+        return -1;
+    }
 
     int LoadObj(const char * path, std::vector<glm::vec3>& out_vertices, std::vector<glm::vec2>& out_uvs, std::vector<glm::vec3>& out_normals) {
 
