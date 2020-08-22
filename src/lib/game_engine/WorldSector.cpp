@@ -42,17 +42,17 @@ namespace game_engine {
         x_margin_end_ = x_margin_end;
         y_margin_start_ = y_margin_start;
         y_margin_end_ = y_margin_end;
-        world_window_ = AABox<2>(Vector2D({ x_margin_start, y_margin_start }), Vector2D({x_margin_end, y_margin_end}));
+        world_window_ = AABox<2>(Vector2D(x_margin_start, y_margin_start), Vector2D(x_margin_end, y_margin_end));
 
         /* Initialize the world grid */
         world_ = new utility::UniformGrid<std::deque<WorldObject *>, 2>({ grid_rows_, grid_columns_});
         visible_world_ = std::vector<WorldObject *>(650, nullptr);
 
         /* Initialize point lights data structure */
-        world_point_lights_ = new utility::QuadTree<graphics::PointLight *>(math::Vector2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
+        world_point_lights_ = new utility::QuadTree<graphics::PointLight *>(math::Vector2D(x_margin_start_, y_margin_start_), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
 
         /* Initialize physics engine */
-        physics_engine_->Init(AABox<2>(Vector2D({ x_margin_start_, y_margin_start }), Vector2D({ x_margin_end_, y_margin_end })), 500);
+        physics_engine_->Init(AABox<2>(Vector2D(x_margin_start_, y_margin_start), Vector2D(x_margin_end_, y_margin_end)), 500);
         
         /* Initialize the circular buffer for deleting objects */
         delete_objects_buffer_.Init(128);
@@ -60,7 +60,7 @@ namespace game_engine {
         use_visible_world_window_ = ConfigurationFile::instance().UseVisibleWindow();
 
         /* Initialize acceleration data structure for ray casting */
-        interaction_tree_ = new utility::QuadTreeBoxes<Interactablebject *>(math::Vector2D({ x_margin_start_, y_margin_start_ }), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
+        interaction_tree_ = new utility::QuadTreeBoxes<Interactablebject *>(math::Vector2D(x_margin_start_, y_margin_start_), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
 
         is_inited_ = true;
         return 0;
@@ -85,7 +85,7 @@ namespace game_engine {
         /* Caclulate visible window, camera looks down the z axis, and the world is at z=0 on the xy pane */
         Real_t width = camera_position.z() * tan(camera_angle / 2.0f);
         /* (2 * width) whould be exactly inside the camera view, 5 times should be more than enough */
-        math::AABox<2> camera_view_box = math::AABox<2>(Vector2D({ camera_position.x(), camera_position.y() }), { 5.0f * width * camera_ratio, 5.0f * width });
+        math::AABox<2> camera_view_box = math::AABox<2>(Vector2D(camera_position.x(), camera_position.y()), { 5.0f * width * camera_ratio, 5.0f * width });
 
         /* Draw a rectangle for the edge of this world */
         //renderer->DrawRectangleXY(math::Rectangle2D(
@@ -121,7 +121,7 @@ namespace game_engine {
         /* Draw all point lights */
         width = 3.0f * camera_position.z() * tan(camera_angle / 2.0f);
         /* (2 * width) whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
-        math::AABox<2> camera_view_lights_box = math::AABox<2>(Vector2D({ camera_position.x(), camera_position.y() }), { 2.3f * width * camera_ratio, 2.3f * width });
+        math::AABox<2> camera_view_lights_box = math::AABox<2>(Vector2D(camera_position.x(), camera_position.y()), { 2.3f * width * camera_ratio, 2.3f * width });
 
         /* Get all point lights within the visible world */
         std::vector<graphics::PointLight *> lights_;

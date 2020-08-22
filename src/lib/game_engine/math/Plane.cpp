@@ -27,11 +27,11 @@ namespace game_engine { namespace math {
 
     void Plane::SetCoefficients(Real_t a, Real_t b, Real_t c, Real_t d) {
         /* set the normal vector */
-        normal_ = Vector3D({ a, b, c });
+        normal_ = Vector3D(a, b, c);
         /* compute the lenght of the vector */
         float l = normal_.Norm();
         /* normalize the vector */
-        normal_ = Vector3D({ a / l, b / l, c / l });
+        normal_ = Vector3D(a / l, b / l, c / l);
         /* and divide d by th length as well */
         d_ = d / l;
     }

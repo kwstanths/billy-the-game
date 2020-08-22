@@ -102,7 +102,7 @@ namespace physics {
 
         bool Check(CollisionBoundingCircle * other);
         void Translate(game_engine::Real_t x, game_engine::Real_t y) {
-            bbox_.Translate(math::Vector2D({ x, y }));
+            bbox_.Translate(math::Vector2D(x, y));
         }
         CollisionType GetType();
 

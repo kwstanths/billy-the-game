@@ -6,12 +6,15 @@
 namespace game_engine {
 namespace math {
 
+    /* RNG base class */
     class RNG {
     public:
         virtual double rng() = 0;
         double rng_between(double a, double b);
     };
     
+    /* Use one of the following methods to generate random numbers */
+
     class CongruentialLinearGenerator : public RNG {
     public:
         enum Parameterization {

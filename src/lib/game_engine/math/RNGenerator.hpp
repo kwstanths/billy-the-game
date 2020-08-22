@@ -10,10 +10,7 @@ namespace game_engine {
 namespace math {
 
     /**
-        Get random numbersm noise and other from various sources. 
-        GetRand() and GetRandFloat() use std rand(), and the seed is set in the GameEngine::Init() for all calls.
-        GetPseudoRandFloat() used the seed given in the Init()
-        GenPerlinNoise1D() uses GetPseudoRandFloat()
+        Used to generate 1D Perlin noise. If you want RNG values, look into RNG.hpp
     */
     class RNGenerator {
     public:

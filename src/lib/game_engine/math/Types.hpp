@@ -32,7 +32,7 @@ namespace math {
 
         Circle2D() {};
         Circle2D(Real_t x, Real_t y, Real_t r) {
-            c_ = Vector2D({ x, y });
+            c_ = Vector2D(x, y);
             r_ = r;
         };
 
@@ -82,10 +82,10 @@ namespace math {
             Real_t xmar = x_width / 2.0f;
             Real_t ymar = y_height / 2.0f;
 
-            A_ = Vector2D({center_x - xmar, center_y - ymar});
-            B_ = Vector2D({center_x + xmar, center_y - ymar});
-            C_ = Vector2D({center_x + xmar, center_y + ymar});
-            D_ = Vector2D({center_x - xmar, center_y + ymar});
+            A_ = Vector2D(center_x - xmar, center_y - ymar);
+            B_ = Vector2D(center_x + xmar, center_y - ymar);
+            C_ = Vector2D(center_x + xmar, center_y + ymar);
+            D_ = Vector2D(center_x - xmar, center_y + ymar);
         }
 
         /*

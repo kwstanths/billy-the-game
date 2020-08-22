@@ -27,7 +27,7 @@ int main(int argc, char ** argv) {
     context_params.font_file_path = "fonts/Arial.ttf";
     ge::GameEngineConfig_t engine_params;
     engine_params.context_params_ = context_params;
-    engine_params.frame_rate_ = 60;
+    engine_params.frame_rate_ = 100;
     ge::GameEngine engine;
     if (engine.Init(engine_params)) return false;
     

@@ -17,7 +17,7 @@ namespace math {
     static const float M_PI_FLOAT = static_cast<float>(M_PI);
 
     /**
-        Check if two double numbers are equal
+        Check if two numbers are equal, within a margin
         @param a First number
         @param b Second number
         @return true=equal, false=not equal

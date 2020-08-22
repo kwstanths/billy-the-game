@@ -3,7 +3,6 @@
 #include "ErrorCodes.hpp"
 #include "game_engine/graphics/AssetManager.hpp"
 #include "game_engine/memory/MemoryManager.hpp"
-#include "game_engine/math/Vec3.hpp"
 
 #include "debug_tools/Console.hpp"
 #include "debug_tools/CodeReminder.hpp"

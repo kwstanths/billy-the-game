@@ -46,16 +46,16 @@ void ExportObjFile(std::ofstream& obj_file, std::string file_name, size_t index,
 Tile CreateTile(float u1, float v1, float u2, float v2, float u3, float v3, float u4, float v4) {
     
     Tile temp;
-    temp.vertices_.push_back(Vector3D({ -0.5, -0.5, 0 }));
-    temp.vertices_.push_back(Vector3D({  0.5, -0.5, 0 }));
-    temp.vertices_.push_back(Vector3D({ -0.5,  0.5, 0 }));
-    temp.vertices_.push_back(Vector3D({  0.5,  0.5, 0 }));
-    temp.uv_.push_back(Vector2D({ u3, v3 }));
-    temp.uv_.push_back(Vector2D({ u1, v1 }));
-    temp.uv_.push_back(Vector2D({ u2, v2 }));
-    temp.uv_.push_back(Vector2D({ u4, v4 }));
-    temp.triangles_.push_back(Vector3D({ 1, 2, 3 }));
-    temp.triangles_.push_back(Vector3D({ 2, 4, 3 }));
+    temp.vertices_.push_back(Vector3D(-0.5, -0.5, 0));
+    temp.vertices_.push_back(Vector3D( 0.5, -0.5, 0));
+    temp.vertices_.push_back(Vector3D(-0.5,  0.5, 0));
+    temp.vertices_.push_back(Vector3D( 0.5,  0.5, 0));
+    temp.uv_.push_back(Vector2D(u3, v3));
+    temp.uv_.push_back(Vector2D(u1, v1));
+    temp.uv_.push_back(Vector2D(u2, v2));
+    temp.uv_.push_back(Vector2D(u4, v4));
+    temp.triangles_.push_back(Vector3D(1, 2, 3));
+    temp.triangles_.push_back(Vector3D(2, 4, 3));
     return temp;
 }
 

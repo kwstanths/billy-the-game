@@ -2,7 +2,24 @@
 Billy the game is a personal project to create an open world 2D game, by using C++, OpenGL and other similar libraries to ease development. 
 The goal is to learn basic rendering techniques, physics, memory 
 management, data structures and anything else that might be used 
-in the development of a game
+in the development of a game, featuring:
+In Graphics with OpenGL:
+- Reading models through assimp, rendering with one diffuse texture, and one specular map
+- Deferred and forward rendering
+- Shadows with simple shadow mapping
+- View frustum culling and occlusion queries
+- Screen Space Ambient Occlusion
+- Water rendering with a grid  
+In world building:  
+- Importing maps generated from Tiled
+- Draw call batching generated maps
+In physics and interaction:  
+- Custom collision avoidance
+- QuadTree accelerated ray casting  
+Other:  
+- Several data structures created: Uniform grids, Circular buffers, HashTables, and several QuadTree variants
+- Sequential memory allocation with custom allocators
+
 
 ## Current progress - billy the game
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/CWFcuDfG5MM/0.jpg)](https://www.youtube.com/watch?v=CWFcuDfG5MM&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=11)

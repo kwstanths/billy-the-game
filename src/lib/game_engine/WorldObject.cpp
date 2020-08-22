@@ -90,7 +90,7 @@ namespace game_engine {
         /* Maybe not assertion but return something */
         _assert(world_sector_ != nullptr);
 
-        math::Vector2D new_pos({ pos_x, pos_y });
+        math::Vector2D new_pos(pos_x, pos_y);
         if (collision_check){
             new_pos = world_sector_->GetPhysicsEngine()->CheckCollision(this, new_pos);
             world_sector_->GetPhysicsEngine()->Update(this, new_pos);

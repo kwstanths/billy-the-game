@@ -9,20 +9,16 @@ namespace math = game_engine::math;
 
 namespace game_engine { namespace math {
 
-    Real_t DotProduct(Vector2D vector_a, Vector2D vector_b) {
-        return vector_a.x()* vector_b.x() + vector_a.y() * vector_b.y();
-    }
-    
     bool PointInside(Vector2D point, Rectangle2D rect) {
     
-        Vector2D AM({ point.x() - rect.A_.x(), point.y() - rect.A_.y() });
-        Vector2D AB({ rect.B_.x() - rect.A_.x(), rect.B_.y() - rect.A_.y() });
-        Vector2D AD({ rect.D_.x() - rect.A_.x(), rect.D_.y() - rect.A_.y() });
+        Vector2D AM(point.x() - rect.A_.x(), point.y() - rect.A_.y());
+        Vector2D AB(rect.B_.x() - rect.A_.x(), rect.B_.y() - rect.A_.y());
+        Vector2D AD(rect.D_.x() - rect.A_.x(), rect.D_.y() - rect.A_.y());
     
-        Real_t dot_product_AM_AB = DotProduct(AM, AB);
-        Real_t dot_product_AM_AD = DotProduct(AM, AD);
-        Real_t dot_product_AB_AB = DotProduct(AB, AB);
-        Real_t dot_product_AD_AD = DotProduct(AD, AD);
+        Real_t dot_product_AM_AB = AM.DotProduct(AB);
+        Real_t dot_product_AM_AD = AM.DotProduct(AD);
+        Real_t dot_product_AB_AB = AB.DotProduct(AB);
+        Real_t dot_product_AD_AD = AD.DotProduct(AD);
     
         if (0 <= dot_product_AM_AB &&
             dot_product_AM_AB <= dot_product_AB_AB &&
@@ -146,7 +142,7 @@ namespace game_engine { namespace math {
             y_coord = -line_b.C_ / line_b.B_;
         }
     
-        return Vector2D({ x_coord, y_coord });
+        return Vector2D(x_coord, y_coord);
     }
 
     bool IntersectRect_Rect(Rectangle2D rect_a, Rectangle2D rect_b) {

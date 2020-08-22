@@ -10,15 +10,9 @@
 
 namespace game_engine {
 namespace math {
-
-    /**
-        Find the inner product between two vectors defined by points
-        @param vector_b First vector
-        @param vector_a Second vector
-        @return The inner product
-    */
-    Real_t DotProduct(Vector2D vector_a, Vector2D vector_b);
     
+    // TODO Changed the input of these functions into references
+
     /**
         Check whether a point is inside a rectangle in a 2D pane
         @param point The point

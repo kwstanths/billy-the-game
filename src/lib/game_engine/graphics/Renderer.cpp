@@ -8,6 +8,7 @@
 #include "game_engine/ConfigurationFile.hpp"
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/math/Vector.hpp"
+#include "game_engine/math/Matrices.hpp"
 #include "opengl/OpenGLIncludes.hpp"
 
 #include "game_engine/graphics/Frustum.hpp"
@@ -220,13 +221,15 @@ namespace graphics {
         }
         case RENDER_MODE::VIEW_FRUSTUM_CULLING:
         {
-            FrustumG f;
+            /* Initialize camera frustum */
+            Frustum f;
             float * p = (float*)glm::value_ptr(camera_->GetProjectionMatrix());
             float * v = (float*)glm::value_ptr(camera_->GetViewMatrix());
             float m[16];
-            multMat(m, v, p);
-            f.setFrustum(m);
+            MultMat(m, v, p);
+            f.SetFrustum(m);
 
+            /* Render meshes */
             std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
             for (size_t i = 0; i < meshes.size(); i++) {
                 Mesh * mesh = meshes[i];
@@ -239,8 +242,8 @@ namespace graphics {
                 Vector3D min({ gl_object.min_x_ + x_offset, gl_object.min_y_ + y_offset, gl_object.min_z_ + z_offset });
                 Vector3D max({ gl_object.max_x_ + x_offset, gl_object.max_y_ + y_offset, gl_object.max_z_ + z_offset });
                 AABox<3> box(min, max);
-                int ret = f.boxInFrustum(box);
-                if (ret != FrustumG::OUTSIDE) renderer_->DrawGBuffer(gl_object, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
+                int ret = f.BoxInFrustum(box);
+                if (ret != Frustum::OUTSIDE) renderer_->DrawGBuffer(gl_object, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
             }
 
             break;

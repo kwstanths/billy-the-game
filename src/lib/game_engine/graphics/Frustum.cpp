@@ -5,13 +5,13 @@
 
 #define ANG2RAD 3.14159265358979323846/180.0
 
-FrustumG::FrustumG() {}
+Frustum::Frustum() {}
 
-FrustumG::~FrustumG() {}
+Frustum::~Frustum() {}
 
 #define m(row,col)  m[col*4+row-5]
 
-void FrustumG::setFrustum(float * m) {
+void Frustum::SetFrustum(float * m) {
     pl[NEARP].SetCoefficients(
         m(3, 1) + m(4, 1),
         m(3, 2) + m(4, 2),
@@ -46,7 +46,7 @@ void FrustumG::setFrustum(float * m) {
 
 #undef M
 
-void FrustumG::setCamInternals(float angle, float ratio, float nearD, float farD) {
+void Frustum::SetCamInternals(float angle, float ratio, float nearD, float farD) {
 
     this->ratio = ratio;
     this->angle = angle;
@@ -58,21 +58,19 @@ void FrustumG::setCamInternals(float angle, float ratio, float nearD, float farD
     nw = nh * ratio;
     fh = farD * tang;
     fw = fh * ratio;
-
-
 }
 
-void FrustumG::setCamDef(Vec3 &p, Vec3 &l, Vec3 &u) {
+void Frustum::SetCamDef(Vector3D &p, Vector3D &l, Vector3D &u) {
 
-    Vec3 dir, nc, fc, X, Y, Z;
+    Vector3D dir, nc, fc, X, Y, Z;
 
     Z = p - l;
-    Z.Normalize();
+    Z.Normalise();
 
-    X = Vec3::CrossProduct(u, Z);
-    X.Normalize();
+    X = Vector3D::CrossProduct(u, Z);
+    X.Normalise();
 
-    Y = Vec3::CrossProduct(Z, X);
+    Y = Vector3D::CrossProduct(Z, X);
 
     nc = p - Z * nearD;
     fc = p - Z * farD;
@@ -95,7 +93,7 @@ void FrustumG::setCamDef(Vec3 &p, Vec3 &l, Vec3 &u) {
     pl[FARP].SetPoints(Vector3D(ftr), Vector3D(ftl), Vector3D(fbl));
 }
 
-int FrustumG::pointInFrustum(Vec3 &p) {
+int Frustum::PointInFrustum(Vector3D &p) {
 
     int result = INSIDE;
     for (int i = 0; i < 6; i++) {
@@ -107,7 +105,7 @@ int FrustumG::pointInFrustum(Vec3 &p) {
 
 }
 
-int FrustumG::sphereInFrustum(Vec3 &p, float raio) {
+int Frustum::SphereInFrustum(Vector3D &p, float raio) {
 
     int result = INSIDE;
     float distance;
@@ -122,11 +120,10 @@ int FrustumG::sphereInFrustum(Vec3 &p, float raio) {
     return(result);
 }
 
-int FrustumG::boxInFrustum(AABox<3> &b) {
+int Frustum::BoxInFrustum(AABox<3> &b) {
 
     int result = INSIDE;
     for (int i = 0; i < 6; i++) {
-        //Vec3 norma = Vec3(pl[i].normal_.x(), pl[i].normal_.y(), pl[i].normal_.z());
 
         if (pl[i].Distance(AAboxGetVertexPositive(b, pl[i].normal_)) < 0)
             return OUTSIDE;
@@ -136,13 +133,3 @@ int FrustumG::boxInFrustum(AABox<3> &b) {
     return(result);
 }
 
-void multMat(float * res, float * a, float * b) {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            res[i * 4 + j] = 0.0;
-            for (int k = 0; k < 4; k++) {
-                res[i * 4 + j] += a[i * 4 + k] * b[k * 4 + j];
-            }
-        }
-    }
-}

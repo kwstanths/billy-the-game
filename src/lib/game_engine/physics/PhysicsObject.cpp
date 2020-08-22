@@ -72,7 +72,7 @@ namespace physics {
     }
 
     void PhysicsObject::SetCollision(physics::PhysicsEngine * engine, game_engine::math::AABox<2> box) {
-        engine->Insert(this, Vector2D({ pos_x_, pos_y_ }));
+        engine->Insert(this, Vector2D(pos_x_, pos_y_));
         collision_ = new CollisionBoundingBox(box);
     }
 

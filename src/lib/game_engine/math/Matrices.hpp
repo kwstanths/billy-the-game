@@ -49,6 +49,13 @@ namespace math {
      */
     glm::mat4 GetRotateMatrix(Real_t rotate_deg, Real_t rotate_axis_x, Real_t rotate_axis_y, Real_t rotate_axis_z);
 
+    /**
+        Multiply two 4x4 matrices, res = a * b
+        @param[out] res Resulting matrix
+        @param a Input matrix a
+        @param b Input matrix b
+    */
+    void MultMat(Real_t *res, Real_t *a, Real_t *b);
 }
 }
 

@@ -8,7 +8,6 @@
 
 #include "Real.hpp"
 #include "HelpFunctions.hpp"
-#include "Vec3.hpp"
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
@@ -28,7 +27,7 @@ namespace math {
             coordinates_ = std::vector<Real_t>(K, a);
         }
 
-        Vector(std::vector<Real_t> coordinates) {
+        Vector(std::vector<Real_t>& coordinates) {
             coordinates_ = coordinates;
         }
 
@@ -144,9 +143,12 @@ namespace math {
 
         Vector2D(Real_t a) : Vector(a) { };
 
-        Vector2D(std::vector<Real_t> coordinates) : Vector(coordinates) { }
+        Vector2D(Real_t x, Real_t y) : Vector() {
+            coordinates_[0] = x;
+            coordinates_[1] = y;
+        }
 
-        Vector2D(glm::vec2& v) {
+        Vector2D(glm::vec2& v) : Vector() {
             coordinates_[0] = v.x;
             coordinates_[1] = v.y;
         }
@@ -157,7 +159,7 @@ namespace math {
         }
 
         Vector2D& operator = (Vector<2>& v) {
-            return Vector2D({v[0], v[1]});
+            return Vector2D(v[0], v[1]);
         }
 
         Real_t& x() {
@@ -179,7 +181,11 @@ namespace math {
 
         Vector3D(Real_t a) : Vector(a) { };
 
-        Vector3D(std::vector<Real_t> coordinates) : Vector(coordinates) { }
+        Vector3D(Real_t x, Real_t y, Real_t z) : Vector() {
+            coordinates_[0] = x;
+            coordinates_[1] = y;
+            coordinates_[2] = z;
+        }
 
         Vector3D(glm::vec3& v) : Vector() {
             coordinates_[0] = v.x;
@@ -193,22 +199,16 @@ namespace math {
             coordinates_[2] = v[2];
         }
 
-        Vector3D(Vec3& v) : Vector() {
-            coordinates_[0] = v.x_;
-            coordinates_[1] = v.y_;
-            coordinates_[2] = v.z_;
-        }
-
         static Vector3D CrossProduct(Vector3D& a, Vector3D& b) {
             return Vector3D(
-                { a.y()*b.z() - a.z()*b.y(),
+                {a.y()*b.z() - a.z()*b.y(),
                 a.z()*b.x() - a.x()*b.z(),
                 a.x()*b.y() - a.y()*b.x()
                 });
         }
 
         Vector3D& operator = (Vector<3>& v) {
-            return Vector3D({ v[0], v[1], v[2] });
+            return Vector3D(v[0], v[1], v[2]);
         }
 
         Real_t& x() {

@@ -9,6 +9,7 @@
 
 namespace game_engine { namespace math {
 
+    /* Axis Aligned Bounding box, for 1,2 and 3 dimensions */
     template<int K>
     class AABox {
     public:

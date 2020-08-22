@@ -1,9 +1,6 @@
 #ifndef __Frustum_hpp__
 #define __Frustum_hpp__
 
-void multMat(float *res, float *a, float *b);
-
-#include "game_engine/math/Vec3.hpp"
 #include "game_engine/math/Vector.hpp"
 #include "game_engine/math/Plane.hpp"
 #include "game_engine/math/AABox.hpp"
@@ -11,9 +8,10 @@ void multMat(float *res, float *a, float *b);
 using namespace game_engine::math;
 
 
-class FrustumG{
+class Frustum {
 private:
 
+    /* Planes */
     enum {
         TOP = 0,
         BOTTOM,
@@ -25,23 +23,25 @@ private:
 
 public:
 
+    /* Values returned */
     enum { OUTSIDE, INTERSECT, INSIDE };
 
+    /* The six planes */
     Plane pl[6];
 
-    Vec3 ntl, ntr, nbl, nbr, ftl, ftr, fbl, fbr;
+    Vector3D ntl, ntr, nbl, nbr, ftl, ftr, fbl, fbr;
     float nearD, farD, ratio, angle, tang;
     float nw, nh, fw, fh;
 
-    FrustumG::FrustumG();
-    FrustumG::~FrustumG();
+    Frustum();
+    ~Frustum();
 
-    void setFrustum(float *m);
-    void FrustumG::setCamInternals(float angle, float ratio, float nearD, float farD);
-    void FrustumG::setCamDef(Vec3 &p, Vec3 &l, Vec3 &u);
-    int FrustumG::pointInFrustum(Vec3 &p);
-    int FrustumG::sphereInFrustum(Vec3 &p, float raio);
-    int FrustumG::boxInFrustum(AABox<3> &b);
+    void SetFrustum(float *m);
+    void SetCamInternals(float angle, float ratio, float nearD, float farD);
+    void SetCamDef(Vector3D &p, Vector3D &l, Vector3D &u);
+    int PointInFrustum(Vector3D &p);
+    int SphereInFrustum(Vector3D &p, float raio);
+    int BoxInFrustum(AABox<3> &b);
 };
 
 
