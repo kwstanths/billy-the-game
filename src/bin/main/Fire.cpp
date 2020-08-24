@@ -11,11 +11,13 @@ namespace math = game_engine::math;
 namespace grph = game_engine::graphics;
 
 
-bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world, ge::GameEngine * engine, Sun * sun) {
+bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, float intensity, ge::WorldSector * world, ge::GameEngine * engine, Sun * sun) {
+
+    diffuse_value_ = glm::vec3(0.9f, 0.7f, 0.7f) * intensity;
 
     PointLight::position_ = glm::vec3(x + 0.05, y, z +  1.5);
     PointLight::ambient_ = glm::vec3(0.0f, 0.0f, 0.0f);
-    PointLight::diffuse_ = glm::vec3(0.7f, 0.5f, 0.5f); 
+    PointLight::diffuse_ = diffuse_value_;
     PointLight::specular_ = glm::vec3(0.2f, 0.2f, 0.2f);
     PointLight::attenutation_ = ge::graphics::Attenuation_t(1, 0.0001f, 0.0939f);
 
@@ -44,7 +46,7 @@ void Fire::StepLight(double delta_time) {
     double hour = sun_->GetTimeOfDay();
     if (on_ && (hour < 8 || hour > 18.5)) {
         PointLight::ambient_ = glm::vec3(0.0f, 0.0f, 0.0f);
-        PointLight::diffuse_ = glm::vec3(0.9f, 0.7f, 0.7f);
+        PointLight::diffuse_ = diffuse_value_;
         PointLight::specular_ = glm::vec3(0.4f, 0.4f, 0.4f);
     } else {
         PointLight::ambient_ = glm::vec3(0.0f, 0.0f, 0.0f);

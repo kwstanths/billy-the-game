@@ -59,8 +59,17 @@ namespace game_engine {
 
         use_visible_world_window_ = ConfigurationFile::instance().UseVisibleWindow();
 
-        /* Initialize acceleration data structure for ray casting */
-        interaction_tree_ = new utility::QuadTreeBoxes<Interactablebject *>(math::Vector2D(x_margin_start_, y_margin_start_), std::max(y_margin_end_ - y_margin_start_, x_margin_end_ - x_margin_start_));
+        {
+            /* 
+                The Quad tree data structure for ray casting, requires that the world is centered around (0,0)
+                Calcualte it in a way, so that this is always true
+            */
+            Real_t max_x = std::max(std::abs(x_margin_start_), std::abs(x_margin_end_));
+            Real_t max_y = std::max(std::abs(y_margin_start_), std::abs(y_margin_end_));
+            Real_t max = std::max(max_x, max_y);
+            /* Initialize acceleration data structure for ray casting */
+            interaction_tree_ = new utility::QuadTreeBoxes<Interactablebject *>(math::Vector2D(-max), 2 * max);
+        }
 
         is_inited_ = true;
         return 0;

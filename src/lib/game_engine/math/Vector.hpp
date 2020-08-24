@@ -128,7 +128,7 @@ namespace math {
             for (size_t i = 0; i < K - 1; i++) {
                 os << h.coordinates_[i] << ", ";
             }
-            os << h.coordinates_[0] << "]";
+            os << h.coordinates_[K - 1] << "]";
             return os;
         }
 

@@ -9,7 +9,7 @@ namespace utl = game_engine::utility;
 
 MapProperties::MapProperties() {
     tile_collisions_ = new utl::HashTable<int, std::string>(256);
-    tile_lights_ = new utl::HashTable<int, int>(256);
+    tile_lights_ = new utl::HashTable<int, float>(256);
 }
 
 void MapProperties::ReadMap(std::string map_file) {
@@ -47,6 +47,11 @@ void MapProperties::ReadMap(std::string map_file) {
             quote_2 = lines[line].find("\"", quote_1 + 1);
             std::string collision_value = lines[line].substr(quote_1 + 1, quote_2 - quote_1 - 1);
             tile_collisions_->Insert(tile, collision_value);
+        } else if (prop == "light") {
+            quote_1 = quote_2 + 21;
+            quote_2 = lines[line].find("\"", quote_1 + 1);
+            std::string light_value = lines[line].substr(quote_1 + 1, quote_2 - quote_1 - 1);
+            tile_lights_->Insert(tile, std::stof(light_value));
         }
 
         line++;
@@ -73,8 +78,11 @@ bool MapProperties::HasCollision(int tile_id, std::string& collision_string) {
     return false;
 }
 
-bool MapProperties::IsLight(int tile_id) {
-    utl::HashTable<int, int>::iterator itr = tile_lights_->Find(tile_id);
-    if (itr != tile_lights_->end()) return true;
+bool MapProperties::IsLight(int tile_id, float& intensity) {
+    utl::HashTable<int, float>::iterator itr = tile_lights_->Find(tile_id);
+    if (itr != tile_lights_->end()) {
+        intensity = itr.GetValue();
+        return true;
+    }
     return false;
 }

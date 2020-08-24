@@ -7,13 +7,14 @@
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/utility/FIFOWorker.hpp"
 
+#include "TiledMap.hpp"
 #include "MapProperties.hpp"
 #include "Input.hpp"
 #include "Camera.hpp"
 #include "Sun.hpp"
 #include "Fire.hpp"
 
-class World :public game_engine::WorldSector {
+class World : public game_engine::WorldSector, public TiledMap {
 public:
     World();
 

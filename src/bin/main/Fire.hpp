@@ -16,7 +16,7 @@
 class Fire : public game_engine::graphics::PointLight, game_engine::Interactablebject {
 public:
 
-    bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z,
+    bool Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, float intensity,
         game_engine::WorldSector * world, game_engine::GameEngine * engine, Sun * sun);
 
     virtual void StepLight(double delta_time) override;
@@ -26,6 +26,7 @@ public:
 private:
     std::vector<game_engine::Real_t> attenutation_noise_;
     size_t index_;
+    glm::vec3 diffuse_value_;
 
     bool on_;
 

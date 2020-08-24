@@ -64,7 +64,10 @@ namespace graphics {
         renderer_->shadow_map_->Unbind();
 
         renderer_->g_buffer_->Bind();
-        renderer_->g_buffer_->ClearColor(0.0f / 255, 138.0 / 255, 145.0 / 255, 1);
+        // Light blue
+        //renderer_->g_buffer_->ClearColor(0.0f / 255, 138.0 / 255, 145.0 / 255, 1);
+        // Black
+        renderer_->g_buffer_->ClearColor(0.0f, 0.0f, 0.0f, 1);
         glClear(GL_DEPTH_BUFFER_BIT);
         renderer_->g_buffer_->UnBind();
 

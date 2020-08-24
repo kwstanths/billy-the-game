@@ -63,6 +63,11 @@ Tile CreateTile(float u1, float v1, float u2, float v2, float u3, float v3, floa
 static int MAP_HEIGHT;
 static int MAP_WIDTH;
 
+void GetXYFromTiled(int i, int j, float&x, float&y) {
+    x = j;
+    y = -i;
+}
+
 /* Used for hashing the packed map structure */
 struct pair_hash {
     template <class T1, class T2>
@@ -75,11 +80,12 @@ struct pair_hash {
 };
 class PackedMap {
 public:
-    PackedMap() {
+    PackedMap(std::string map_name) {
+        map_name_ = map_name;
 
         /* Read map layers, init map structures */
         {
-            std::string name = "billy_map_Tile Layer 1.csv";
+            std::string name = map_name_ + "_Tile Layer 1.csv";
             std::string line;
             std::ifstream myfile(name);
             if (myfile.is_open()) {
@@ -93,7 +99,7 @@ public:
         }
 
         {
-            std::string name = "billy_map_Tile Layer 2.csv";
+            std::string name = map_name_ + "_Tile Layer 2.csv";
             std::string line;
             std::ifstream myfile(name);
             if (myfile.is_open()) {
@@ -127,11 +133,11 @@ public:
         /* Prepare a small file to hold the correspondence between packed tile regions and positions in the world */
         dt::Console("Preparing the packed map files... ");
         std::ofstream packed_map_tiles_file;
-        packed_map_tiles_file.open("packed_map_tiles.txt");
+        packed_map_tiles_file.open(map_name_ + "_packed_map_tiles.txt");
         /* Create a single .obj file to hold all tile regions */
         std::ofstream map_obj_file;
-        map_obj_file.open("static_map.obj");
-        map_obj_file << "mtllib materials/static_map.mtl\n";
+        map_obj_file.open(map_name_ + ".obj");
+        map_obj_file << "mtllib materials/" + map_name_ + ".mtl\n";
 
         int vertex_index = 0;
         int uv_index = 0;
@@ -143,7 +149,7 @@ public:
             /* 
                 Write the data for a single packed region, naming static_map.NUMBER
             */
-            map_obj_file << "o static_map." + std::to_string(map_index) +"\n";
+            map_obj_file << "o " + map_name_ + "." + std::to_string(map_index) +"\n";
             
             /* Write geometry */
             for (size_t i = 0; i < region.vertices_.size(); i++) {
@@ -155,7 +161,7 @@ public:
             }
             
             map_obj_file << "vn 0.0000 0.0000 1.0000\n";
-            map_obj_file << "usemtl static_map_mtl\n";
+            map_obj_file << "usemtl " + map_name_ + "_mtl\n";
             map_obj_file << "s off\n";
             
             /* Write triangles, reflect the fact that everything is written in a singile file, thus, vertex_index, uv_index */
@@ -170,14 +176,14 @@ public:
             uv_index += region.uv_.size();
 
             /* Write the correspondence in the map .txt */
-            packed_map_tiles_file << itr->first.first << " " << itr->first.second << " static_map_" + std::to_string(map_index) + "\n";
+            packed_map_tiles_file << itr->first.first << " " << itr->first.second << " " + map_name_ + "_" + std::to_string(map_index) + "\n";
             map_index++;
         }
 
         /* Write the material file for the map object */
         std::ofstream map_mtl_file;
-        map_mtl_file.open("static_map.mtl");
-        map_mtl_file << "newmtl static_map_mtl\n";
+        map_mtl_file.open(map_name_ + ".mtl");
+        map_mtl_file << "newmtl " + map_name_ + "_mtl\n";
         map_mtl_file << "Ns 2.000000\n";
         map_mtl_file << "Ka 0.000000 0.000000 0.000000\n";
         map_mtl_file << "Kd 0.000000 0.000000 0.000000\n";
@@ -192,6 +198,7 @@ public:
     }
 
 private:
+    std::string map_name_;
     /* holds the .csv map layers */
     std::vector<std::vector<std::string>> map_1_;
     std::vector<std::vector<std::string>> map_2_;
@@ -209,8 +216,8 @@ private:
 
         /* Get the position of the big packed region inside the world map */
         /* TODO: There is a shift happening on the tiles of the map for some reason... */
-        int center_x = pos_j - map_width_2 - 12;
-        int center_y = map_height_2 - pos_i - 12;
+        float center_x, center_y;
+        GetXYFromTiled(pos_i, pos_j, center_x, center_y);
 
         /* Get the tile region from the packed map */
         TileRegion& region = packed_map_[std::make_pair(center_x, center_y)];
@@ -335,7 +342,9 @@ int main(int argc, char ** argv) {
     mtl_file << "\n";
 
     /* Init packed map */
-    PackedMap packed_map;
+    //PackedMap packed_map("billy_map");
+    //PackedMap packed_map("tavern_1a");
+    PackedMap packed_map("tavern_1b");
 
     /* Pack regions of the world, with a width and a height of 20, into packed meshes */
     size_t strive = 20;

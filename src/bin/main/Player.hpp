@@ -41,7 +41,7 @@ private:
     Sun * sun_;
 
     game_engine::Real_t speed_regular_, speed_running_;
-    ge::Real_t direction_array_[16] = { -1, 0.0000001, 180.00000001, -1, 270.00000001, 315, 225, -1, 90.0000001, 45, 135, -1, -1, -1, -1, -1 };
+    ge::Real_t direction_array_[16] = { -1, 0.1, 180.1, -1, 270.1, 315.1, 225.1, -1, 90.1, 45.1, 135.1, -1, -1, -1, -1, -1 };
 
 };
 
