@@ -9,12 +9,15 @@
 
 #include "Input.hpp"
 #include "Camera.hpp"
-#include "World.hpp"
+#include "Maps/WorldBillyMap.hpp"
+#include "Maps/WorldTavern1a.hpp"
+#include "Player.hpp"
 #include "Camera.hpp"
 
 namespace ge = game_engine;
 namespace gl = game_engine::graphics::opengl;
 namespace dt = debug_tools;
+namespace math = game_engine::math;
 
 
 int main(int argc, char ** argv) {
@@ -47,12 +50,16 @@ int main(int argc, char ** argv) {
     Input input;
     input.Init(&engine);
 
+    /* Create the main player */
     /* Create a world */
-    World world;
-    world.Init(&input, camera, &engine);
+    WorldTavern1a world_tavern_1a;
+    WorldBillyMap world_billy;
+
+    world_tavern_1a.Init(&input, camera, &engine, &world_billy);
+    world_billy.Init(&input, camera, &engine, &world_tavern_1a);
 
     /* Set the active world in the engine */
-    engine.SetWorld(&world);
+    engine.SetWorld(&world_billy);
     do {
         float delta_time = engine.GetFrameDelta();
         

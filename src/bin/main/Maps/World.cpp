@@ -22,26 +22,14 @@ World::World() : WorldSector(), TiledMap() {
     is_inited_ = false;
 }
 
-int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
-    /* Initialize a world of size (-1, -200) to (200, 1), divided into a 30x30 grid, that can hold up to 200*200 world objects */
-    int ret = WorldSector::Init(30, 30, -1, 200, -200, 1, 200 * 200);
+int World::Init(Input * input, std::string map_name, math::AABox<2> size, bool has_sun, Camera * camera, ge::GameEngine * engine) {
+    int ret = WorldSector::Init(30, 30, size.min_[0], size.max_[0], size.min_[1], size.max_[1], 200 * 200);
     if (ret) return ret;
     
     /* The map that this world represents */
-    std::string map_name = "billy_map";
     TiledMap::Init(map_name);
 
-    /* Parse tile properties */
-    {
-        dt::Timer timer;
-
-        timer.Start();
-        dt::CustomPrint(std::cout, "Reading map properties... ");
-        map_properties_.ReadMap("roguelikeSheet_transparent.tsx");
-        timer.Stop();
-
-        dt::CustomPrint(std::cout, "DONE, " + timer.ToString() + "\n");
-    }
+    has_sun_ = has_sun;
 
     /* Spawn static map, as prepared by TiledMap */
     for (size_t i = 0; i < packed_tiles_.size(); i++) {
@@ -51,13 +39,12 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     }
 
     /* Initialize a sun object */
-    sun_ = NewObj<Sun>();
-    sun_->Init(25.0f, 0.0f, 1000.0f, this, engine);
-
-    /* Create the main player */
-    Player * player = NewObj<Player>();
-    //player->Init(6, -18, 0.2f, input, camera, this, engine);
-    player->Init(106, -77, 0.2f, input, camera, this, engine);
+    if (has_sun) {
+        sun_ = NewObj<Sun>();
+        sun_->Init(25.0f, 0.0f, 1000.0f, this, engine);
+    } else {
+        sun_ = nullptr;
+    }
 
     /* Parse map layers, and spawn lights and physics objects, if needed */
     ReadMap(map_name + "_Tile Layer 1.csv", 0.02f, engine);
@@ -69,6 +56,9 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
 
 int World::Destroy() {
 
+    TiledMap::Destroy();
+    WorldSector::Destroy();
+
     is_inited_ = false;
     return true;
 }
@@ -77,6 +67,8 @@ void World::ReadMap(std::string name, float z, game_engine::GameEngine * engine)
 
     std::vector < std::vector < std::string>> map;
     TiledMap::ReadMap(name, map);
+
+    MapProperties& map_properties = MapProperties::GetInstance();
 
     /* Set tile properties */
     int map_height = map.size();
@@ -89,14 +81,14 @@ void World::ReadMap(std::string name, float z, game_engine::GameEngine * engine)
             
             int id = std::stoi(map[i][j]);
             float fire_intensity;
-            if (map_properties_.IsLight(id, fire_intensity)) {
+            if (map_properties.IsLight(id, fire_intensity)) {
                 /* Spawn a point light, continous memory allocation for point lights is not set up */
                 Fire * fire = new Fire();
                 fire->Init(x, y, z, fire_intensity, this, engine, sun_);
             } else {
                 /* Check if this tile has collision, spawn a collision object */
                 std::string collision_string;
-                bool has_collision = map_properties_.HasCollision(std::stoi(map[i][j]), collision_string);
+                bool has_collision = map_properties.HasCollision(std::stoi(map[i][j]), collision_string);
                 if (has_collision) {
                     CollisionObject * co = new CollisionObject();
                     co->Init(x, y, z, collision_string, this, engine);

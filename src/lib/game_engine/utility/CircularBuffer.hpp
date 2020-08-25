@@ -182,6 +182,7 @@ namespace utility {
         typedef CBiterator iterator;
 
         CBiterator begin() {
+            if (buffer_index_start_ == buffer_index_stop_) return end();
             return CBiterator(buffer_index_start_, buffer_index_stop_, buffer_);
         }
         

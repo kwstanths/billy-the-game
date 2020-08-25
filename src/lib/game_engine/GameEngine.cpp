@@ -125,6 +125,11 @@ namespace game_engine {
         if (ret) dt::Console(dt::CRITICAL, "Settings camera failed");
     }
 
+    graphics::opengl::OpenGLCamera * GameEngine::GetCamera()
+    {
+        return camera_;
+    }
+
     void GameEngine::SetWindowSize(size_t width, size_t height) {
 
         renderer_->SetWindowSize(width, height);

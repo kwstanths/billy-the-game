@@ -28,7 +28,6 @@ bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, float intensity, ge::W
     index_ = 0;
 
     sun_ = sun;
-    world_ = world;
 
     on_ = true;
     int ret = world->AddPointLight(this, math::Vector2D({ x, y }));
@@ -42,16 +41,18 @@ void Fire::StepLight(double delta_time) {
     PointLight::attenutation_.linear_ = attenutation_noise_[index_++];
     if (index_ == 200) index_ = 0;
 
-    /* If dark enough, then set the light up */
-    double hour = sun_->GetTimeOfDay();
-    if (on_ && (hour < 8 || hour > 18.5)) {
-        PointLight::ambient_ = glm::vec3(0.0f, 0.0f, 0.0f);
-        PointLight::diffuse_ = diffuse_value_;
-        PointLight::specular_ = glm::vec3(0.4f, 0.4f, 0.4f);
-    } else {
-        PointLight::ambient_ = glm::vec3(0.0f, 0.0f, 0.0f);
-        PointLight::diffuse_ = glm::vec3(0.0f, 0.0f, 0.0f);
-        PointLight::specular_ = glm::vec3(0.0f, 0.0f, 0.0f);
+    if (sun_ != nullptr) {
+        /* If dark enough, then set the light up */
+        double hour = sun_->GetTimeOfDay();
+        if (on_ && (hour < 8 || hour > 18.5)) {
+            PointLight::ambient_ = glm::vec3(0.0f, 0.0f, 0.0f);
+            PointLight::diffuse_ = diffuse_value_;
+            PointLight::specular_ = glm::vec3(0.4f, 0.4f, 0.4f);
+        } else {
+            PointLight::ambient_ = glm::vec3(0.0f, 0.0f, 0.0f);
+            PointLight::diffuse_ = glm::vec3(0.0f, 0.0f, 0.0f);
+            PointLight::specular_ = glm::vec3(0.0f, 0.0f, 0.0f);
+        }
     }
 
 }

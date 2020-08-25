@@ -70,6 +70,8 @@ namespace game_engine {
         */
         void SetCamera(graphics::opengl::OpenGLCamera * camera);
 
+        graphics::opengl::OpenGLCamera * GetCamera();
+
         void SetWindowSize(size_t width, size_t height);
 
         /**

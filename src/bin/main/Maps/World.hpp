@@ -6,6 +6,7 @@
 #include "game_engine/WorldSector.hpp"
 #include "game_engine/GameEngine.hpp"
 #include "game_engine/utility/FIFOWorker.hpp"
+#include "game_engine/math/AABox.hpp"
 
 #include "TiledMap.hpp"
 #include "MapProperties.hpp"
@@ -18,14 +19,14 @@ class World : public game_engine::WorldSector, public TiledMap {
 public:
     World();
 
-    int Init(Input * input, Camera * camera, game_engine::GameEngine * engine);
+    int Init(Input * input, std::string map_name, game_engine::math::AABox<2> size, bool has_sun, Camera * camera, game_engine::GameEngine * engine);
 
     int Destroy();
 
 private:
     bool is_inited_;
 
-    MapProperties map_properties_;
+    bool has_sun_;
     Sun * sun_;
 
     void ReadMap(std::string name, float z, game_engine::GameEngine * engine);

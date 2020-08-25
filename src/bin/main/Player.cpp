@@ -82,9 +82,9 @@ void Player::Step(double delta_time) {
             pos_x = pos_x - controls.MOVE_LEFT_ * move_offset + controls.MOVE_RIGHT_ * move_offset;
             pos_y = pos_y + controls.MOVE_UP_ * move_offset - controls.MOVE_DOWN_ * move_offset;
             SetPosition(pos_x, pos_y, GetZ(), true);
-            camera->Set2DPosition(GetX(), GetY());
         }
     }
+    camera_->Set2DPosition(GetX(), GetY());
 
     /* If interact button is pressed, perform ray casting, and interact with an object in the world */
     if (controls.INTERACT_) {

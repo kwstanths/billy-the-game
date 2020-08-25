@@ -94,7 +94,7 @@ namespace game_engine {
         /* Caclulate visible window, camera looks down the z axis, and the world is at z=0 on the xy pane */
         Real_t width = camera_position.z() * tan(camera_angle / 2.0f);
         /* (2 * width) whould be exactly inside the camera view, 5 times should be more than enough */
-        math::AABox<2> camera_view_box = math::AABox<2>(Vector2D(camera_position.x(), camera_position.y()), { 5.0f * width * camera_ratio, 5.0f * width });
+        math::AABox<2> camera_view_box = math::AABox<2>(Vector2D(camera_position.x(), camera_position.y()), { 4.0f * width * camera_ratio, 4.0f * width });
 
         /* Draw a rectangle for the edge of this world */
         //renderer->DrawRectangleXY(math::Rectangle2D(

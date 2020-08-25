@@ -31,7 +31,6 @@ private:
     bool on_;
 
     Sun * sun_;
-    game_engine::WorldSector * world_;
 };
 
 #endif

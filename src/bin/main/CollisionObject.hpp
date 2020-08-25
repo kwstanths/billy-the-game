@@ -8,7 +8,7 @@
 #include "game_engine/WorldSector.hpp"
 #include "game_engine/math/Types.hpp"
 
-#include "MapProperties.hpp"
+#include "Maps/MapProperties.hpp"
 
 /**
     A physics only object to represent a collidable object in the world 

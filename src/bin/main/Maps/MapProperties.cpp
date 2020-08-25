@@ -10,6 +10,8 @@ namespace utl = game_engine::utility;
 MapProperties::MapProperties() {
     tile_collisions_ = new utl::HashTable<int, std::string>(256);
     tile_lights_ = new utl::HashTable<int, float>(256);
+
+    ReadMap("roguelikeSheet_transparent.tsx");
 }
 
 void MapProperties::ReadMap(std::string map_file) {

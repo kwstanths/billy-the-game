@@ -11,9 +11,11 @@
 */
 class MapProperties {
 public:
-    MapProperties();
+    static MapProperties & GetInstance() {
+        static MapProperties instance;
+        return instance;
+    }
 
-    void ReadMap(std::string map_file);
 
     bool HasCollision(int tile_id, std::string& collision_string);
 
@@ -23,6 +25,9 @@ private:
     game_engine::utility::HashTable<int, std::string> * tile_collisions_;
     game_engine::utility::HashTable<int, float> * tile_lights_;
 
+    void ReadMap(std::string map_file);
+
+    MapProperties();
 };
 
 #endif

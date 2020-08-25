@@ -30,7 +30,7 @@ bool Sun::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world
 void Sun::StepLight(double delta_time) {
     
     /* Time passes 2000 times faster in the game */
-    //game_time_ += 1200.0f * static_cast<float>(delta_time);
+    game_time_ += 1200.0f * static_cast<float>(delta_time);
     if (game_time_ > day_period_) game_time_ = 0;
 
     /* Calcluate the hour of the game */
