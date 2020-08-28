@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.2" tiledversion="1.3.1" name="roguelikeSheet_transparent" tilewidth="16" tileheight="16" spacing="1" tilecount="1767" columns="57">
  <image source="../textures/roguelikeSheet_transparent.png" width="968" height="526"/>
+ <tile id="71">
+  <properties>
+   <property name="collision" value="0,0,1,0.9"/>
+  </properties>
+ </tile>
+ <tile id="72">
+  <properties>
+   <property name="collision" value="0,0,1,0.9"/>
+  </properties>
+ </tile>
+ <tile id="84">
+  <properties>
+   <property name="collision" value="0,0,1,0.9"/>
+  </properties>
+ </tile>
  <tile id="119">
   <properties>
    <property name="collision" value="0,0,1,1"/>
@@ -26,6 +41,26 @@
    <property name="collision" value="0,0,1,1"/>
   </properties>
  </tile>
+ <tile id="128">
+  <properties>
+   <property name="collision" value="0,0,1,0.9"/>
+  </properties>
+ </tile>
+ <tile id="129">
+  <properties>
+   <property name="collision" value="0,0,1,0.9"/>
+  </properties>
+ </tile>
+ <tile id="137">
+  <properties>
+   <property name="collision" value="0.6,0,1,0.9"/>
+  </properties>
+ </tile>
+ <tile id="138">
+  <properties>
+   <property name="collision" value="0,0,0.45,0.95"/>
+  </properties>
+ </tile>
  <tile id="176">
   <properties>
    <property name="collision" value="0,0,1,1"/>
@@ -49,6 +84,16 @@
  <tile id="180">
   <properties>
    <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="185">
+  <properties>
+   <property name="collision" value="0.05,0,0.95,1"/>
+  </properties>
+ </tile>
+ <tile id="186">
+  <properties>
+   <property name="collision" value="0.05,0,0.95,1"/>
   </properties>
  </tile>
  <tile id="233">
@@ -94,6 +139,16 @@
  <tile id="241">
   <properties>
    <property name="collision" value="0,0,1,1"/>
+  </properties>
+ </tile>
+ <tile id="242">
+  <properties>
+   <property name="collision" value="0.05,0,0.95,0.95"/>
+  </properties>
+ </tile>
+ <tile id="243">
+  <properties>
+   <property name="collision" value="0.05,0,0.95,0.95"/>
   </properties>
  </tile>
  <tile id="290">
@@ -264,6 +319,16 @@
  <tile id="478">
   <properties>
    <property name="light" type="float" value="0.8"/>
+  </properties>
+ </tile>
+ <tile id="510">
+  <properties>
+   <property name="light" type="float" value="1"/>
+  </properties>
+ </tile>
+ <tile id="511">
+  <properties>
+   <property name="light" type="float" value="1"/>
   </properties>
  </tile>
  <tile id="1008">

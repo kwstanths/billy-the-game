@@ -22,6 +22,7 @@ using namespace game_engine::math;
 
 namespace game_engine { namespace utility {
 
+    /* A Quad tree that holds points in 2D space, of type Data, with a BUCKET_SIZE for the leaf nodes, and a MAXIMUM DEPTH */
     template<typename Data, int BUCKET_SIZE = 1, int MAX_DEPTH = 13>
     class QuadTree {
     private:
@@ -38,10 +39,12 @@ namespace game_engine { namespace utility {
     
             NodeType GetNodeType() { return type_; }
     
+            /* Get the AABox of the quad tree node */
             AABox<2> GetAABox() {
                 return AABox<2>(origin_, origin_ + Vector2D(length_));
             }
     
+            /* Overriden from the leaf or inner nodes */
             virtual void Destroy() = 0;
             virtual QuadTreeNode * Insert(Vector2D point, Data data, size_t depth) = 0;
             virtual size_t QueryRange(AABox<2> search_box, std::vector<Data>& results) = 0;
@@ -56,7 +59,7 @@ namespace game_engine { namespace utility {
             Real_t length_;
     
             /**
-               Find the index of the child, and the new orign
+               Find the index of the child, and the new orign for a point inside the region represented by this quad node
             */
             std::pair<Vector2D, size_t> FindChild(Vector2D& point) {
                 /**
@@ -103,7 +106,7 @@ namespace game_engine { namespace utility {
                     return this;
                 }
     
-                /* Either-wise, split the leaf */
+                /* Other-wise, split the leaf */
                 QuadTreeInnerNode * temp = new  QuadTreeInnerNode(this->origin_, this->length_);
                 for (size_t i = 0; i < buckets_.size(); i++) {
                     temp->Insert(buckets_[i].point_, buckets_[i].data_, depth + 1);
@@ -183,6 +186,7 @@ namespace game_engine { namespace utility {
     
             }
     
+            /* Destroy all children */
             void Destroy() {
                 for (size_t i = 0; i < children_.size(); i++) {
                     if (children_[i] != nullptr) {
@@ -222,7 +226,7 @@ namespace game_engine { namespace utility {
             }
     
             QuadTreeNode * Remove(Vector2D point) {
-                /* Find child */
+                /* Find the child that the point belongs to */
                 std::pair<Vector2D, size_t> child = QuadTreeNode::FindChild(point);
     
                 if (children_[child.second] == nullptr) {
@@ -325,8 +329,9 @@ namespace game_engine { namespace utility {
     public:
     
         /**
+            If you intent to use ray casting, make sure that the area spanned by the quad tree is centered around (0,0)
             @param origin The "bottom left" point in the quad tree area
-            @parma length The size of the quad tree region in all directions
+            @param length The size of the quad tree region in all directions
         */
         QuadTree(Vector2D origin, Real_t length) {
             origin_ = origin;

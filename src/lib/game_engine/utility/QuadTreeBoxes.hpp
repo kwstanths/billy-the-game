@@ -23,7 +23,7 @@ namespace game_engine { namespace utility {
     /**
         A Quad tree data structure that holds 2D boxes, to accelereate ray casting in 2D space.
         CAUTION, In order for ray casting to work properly, make sure to initialize this data structure
-        centered at (0,0). For example, origin = (-5,5), length = 10
+        centered at (0,0). For example, origin = (-5, -5), length = 10
         BUCKET_SIZE = How many boxes to hold at last depth
         MAX_DEPTH = The max depth of the tree
     */

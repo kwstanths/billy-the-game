@@ -1,11 +1,11 @@
-#ifndef __WorldTavern1a_hpp__
-#define __WorldTavern1a_hpp__
+#ifndef __WorldHouse1a_hpp__
+#define __WorldHouse1a_hpp__
 
 #include "World.hpp"
 
-class WorldTavern1a : public World {
+class WorldHouse1a : public World {
 public:
-    WorldTavern1a();
+    WorldHouse1a();
 
     int Init(Input * input, Camera * camera, game_engine::GameEngine * engine, World * billy_world, World * second_floor);
 

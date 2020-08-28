@@ -26,14 +26,17 @@ namespace opengl {
         OpenGLObject();
 
         /**
-            Reads the object_path for a .obj file, and initializes the OpenGL stuff
-            @param The disk file path of the .obj file
+            Initialize OpenGL VAO and VBO
+            @param vertices Object vertices, uvs, normals
+            @param vertices Triangle infices
+            @param generate_bbox_info Calculate bounding box?
             @return 0=OK, -1=Already initialised, else see ErrorCodes.hpp
         */
         int Init(std::vector<game_engine::graphics::Vertex_t> & vertices, std::vector<unsigned int> & indices, bool generate_bbox_info = true);
 
         void SetVertices(std::vector<game_engine::graphics::Vertex_t> & vertices);
 
+        /* Setup shaders parameters */
         void SetupAttributes(OpenGLShaderVerticesColor * shader);
 
         void SetupAttributes(OpenGLShaderGBuffer * shader);

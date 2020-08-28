@@ -196,6 +196,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_elements_faces), cube_elements_faces, GL_STATIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     
+        /* Calculate bbox sizes */
         min_x_ = max_x_ = vertices[0].position_.x;
         min_y_ = max_y_ = vertices[0].position_.y;
         min_z_ = max_z_ = vertices[0].position_.z;
@@ -221,7 +222,7 @@ namespace game_engine { namespace graphics { namespace opengl {
 
         glm::vec3 normal = glm::normalize(glm::cross(v2 - v1, v3 - v1));
 
-        /* TODO QUICK HACK!!!!, FIX ME!!!!, I DONT BELONG HERE!!! */
+        /* TODO QUICK HACK!!!!, FIX ME!!!!, I DON'T BELONG HERE!!! */
         if (normal.y < 0) normal.y *= -1;
 
         std::vector<Vertex_t> vertices;

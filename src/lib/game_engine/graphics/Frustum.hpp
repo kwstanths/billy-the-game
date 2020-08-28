@@ -7,7 +7,7 @@
 
 using namespace game_engine::math;
 
-
+/* A class used to represent a view frustum */
 class Frustum {
 private:
 

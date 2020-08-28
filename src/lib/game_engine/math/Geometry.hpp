@@ -11,7 +11,7 @@
 namespace game_engine {
 namespace math {
     
-    // TODO Changed the input of these functions into references
+    // TODO Change the input of these functions into references
 
     /**
         Check whether a point is inside a rectangle in a 2D pane

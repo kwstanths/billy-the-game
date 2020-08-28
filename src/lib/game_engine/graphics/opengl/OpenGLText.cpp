@@ -134,6 +134,7 @@ namespace opengl {
             GLfloat w = ch.size_.x * scale;
             GLfloat h = ch.size_.y * scale;
             /* Update text VBO for each character */
+            /* [0][1] view space position, [2][3] texture coordinates */
             GLfloat vertices[6][4] = {
                 { xpos,     ypos + h,   0.0, 0.0 },
                 { xpos,     ypos,       0.0, 1.0 },

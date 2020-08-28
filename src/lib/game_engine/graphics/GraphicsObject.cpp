@@ -92,6 +92,11 @@ namespace graphics {
         rotation_matrix_ = rotation;
     }
 
+    glm::mat4 GraphicsObject::GetRotation()
+    {
+        return rotation_matrix_;
+    }
+
     void GraphicsObject::Rotate(Real_t angle, glm::vec3 axis) {
         rotation_matrix_ *= math::GetRotateMatrix(angle, axis.x, axis.y, axis.z);
     }

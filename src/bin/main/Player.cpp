@@ -62,7 +62,7 @@ void Player::Step(double delta_time) {
 
     /* Get input */
     ControlInput_t controls = input_->GetControls();
-
+    
     /* Move player and camera */
     {
         ge::Real_t move_offset = (1.0f * GetSpeed(controls.RUN_)) * static_cast<float>(delta_time);
@@ -108,7 +108,7 @@ void Player::Draw(grph::Renderer * renderer) {
     grph::Attenuation_t att = ge::graphics::Attenuation_t(1, 0.22f, 0.0009f);
     grph::SpotLight light(glm::vec3(GetX(), GetY(), GetZ() + 5), glm::vec3(0, 0, -1), glm::vec3(0, 0, 0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 0.0), att, 50.0f, 55.0f);
 
-    if (controls.FLASHLIGHT_) light = grph::SpotLight(glm::vec3(GetX(), GetY(), GetZ() + 5), glm::vec3(0, 0, -1), glm::vec3(0, 0, 0), glm::vec3(0.5, 0.5, 0.5), glm::vec3(0.8, 0.8, 0.8), att, 50.0f, 55.0f);
+    if (controls.FLASHLIGHT_) light = grph::SpotLight(glm::vec3(GetX(), GetY(), GetZ() + 5), glm::vec3(0, 0, -1), glm::vec3(0, 0, 0), glm::vec3(0.5, 0.5, 0.5), glm::vec3(0.8, 0.8, 0.8), att, 40.0f, 50.0f);
 
     renderer->AddSpotLight(&light);
     

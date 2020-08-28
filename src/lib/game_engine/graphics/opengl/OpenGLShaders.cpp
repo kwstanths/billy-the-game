@@ -198,6 +198,25 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         return 0;
     }
+
+    OpenGLShaderText3D::OpenGLShaderText3D() {
+    }
+
+    int OpenGLShaderText3D::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
+
+        int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
+        if (ret != 0) return ret;
+
+        if ((attr_vertex_position_ = GetAttributeLocation(shader_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_uv_ = GetAttributeLocation(shader_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Texture_ = GetUniformLocation(shader_text_name_uni_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Texture_color_ = GetUniformLocation(shader_text_name_uni_texture_color)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+
+        return 0;
+    }
     
     OpenGLShaderVerticesColor::OpenGLShaderVerticesColor() {
     }

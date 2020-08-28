@@ -22,6 +22,7 @@ namespace opengl {
 
         int UnBind();
 
+        /* GBuffer textures */
         GLuint g_position_texture_, g_normal_texture_, g_albedo_spec_texture_, g_position_light_;
         GLuint rbo_depth_texture_;
 
@@ -33,7 +34,6 @@ namespace opengl {
         OpenGLContext * context_;
 
         GLuint g_buffer_;
-        /* Textures to render g buffer data */
         
     };
 

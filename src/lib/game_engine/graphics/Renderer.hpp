@@ -123,6 +123,7 @@ namespace graphics {
         };
 
         bool is_inited_;
+        /* Hold the point lights, the gbuffer draw calls and the text to draw per frame */
         utility::CircularBuffer<PointLight *> point_lights_to_draw_;
         utility::CircularBuffer<GraphicsObject *> gbuffer_objects_;
         utility::CircularBuffer<TEXT_DRAW_t> text_to_draw_;
@@ -161,6 +162,9 @@ namespace graphics {
             Main rendering pipeline, Gbuffer rendering, AO calculation, final pass
         */
         void FlushDrawCalls();
+
+        /* Used to count the number of draw calls per frame */
+        size_t draw_calls_;
     };
 
 }

@@ -14,6 +14,7 @@ namespace graphics {
     
     class Renderer;
 
+    /* An object that can be drawn on the screen */
     class GraphicsObject {
         friend class Renderer;
     public:
@@ -58,6 +59,11 @@ namespace graphics {
             Set the rotation matrix of the model.
         */
         void SetRotation(glm::mat4 rotation);
+
+        /**
+        
+        */
+        glm::mat4 GetRotation();
 
         /** 
             Rotate the model around the axis, takes in mind previous rotations

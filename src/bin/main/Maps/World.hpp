@@ -14,6 +14,7 @@
 #include "Camera.hpp"
 #include "Sun.hpp"
 #include "Fire.hpp"
+#include "Player.hpp"
 
 class World : public game_engine::WorldSector, public TiledMap {
 public:
@@ -23,11 +24,14 @@ public:
 
     int Destroy();
 
+    Player * player_ = nullptr;
+
 private:
     bool is_inited_;
 
+
     bool has_sun_;
-    Sun * sun_;
+    Sun * sun_ = nullptr;
 
     void ReadMap(std::string name, float z, game_engine::GameEngine * engine);
 };

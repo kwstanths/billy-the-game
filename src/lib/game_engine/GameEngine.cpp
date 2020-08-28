@@ -92,7 +92,7 @@ namespace game_engine {
         /* Start calculating frame time */
         frame_regulator_.FrameStart();
 
-        /* Get latest control values, as returned by the OpenGL API */
+        /* Get latest input values, as returned by the OpenGL API */
         key_controls_ = renderer_->GetControlInput();
 
         renderer_->StartFrame();
@@ -125,8 +125,7 @@ namespace game_engine {
         if (ret) dt::Console(dt::CRITICAL, "Settings camera failed");
     }
 
-    graphics::opengl::OpenGLCamera * GameEngine::GetCamera()
-    {
+    graphics::opengl::OpenGLCamera * GameEngine::GetCamera() {
         return camera_;
     }
 

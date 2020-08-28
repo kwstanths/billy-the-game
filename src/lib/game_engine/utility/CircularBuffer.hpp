@@ -9,7 +9,7 @@ namespace game_engine {
 namespace utility {
 
     /**
-        A circular FIFO buffer to store items sequentially
+        A circular buffer to store items sequentially
     */
     template<typename T> class CircularBuffer {
     public:
@@ -141,6 +141,7 @@ namespace utility {
         size_t buffer_index_start_;
         size_t buffer_index_stop_;
 
+        /* Circular buffer iterator */
         class CBiterator : public std::iterator<std::forward_iterator_tag, T> {
             friend class CircularBuffer;
         private:

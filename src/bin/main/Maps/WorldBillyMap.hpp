@@ -7,7 +7,7 @@ class WorldBillyMap : public World {
 public:
     WorldBillyMap();
 
-    int Init(Input * input, Camera * camera, game_engine::GameEngine * engine, WorldSector * test_world);
+    int Init(Input * input, Camera * camera, game_engine::GameEngine * engine, World * tavern1_world, World * house1_world);
 
     int Destroy();
 

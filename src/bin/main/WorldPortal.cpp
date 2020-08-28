@@ -4,9 +4,10 @@
 
 #include "game_engine/math/AABox.hpp"
 
-bool WorldPortal::Init(game_engine::math::Vector3D pos, game_engine::WorldSector * world, game_engine::WorldSector * other_world, game_engine::math::Vector3D other_pos, game_engine::GameEngine * engine, Camera * camera)
+bool WorldPortal::Init(game_engine::math::Vector3D pos, World * world, World * other_world, game_engine::math::Vector3D other_pos, game_engine::GameEngine * engine, Camera * camera)
 {
     engine_ = engine;
+    this_world_ = world;
     other_world_ = other_world;
     position_ = other_pos;
 
@@ -17,6 +18,11 @@ bool WorldPortal::Init(game_engine::math::Vector3D pos, game_engine::WorldSector
 
 void WorldPortal::Interact()
 {
+    /* Set the new active world */
     engine_->SetWorld(other_world_);
+    /* Set the new camera position */
     camera->Set2DPosition(position_.x(), position_.y());
+    /* Set the position of the player in the new world */
+    other_world_->player_->SetPosition(position_.x(), position_.y(), position_.z());
 }
+

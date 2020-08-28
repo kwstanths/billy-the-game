@@ -11,6 +11,9 @@
 #include "Camera.hpp"
 #include "Maps/WorldBillyMap.hpp"
 #include "Maps/WorldTavern1a.hpp"
+#include "Maps/WorldTavern1b.hpp"
+#include "Maps/WorldHouse1a.hpp"
+#include "Maps/WorldHouse1b.hpp"
 #include "Player.hpp"
 #include "Camera.hpp"
 
@@ -50,14 +53,20 @@ int main(int argc, char ** argv) {
     Input input;
     input.Init(&engine);
 
-    /* Create the main player */
-    /* Create a world */
-    WorldTavern1a world_tavern_1a;
+    /* Create the world */
     WorldBillyMap world_billy;
+    /* And the inside of some houses... */
+    WorldTavern1a world_tavern_1a;
+    WorldTavern1b world_tavern_1b;
+    WorldHouse1a world_house_1a;
+    WorldHouse1b world_house_1b;
 
-    world_tavern_1a.Init(&input, camera, &engine, &world_billy);
-    world_billy.Init(&input, camera, &engine, &world_tavern_1a);
+    world_tavern_1a.Init(&input, camera, &engine, &world_billy, &world_tavern_1b);
+    world_tavern_1b.Init(&input, camera, &engine, &world_tavern_1a);
+    world_house_1a.Init(&input, camera, &engine, &world_billy, &world_house_1b);
+    world_house_1b.Init(&input, camera, &engine, &world_house_1a);
 
+    world_billy.Init(&input, camera, &engine, &world_tavern_1a, &world_house_1a);
     /* Set the active world in the engine */
     engine.SetWorld(&world_billy);
     do {

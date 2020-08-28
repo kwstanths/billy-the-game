@@ -16,6 +16,7 @@ namespace dt = debug_tools;
 namespace game_engine {
 namespace math {
 
+    /* A vector in K dimensional space */
     template<int K>
     class Vector {
     public:
@@ -137,6 +138,7 @@ namespace math {
 
     };
 
+    /* A 2D vector for simplicity */
     class Vector2D : public Vector<2> {
     public:
         Vector2D() : Vector() { };
@@ -175,6 +177,7 @@ namespace math {
         }
     };
 
+    /* A 3D vector */
     class Vector3D : public Vector<3> {
     public:
         Vector3D() : Vector() { };

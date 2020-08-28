@@ -72,6 +72,8 @@ namespace graphics {
     class DirectionalLight : public Light {
     public:
         DirectionalLight() : Light() {};
+        
+        DirectionalLight(Real_t a) : Light(a) {};
 
         DirectionalLight(glm::vec3 dir, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) : Light(ambient, diffuse, specular), direction_(dir) {};
 
@@ -82,6 +84,7 @@ namespace graphics {
         void StepLight(double delta_time);
     };
 
+    /* A spot light */
     class SpotLight : public Light {
     public:
         SpotLight() : Light() {};

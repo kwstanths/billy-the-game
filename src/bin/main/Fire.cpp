@@ -13,19 +13,18 @@ namespace grph = game_engine::graphics;
 
 bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, float intensity, ge::WorldSector * world, ge::GameEngine * engine, Sun * sun) {
 
-    diffuse_value_ = glm::vec3(0.9f, 0.7f, 0.7f) * intensity;
+    diffuse_value_ = glm::vec3(0.9f, 0.6f, 0.6f) * intensity;
 
     PointLight::position_ = glm::vec3(x + 0.05, y, z +  1.5);
     PointLight::ambient_ = glm::vec3(0.0f, 0.0f, 0.0f);
     PointLight::diffuse_ = diffuse_value_;
-    PointLight::specular_ = glm::vec3(0.2f, 0.2f, 0.2f);
+    PointLight::specular_ = glm::vec3(0.0f, 0.0f, 0.0f);
     PointLight::attenutation_ = ge::graphics::Attenuation_t(1, 0.0001f, 0.0939f);
 
     attenutation_noise_ = std::vector<ge::Real_t>(201);
     math::RNGenerator gen;
-    gen.Init(0.3f);
-    gen.GetPerlinNoise1d(201, 0.2f, 0.25f, 70, attenutation_noise_);
-    index_ = 0;
+    gen.GetPerlinNoise1d(201, 0.2f, 0.5f, 70, attenutation_noise_);
+    index_ = rand() % 199;
 
     sun_ = sun;
 
@@ -37,7 +36,6 @@ bool Fire::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, float intensity, ge::W
 
 void Fire::StepLight(double delta_time) {
     /* Change attenuation based on the perlin noise generated */
-    index_ = 100 + 100 * sin(glfwGetTime() * 0.5);
     PointLight::attenutation_.linear_ = attenutation_noise_[index_++];
     if (index_ == 200) index_ = 0;
 

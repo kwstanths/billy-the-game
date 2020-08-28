@@ -218,6 +218,7 @@ namespace graphics {
             for (size_t j = 0; j < meshes.size(); j++) {
                 Mesh * mesh = meshes[j];
                 renderer_->DrawGBuffer(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
+                draw_calls_++;
             }
 
             break;
@@ -246,7 +247,10 @@ namespace graphics {
                 Vector3D max({ gl_object.max_x_ + x_offset, gl_object.max_y_ + y_offset, gl_object.max_z_ + z_offset });
                 AABox<3> box(min, max);
                 int ret = f.BoxInFrustum(box);
-                if (ret != Frustum::OUTSIDE) renderer_->DrawGBuffer(gl_object, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
+                if (ret != Frustum::OUTSIDE) {
+                    renderer_->DrawGBuffer(gl_object, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
+                    draw_calls_++;
+                }
             }
 
             break;
@@ -268,6 +272,7 @@ namespace graphics {
                     renderer_->EnableDepthWriting(true);
 
                     renderer_->DrawGBuffer(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
+                    draw_calls_++;
 
                 }
                 else {
@@ -307,6 +312,7 @@ namespace graphics {
         //glDisable(GL_CULL_FACE);
         //glBlendFunc(GL_ONE, GL_ONE);
 
+        draw_calls_ = 0;
         /* Check if shadows are enabled or not */
         ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
         if (command.type_ == COMMAND_SHADOW_MAPPING) shadows = static_cast<bool>(command.arg_1_);
@@ -327,6 +333,7 @@ namespace graphics {
                 for (size_t j = 0; j < meshes.size(); j++) {
                     Mesh * mesh = meshes[j];
                     renderer_->DrawShadowMap(mesh->opengl_object_, rendering_object->model_matrix_);
+                    draw_calls_++;
                 }
             }
 
@@ -348,6 +355,7 @@ namespace graphics {
         if (ssao) {
             ConsoleCommand command;
             /* Perform SSAO on the GBuffer */
+            /* Perform classic or separable AO? */
             command = ConsoleParser::GetInstance().GetLastCommand();
             if (command.type_ == COMMAND_SSAO_SEPARABLE && separable_ao != static_cast<bool>(command.arg_1_)) {
                 separable_ao = static_cast<bool>(command.arg_1_);
@@ -396,6 +404,7 @@ namespace graphics {
                 renderer_->DrawTexture(ssao_texture, true);
             }
             else {
+                /* Draw final scene, set point lights in the scene */
                 size_t number_of_point_lights_ = point_lights_to_draw_.Items();
                 renderer_->SetPointLightsNumber(number_of_point_lights_);
                 for (size_t i = 0; i < number_of_point_lights_; i++) {
@@ -418,6 +427,8 @@ namespace graphics {
             }
         }
         else {
+            /* If not AO, perform final pass directly */
+
             /* Clear the color of frame buffer to one, since this texture will be used as the ambient color texture */
             renderer_->frame_buffer_one_->ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -439,6 +450,7 @@ namespace graphics {
                 );
             }
             renderer_->DrawFinalPass(renderer_->frame_buffer_one_->output_texture_);
+            draw_calls_++;
         }
 
         // Render text with forward rendering
@@ -447,13 +459,16 @@ namespace graphics {
         else if (frr_render_mode == RENDER_MODE::VIEW_FRUSTUM_CULLING) occlusion_text = "View frustum culling";
         else if (frr_render_mode == RENDER_MODE::OCCLUSION_QUERIES) occlusion_text = "Occlusion queries";
         renderer_->Draw2DText(occlusion_text, 0.0f, context_->GetWindowHeight() - 20, 0.5, glm::vec3(1, 0, 0));
+        draw_calls_++;
 
         while (text_to_draw_.Items() > 0) {
             TEXT_DRAW_t text;
             text_to_draw_.Get(text);
             renderer_->Draw2DText(text.text_, text.x, text.y, text.scale, text.color);
+            draw_calls_++;
         }
 
+        renderer_->Draw2DText("Draw calls: " + std::to_string(draw_calls_) , 0.0f, context_->GetWindowHeight() - 45, 0.5, glm::vec3(1, 0, 0));
     }
 
 }

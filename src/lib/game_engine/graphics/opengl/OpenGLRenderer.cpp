@@ -34,7 +34,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         if (text_renderer_->Init(font_location, context) != 0)
             debug_tools::ConsoleInfoL(debug_tools::CRITICAL, "Font not found", "name", font_location);
     
-        /* Get shader variables */
+        /* Initialize shader variables */
         shader_vertices_color_ = context_->shader_vertices_color_;
     
         {
@@ -193,6 +193,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         AssetManager& instance = AssetManager::GetInstance();
         texture_empty_ = instance.FindTexture(empty_texture_path);
         if (texture_empty_ == nullptr) {
+            /* If not already initialized, insert it into the assets */
             texture_empty_ = new OpenGLTexture();
             int ret = texture_empty_->Init(empty_texture_path, GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP);
             if (ret) dt::Console(dt::WARNING, "Could not find texture: " + empty_texture_path);
@@ -267,6 +268,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         if (!is_inited_) return -1;
         if (!object.IsInited()) return -1;
     
+        /* TODO commented components not used */
         shader_gbuffer_.Use();
         /* Set the model uniform */
         shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_Model_, model);

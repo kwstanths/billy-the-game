@@ -8,6 +8,7 @@
 
 namespace game_engine { namespace utility {
 
+    /* A Uniform grid of template type of Data to store T, and template Dimension D */
     template<typename T, size_t D>
     class UniformGrid {
     public:
@@ -29,6 +30,7 @@ namespace game_engine { namespace utility {
             array_.clear();
         }
     
+        /* Access an element, give a number of indices equal to the dimension D */
         template<typename ... Args>
         T& at(size_t first, Args ... rest) {
             const int size = sizeof...(rest) + 1;
