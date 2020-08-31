@@ -3,6 +3,8 @@ Billy the game is a personal project to create an open world 2D game, by using C
 The goal is to learn basic rendering techniques, physics, memory 
 management, data structures and anything else that might be used 
 in the development of a game, featuring:  
+
+
 In Graphics with OpenGL:
 - Reading models through assimp
 - Rendering with Phong Shading, one diffuse texture, and one specular map
@@ -12,12 +14,18 @@ In Graphics with OpenGL:
 - View frustum culling and occlusion queries
 - Screen Space Ambient Occlusion
 - Water rendering with a grid algorithm  
+
+
 In world building:  
 - Importing maps generated from Tiled
 - Draw call batching  
+
+
 In physics and interaction:  
 - Custom collision avoidance
 - QuadTree accelerated ray casting  
+
+
 Other:  
 - Several data structures created: Uniform grids, Circular buffers, HashTables, and several QuadTree variants
 - Sequential memory allocation with custom allocators
