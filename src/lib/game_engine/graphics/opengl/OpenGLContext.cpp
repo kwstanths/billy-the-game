@@ -68,7 +68,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         /* Compile and link shaders */
         int ret = 0;
         ret += shader_text_.Init("shaders/VertexShaderText.glsl", "shaders/FragmentShaderText.glsl");
-        ret += shader_text_3d_.Init("shaders/VertexShaderText3D.glsl", "shaders/FragmentShaderText3D.glsl");
+        //ret += shader_text_3d_.Init("shaders/VertexShaderText3D.glsl", "shaders/FragmentShaderText3D.glsl");
         ret += shader_vertices_color_.Init("shaders/VertexShaderVerticesColor.glsl", "shaders/FragmentShaderVerticesColor.glsl");
         ret += shader_quad_.Init("shaders/VertexShaderQuad.glsl", "shaders/FragmentShaderQuad.glsl");
         ret += shader_gbuffer_ssao_.Init("shaders/VertexShaderGBuffer.glsl", "shaders/FragmentShaderGBuffer.glsl");
