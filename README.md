@@ -4,15 +4,17 @@ The goal is to learn basic rendering techniques, physics, memory
 management, data structures and anything else that might be used 
 in the development of a game, featuring:
 In Graphics with OpenGL:
-- Reading models through assimp, rendering with one diffuse texture, and one specular map
+- Reading models through assimp
+- Rendering with Phong Shading, one diffuse texture, and one specular map
+- Poing Lights, Directional light, and spot light
 - Deferred and forward rendering
 - Shadows with simple shadow mapping
 - View frustum culling and occlusion queries
 - Screen Space Ambient Occlusion
-- Water rendering with a grid  
+- Water rendering with a grid algorithm
 In world building:  
 - Importing maps generated from Tiled
-- Draw call batching generated maps
+- Draw call batching
 In physics and interaction:  
 - Custom collision avoidance
 - QuadTree accelerated ray casting  
@@ -22,7 +24,7 @@ Other:
 
 
 ## Current progress - billy the game
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/CWFcuDfG5MM/0.jpg)](https://www.youtube.com/watch?v=CWFcuDfG5MM&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=11)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/M_0gH1M3FH0/0.jpg)](https://www.youtube.com/watch?v=M_0gH1M3FH0&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=12)
 
 ## Current progress - Ambient Occlusion
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jtVoM0I_rxw/0.jpg)](https://www.youtube.com/watch?v=jtVoM0I_rxw&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=10)
