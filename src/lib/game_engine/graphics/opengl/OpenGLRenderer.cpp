@@ -200,6 +200,10 @@ namespace game_engine { namespace graphics { namespace opengl {
             instance.InsertTexture(empty_texture_path, texture_empty_);
         }
     
+        shader_draw_normals_ = context->shader_draw_normals_;
+
+        shader_water_ = context->shader_water_;
+
         is_inited_ = true;
         return 0;
     }
@@ -261,13 +265,17 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         shader_final_pass_.Use();
         shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_view_, camera->view_matrix_);
+
+        shader_draw_normals_.Use();
+        shader_draw_normals_.SetUniformMat4(shader_draw_normals_.uni_View_, camera->view_matrix_);
+        shader_draw_normals_.SetUniformMat4(shader_draw_normals_.uni_Projection_, camera->projection_matrix_);
     }
     
     int OpenGLRenderer::DrawGBuffer(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl) {
     
         if (!is_inited_) return -1;
         if (!object.IsInited()) return -1;
-    
+
         /* TODO commented components not used */
         shader_gbuffer_.Use();
         /* Set the model uniform */
@@ -605,6 +613,56 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         RenderQuad();
     
+        return 0;
+    }
+
+    int OpenGLRenderer::DrawNormals(OpenGLObject & object, glm::mat4 model)
+    {
+        if (!is_inited_) return -1;
+        if (!object.IsInited()) return -1;
+
+        shader_draw_normals_.Use();
+        shader_draw_normals_.SetUniformMat4(shader_draw_normals_.uni_Model_, model);
+
+        glBindVertexArray(object.VAO_);
+
+        object.SetupAttributes(&shader_draw_normals_);
+        object.Render();
+
+        /* Unbind */
+        glBindVertexArray(0);
+
+        return 0;
+    }
+
+    int OpenGLRenderer::DrawWater()
+    {
+
+        //glDisable(GL_DEPTH_TEST);
+
+        float points[] = {
+            -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // top-left
+             0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // top-right
+             0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom-right
+            -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // bottom-left
+        };
+
+        GLuint vao, vbo;
+        glGenVertexArrays(1, &vao);
+        glGenBuffers(1, &vbo);
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(points), &points, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(shader_water_.attr_vertex_position_, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(shader_water_.attr_vertex_color_, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
+
+        shader_water_.Use();
+        glDrawArrays(GL_POINTS, 0, 4);
+
+        glBindVertexArray(0);
+        //glEnable(GL_DEPTH_TEST);
         return 0;
     }
     

@@ -309,9 +309,6 @@ namespace graphics {
 
     void Renderer::FlushDrawCalls() {
 
-        //glDisable(GL_CULL_FACE);
-        //glBlendFunc(GL_ONE, GL_ONE);
-
         draw_calls_ = 0;
         /* Check if shadows are enabled or not */
         ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
@@ -452,6 +449,8 @@ namespace graphics {
             renderer_->DrawFinalPass(renderer_->frame_buffer_one_->output_texture_);
             draw_calls_++;
         }
+
+        //renderer_->DrawWater();
 
         // Render text with forward rendering
         std::string occlusion_text;

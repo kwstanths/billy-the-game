@@ -69,6 +69,18 @@ namespace game_engine { namespace graphics { namespace opengl {
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_position), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)0);
     }
+
+    void OpenGLObject::SetupAttributes(OpenGLShaderDrawNormals * shader)
+    {
+        /* Set shader layout attributes */
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
+        /* Attribute number 0 is the object vertices */
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(shader->attr_vertex_position_, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)0);
+        /* Attribute number 2 is the object's normals */
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(shader->attr_vertex_normal_, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, normal_));
+    }
     
     void OpenGLObject::Render() {
         /* Draw with index buffer */

@@ -62,6 +62,14 @@ namespace game_engine { namespace graphics { namespace opengl {
             @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
         */
         int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+        /**
+            Initialize a vertex, a fragment and a geometry shader, compile and link them
+            @param vertex_shader_path The path to a vertex shader file
+            @param fragment_shader_path The path to a fragment shader file
+            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+        */
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string geometry_shader_path);
     
         /**
             Destroys and deallocates. Currently does nothing
@@ -119,7 +127,9 @@ namespace game_engine { namespace graphics { namespace opengl {
             @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
     
         */
-        int CompileShaders(std::string vertex_file_path, std::string fragment_file_path);
+        int CompileShaders(std::string vertex_file_path, std::string fragment_file_path, std::string geometry_shader_path);
+
+        int CompileShader(std::string file_path, GLuint type, int& ret);
     };
     
     /* Shader classes for specific shaders and their variables */
@@ -331,6 +341,31 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_texture_ssao_;
         GLuint uni_shadow_map_;
         GLuint uni_matrix_view_;
+    };
+
+    /* A shader to draw the normals of a model */
+    class OpenGLShaderDrawNormals : public OpenGLShader {
+    public:
+        OpenGLShaderDrawNormals();
+
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string geometry_shader_path);
+
+        GLuint attr_vertex_position_;
+        GLuint attr_vertex_normal_;
+
+        GLuint uni_Model_;
+        GLuint uni_View_;
+        GLuint uni_Projection_;
+    };
+
+    class OpenGLShaderWater : public OpenGLShader {
+    public:
+        OpenGLShaderWater();
+
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string geometry_shader_path);
+
+        GLuint attr_vertex_position_;
+        GLuint attr_vertex_color_;
     };
 }
 }

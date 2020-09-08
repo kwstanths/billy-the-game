@@ -47,7 +47,7 @@ uniform sampler2D g_position_light;
 uniform sampler2D shadow_map;
 uniform mat4 matrix_view;
 
-#define NR_POINT_LIGHTS 36
+#define NR_POINT_LIGHTS 24
 uniform PointLight point_light[NR_POINT_LIGHTS];
 uniform uint number_of_point_lights;
 
@@ -88,7 +88,7 @@ void main() {
     vec3 normal_viewspace = texture(g_normal, uv).rgb;
     vec3 fragment_color = texture(g_albedo_spec, uv).rgb;
     if (length(normal_viewspace) < 0.9){
-        FragColor = fragment_color;
+        discard;
         return;
     }
     normalize(normal_viewspace);

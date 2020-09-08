@@ -57,12 +57,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         /* Discard triangles whose normal is not facing towards the camera */
         glEnable(GL_CULL_FACE);
     
-        /* These are not needed, I think */
-        /* Enable stencil test */
-        //glEnable(GL_STENCIL_TEST);
-        //glEnable(GL_BLEND);
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
     
         /* Compile and link shaders */
@@ -77,6 +71,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         ret += shader_blur_.Init("shaders/VertexShaderBlur.glsl", "shaders/FragmentShaderBlur.glsl");
         ret += shader_final_pass_.Init("shaders/VertexShaderFinalPass.glsl", "shaders/FragmentShaderFinalPass.glsl");
         ret += shader_shadow_map_.Init("shaders/VertexShaderShadowMap.glsl", "shaders/FragmentShaderShadowMap.glsl");
+        ret += shader_draw_normals_.Init("shaders/VertexShaderDrawNormals.glsl", "shaders/FragmentShaderDrawNormals.glsl", "shaders/GeometryShaderDrawNormals.glsl");
+        ret += shader_water_.Init("shaders/VertexShaderWater.glsl", "shaders/FragmentShaderWater.glsl", "shaders/GeometryShaderWater.glsl");
         if (ret) dt::Console(dt::CRITICAL, "Shaders compilation failed");
     
         is_inited_ = true;

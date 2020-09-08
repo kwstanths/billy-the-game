@@ -151,6 +151,11 @@ namespace game_engine {
                 */
                 int DrawTexture(GLuint texture_id, bool red_component = false);
 
+                /***/
+                int DrawNormals(OpenGLObject & object, glm::mat4 model);
+
+                /***/
+                int DrawWater();
 
                 OpenGLGBuffer * g_buffer_;
                 OpenGLFrameBufferTexture * frame_buffer_one_;
@@ -194,6 +199,11 @@ namespace game_engine {
                 OpenGLShader shader_blur_;
                 /* Final pass rendering */
                 OpenGLShaderFinalPass shader_final_pass_;
+                /* Shader used to draw the normals a model */
+                OpenGLShaderDrawNormals shader_draw_normals_;
+
+                /* */
+                OpenGLShaderWater shader_water_;
 
                 /* Framebuffer object */
                 GLuint VAO_Quad_;

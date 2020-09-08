@@ -43,6 +43,8 @@ namespace opengl {
 
         void SetupAttributes(OpenGLShaderShadowMap * shader);
 
+        void SetupAttributes(OpenGLShaderDrawNormals * shader);
+
         void Render();
 
         void RenderBoundingBoxLines();

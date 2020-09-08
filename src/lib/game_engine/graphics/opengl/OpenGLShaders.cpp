@@ -25,8 +25,18 @@ namespace game_engine { namespace graphics { namespace opengl {
     int OpenGLShader::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
         if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
     
-        int ret = CompileShaders(vertex_shader_path.c_str(), fragment_shader_path.c_str());
+        int ret = CompileShaders(vertex_shader_path.c_str(), fragment_shader_path.c_str(), "");
     
+        is_inited_ = true;
+        return ret;
+    }
+
+    int OpenGLShader::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string geometry_shader_path)
+    {
+        if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
+
+        int ret = CompileShaders(vertex_shader_path.c_str(), fragment_shader_path.c_str(), geometry_shader_path);
+
         is_inited_ = true;
         return ret;
     }
@@ -43,77 +53,28 @@ namespace game_engine { namespace graphics { namespace opengl {
         return is_inited_;
     }
     
-    int OpenGLShader::CompileShaders(std::string vertex_file_path, std::string fragment_file_path) {
+    int OpenGLShader::CompileShaders(std::string vertex_file_path, std::string fragment_file_path, std::string geometry_shader_path) {
+        bool has_geometry_shader = geometry_shader_path != "";
+        
         /* Create the shaders */
-        GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-        GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-    
-        /* Read the Vertex Shader code from the file */
-        std::string VertexShaderCode;
-        std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-        if (VertexShaderStream.is_open()) {
-            std::string Line = "";
-            while (getline(VertexShaderStream, Line))
-                VertexShaderCode += "\n" + Line;
-            VertexShaderStream.close();
-        }
-        else
-            return Error::ERROR_SHADER_FILES_NOT_FOUND;
-    
-    
-        /* Read the Fragment Shader code from the file */
-        std::string FragmentShaderCode;
-        std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-        if (FragmentShaderStream.is_open()) {
-            std::string Line = "";
-            while (getline(FragmentShaderStream, Line))
-                FragmentShaderCode += "\n" + Line;
-            FragmentShaderStream.close();
-        }
-        else
-            return Error::ERROR_SHADER_FILES_NOT_FOUND;
-    
-        GLint Result = GL_FALSE;
-        int InfoLogLength;
-        /* Compile Vertex Shader */
-        char const * VertexSourcePointer = VertexShaderCode.c_str();
-        glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
-        glCompileShader(VertexShaderID);
-        /* Check Vertex Shader */
-        glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-        glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-        if (InfoLogLength > 0 && Result == GL_FALSE) {
-            std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
-            glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-    
-            debug_tools::Console(debug_tools::FATAL, std::string(VertexShaderErrorMessage.begin(), VertexShaderErrorMessage.end()));
-            return Error::ERROR_SHADER_COMPILE;
-        }
-    
-        /* Compile Fragment Shader */
-        char const * FragmentSourcePointer = FragmentShaderCode.c_str();
-        glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
-        glCompileShader(FragmentShaderID);
-        /* Check Fragment Shader */
-        glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-        glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-        if (InfoLogLength > 0 && Result == GL_FALSE) {
-            std::vector<char> FragmentShaderErrorMessage(InfoLogLength + 1);
-            glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-    
-            debug_tools::Console(debug_tools::FATAL, std::string(FragmentShaderErrorMessage.begin(), FragmentShaderErrorMessage.end()));
-            return Error::ERROR_SHADER_COMPILE;
-        }
-    
+        int ret;
+        GLuint vertex_shader_id = CompileShader(vertex_file_path, GL_VERTEX_SHADER, ret);
+        GLuint fragment_shader_id = CompileShader(fragment_file_path, GL_FRAGMENT_SHADER, ret);
+        GLuint geometry_shader_id = (has_geometry_shader) ? (CompileShader(geometry_shader_path, GL_GEOMETRY_SHADER, ret)) : 0;
+
         /* Link the program */
+        GLint result = GL_FALSE;
+        int InfoLogLength;
         GLuint ProgramID = glCreateProgram();
-        glAttachShader(ProgramID, VertexShaderID);
-        glAttachShader(ProgramID, FragmentShaderID);
+        glAttachShader(ProgramID, vertex_shader_id);
+        glAttachShader(ProgramID, fragment_shader_id);
+        if (has_geometry_shader) glAttachShader(ProgramID, geometry_shader_id);
         glLinkProgram(ProgramID);
+
         /* Check the program */
-        glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
+        glGetProgramiv(ProgramID, GL_LINK_STATUS, &result);
         glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-        if (InfoLogLength > 0 && Result == GL_FALSE) {
+        if (InfoLogLength > 0 && result == GL_FALSE) {
             std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
             glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
     
@@ -122,14 +83,56 @@ namespace game_engine { namespace graphics { namespace opengl {
         }
     
     
-        glDetachShader(ProgramID, VertexShaderID);
-        glDetachShader(ProgramID, FragmentShaderID);
+        glDetachShader(ProgramID, vertex_shader_id);
+        glDetachShader(ProgramID, fragment_shader_id);
+        if (has_geometry_shader) glDetachShader(ProgramID, geometry_shader_id);
     
-        glDeleteShader(VertexShaderID);
-        glDeleteShader(FragmentShaderID);
+        glDeleteShader(vertex_shader_id);
+        glDeleteShader(fragment_shader_id);
+        if (has_geometry_shader) glDeleteShader(geometry_shader_id);
     
         program_id_ = ProgramID;
         return 0;
+    }
+
+    int OpenGLShader::CompileShader(std::string file_path, GLuint type, int& ret)
+    {
+        GLuint shader_id = glCreateShader(type);
+
+        /* Read the Shader code from the file */
+        std::string shader_code;
+        std::ifstream stream(file_path, std::ios::in);
+        if (stream.is_open()) {
+            std::string line = "";
+            while (std::getline(stream, line))
+                shader_code += "\n" + line;
+            stream.close();
+        }
+        else {
+            ret = Error::ERROR_SHADER_FILES_NOT_FOUND;
+            debug_tools::Console(debug_tools::FATAL, "Can't open shader file: " + file_path);
+            return -1;
+        }
+
+        /* Compile Shader */
+        GLint result = GL_FALSE;
+        int InfoLogLength;
+        char const * source_pointer = shader_code.c_str();
+        glShaderSource(shader_id, 1, &source_pointer, NULL);
+        glCompileShader(shader_id);
+        /* Check Vertex Shader */
+        glGetShaderiv(shader_id, GL_COMPILE_STATUS, &result);
+        glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &InfoLogLength);
+        if (InfoLogLength > 0 && result == GL_FALSE) {
+            std::vector<char> ShaderErrorMessage(InfoLogLength + 1);
+            glGetShaderInfoLog(shader_id, InfoLogLength, NULL, &ShaderErrorMessage[0]);
+
+            ret = Error::ERROR_SHADER_COMPILE;
+            debug_tools::Console(debug_tools::FATAL, std::string(ShaderErrorMessage.begin(), ShaderErrorMessage.end()));
+            return -1;
+        }
+
+        return shader_id;
     }
     
     bool OpenGLShader::Use() {
@@ -236,6 +239,7 @@ namespace game_engine { namespace graphics { namespace opengl {
     }
     
     OpenGLShaderGBuffer::OpenGLShaderGBuffer() {
+    
     }
     
     int OpenGLShaderGBuffer::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
@@ -331,6 +335,39 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Lightspace_ = GetUniformLocation(shader_uni_lightspace)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
     
+        return 0;
+    }
+
+    OpenGLShaderDrawNormals::OpenGLShaderDrawNormals() {
+
+    }
+
+    int OpenGLShaderDrawNormals::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string geometry_shader_path)
+    {
+        int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path, geometry_shader_path);
+        if (ret != 0) return ret;
+
+        if ((attr_vertex_position_ = GetAttributeLocation(shader_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_normal_ = GetAttributeLocation(shader_vertex_normal)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+
+        return 0;
+    }
+
+    OpenGLShaderWater::OpenGLShaderWater()
+    {
+    }
+
+    int OpenGLShaderWater::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string geometry_shader_path)
+    {
+        int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path, geometry_shader_path);
+        if (ret != 0) return ret;
+
+        if ((attr_vertex_position_ = GetAttributeLocation("aPos")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_color_ = GetAttributeLocation("aColor")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+
         return 0;
     }
 
