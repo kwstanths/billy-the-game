@@ -297,6 +297,17 @@ namespace graphics {
         return 0;
     }
 
+    int Renderer::RenderNormals(GraphicsObject * rendering_object)
+    {
+        std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
+        for (size_t j = 0; j < meshes.size(); j++) {
+            Mesh * mesh = meshes[j];
+            renderer_->DrawNormals(mesh->opengl_object_, rendering_object->model_matrix_);
+            draw_calls_++;
+        }
+        return 0;
+    }
+
     int Renderer::AddPointLight(PointLight * light) {
         if (point_lights_to_draw_.Items() >= GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS) {
             dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");

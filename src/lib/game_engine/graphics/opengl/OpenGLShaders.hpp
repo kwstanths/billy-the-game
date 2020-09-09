@@ -341,6 +341,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_texture_ssao_;
         GLuint uni_shadow_map_;
         GLuint uni_matrix_view_;
+        GLuint uni_matrix_projection_;
     };
 
     /* A shader to draw the normals of a model */

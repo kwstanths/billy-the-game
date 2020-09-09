@@ -298,7 +298,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((uni_texture_ssao_ = GetUniformLocation(shader_final_pass_ssao_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_shadow_map_ = GetUniformLocation(shader_uni_shadow_map)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_matrix_view_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-    
+        if ((uni_matrix_projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+
         return 0;
     }
     

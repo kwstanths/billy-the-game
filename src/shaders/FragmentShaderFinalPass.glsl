@@ -35,7 +35,7 @@ struct CastingLight {
     float quadratic;
 };
 
-layout(location = 0) out vec3 FragColor;
+layout(location = 0) out vec4 FragColor;
 
 in vec2 uv;
 
@@ -46,6 +46,7 @@ uniform sampler2D ssao_texture;
 uniform sampler2D g_position_light;
 uniform sampler2D shadow_map;
 uniform mat4 matrix_view;
+uniform mat4 matrix_projection;
 
 #define NR_POINT_LIGHTS 24
 uniform PointLight point_light[NR_POINT_LIGHTS];
@@ -82,6 +83,19 @@ float ShadowCalculation(vec3 fragment_position_lightspace) {
     return 1.0f - shadow;
 }
 
+void FixDepth(){
+    /* Get the fragment position in viewspace, transform it to clip space, and calculate depth */
+    vec4 fragment_position_viewspace = vec4(texture(g_position, uv).xyz, 1);
+    vec4 clip_space = matrix_projection * fragment_position_viewspace;
+    float depth = clip_space.z / clip_space.w;
+    
+    /* Transform depth to OpenGL formula, and set it */
+    float near = gl_DepthRange.near;
+    float far = gl_DepthRange.far;
+    float diff = gl_DepthRange.diff;
+    gl_FragDepth = ((diff * depth) + near + far) * 0.5f;
+}
+
 void main() {
     
     vec3 fragment_position_viewspace = texture(g_position, uv).xyz;
@@ -111,7 +125,10 @@ void main() {
 	vec3 cast_light_color = CalculateCastingLight(cast_light, fragment_position_viewspace, normal_viewspace, view_direction, fragment_color, fragment_specular_intensity, ambient_factor);
 	
 	/* Sum total components, the minimum color is zero, the maxium color possible the actual color of the fragment */
-	FragColor = clamp(cast_light_color + point_lights_color + directional_light_color, vec3(0,0,0), fragment_color);
+	FragColor = vec4(clamp(cast_light_color + point_lights_color + directional_light_color, vec3(0,0,0), fragment_color), 1);
+    
+    /* Fix the fragment's depth, since this is drawn using a quad that covers the screen */
+    FixDepth();
 }
    
 vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec3 view_direction, vec3 fragment_color, float fragment_specular_intensity, float ambient_factor) {

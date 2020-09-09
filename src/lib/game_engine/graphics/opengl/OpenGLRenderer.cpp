@@ -265,6 +265,7 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         shader_final_pass_.Use();
         shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_view_, camera->view_matrix_);
+        shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_projection_, camera->projection_matrix_);
 
         shader_draw_normals_.Use();
         shader_draw_normals_.SetUniformMat4(shader_draw_normals_.uni_View_, camera->view_matrix_);

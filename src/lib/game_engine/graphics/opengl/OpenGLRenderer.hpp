@@ -151,7 +151,11 @@ namespace game_engine {
                 */
                 int DrawTexture(GLuint texture_id, bool red_component = false);
 
-                /***/
+                /**
+                    Draw the normals of an object, forward rendering
+                    @param object The object
+                    @param model The model matrix of the object
+                */
                 int DrawNormals(OpenGLObject & object, glm::mat4 model);
 
                 /***/

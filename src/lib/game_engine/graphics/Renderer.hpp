@@ -159,6 +159,11 @@ namespace graphics {
         int RenderGBuffer(GraphicsObject * rendering_object);
 
         /**
+            Render the normals of an object, forward pass
+        */
+        int RenderNormals(GraphicsObject * rendering_object);
+
+        /**
             Main rendering pipeline, Gbuffer rendering, AO calculation, final pass
         */
         void FlushDrawCalls();
