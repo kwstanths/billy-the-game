@@ -25,7 +25,7 @@ namespace game_engine { namespace graphics { namespace opengl {
     int OpenGLShader::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
         if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
     
-        int ret = CompileShaders(vertex_shader_path.c_str(), fragment_shader_path.c_str(), "");
+        int ret = CompileShaders(vertex_shader_path, fragment_shader_path, "", "", "");
     
         is_inited_ = true;
         return ret;
@@ -35,7 +35,27 @@ namespace game_engine { namespace graphics { namespace opengl {
     {
         if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
 
-        int ret = CompileShaders(vertex_shader_path.c_str(), fragment_shader_path.c_str(), geometry_shader_path);
+        int ret = CompileShaders(vertex_shader_path, fragment_shader_path, "", "", geometry_shader_path);
+
+        is_inited_ = true;
+        return ret;
+    }
+
+    int OpenGLShader::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader)
+    {
+        if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
+
+        int ret = CompileShaders(vertex_shader_path, fragment_shader_path, tesselation_control_shader, tesselation_evaluation_shader, "");
+
+        is_inited_ = true;
+        return ret;
+    }
+
+    int OpenGLShader::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader, std::string geometry_shader_path)
+    {
+        if (is_inited_) return Error::ERROR_GEN_NOT_INIT;
+
+        int ret = CompileShaders(vertex_shader_path, fragment_shader_path, tesselation_control_shader, tesselation_evaluation_shader, geometry_shader_path);
 
         is_inited_ = true;
         return ret;
@@ -53,14 +73,18 @@ namespace game_engine { namespace graphics { namespace opengl {
         return is_inited_;
     }
     
-    int OpenGLShader::CompileShaders(std::string vertex_file_path, std::string fragment_file_path, std::string geometry_shader_path) {
+    int OpenGLShader::CompileShaders(std::string vertex_file_path, std::string fragment_file_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader, std::string geometry_shader_path) {
         bool has_geometry_shader = geometry_shader_path != "";
-        
+        bool has_tess_control_shader = tesselation_control_shader != "";
+        bool has_tess_evaluation_shader = tesselation_evaluation_shader != "";
+
         /* Create the shaders */
         int ret;
         GLuint vertex_shader_id = CompileShader(vertex_file_path, GL_VERTEX_SHADER, ret);
         GLuint fragment_shader_id = CompileShader(fragment_file_path, GL_FRAGMENT_SHADER, ret);
         GLuint geometry_shader_id = (has_geometry_shader) ? (CompileShader(geometry_shader_path, GL_GEOMETRY_SHADER, ret)) : 0;
+        GLuint tesselation_control_shader_id = (has_tess_control_shader) ? (CompileShader(tesselation_control_shader, GL_TESS_CONTROL_SHADER, ret)) : 0;
+        GLuint tesselation_evaluation_shader_id = (has_tess_evaluation_shader) ? (CompileShader(tesselation_evaluation_shader, GL_TESS_EVALUATION_SHADER, ret)) : 0;
 
         /* Link the program */
         GLint result = GL_FALSE;
@@ -69,6 +93,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         glAttachShader(ProgramID, vertex_shader_id);
         glAttachShader(ProgramID, fragment_shader_id);
         if (has_geometry_shader) glAttachShader(ProgramID, geometry_shader_id);
+        if (has_tess_control_shader) glAttachShader(ProgramID, tesselation_control_shader_id);
+        if (has_tess_evaluation_shader) glAttachShader(ProgramID, tesselation_evaluation_shader_id);
         glLinkProgram(ProgramID);
 
         /* Check the program */
@@ -86,10 +112,14 @@ namespace game_engine { namespace graphics { namespace opengl {
         glDetachShader(ProgramID, vertex_shader_id);
         glDetachShader(ProgramID, fragment_shader_id);
         if (has_geometry_shader) glDetachShader(ProgramID, geometry_shader_id);
+        if (has_tess_control_shader) glDetachShader(ProgramID, tesselation_control_shader_id);
+        if (has_tess_evaluation_shader) glDetachShader(ProgramID, tesselation_evaluation_shader_id);
     
         glDeleteShader(vertex_shader_id);
         glDeleteShader(fragment_shader_id);
         if (has_geometry_shader) glDeleteShader(geometry_shader_id);
+        if (has_tess_control_shader) glDeleteShader(tesselation_control_shader_id);
+        if (has_tess_evaluation_shader) glDeleteShader(tesselation_evaluation_shader_id);
     
         program_id_ = ProgramID;
         return 0;
@@ -361,17 +391,24 @@ namespace game_engine { namespace graphics { namespace opengl {
     {
     }
 
-    int OpenGLShaderWater::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string geometry_shader_path)
+    int OpenGLShaderWater::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader)
     {
-        int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path, geometry_shader_path);
+        int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path, tesselation_control_shader, tesselation_evaluation_shader);
         if (ret != 0) return ret;
 
-        if ((attr_vertex_position_ = GetAttributeLocation("aPos")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((attr_vertex_color_ = GetAttributeLocation("aColor")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_position_ = GetAttributeLocation(shader_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_uv_ = GetAttributeLocation(shader_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_normal_ = GetAttributeLocation(shader_vertex_normal)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_camera_world_position_ = GetUniformLocation("camera_world_position")) == -1)return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_displacement_map_ = GetUniformLocation("displacement_map")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }
 
+    
 }
 }
 }

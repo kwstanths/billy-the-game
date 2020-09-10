@@ -39,6 +39,9 @@ namespace graphics {
         gbuffer_objects_.Init(GAME_ENGINE_RENDERER_MAX_OBJECTS);
         text_to_draw_.Init(512);
 
+        terrain_ = new GraphicsObject();
+        terrain_->Init(0, 0, 0, "assets/water.obj");
+
         is_inited_ = true;
         return 0;
     }
@@ -461,7 +464,12 @@ namespace graphics {
             draw_calls_++;
         }
 
-        //renderer_->DrawWater();
+        renderer_->DrawWater(terrain_->model_->meshes_[0]->opengl_object_, terrain_->model_matrix_);
+
+        /*for (utility::CircularBuffer<GraphicsObject *>::iterator itr = gbuffer_objects_.begin(); itr != gbuffer_objects_.end(); ++itr) {
+            GraphicsObject * rendering_object = *itr;
+            RenderNormals(rendering_object);
+        }*/
 
         // Render text with forward rendering
         std::string occlusion_text;

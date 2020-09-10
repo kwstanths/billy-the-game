@@ -199,10 +199,20 @@ namespace game_engine { namespace graphics { namespace opengl {
             if (ret) dt::Console(dt::WARNING, "Could not find texture: " + empty_texture_path);
             instance.InsertTexture(empty_texture_path, texture_empty_);
         }
+
+        texture_empty_ = instance.FindTexture("assets/textures/download.jpg");
+        if (texture_empty_ == nullptr) {
+            /* If not already initialized, insert it into the assets */
+            texture_empty_ = new OpenGLTexture();
+            int ret = texture_empty_->Init("assets/textures/download.jpg", GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP);
+            if (ret) dt::Console(dt::WARNING, "Could not find texture: " + empty_texture_path);
+            instance.InsertTexture("assets/textures/download.jpg", texture_empty_);
+        }
     
         shader_draw_normals_ = context->shader_draw_normals_;
 
         shader_water_ = context->shader_water_;
+        shader_water_.SetUniformInt(shader_water_.uni_displacement_map_, 0);
 
         is_inited_ = true;
         return 0;
@@ -270,6 +280,10 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_draw_normals_.Use();
         shader_draw_normals_.SetUniformMat4(shader_draw_normals_.uni_View_, camera->view_matrix_);
         shader_draw_normals_.SetUniformMat4(shader_draw_normals_.uni_Projection_, camera->projection_matrix_);
+
+        shader_water_.Use();
+        shader_water_.SetUniformMat4(shader_water_.uni_View_, camera->view_matrix_);
+        shader_water_.SetUniformMat4(shader_water_.uni_Projection_, camera->projection_matrix_);
     }
     
     int OpenGLRenderer::DrawGBuffer(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl) {
@@ -636,34 +650,42 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
-    int OpenGLRenderer::DrawWater()
+    int OpenGLRenderer::DrawWater(OpenGLObject & object, glm::mat4 model)
     {
+        glBindVertexArray(object.VAO_);
+        glPatchParameteri(GL_PATCH_VERTICES, 3);
 
-        //glDisable(GL_DEPTH_TEST);
-
-        float points[] = {
-            -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // top-left
-             0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // top-right
-             0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom-right
-            -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // bottom-left
-        };
-
-        GLuint vao, vbo;
-        glGenVertexArrays(1, &vao);
-        glGenBuffers(1, &vbo);
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(points), &points, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(shader_water_.attr_vertex_position_, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(shader_water_.attr_vertex_color_, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
+        glm::vec3 camera_position;
+        camera_->GetPositionVector(camera_position.x, camera_position.y, camera_position.z);
 
         shader_water_.Use();
-        glDrawArrays(GL_POINTS, 0, 4);
+        shader_water_.SetUniformMat4(shader_water_.uni_Model_, model);
+        shader_water_.SetUniformVec3(shader_water_.uni_camera_world_position_, camera_position);
+
+        /* Set shader layout attributes */
+        glBindBuffer(GL_ARRAY_BUFFER, object.vertex_buffer_);
+        /* Attribute number 0 is the object vertices */
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(shader_water_.GetAttributeLocation(shader_vertex_position), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)0);
+        /* Attribute number 1 is the object's uv coordinates */
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(shader_water_.GetAttributeLocation(shader_vertex_uv), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, uv_));
+        /* Attribute number 2 is the object's normals */
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(shader_water_.GetAttributeLocation(shader_vertex_normal), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, normal_));
+
+        AssetManager& am = AssetManager::GetInstance();
+        OpenGLTexture * displacement_map = am.FindTexture("assets/textures/download.jpg");
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, displacement_map->GetID());
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glDrawElements(GL_PATCHES, object.total_indices_, GL_UNSIGNED_INT, 0);
 
         glBindVertexArray(0);
-        //glEnable(GL_DEPTH_TEST);
         return 0;
     }
     

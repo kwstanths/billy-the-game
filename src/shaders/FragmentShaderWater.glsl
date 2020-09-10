@@ -1,9 +1,14 @@
-#version 330 core
+#version 410 core
+
 out vec4 FragColor;
 
-in vec3 fColor;
+in TES_OUT {
+    vec2 uv;
+    vec3 normal_worldspace;
+    vec3 position_worldspace;
+} tes_out;
 
 void main()
 {
-    FragColor = vec4(fColor, 1);   
-}  
+    FragColor = vec4(tes_out.position_worldspace / 4, 1);   
+}

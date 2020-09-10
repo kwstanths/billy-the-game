@@ -159,7 +159,7 @@ namespace game_engine {
                 int DrawNormals(OpenGLObject & object, glm::mat4 model);
 
                 /***/
-                int DrawWater();
+                int DrawWater(OpenGLObject & object, glm::mat4 model);
 
                 OpenGLGBuffer * g_buffer_;
                 OpenGLFrameBufferTexture * frame_buffer_one_;

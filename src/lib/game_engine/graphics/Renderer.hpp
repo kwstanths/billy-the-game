@@ -133,6 +133,8 @@ namespace graphics {
         opengl::OpenGLCamera * camera_ = nullptr;
         opengl::OpenGLRenderer * renderer_ = nullptr;
 
+        GraphicsObject * terrain_;
+
         enum RENDER_MODE {
             REGULAR,
             VIEW_FRUSTUM_CULLING,

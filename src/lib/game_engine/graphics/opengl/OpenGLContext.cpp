@@ -72,7 +72,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         ret += shader_final_pass_.Init("shaders/VertexShaderFinalPass.glsl", "shaders/FragmentShaderFinalPass.glsl");
         ret += shader_shadow_map_.Init("shaders/VertexShaderShadowMap.glsl", "shaders/FragmentShaderShadowMap.glsl");
         ret += shader_draw_normals_.Init("shaders/VertexShaderDrawNormals.glsl", "shaders/FragmentShaderDrawNormals.glsl", "shaders/GeometryShaderDrawNormals.glsl");
-        ret += shader_water_.Init("shaders/VertexShaderWater.glsl", "shaders/FragmentShaderWater.glsl", "shaders/GeometryShaderWater.glsl");
+        ret += shader_water_.Init("shaders/VertexShaderWater.glsl", "shaders/FragmentShaderWater.glsl", "shaders/TesselationControlShaderWater.glsl", "shaders/TesselationEvaluationShaderWater.glsl");
         if (ret) dt::Console(dt::CRITICAL, "Shaders compilation failed");
     
         is_inited_ = true;
