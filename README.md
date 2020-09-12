@@ -14,7 +14,7 @@ In world building:
 - Importing maps generated from Tiled
 - Draw call batching generated maps
 In physics and interaction:  
-- Custom collision avoidance
+- Custom collision detection
 - QuadTree accelerated ray casting  
 Other:  
 - Several data structures created: Uniform grids, Circular buffers, HashTables, and several QuadTree variants

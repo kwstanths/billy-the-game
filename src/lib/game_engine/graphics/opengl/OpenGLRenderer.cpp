@@ -199,20 +199,13 @@ namespace game_engine { namespace graphics { namespace opengl {
             if (ret) dt::Console(dt::WARNING, "Could not find texture: " + empty_texture_path);
             instance.InsertTexture(empty_texture_path, texture_empty_);
         }
-
-        texture_empty_ = instance.FindTexture("assets/textures/download.jpg");
-        if (texture_empty_ == nullptr) {
-            /* If not already initialized, insert it into the assets */
-            texture_empty_ = new OpenGLTexture();
-            int ret = texture_empty_->Init("assets/textures/download.jpg", GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP);
-            if (ret) dt::Console(dt::WARNING, "Could not find texture: " + empty_texture_path);
-            instance.InsertTexture("assets/textures/download.jpg", texture_empty_);
-        }
     
         shader_draw_normals_ = context->shader_draw_normals_;
 
         shader_water_ = context->shader_water_;
-        shader_water_.SetUniformInt(shader_water_.uni_displacement_map_, 0);
+        shader_water_.Use();
+        shader_water_.SetUniformInt(shader_water_.uni_normal_map_, 0);
+        shader_water_.SetUniformInt(shader_water_.uni_displacement_map_, 1);
 
         is_inited_ = true;
         return 0;
@@ -241,6 +234,15 @@ namespace game_engine { namespace graphics { namespace opengl {
     void OpenGLRenderer::EnableDepthWriting(bool enable) {
     
         glDepthMask(enable);
+    }
+
+    void OpenGLRenderer::DrawWireframe(bool enable)
+    {
+        if (enable) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
     }
     
     void OpenGLRenderer::SetShadowMap(glm::mat4 & view_matrix, glm::mat4 & projection_matrix) {
@@ -588,6 +590,12 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_final_pass_.SetUniformVec3(shader_final_pass_.GetUniformLocation("directional_light.ambient"), color_ambient);
         shader_final_pass_.SetUniformVec3(shader_final_pass_.GetUniformLocation("directional_light.diffuse"), color_diffuse);
         shader_final_pass_.SetUniformVec3(shader_final_pass_.GetUniformLocation("directional_light.specular"), color_specular);
+
+        shader_water_.Use();
+        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("directional_light.direction"), direction);
+        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("directional_light.ambient"), color_ambient);
+        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("directional_light.diffuse"), color_diffuse);
+        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("directional_light.specular"), color_specular);
     
         return 0;
     }
@@ -650,7 +658,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
-    int OpenGLRenderer::DrawWater(OpenGLObject & object, glm::mat4 model)
+    int OpenGLRenderer::DrawTerrain(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model)
     {
         glBindVertexArray(object.VAO_);
         glPatchParameteri(GL_PATCH_VERTICES, 3);
@@ -673,16 +681,14 @@ namespace game_engine { namespace graphics { namespace opengl {
         /* Attribute number 2 is the object's normals */
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(shader_water_.GetAttributeLocation(shader_vertex_normal), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, normal_));
-
-        AssetManager& am = AssetManager::GetInstance();
-        OpenGLTexture * displacement_map = am.FindTexture("assets/textures/download.jpg");
         
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, displacement_map->GetID());
-
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+        if (textures.size() < 4) {
+            dt::Console(dt::WARNING, "Terrain object is missing one or more maps");
+        } else {
+            textures[2]->ActivateTexture(0);
+            textures[3]->ActivateTexture(1);
+        }
+        
         glDrawElements(GL_PATCHES, object.total_indices_, GL_UNSIGNED_INT, 0);
 
         glBindVertexArray(0);

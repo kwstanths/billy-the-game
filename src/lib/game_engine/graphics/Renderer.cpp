@@ -464,20 +464,30 @@ namespace graphics {
             draw_calls_++;
         }
 
-        renderer_->DrawWater(terrain_->model_->meshes_[0]->opengl_object_, terrain_->model_matrix_);
+        command = ConsoleParser::GetInstance().GetLastCommand();
+        if (command.type_ == COMMAND_WIREFRAME && math::Equal(command.arg_1_, 1.0f)) {
+            renderer_->DrawWireframe(true);
+        }
+        else {
+            renderer_->DrawWireframe(false);
+        }
+
+        renderer_->DrawTerrain(terrain_->model_->meshes_[0]->opengl_object_, terrain_->model_->meshes_[0]->opengl_textures_, terrain_->model_matrix_);
 
         /*for (utility::CircularBuffer<GraphicsObject *>::iterator itr = gbuffer_objects_.begin(); itr != gbuffer_objects_.end(); ++itr) {
             GraphicsObject * rendering_object = *itr;
             RenderNormals(rendering_object);
         }*/
 
+        renderer_->DrawWireframe(false);
         // Render text with forward rendering
-        std::string occlusion_text;
-        if (frr_render_mode == RENDER_MODE::REGULAR) occlusion_text = "Regular";
-        else if (frr_render_mode == RENDER_MODE::VIEW_FRUSTUM_CULLING) occlusion_text = "View frustum culling";
-        else if (frr_render_mode == RENDER_MODE::OCCLUSION_QUERIES) occlusion_text = "Occlusion queries";
-        renderer_->Draw2DText(occlusion_text, 0.0f, context_->GetWindowHeight() - 20, 0.5, glm::vec3(1, 0, 0));
-        draw_calls_++;
+
+        //std::string occlusion_text;
+        //if (frr_render_mode == RENDER_MODE::REGULAR) occlusion_text = "Regular";
+        //else if (frr_render_mode == RENDER_MODE::VIEW_FRUSTUM_CULLING) occlusion_text = "View frustum culling";
+        //else if (frr_render_mode == RENDER_MODE::OCCLUSION_QUERIES) occlusion_text = "Occlusion queries";
+        //renderer_->Draw2DText(occlusion_text, 0.0f, context_->GetWindowHeight() - 20, 0.5, glm::vec3(1, 0, 0));
+        //draw_calls_++;
 
         while (text_to_draw_.Items() > 0) {
             TEXT_DRAW_t text;
@@ -486,7 +496,7 @@ namespace graphics {
             draw_calls_++;
         }
 
-        renderer_->Draw2DText("Draw calls: " + std::to_string(draw_calls_) , 0.0f, context_->GetWindowHeight() - 45, 0.5, glm::vec3(1, 0, 0));
+        renderer_->Draw2DText("Draw calls: " + std::to_string(draw_calls_) , 0.0f, context_->GetWindowHeight() - 20, 0.5, glm::vec3(1, 0, 0));
     }
 
 }

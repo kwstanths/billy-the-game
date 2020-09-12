@@ -86,8 +86,16 @@ namespace graphics{
             std::vector<Texture_t> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP, directory);
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
             if (textures.size() == 1) textures.push_back(Texture_t(std::string("assets/textures/spec_map_empty.png"), GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP));
+
+            std::vector<Texture_t> normalMaps = LoadMaterialTextures(material, aiTextureType_NORMALS, GAME_ENGINE_TEXTURE_TYPE_NORMAL_MAP, directory);
+            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+            if (textures.size() == 1) textures.push_back(Texture_t(std::string(""), GAME_ENGINE_TEXTURE_TYPE_EMPTY));
+
+            std::vector<Texture_t> displMaps = LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, GAME_ENGINE_TEXTURE_TYPE_DISPLACEMENT_MAP, directory);
+            textures.insert(textures.end(), displMaps.begin(), displMaps.end());
+            if (textures.size() == 1) textures.push_back(Texture_t(std::string(""), GAME_ENGINE_TEXTURE_TYPE_EMPTY));
         }
-    
+        
         Mesh * temp_mesh = new Mesh();
         temp_mesh->Init(vertices, indices, textures, Material_t(shininess,
             glm::vec3(color_ambient.r, color_ambient.g, color_ambient.b),

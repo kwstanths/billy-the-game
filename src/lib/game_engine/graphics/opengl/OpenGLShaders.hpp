@@ -409,6 +409,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_Projection_;
         GLuint uni_camera_world_position_;
         GLuint uni_displacement_map_;
+        GLuint uni_normal_map_;
     };
 }
 }

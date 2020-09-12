@@ -55,6 +55,12 @@ namespace game_engine {
                 void EnableDepthWriting(bool enable);
 
                 /**
+                    Enable wireframe rendering mode
+                    @param enable True = enable, false = disable
+                */
+                void DrawWireframe(bool enable);
+
+                /**
                     Sets the necessary matrices for shadow mapping
                 */
                 void SetShadowMap(glm::mat4& view_matrix, glm::mat4& projection_matrix);
@@ -159,7 +165,7 @@ namespace game_engine {
                 int DrawNormals(OpenGLObject & object, glm::mat4 model);
 
                 /***/
-                int DrawWater(OpenGLObject & object, glm::mat4 model);
+                int DrawTerrain(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model);
 
                 OpenGLGBuffer * g_buffer_;
                 OpenGLFrameBufferTexture * frame_buffer_one_;

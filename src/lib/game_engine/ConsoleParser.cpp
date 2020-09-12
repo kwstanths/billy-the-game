@@ -137,6 +137,13 @@ namespace game_engine {
             last_command_.type_ = COMMAND_SHADOW_MAPPING;
             break;
         }
+        case COMMAND_WIREFRAME:
+        {
+            if (tokens.size() <= 1) return;
+            last_command_.arg_1_ = std::stoi(tokens[1]);
+            last_command_.type_ = COMMAND_WIREFRAME;
+            break;
+        }
         default:
             break;
         }

@@ -22,7 +22,7 @@ namespace graphics {
         indices_ = indices;
         textures_ = textures;
         mat_ = mat;
-        
+
         /* opengl object */
         opengl_object_.Init(vertices_, indices_);
         /* opengl textures */
@@ -40,7 +40,7 @@ namespace graphics {
 
                 asset_manager.InsertTexture(texture_path, previously_allocated_texture);
             }
-
+            
             opengl_textures_.push_back(previously_allocated_texture);
         }
 

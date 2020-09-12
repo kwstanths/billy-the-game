@@ -404,6 +404,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_camera_world_position_ = GetUniformLocation("camera_world_position")) == -1)return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_displacement_map_ = GetUniformLocation("displacement_map")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_normal_map_ = GetUniformLocation("normal_map")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }

@@ -22,8 +22,10 @@ int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera
     engine_ = engine;
     camera_ = camera;
 
-    int ret = WorldObject::Init("assets/Cow.obj", x, y, z);
+    int ret = WorldObject::Init("assets/Tree.obj", x, y, z);
     world->AddObject(this, x, y, z);
+
+    Scale(0.5, 0.5, 0.5);
 
     /*Rotate(ge::math::GetRadians(90.0f), glm::vec3(0, 1, 0));
     Rotate(ge::math::GetRadians(90.0f), glm::vec3(-1, 0, 0));
