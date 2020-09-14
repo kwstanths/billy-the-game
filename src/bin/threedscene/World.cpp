@@ -40,8 +40,8 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     //}
 
     /* Create floor */
-    //Floor * floor = NewObj<Floor>();
-    //floor->Init(0.0f, 0.0f, 0.0f, this);
+    Floor * floor = NewObj<Floor>();
+    floor->Init(0.0f, 0.0f, 0.0f, this);
 
     Fire * fire = NewObj<Fire>();
     fire->Init(0.0f, 5.0f, 0.0f, this, engine);

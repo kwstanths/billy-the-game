@@ -23,9 +23,10 @@ namespace opengl {
         is_inited_ = false;
     }
 
-    int OpenGLTexture::Init(std::string file_path, int type) {
+    int OpenGLTexture::Init(std::string file_path, int type, GLuint filtering) {
         if (is_inited_) return -1;
 
+        filtering_ = filtering;
         int ret = LoadSTB(file_path.c_str(), &texture_);
         if (ret != 0) return ret;
 
@@ -56,6 +57,14 @@ namespace opengl {
     void OpenGLTexture::ActivateTexture(int texture_id) {
         glActiveTexture(GL_TEXTURE0 + texture_id);
         glBindTexture(GL_TEXTURE_2D, GetID());
+    }
+
+    void OpenGLTexture::SetFiltering(GLuint filtering)
+    {
+        filtering_ = filtering;
+
+        glBindTexture(GL_TEXTURE_2D, texture_);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filtering_);
     }
 
     int OpenGLTexture::LoadDDS(const char * imagepath, GLuint * texture_id) {
@@ -170,7 +179,7 @@ namespace opengl {
         /* Configure wrapping and zooming behaviour */
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filtering_);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         /* Generate the mipmaps */
 

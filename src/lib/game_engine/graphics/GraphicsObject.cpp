@@ -101,6 +101,11 @@ namespace graphics {
         rotation_matrix_ *= math::GetRotateMatrix(angle, axis.x, axis.y, axis.z);
     }
 
+    void GraphicsObject::SetMaterial(Material * material, int mesh_index)
+    {
+        model_->SetMaterial(material, mesh_index);
+    }
+
     void GraphicsObject::SetModelMatrix() {
         model_matrix_ = translation_matrix_ * rotation_matrix_ * scale_matrix_;
     }

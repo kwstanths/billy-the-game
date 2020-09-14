@@ -22,7 +22,7 @@ namespace opengl {
             @param file_path The path to the disk file
             @return 0=OK, -1=Already initialised, else see ErrorCodes.hpp
         */
-        int Init(std::string file_path, int type);
+        int Init(std::string file_path, int type, GLuint filtering = GL_NEAREST);
 
         /**
             Deletes allocated objects, needs Init to be called again. Never fails
@@ -42,12 +42,23 @@ namespace opengl {
         */
         GLuint GetID();
 
+        /**
+            Activate texture at position texture_id
+            @param texture_id The position to activate the texture
+        */
         void ActivateTexture(int texture_id);
+
+        /**
+            Set the GL_TEXTURE_MAG_FILTER filtering option, i.e. GL_LINEAR, GL_NEAREST, etc.
+            @param filtering The filtering option
+        */
+        void SetFiltering(GLuint filtering);
 
     private:
         bool is_inited_;
         int type_;
         GLuint texture_;
+        GLuint filtering_;
 
         /**
             Load a DDS texture and get an OpenGL texture id 

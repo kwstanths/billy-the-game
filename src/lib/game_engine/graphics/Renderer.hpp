@@ -57,6 +57,8 @@ namespace graphics {
         */
         int Draw(GraphicsObject * rendering_object);
 
+        int DrawTerrain(GraphicsObject * rendering_object);
+
         int DrawTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 = { 1, 1, 1 });
 
         /**
@@ -126,6 +128,7 @@ namespace graphics {
         /* Hold the point lights, the gbuffer draw calls and the text to draw per frame */
         utility::CircularBuffer<PointLight *> point_lights_to_draw_;
         utility::CircularBuffer<GraphicsObject *> gbuffer_objects_;
+        utility::CircularBuffer<GraphicsObject *> forward_objects_;
         utility::CircularBuffer<TEXT_DRAW_t> text_to_draw_;
 
         /* Variables needed for opengl drawiing */

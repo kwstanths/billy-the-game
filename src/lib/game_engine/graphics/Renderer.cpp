@@ -39,9 +39,6 @@ namespace graphics {
         gbuffer_objects_.Init(GAME_ENGINE_RENDERER_MAX_OBJECTS);
         text_to_draw_.Init(512);
 
-        terrain_ = new GraphicsObject();
-        terrain_->Init(0, 0, 0, "assets/water.obj");
-
         is_inited_ = true;
         return 0;
     }
@@ -77,6 +74,7 @@ namespace graphics {
         point_lights_to_draw_.Clear();
         gbuffer_objects_.Clear();
         text_to_draw_.Clear();
+        terrain_ = nullptr;
     }
 
     void Renderer::EndFrame() {
@@ -109,6 +107,12 @@ namespace graphics {
         gbuffer_objects_.Push(rendering_object);
         rendering_object->SetModelMatrix();
 
+        return 0;
+    }
+
+    int Renderer::DrawTerrain(GraphicsObject * rendering_object)
+    {
+        terrain_ = rendering_object;
         return 0;
     }
 
@@ -220,7 +224,7 @@ namespace graphics {
             std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
             for (size_t j = 0; j < meshes.size(); j++) {
                 Mesh * mesh = meshes[j];
-                renderer_->DrawGBuffer(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
+                mesh->material_->Render(renderer_, mesh->opengl_object_, rendering_object->model_matrix_);
                 draw_calls_++;
             }
 
@@ -251,7 +255,7 @@ namespace graphics {
                 AABox<3> box(min, max);
                 int ret = f.BoxInFrustum(box);
                 if (ret != Frustum::OUTSIDE) {
-                    renderer_->DrawGBuffer(gl_object, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
+                    mesh->material_->Render(renderer_, mesh->opengl_object_, rendering_object->model_matrix_);
                     draw_calls_++;
                 }
             }
@@ -274,7 +278,7 @@ namespace graphics {
                     renderer_->EnableColorWriting(true);
                     renderer_->EnableDepthWriting(true);
 
-                    renderer_->DrawGBuffer(mesh->opengl_object_, mesh->opengl_textures_, rendering_object->model_matrix_, mesh->mat_);
+                    mesh->material_->Render(renderer_, mesh->opengl_object_, rendering_object->model_matrix_);
                     draw_calls_++;
 
                 }
@@ -464,22 +468,27 @@ namespace graphics {
             draw_calls_++;
         }
 
-        command = ConsoleParser::GetInstance().GetLastCommand();
-        if (command.type_ == COMMAND_WIREFRAME && math::Equal(command.arg_1_, 1.0f)) {
-            renderer_->DrawWireframe(true);
-        }
-        else {
+
+        if (terrain_ != nullptr) {
+            command = ConsoleParser::GetInstance().GetLastCommand();
+            if (command.type_ == COMMAND_WIREFRAME && math::Equal(command.arg_1_, 1.0f)) {
+                renderer_->DrawWireframe(true);
+            }
+            else {
+                renderer_->DrawWireframe(false);
+            }
+
+            terrain_->model_->meshes_[0]->material_->Render(renderer_, terrain_->model_->meshes_[0]->opengl_object_, terrain_->model_matrix_);
+            
             renderer_->DrawWireframe(false);
         }
 
-        renderer_->DrawTerrain(terrain_->model_->meshes_[0]->opengl_object_, terrain_->model_->meshes_[0]->opengl_textures_, terrain_->model_matrix_);
 
         /*for (utility::CircularBuffer<GraphicsObject *>::iterator itr = gbuffer_objects_.begin(); itr != gbuffer_objects_.end(); ++itr) {
             GraphicsObject * rendering_object = *itr;
             RenderNormals(rendering_object);
         }*/
 
-        renderer_->DrawWireframe(false);
         // Render text with forward rendering
 
         //std::string occlusion_text;
@@ -497,6 +506,8 @@ namespace graphics {
         }
 
         renderer_->Draw2DText("Draw calls: " + std::to_string(draw_calls_) , 0.0f, context_->GetWindowHeight() - 20, 0.5, glm::vec3(1, 0, 0));
+
+
     }
 
 }

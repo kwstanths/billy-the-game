@@ -34,18 +34,5 @@ namespace graphics {
         0.05,     0.05,     0.0,      0.5,      0.5,        0.4,        0.7,        0.7,        0.04,       0.078125
     };
 
-    Material_t::Material_t(int material_type) {
-        _assert(material_type >= 0);
-        _assert(material_type <= GAME_ENGINE_MATERIAL_YELLOW_RUBBER);
-
-        int index = material_type * 10;
-
-        /* We use maps for these values */
-        ambient_ = glm::vec3(material_numbers[index + 0], material_numbers[index + 1], material_numbers[index + 2]);
-        diffuse_ = glm::vec3(material_numbers[index + 3], material_numbers[index + 4], material_numbers[index + 5]);
-        specular_ = glm::vec3(material_numbers[index + 6], material_numbers[index + 7], material_numbers[index + 8]);
-        shininess_ = static_cast<game_engine::Real_t>(material_numbers[index + 9]);
-    }
-
 }
 }

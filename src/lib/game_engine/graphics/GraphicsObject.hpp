@@ -7,6 +7,7 @@
 #include "game_engine/graphics/opengl/OpenGLQuery.hpp"
 
 #include "GraphicsTypes.hpp"
+#include "Material.hpp"
 #include "Model.hpp"
 
 namespace game_engine {
@@ -70,10 +71,17 @@ namespace graphics {
         */
         void Rotate(Real_t angle, glm::vec3 axis);
 
-    private:
-        bool is_inited_;
+        /**
+            Set the material for mesh with index mesh_index
+            @param material The new material
+            @param mesh_index The mesh to change
+        */
+        void SetMaterial(Material * material, int mesh_index);
 
         Model * model_ = nullptr;
+
+    private:
+        bool is_inited_;
 
         std::vector<opengl::OpenGLQuery> mesh_queries_;
 

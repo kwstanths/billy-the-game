@@ -189,16 +189,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         }
     
         /* Initialize an empty texture, used in several places */
-        std::string empty_texture_path = "assets/textures/spec_map_empty.png";
         AssetManager& instance = AssetManager::GetInstance();
-        texture_empty_ = instance.FindTexture(empty_texture_path);
-        if (texture_empty_ == nullptr) {
-            /* If not already initialized, insert it into the assets */
-            texture_empty_ = new OpenGLTexture();
-            int ret = texture_empty_->Init(empty_texture_path, GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP);
-            if (ret) dt::Console(dt::WARNING, "Could not find texture: " + empty_texture_path);
-            instance.InsertTexture(empty_texture_path, texture_empty_);
-        }
+        texture_empty_ = instance.GetTexture("assets/textures/spec_map_empty.png", GAME_ENGINE_TEXTURE_TYPE_EMPTY);
     
         shader_draw_normals_ = context->shader_draw_normals_;
 
@@ -288,7 +280,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_water_.SetUniformMat4(shader_water_.uni_Projection_, camera->projection_matrix_);
     }
     
-    int OpenGLRenderer::DrawGBuffer(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl) {
+    int OpenGLRenderer::DrawGBuffer(OpenGLObject & object, glm::mat4 model, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture) {
     
         if (!is_inited_) return -1;
         if (!object.IsInited()) return -1;
@@ -298,17 +290,16 @@ namespace game_engine { namespace graphics { namespace opengl {
         /* Set the model uniform */
         shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_Model_, model);
         //shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.ambient"), mtl.ambient_);
-        shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.diffuse"), mtl.diffuse_);
-        shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.specular"), mtl.specular_);
+        shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.diffuse"), diffuse);
+        shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.specular"), specular);
         //shader_gbuffer_.SetUniformFloat(shader_gbuffer_.GetUniformLocation("object_material.shininess"), mtl.shininess_);
     
         glBindVertexArray(object.VAO_);
     
         object.SetupAttributes(&shader_gbuffer_);
     
-        for (size_t i = 0; i < textures.size(); i++) {
-            textures[i]->ActivateTexture(i);
-        }
+        diffuse_texture->ActivateTexture(0);
+        specular_texture->ActivateTexture(1);
     
         object.Render();
     
@@ -324,7 +315,6 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         OpenGLTriangle t;
         t.Init(v1, v2, v3);
-        Material_t mtl = Material_t(2, color, color, color);
     
         if (!t.IsInited()) return -1;
     
@@ -334,8 +324,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         /* Set the model uniform */
         shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_Model_, glm::mat4(1.0f));
         //shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.ambient"), mtl.ambient_);
-        shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.diffuse"), mtl.diffuse_);
-        shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.specular"), mtl.specular_);
+        shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.diffuse"), color);
+        shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.specular"), color);
         //shader_gbuffer_.SetUniformFloat(shader_gbuffer_.GetUniformLocation("object_material.shininess"), mtl.shininess_);
     
         glBindVertexArray(t.VAO_);
@@ -631,11 +621,14 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_quad_.Use();
         shader_quad_.SetUniformBool(shader_quad_.GetUniformLocation("red_component"), red_component);
     
+        glDisable(GL_DEPTH_TEST);
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture_id);
     
         RenderQuad();
-    
+        
+        glEnable(GL_DEPTH_TEST);
         return 0;
     }
 
@@ -658,7 +651,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
-    int OpenGLRenderer::DrawTerrain(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model)
+    int OpenGLRenderer::DrawDisplacement(OpenGLObject & object, glm::mat4 model, OpenGLTexture * displacement_texture, OpenGLTexture * normal_texture)
     {
         glBindVertexArray(object.VAO_);
         glPatchParameteri(GL_PATCH_VERTICES, 3);
@@ -682,12 +675,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(shader_water_.GetAttributeLocation(shader_vertex_normal), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, normal_));
         
-        if (textures.size() < 4) {
-            dt::Console(dt::WARNING, "Terrain object is missing one or more maps");
-        } else {
-            textures[2]->ActivateTexture(0);
-            textures[3]->ActivateTexture(1);
-        }
+        normal_texture->ActivateTexture(0);
+        displacement_texture->ActivateTexture(1);
         
         glDrawElements(GL_PATCHES, object.total_indices_, GL_UNSIGNED_INT, 0);
 

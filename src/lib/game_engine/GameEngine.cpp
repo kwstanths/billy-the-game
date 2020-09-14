@@ -34,15 +34,6 @@ namespace game_engine {
             return -1;
         }
 
-        /* Init renderer */
-        config_ = config;
-        int ret = renderer_->Init(config_.context_params_);
-        if (ret) {
-            last_error_ = ret;
-            PrintError(ret);
-            Terminate();
-        }
-
         /* Create the one and only MemoryManager object */
         memory::STATIC_OBJETCS_MEMORY_SIZE = 500 * 500;
         memory::REMOVABLE_OBJECTS_MEMORY_BLOCK_SIZE = 400;
@@ -52,9 +43,17 @@ namespace game_engine {
         memory::MemoryManager& memory_manager_creation_instance = memory::MemoryManager::GetInstance();
 
         /* Create the one and only AssetManager object */
-        graphics::MODELS_NUMBER = 512;
-        graphics::TEXTURES_NUMBER = 512;
         graphics::AssetManager& asset_manager_creation_instance = graphics::AssetManager::GetInstance();
+
+
+        /* Init renderer */
+        config_ = config;
+        int ret = renderer_->Init(config_.context_params_);
+        if (ret) {
+            last_error_ = ret;
+            PrintError(ret);
+            Terminate();
+        }
 
         /* Init other systems */
         frame_regulator_.Init(config_.frame_rate_, 10);

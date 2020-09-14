@@ -1,6 +1,11 @@
 #include "AssimpHelp.hpp"
 
-#include "GraphicsTypes.hpp"
+#include "game_engine/math/Vector.hpp"
+
+#include "Material.hpp"
+#include "Mesh.hpp"
+
+namespace math = game_engine::math;
 
 namespace game_engine {
 namespace graphics{
@@ -71,6 +76,11 @@ namespace graphics{
         aiColor3D color_diffuse;
         aiColor3D color_specular;
         Real_t shininess;
+        std::vector<Texture_t> diffuseMaps;
+        std::vector<Texture_t> specularMaps;
+        std::vector<Texture_t> normalMaps;
+        std::vector<Texture_t> displMaps;
+
         if (mesh->mMaterialIndex >= 0) {
             aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
     
@@ -79,29 +89,24 @@ namespace graphics{
             material->Get(AI_MATKEY_COLOR_SPECULAR, color_specular);
             material->Get(AI_MATKEY_SHININESS, shininess);
     
-            std::vector<Texture_t> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP, directory);
-            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-            if (textures.size() == 0) textures.push_back(Texture_t(std::string("assets/textures/spec_map_empty.png"), GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP));
+            diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP, directory);
+            if (diffuseMaps.size() == 0) diffuseMaps.push_back(Texture_t(std::string("assets/textures/spec_map_empty.png"), GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP));
     
-            std::vector<Texture_t> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP, directory);
-            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-            if (textures.size() == 1) textures.push_back(Texture_t(std::string("assets/textures/spec_map_empty.png"), GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP));
+            specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP, directory);
+            if (specularMaps.size() == 0) specularMaps.push_back(Texture_t(std::string("assets/textures/spec_map_empty.png"), GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP));
 
-            std::vector<Texture_t> normalMaps = LoadMaterialTextures(material, aiTextureType_NORMALS, GAME_ENGINE_TEXTURE_TYPE_NORMAL_MAP, directory);
-            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-            if (textures.size() == 1) textures.push_back(Texture_t(std::string(""), GAME_ENGINE_TEXTURE_TYPE_EMPTY));
-
-            std::vector<Texture_t> displMaps = LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, GAME_ENGINE_TEXTURE_TYPE_DISPLACEMENT_MAP, directory);
-            textures.insert(textures.end(), displMaps.begin(), displMaps.end());
-            if (textures.size() == 1) textures.push_back(Texture_t(std::string(""), GAME_ENGINE_TEXTURE_TYPE_EMPTY));
+            /* Not imported currently. They have to be set explicitly when seting a material for a mesh */
+            normalMaps = LoadMaterialTextures(material, aiTextureType_NORMALS, GAME_ENGINE_TEXTURE_TYPE_NORMAL_MAP, directory);
+            displMaps = LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, GAME_ENGINE_TEXTURE_TYPE_DISPLACEMENT_MAP, directory);
         }
-        
+           
+        /* Create a default material */
+        math::Vector3D diffuse_color(color_diffuse.r, color_diffuse.g, color_diffuse.b);
+        math::Vector3D specular_color(color_specular.r, color_specular.g, color_specular.b);
+        MaterialDeferredStandard * material_default = new MaterialDeferredStandard(diffuse_color, specular_color, diffuseMaps[0].path_, specularMaps[0].path_);
+
         Mesh * temp_mesh = new Mesh();
-        temp_mesh->Init(vertices, indices, textures, Material_t(shininess,
-            glm::vec3(color_ambient.r, color_ambient.g, color_ambient.b),
-            glm::vec3(color_diffuse.r, color_diffuse.g, color_diffuse.b),
-            glm::vec3(color_specular.r, color_specular.g, color_specular.b))
-        );
+        temp_mesh->Init(vertices, indices, material_default);
     
         return temp_mesh;
     }

@@ -73,7 +73,12 @@ namespace game_engine {
                 /**
                     Draws the object using a GBuffer
                 */
-                int DrawGBuffer(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl = Material_t());
+                int DrawGBuffer(OpenGLObject & object, glm::mat4 model, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
+
+                /**
+                
+                */
+                int DrawDisplacement(OpenGLObject & object, glm::mat4 model, OpenGLTexture * displacement_texture, OpenGLTexture * normal_texture);
 
                 /**
                 
@@ -164,9 +169,6 @@ namespace game_engine {
                 */
                 int DrawNormals(OpenGLObject & object, glm::mat4 model);
 
-                /***/
-                int DrawTerrain(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model);
-
                 OpenGLGBuffer * g_buffer_;
                 OpenGLFrameBufferTexture * frame_buffer_one_;
                 OpenGLFrameBufferTexture * frame_buffer_two_;
@@ -179,6 +181,7 @@ namespace game_engine {
                 OpenGLText * text_renderer_ = nullptr;
                 OpenGLCamera * camera_ = nullptr;
 
+                /* AO parameters */
                 size_t number_of_samples_;
                 std::vector<glm::vec3> random_samples_kernel_;
 
@@ -215,7 +218,7 @@ namespace game_engine {
                 /* */
                 OpenGLShaderWater shader_water_;
 
-                /* Framebuffer object */
+                /* VAO and VBO for quad rendering */
                 GLuint VAO_Quad_;
                 GLuint VBO_Quad_;
 

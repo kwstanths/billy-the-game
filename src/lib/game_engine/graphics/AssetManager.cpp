@@ -66,7 +66,27 @@ namespace graphics {
 
         bool ret = textures_->Insert(name, texture);
         if (!ret)
-            dt::Console(dt::WARNING, "AssetManager::InsertTexure(): Texture already present");
+            dt::Console(dt::WARNING, "AssetManager::InsertTexture(): Texture already present");
+
+    }
+
+    opengl::OpenGLTexture * AssetManager::GetTexture(std::string name, int type)
+    {
+        
+        /* Try to find if it was previously inserted */
+        gl::OpenGLTexture * previously_allocated_texture = FindTexture(name);
+
+        /* Else initialize it and insert it */
+        int ret = 0;
+        if (!previously_allocated_texture) {
+            previously_allocated_texture = new gl::OpenGLTexture();
+            ret = previously_allocated_texture->Init(name, type);
+        
+            if (!ret) InsertTexture(name, previously_allocated_texture);
+        }
+
+        if (!ret) return previously_allocated_texture;
+        else return nullptr;
 
     }
 
