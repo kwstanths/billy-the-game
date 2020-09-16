@@ -128,7 +128,6 @@ namespace graphics {
         /* Hold the point lights, the gbuffer draw calls and the text to draw per frame */
         utility::CircularBuffer<PointLight *> point_lights_to_draw_;
         utility::CircularBuffer<GraphicsObject *> gbuffer_objects_;
-        utility::CircularBuffer<GraphicsObject *> forward_objects_;
         utility::CircularBuffer<TEXT_DRAW_t> text_to_draw_;
 
         /* Variables needed for opengl drawiing */

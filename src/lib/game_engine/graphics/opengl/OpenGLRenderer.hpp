@@ -78,7 +78,7 @@ namespace game_engine {
                 /**
                 
                 */
-                int DrawDisplacement(OpenGLObject & object, glm::mat4 model, OpenGLTexture * displacement_texture, OpenGLTexture * normal_texture);
+                int DrawDisplacement(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, OpenGLTexture * normal_texture, float displacement_mult);
 
                 /**
                 
@@ -173,6 +173,7 @@ namespace game_engine {
                 OpenGLFrameBufferTexture * frame_buffer_one_;
                 OpenGLFrameBufferTexture * frame_buffer_two_;
                 OpenGLShadowMap * shadow_map_;
+                bool use_shadows_;
 
             private:
                 bool is_inited_;
@@ -214,9 +215,8 @@ namespace game_engine {
                 OpenGLShaderFinalPass shader_final_pass_;
                 /* Shader used to draw the normals a model */
                 OpenGLShaderDrawNormals shader_draw_normals_;
-
-                /* */
-                OpenGLShaderWater shader_water_;
+                /* Shader used to draw displacement textures */
+                OpenGLShaderDisplacement shader_displacement_;
 
                 /* VAO and VBO for quad rendering */
                 GLuint VAO_Quad_;

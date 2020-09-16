@@ -66,13 +66,13 @@ namespace game_engine { namespace graphics { namespace opengl {
         ret += shader_vertices_color_.Init("shaders/VertexShaderVerticesColor.glsl", "shaders/FragmentShaderVerticesColor.glsl");
         ret += shader_quad_.Init("shaders/VertexShaderQuad.glsl", "shaders/FragmentShaderQuad.glsl");
         ret += shader_gbuffer_ssao_.Init("shaders/VertexShaderGBuffer.glsl", "shaders/FragmentShaderGBuffer.glsl");
-        ret += shader_ssao_.Init("shaders/VertexShaderSSAO.glsl", "shaders/FragmentShaderSSAO.glsl");
-        ret += shader_separable_ao_.Init("shaders/VertexShaderSeparableAO.glsl", "shaders/FragmentShaderSeparableAO.glsl");
-        ret += shader_blur_.Init("shaders/VertexShaderBlur.glsl", "shaders/FragmentShaderBlur.glsl");
+        ret += shader_ssao_.Init("shaders/PostProcessing/VertexShaderSSAO.glsl", "shaders/PostProcessing/FragmentShaderSSAO.glsl");
+        ret += shader_separable_ao_.Init("shaders/PostProcessing/VertexShaderSeparableAO.glsl", "shaders/PostProcessing/FragmentShaderSeparableAO.glsl");
+        ret += shader_blur_.Init("shaders/PostProcessing/VertexShaderBlur.glsl", "shaders/PostProcessing/FragmentShaderBlur.glsl");
         ret += shader_final_pass_.Init("shaders/VertexShaderFinalPass.glsl", "shaders/FragmentShaderFinalPass.glsl");
         ret += shader_shadow_map_.Init("shaders/VertexShaderShadowMap.glsl", "shaders/FragmentShaderShadowMap.glsl");
         ret += shader_draw_normals_.Init("shaders/VertexShaderDrawNormals.glsl", "shaders/FragmentShaderDrawNormals.glsl", "shaders/GeometryShaderDrawNormals.glsl");
-        ret += shader_water_.Init("shaders/VertexShaderWater.glsl", "shaders/FragmentShaderWater.glsl", "shaders/TesselationControlShaderWater.glsl", "shaders/TesselationEvaluationShaderWater.glsl");
+        ret += shader_displacement_.Init("shaders/Terrain/VertexShaderDisplacement.glsl", "shaders/Terrain/FragmentShaderDisplacement.glsl", "shaders/Terrain/TesselationControlShaderDisplacement.glsl", "shaders/Terrain/TesselationEvaluationShaderDisplacement.glsl");
         if (ret) dt::Console(dt::CRITICAL, "Shaders compilation failed");
     
         is_inited_ = true;

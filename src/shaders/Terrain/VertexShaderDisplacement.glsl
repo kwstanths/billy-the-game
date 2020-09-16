@@ -12,11 +12,6 @@ out VS_OUT {
 
 uniform mat4 matrix_model;
 
-/* The size of the grid rendered, in both dimensions */
-float TERRAIN_SIZE = 80;
-/* The number of patches in each dimension, SQRT_NUM_PATCHES * SQRT_NUM_PATCHES patches in total */
-float SQRT_NUM_PATCHES = 32;
-
 void main()                                                                                     
 {
     vs_out.position_worldspace = (matrix_model * vec4(vertex_position_modelspace, 1.0)).xyz;                                  

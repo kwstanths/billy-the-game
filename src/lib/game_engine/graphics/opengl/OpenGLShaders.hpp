@@ -376,6 +376,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_shadow_map_;
         GLuint uni_matrix_view_;
         GLuint uni_matrix_projection_;
+        GLuint uni_use_shadows_;
     };
 
     /* A shader to draw the normals of a model */
@@ -393,9 +394,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_Projection_;
     };
 
-    class OpenGLShaderWater : public OpenGLShader {
+    class OpenGLShaderDisplacement : public OpenGLShader {
     public:
-        OpenGLShaderWater();
+        OpenGLShaderDisplacement();
 
         int Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader);
         
@@ -407,9 +408,11 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_Model_;
         GLuint uni_View_;
         GLuint uni_Projection_;
+        GLuint uni_Lightspace_;
         GLuint uni_camera_world_position_;
         GLuint uni_displacement_map_;
         GLuint uni_normal_map_;
+        GLuint uni_displacement_intensity_;
     };
 }
 }

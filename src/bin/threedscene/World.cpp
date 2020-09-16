@@ -16,7 +16,7 @@ World::World() : WorldSector() {
 }
 
 int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
-    int ret = WorldSector::Init(10, 10, -10.0f, 10.0f, -10.0f, 10.0f, 10 * 10);
+    int ret = WorldSector::Init(10, 10, -40.0f, 40.0f, -40.0f, 40.0f, 10 * 10);
     if (ret) return ret;
 
     {
@@ -44,7 +44,7 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     floor->Init(0.0f, 0.0f, 0.0f, this);
 
     Fire * fire = NewObj<Fire>();
-    fire->Init(0.0f, 5.0f, 0.0f, this, engine);
+    fire->Init(0.0f, 12.0f, 0.0f, this, engine);
 
     is_inited_ = true;
     return 0;

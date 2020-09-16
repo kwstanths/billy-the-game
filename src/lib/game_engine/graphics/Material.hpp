@@ -16,7 +16,7 @@ namespace game_engine { namespace graphics {
         
         virtual void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) = 0;
 
-    protected:
+        size_t rendering_queue_;
     };
 
     /**
@@ -44,6 +44,7 @@ namespace game_engine { namespace graphics {
         game_engine::math::Vector3D specular_;
         opengl::OpenGLTexture * texture_displacement_;
         opengl::OpenGLTexture * texture_normal_;
+        Real_t displacement_intensity_ = 1;
     };
 
 }

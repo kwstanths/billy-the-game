@@ -19,6 +19,7 @@ int Floor::Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_
     ge::graphics::MaterialDeferredDisplacement * material = new ge::graphics::MaterialDeferredDisplacement(ge::math::Vector3D(0, 1, 0), ge::math::Vector3D(0, 1, 0), "assets/textures/world.png", "assets/textures/World_normal_map.png");
     material->texture_displacement_->SetFiltering(GL_LINEAR);
     material->texture_normal_->SetFiltering(GL_LINEAR);
+    material->displacement_intensity_ = 12;
 
     SetMaterial(material, -1);
 

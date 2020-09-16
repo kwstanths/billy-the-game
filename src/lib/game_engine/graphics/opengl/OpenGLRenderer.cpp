@@ -194,10 +194,10 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         shader_draw_normals_ = context->shader_draw_normals_;
 
-        shader_water_ = context->shader_water_;
-        shader_water_.Use();
-        shader_water_.SetUniformInt(shader_water_.uni_normal_map_, 0);
-        shader_water_.SetUniformInt(shader_water_.uni_displacement_map_, 1);
+        shader_displacement_ = context->shader_displacement_;
+        shader_displacement_.Use();
+        shader_displacement_.SetUniformInt(shader_displacement_.uni_normal_map_, 0);
+        shader_displacement_.SetUniformInt(shader_displacement_.uni_displacement_map_, 1);
 
         is_inited_ = true;
         return 0;
@@ -238,6 +238,8 @@ namespace game_engine { namespace graphics { namespace opengl {
     }
     
     void OpenGLRenderer::SetShadowMap(glm::mat4 & view_matrix, glm::mat4 & projection_matrix) {
+        shadow_map_->ClearDepth();
+
         glm::mat4 matrix_lightspace = projection_matrix * view_matrix;
         
         shader_shadow_map_.Use();
@@ -245,6 +247,9 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         shader_gbuffer_.Use();
         shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_Lightspace_, matrix_lightspace);
+
+        shader_displacement_.Use();
+        shader_displacement_.SetUniformMat4(shader_displacement_.uni_Lightspace_, matrix_lightspace);
     }
     
     void OpenGLRenderer::SetView(OpenGLCamera * camera) {
@@ -275,9 +280,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_draw_normals_.SetUniformMat4(shader_draw_normals_.uni_View_, camera->view_matrix_);
         shader_draw_normals_.SetUniformMat4(shader_draw_normals_.uni_Projection_, camera->projection_matrix_);
 
-        shader_water_.Use();
-        shader_water_.SetUniformMat4(shader_water_.uni_View_, camera->view_matrix_);
-        shader_water_.SetUniformMat4(shader_water_.uni_Projection_, camera->projection_matrix_);
+        shader_displacement_.Use();
+        shader_displacement_.SetUniformMat4(shader_displacement_.uni_View_, camera->view_matrix_);
+        shader_displacement_.SetUniformMat4(shader_displacement_.uni_Projection_, camera->projection_matrix_);
     }
     
     int OpenGLRenderer::DrawGBuffer(OpenGLObject & object, glm::mat4 model, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture) {
@@ -457,7 +462,8 @@ namespace game_engine { namespace graphics { namespace opengl {
     int OpenGLRenderer::DrawFinalPass(GLuint ssao_texture) {
     
         shader_final_pass_.Use();
-    
+        shader_final_pass_.SetUniformBool(shader_final_pass_.uni_use_shadows_, use_shadows_);
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, g_buffer_->g_position_texture_);
         glActiveTexture(GL_TEXTURE1);
@@ -581,12 +587,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_final_pass_.SetUniformVec3(shader_final_pass_.GetUniformLocation("directional_light.diffuse"), color_diffuse);
         shader_final_pass_.SetUniformVec3(shader_final_pass_.GetUniformLocation("directional_light.specular"), color_specular);
 
-        shader_water_.Use();
-        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("directional_light.direction"), direction);
-        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("directional_light.ambient"), color_ambient);
-        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("directional_light.diffuse"), color_diffuse);
-        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("directional_light.specular"), color_specular);
-    
         return 0;
     }
     
@@ -651,7 +651,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
-    int OpenGLRenderer::DrawDisplacement(OpenGLObject & object, glm::mat4 model, OpenGLTexture * displacement_texture, OpenGLTexture * normal_texture)
+    int OpenGLRenderer::DrawDisplacement(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, OpenGLTexture * normal_texture, float displacement_mult)
     {
         glBindVertexArray(object.VAO_);
         glPatchParameteri(GL_PATCH_VERTICES, 3);
@@ -659,22 +659,13 @@ namespace game_engine { namespace graphics { namespace opengl {
         glm::vec3 camera_position;
         camera_->GetPositionVector(camera_position.x, camera_position.y, camera_position.z);
 
-        shader_water_.Use();
-        shader_water_.SetUniformMat4(shader_water_.uni_Model_, model);
-        shader_water_.SetUniformVec3(shader_water_.uni_camera_world_position_, camera_position);
+        shader_displacement_.Use();
+        shader_displacement_.SetUniformMat4(shader_displacement_.uni_Model_, model);
+        shader_displacement_.SetUniformVec3(shader_displacement_.uni_camera_world_position_, camera_position);
+        shader_displacement_.SetUniformFloat(shader_displacement_.uni_displacement_intensity_, displacement_mult);
 
-        /* Set shader layout attributes */
-        glBindBuffer(GL_ARRAY_BUFFER, object.vertex_buffer_);
-        /* Attribute number 0 is the object vertices */
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(shader_water_.GetAttributeLocation(shader_vertex_position), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)0);
-        /* Attribute number 1 is the object's uv coordinates */
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(shader_water_.GetAttributeLocation(shader_vertex_uv), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, uv_));
-        /* Attribute number 2 is the object's normals */
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(shader_water_.GetAttributeLocation(shader_vertex_normal), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, normal_));
-        
+        object.SetupAttributes(&shader_displacement_);
+
         normal_texture->ActivateTexture(0);
         displacement_texture->ActivateTexture(1);
         

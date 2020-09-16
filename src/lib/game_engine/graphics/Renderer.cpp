@@ -333,8 +333,8 @@ namespace graphics {
         if (command.type_ == COMMAND_SHADOW_MAPPING) shadows = static_cast<bool>(command.arg_1_);
 
         // Render shadow map for all objects in the gbuffer queue
+        renderer_->use_shadows_ = shadows;
         if (shadows) {
-
             renderer_->shadow_map_->ConfigureViewport();
             renderer_->shadow_map_->Bind();
 
@@ -362,6 +362,21 @@ namespace graphics {
         for (utility::CircularBuffer<GraphicsObject *>::iterator itr = gbuffer_objects_.begin(); itr != gbuffer_objects_.end(); ++itr) {
             GraphicsObject * rendering_object = *itr;
             RenderGBuffer(rendering_object);
+        }
+
+        if (terrain_ != nullptr) {
+            command = ConsoleParser::GetInstance().GetLastCommand();
+            if (command.type_ == COMMAND_WIREFRAME && math::Equal(command.arg_1_, 1.0f)) {
+                renderer_->DrawWireframe(true);
+            }
+            else {
+                renderer_->DrawWireframe(false);
+            }
+
+            terrain_->SetModelMatrix();
+            RenderGBuffer(terrain_);
+
+            renderer_->DrawWireframe(false);
         }
 
         // Post processing stack should go here
@@ -468,21 +483,7 @@ namespace graphics {
             draw_calls_++;
         }
 
-
-        if (terrain_ != nullptr) {
-            command = ConsoleParser::GetInstance().GetLastCommand();
-            if (command.type_ == COMMAND_WIREFRAME && math::Equal(command.arg_1_, 1.0f)) {
-                renderer_->DrawWireframe(true);
-            }
-            else {
-                renderer_->DrawWireframe(false);
-            }
-
-            terrain_->model_->meshes_[0]->material_->Render(renderer_, terrain_->model_->meshes_[0]->opengl_object_, terrain_->model_matrix_);
-            
-            renderer_->DrawWireframe(false);
-        }
-
+        //renderer_->DrawTexture(renderer_->g_buffer_->g_normal_texture_);
 
         /*for (utility::CircularBuffer<GraphicsObject *>::iterator itr = gbuffer_objects_.begin(); itr != gbuffer_objects_.end(); ++itr) {
             GraphicsObject * rendering_object = *itr;

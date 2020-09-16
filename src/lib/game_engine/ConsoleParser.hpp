@@ -20,7 +20,8 @@ namespace game_engine {
 #define COMMAND_WIREFRAME 9
 
     /* The order between these two is very important! */
-    static const std::vector<std::string> commands = { "ssao_radius", 
+    static const std::vector<std::string> commands = { 
+        "ssao_radius", 
         "ssao_samples", 
         "ssao_blur", 
         "ssao_blur_size", 
@@ -28,6 +29,7 @@ namespace game_engine {
         "ssao_bias",
         "ssao_draw_ssao", 
         "ssao_separable",
+
         "shadows",
         "wireframe"
     };

@@ -47,6 +47,7 @@ uniform sampler2D g_position_light;
 uniform sampler2D shadow_map;
 uniform mat4 matrix_view;
 uniform mat4 matrix_projection;
+uniform bool use_shadows;
 
 #define NR_POINT_LIGHTS 24
 uniform PointLight point_light[NR_POINT_LIGHTS];
@@ -108,7 +109,12 @@ void main() {
     normalize(normal_viewspace);
     
     float fragment_specular_intensity = texture(g_albedo_spec, uv).a;
-    fragment_in_shadow = ShadowCalculation(texture(g_position_light, uv).xyz);
+    if (use_shadows) {
+        fragment_in_shadow = ShadowCalculation(texture(g_position_light, uv).xyz);
+    }else {
+        fragment_in_shadow = 1;
+    }
+    
     float ambient_factor = texture(ssao_texture, uv).r;
     vec3 view_direction = normalize(-fragment_position_viewspace);
 
@@ -133,19 +139,19 @@ void main() {
    
 vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec3 view_direction, vec3 fragment_color, float fragment_specular_intensity, float ambient_factor) {
     light.direction = normalize(TransformToViewSpace(vec4(light.direction, 0)));
-	
+	vec3 light_direction_inv = -light.direction;
+    vec3 half_way_direction = normalize(light_direction_inv + view_direction);
+    
 	/* Ambient component */
 	vec3 light_ambient = ambient_factor * light.ambient * fragment_color;
 	
 	/* Diffuse component */
-	vec3 light_direction_inv = normalize(-light.direction); 
 	float light_diffuse_strength = max(dot(fragment_normal, light_direction_inv), 0.0);
 	vec3 light_diffuse = light.diffuse * light_diffuse_strength * fragment_color;
 	
 	/* Specular component */
 	/* Find the reflected vector from the light towards the surface normal */
-	vec3 light_reflect_vector = reflect(-light_direction_inv, fragment_normal);
-	float light_specular_strength = pow(max(dot(view_direction, light_reflect_vector), 0.0), 16.0);
+	float light_specular_strength = pow(max(dot(fragment_normal, half_way_direction), 0.0), 16.0);
 	vec3 light_specular = light.specular * light_specular_strength * fragment_specular_intensity;
 	
        //light_ambient = clamp(light_ambient, 0, 0);

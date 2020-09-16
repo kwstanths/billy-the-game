@@ -329,6 +329,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((uni_shadow_map_ = GetUniformLocation(shader_uni_shadow_map)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_matrix_view_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_matrix_projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_use_shadows_ = GetUniformLocation("use_shadows")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }
@@ -387,11 +388,11 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
-    OpenGLShaderWater::OpenGLShaderWater()
+    OpenGLShaderDisplacement::OpenGLShaderDisplacement()
     {
     }
 
-    int OpenGLShaderWater::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader)
+    int OpenGLShaderDisplacement::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader)
     {
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path, tesselation_control_shader, tesselation_evaluation_shader);
         if (ret != 0) return ret;
@@ -402,9 +403,11 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_camera_world_position_ = GetUniformLocation("camera_world_position")) == -1)return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Lightspace_ = GetUniformLocation(shader_uni_lightspace)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_camera_world_position_ = GetUniformLocation("camera_world_position")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_displacement_map_ = GetUniformLocation("displacement_map")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_normal_map_ = GetUniformLocation("normal_map")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_displacement_intensity_ = GetUniformLocation("displacement_intensity")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }

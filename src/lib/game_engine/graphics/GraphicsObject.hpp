@@ -74,7 +74,7 @@ namespace graphics {
         /**
             Set the material for mesh with index mesh_index
             @param material The new material
-            @param mesh_index The mesh to change
+            @param mesh_index The mesh to change, -1 = Change all meshes to that material
         */
         void SetMaterial(Material * material, int mesh_index);
 
