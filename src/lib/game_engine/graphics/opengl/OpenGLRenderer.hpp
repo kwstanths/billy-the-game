@@ -55,6 +55,12 @@ namespace game_engine {
                 void EnableDepthWriting(bool enable);
 
                 /**
+                    Enable wireframe rendering mode
+                    @param enable True = enable, false = disable
+                */
+                void DrawWireframe(bool enable);
+
+                /**
                     Sets the necessary matrices for shadow mapping
                 */
                 void SetShadowMap(glm::mat4& view_matrix, glm::mat4& projection_matrix);
@@ -67,7 +73,12 @@ namespace game_engine {
                 /**
                     Draws the object using a GBuffer
                 */
-                int DrawGBuffer(OpenGLObject & object, std::vector<OpenGLTexture *> & textures, glm::mat4 model, Material_t mtl = Material_t());
+                int DrawGBuffer(OpenGLObject & object, glm::mat4 model, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
+
+                /**
+                
+                */
+                int DrawDisplacement(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, OpenGLTexture * normal_texture, float displacement_mult);
 
                 /**
                 
@@ -151,11 +162,18 @@ namespace game_engine {
                 */
                 int DrawTexture(GLuint texture_id, bool red_component = false);
 
+                /**
+                    Draw the normals of an object, forward rendering
+                    @param object The object
+                    @param model The model matrix of the object
+                */
+                int DrawNormals(OpenGLObject & object, glm::mat4 model);
 
                 OpenGLGBuffer * g_buffer_;
                 OpenGLFrameBufferTexture * frame_buffer_one_;
                 OpenGLFrameBufferTexture * frame_buffer_two_;
                 OpenGLShadowMap * shadow_map_;
+                bool use_shadows_;
 
             private:
                 bool is_inited_;
@@ -164,6 +182,7 @@ namespace game_engine {
                 OpenGLText * text_renderer_ = nullptr;
                 OpenGLCamera * camera_ = nullptr;
 
+                /* AO parameters */
                 size_t number_of_samples_;
                 std::vector<glm::vec3> random_samples_kernel_;
 
@@ -194,8 +213,12 @@ namespace game_engine {
                 OpenGLShader shader_blur_;
                 /* Final pass rendering */
                 OpenGLShaderFinalPass shader_final_pass_;
+                /* Shader used to draw the normals a model */
+                OpenGLShaderDrawNormals shader_draw_normals_;
+                /* Shader used to draw displacement textures */
+                OpenGLShaderDisplacement shader_displacement_;
 
-                /* Framebuffer object */
+                /* VAO and VBO for quad rendering */
                 GLuint VAO_Quad_;
                 GLuint VBO_Quad_;
 

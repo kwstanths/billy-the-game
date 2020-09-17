@@ -10,8 +10,11 @@
 namespace game_engine {
 namespace graphics {
 
-#define GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP    0
-#define GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP   1
+#define GAME_ENGINE_TEXTURE_TYPE_EMPTY              -1
+#define GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP        0
+#define GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP       1
+#define GAME_ENGINE_TEXTURE_TYPE_NORMAL_MAP         2
+#define GAME_ENGINE_TEXTURE_TYPE_DISPLACEMENT_MAP   3
 
 #define GAME_ENGINE_MATERIAL_EMERALD        0
 #define GAME_ENGINE_MATERIAL_JADE           1
@@ -54,39 +57,6 @@ namespace graphics {
         int type_;
         Texture_t() {};
         Texture_t(std::string path, int type) : path_(path), type_(type) {};
-    };
-
-    /**
-
-    */
-    struct Material_t {
-        glm::vec3 ambient_;
-        glm::vec3 diffuse_;
-        glm::vec3 specular_;
-        Real_t shininess_;
-
-        /**
-            Creates a material with shininess 32 and full ambient, diffuse and specular components
-        */
-        Material_t() {
-            ambient_ = glm::vec3(1.0f, 1.0f, 1.0f);
-            diffuse_ = glm::vec3(1.0f, 1.0f, 1.0f);
-            specular_ = glm::vec3(1.0f, 1.0f, 1.0f);
-            shininess_ = 32;
-        }
-
-        /**
-            Create a material based on an already defined type
-            @param material_type The type of the material, e.g GAME_ENGINE_MATERIAL_COPPER
-        */
-        Material_t(int material_type);
-
-        /**
-            Create a custom material
-        */
-        Material_t(Real_t shininess, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular): 
-            shininess_(shininess), ambient_(ambient), diffuse_(diffuse), specular_(specular){};
-
     };
 
 

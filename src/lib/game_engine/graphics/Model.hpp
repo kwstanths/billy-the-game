@@ -21,6 +21,8 @@ namespace graphics {
 
         size_t GetNumberOfMeshes();
 
+        void SetMaterial(Material * material, int mesh_index);
+
     private:
         bool is_inited_;
 

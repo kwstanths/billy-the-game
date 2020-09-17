@@ -57,12 +57,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         /* Discard triangles whose normal is not facing towards the camera */
         glEnable(GL_CULL_FACE);
     
-        /* These are not needed, I think */
-        /* Enable stencil test */
-        //glEnable(GL_STENCIL_TEST);
-        //glEnable(GL_BLEND);
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
     
         /* Compile and link shaders */
@@ -72,11 +66,13 @@ namespace game_engine { namespace graphics { namespace opengl {
         ret += shader_vertices_color_.Init("shaders/VertexShaderVerticesColor.glsl", "shaders/FragmentShaderVerticesColor.glsl");
         ret += shader_quad_.Init("shaders/VertexShaderQuad.glsl", "shaders/FragmentShaderQuad.glsl");
         ret += shader_gbuffer_ssao_.Init("shaders/VertexShaderGBuffer.glsl", "shaders/FragmentShaderGBuffer.glsl");
-        ret += shader_ssao_.Init("shaders/VertexShaderSSAO.glsl", "shaders/FragmentShaderSSAO.glsl");
-        ret += shader_separable_ao_.Init("shaders/VertexShaderSeparableAO.glsl", "shaders/FragmentShaderSeparableAO.glsl");
-        ret += shader_blur_.Init("shaders/VertexShaderBlur.glsl", "shaders/FragmentShaderBlur.glsl");
+        ret += shader_ssao_.Init("shaders/PostProcessing/VertexShaderSSAO.glsl", "shaders/PostProcessing/FragmentShaderSSAO.glsl");
+        ret += shader_separable_ao_.Init("shaders/PostProcessing/VertexShaderSeparableAO.glsl", "shaders/PostProcessing/FragmentShaderSeparableAO.glsl");
+        ret += shader_blur_.Init("shaders/PostProcessing/VertexShaderBlur.glsl", "shaders/PostProcessing/FragmentShaderBlur.glsl");
         ret += shader_final_pass_.Init("shaders/VertexShaderFinalPass.glsl", "shaders/FragmentShaderFinalPass.glsl");
         ret += shader_shadow_map_.Init("shaders/VertexShaderShadowMap.glsl", "shaders/FragmentShaderShadowMap.glsl");
+        ret += shader_draw_normals_.Init("shaders/VertexShaderDrawNormals.glsl", "shaders/FragmentShaderDrawNormals.glsl", "shaders/GeometryShaderDrawNormals.glsl");
+        ret += shader_displacement_.Init("shaders/Terrain/VertexShaderDisplacement.glsl", "shaders/Terrain/FragmentShaderDisplacement.glsl", "shaders/Terrain/TesselationControlShaderDisplacement.glsl", "shaders/Terrain/TesselationEvaluationShaderDisplacement.glsl");
         if (ret) dt::Console(dt::CRITICAL, "Shaders compilation failed");
     
         is_inited_ = true;
@@ -160,7 +156,8 @@ namespace game_engine { namespace graphics { namespace opengl {
     int OpenGLContext::ClearColor() {
         if (!is_inited_) return -1;
     
-        glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+        //glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     
         return 0;

@@ -343,31 +343,14 @@ int main(int argc, char ** argv) {
 
     /* Init packed map */
     
-    //{
-    //    //PackedMap packed_map("billy_map");
-    //    //PackedMap packed_map("tavern_1a");
-    //    PackedMap packed_map("tavern_1b");
-    //
-    //    /* Pack regions of the world, with a width and a height of 20, into packed meshes */
-    //    size_t strive = 20;
-    //    size_t strive2 = 10;
-
-    //    for (int i = strive2; i < MAP_HEIGHT; i += strive) {
-    //        for (int j = strive2; j < MAP_WIDTH; j += strive) {
-    //            packed_map.PackMapLayer(tiles, i, strive2, j, strive2);
-    //        }
-    //    }
-
-    //    packed_map.ExportMapFiles();
-    //}
-
     {
-        PackedMap packed_map("house1_a");
-        //PackedMap packed_map("house1_b");
-
+        PackedMap packed_map("billy_map");
+        //PackedMap packed_map("tavern_1a");
+        //PackedMap packed_map("tavern_1b");
+    
         /* Pack regions of the world, with a width and a height of 20, into packed meshes */
-        size_t strive = 14;
-        size_t strive2 = 7;
+        size_t strive = 20;
+        size_t strive2 = 10;
 
         for (int i = strive2; i < MAP_HEIGHT; i += strive) {
             for (int j = strive2; j < MAP_WIDTH; j += strive) {
@@ -377,6 +360,23 @@ int main(int argc, char ** argv) {
 
         packed_map.ExportMapFiles();
     }
+
+    //{
+    //    //PackedMap packed_map("house1_a");
+    //    PackedMap packed_map("house1_b");
+
+    //    /* Pack regions of the world, with a width and a height of 20, into packed meshes */
+    //    size_t strive = 14;
+    //    size_t strive2 = 7;
+
+    //    for (int i = strive2; i < MAP_HEIGHT; i += strive) {
+    //        for (int j = strive2; j < MAP_WIDTH; j += strive) {
+    //            packed_map.PackMapLayer(tiles, i, strive2, j, strive2);
+    //        }
+    //    }
+
+    //    packed_map.ExportMapFiles();
+    //}
 
 #ifdef _WIN32
     system("pause");

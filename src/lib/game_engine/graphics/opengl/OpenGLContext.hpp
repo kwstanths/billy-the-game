@@ -113,6 +113,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         OpenGLShader shader_blur_;
         OpenGLShaderFinalPass shader_final_pass_;
         OpenGLShaderShadowMap shader_shadow_map_;
+        OpenGLShaderDrawNormals shader_draw_normals_;
+
+        OpenGLShaderDisplacement shader_displacement_;
     
         GLFWwindow * glfw_window_ = nullptr;
     };

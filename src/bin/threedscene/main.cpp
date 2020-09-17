@@ -21,13 +21,13 @@ int main(int argc, char ** argv) {
 
     /* Configuration parameters for the engine */
     gl::OpenGLContextConfig_t context_params;
-    context_params.window_width_ = 1024;
-    context_params.window_height_ = 768;
+    context_params.window_width_ = 1400;
+    context_params.window_height_ = 900;
     context_params.window_name_ = "billy";
     context_params.font_file_path = "fonts/Arial.ttf";
     ge::GameEngineConfig_t engine_params;
     engine_params.context_params_ = context_params;
-    engine_params.frame_rate_ = 100;
+    engine_params.frame_rate_ = 0;
     ge::GameEngine engine;
     if (engine.Init(engine_params)) return false;
     

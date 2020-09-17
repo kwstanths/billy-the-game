@@ -36,10 +36,6 @@ namespace graphics {
             asset_manager.InsertModel(model_file_path, model_);
         }
 
-        mesh_queries_ = std::vector<opengl::OpenGLQuery>(model_->GetNumberOfMeshes());
-        for (size_t i = 0; i < model_->GetNumberOfMeshes(); i++)
-            mesh_queries_[i].Init();
-
         is_inited_ = true;
         return 0;
     }
@@ -99,6 +95,11 @@ namespace graphics {
 
     void GraphicsObject::Rotate(Real_t angle, glm::vec3 axis) {
         rotation_matrix_ *= math::GetRotateMatrix(angle, axis.x, axis.y, axis.z);
+    }
+
+    void GraphicsObject::SetMaterial(Material * material, int mesh_index)
+    {
+        model_->SetMaterial(material, mesh_index);
     }
 
     void GraphicsObject::SetModelMatrix() {

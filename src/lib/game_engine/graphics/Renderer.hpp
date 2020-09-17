@@ -101,7 +101,7 @@ namespace graphics {
         int AddSpotLight(SpotLight * light);
 
         /**
-        
+            Add a point light to draw
         */
         int AddPointLight(PointLight * light);
 
@@ -110,10 +110,20 @@ namespace graphics {
         */
         int Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 
+        /* Set shadow map properties */
         void SetShadowMap(glm::mat4& light_view_matrix, glm::mat4& light_projection_matrix);
 
     private:
 
+        /* Temporary storage for a mesh draw call */
+        struct MESH_DRAW_t {
+            Mesh * mesh_ = nullptr;
+            glm::mat4 * model_matrix_ = nullptr;
+            MESH_DRAW_t() {};
+            MESH_DRAW_t(Mesh * mesh, glm::mat4 * model_matrix) : mesh_(mesh), model_matrix_(model_matrix) {};
+        };
+
+        /* Temporary storage for a text draw call */
         struct TEXT_DRAW_t {
             std::string text_;
             Real_t x;
@@ -123,9 +133,11 @@ namespace graphics {
         };
 
         bool is_inited_;
-        /* Hold the point lights, the gbuffer draw calls and the text to draw per frame */
+        /* Hold the point lights to draw per frame */
         utility::CircularBuffer<PointLight *> point_lights_to_draw_;
-        utility::CircularBuffer<GraphicsObject *> gbuffer_objects_;
+        /* Two rendering queues, first is gbuffer object, second is forward render object */
+        std::vector<utility::CircularBuffer<MESH_DRAW_t>> rendering_queues_;
+        /* Hold the text to draw */
         utility::CircularBuffer<TEXT_DRAW_t> text_to_draw_;
 
         /* Variables needed for opengl drawiing */
@@ -136,7 +148,6 @@ namespace graphics {
         enum RENDER_MODE {
             REGULAR,
             VIEW_FRUSTUM_CULLING,
-            OCCLUSION_QUERIES
         };
         size_t frr_render_mode = RENDER_MODE::REGULAR;
 
@@ -156,7 +167,12 @@ namespace graphics {
             Render an object in the GBuffer
             @param rendering_object The object to draw
         */
-        int RenderGBuffer(GraphicsObject * rendering_object);
+        int RenderGBuffer(MESH_DRAW_t& draw_call);
+
+        /**
+            Render the normals of an object, forward pass
+        */
+        int RenderNormals(GraphicsObject * rendering_object);
 
         /**
             Main rendering pipeline, Gbuffer rendering, AO calculation, final pass

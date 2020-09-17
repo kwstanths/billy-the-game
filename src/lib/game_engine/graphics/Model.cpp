@@ -70,6 +70,18 @@ namespace graphics {
         return meshes_.size();
     }
 
+    void Model::SetMaterial(Material * material, int mesh_index)
+    {
+        if (mesh_index == -1) {
+            for (size_t i = 0; i < meshes_.size(); i++) {
+                meshes_[i]->SetMaterial(material);
+            }
+        } else {
+            if (!(mesh_index > meshes_.size())) {
+                meshes_[mesh_index]->SetMaterial(material);
+            }
+        }
+    }
     
 
 }

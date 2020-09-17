@@ -38,10 +38,10 @@ namespace opengl {
 
         /* Setup shaders parameters */
         void SetupAttributes(OpenGLShaderVerticesColor * shader);
-
         void SetupAttributes(OpenGLShaderGBuffer * shader);
-
         void SetupAttributes(OpenGLShaderShadowMap * shader);
+        void SetupAttributes(OpenGLShaderDrawNormals * shader);
+        void SetupAttributes(OpenGLShaderDisplacement * shader);
 
         void Render();
 

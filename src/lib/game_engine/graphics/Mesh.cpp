@@ -14,35 +14,15 @@ namespace graphics {
 
     int Mesh::Init(std::vector<Vertex_t> & vertices, 
         std::vector<unsigned int> & indices, 
-        std::vector<Texture_t> & textures,
-        Material_t & mat
+        Material * material
     ) {
     
         vertices_ = vertices;
         indices_ = indices;
-        textures_ = textures;
-        mat_ = mat;
-        
+        material_ = material;
+
         /* opengl object */
         opengl_object_.Init(vertices_, indices_);
-        /* opengl textures */
-        for (size_t i = 0; i < textures_.size(); i++) {
-
-            /* Try to find if it was previously allocated */
-            AssetManager & asset_manager = AssetManager::GetInstance();
-            std::string texture_path = textures_[i].path_;
-            gl::OpenGLTexture * previously_allocated_texture = asset_manager.FindTexture(texture_path);
-            if (!previously_allocated_texture) {
-                previously_allocated_texture = new gl::OpenGLTexture();
-
-                int ret = previously_allocated_texture->Init(textures_[i].path_, textures_[i].type_);
-                if (ret == Error::ERROR_ASSET_NOT_FOUND) dt::ConsoleInfoL(dt::WARNING, "Asset not found", "name", textures_[i].path_);
-
-                asset_manager.InsertTexture(texture_path, previously_allocated_texture);
-            }
-
-            opengl_textures_.push_back(previously_allocated_texture);
-        }
 
         is_inited_ = true;
         return 0;
@@ -53,9 +33,6 @@ namespace graphics {
         if (!is_inited_) return -1;
 
         opengl_object_.Destroy();
-        for (size_t i = 0; i < textures_.size(); i++)
-            opengl_textures_[i]->Destroy();
-        opengl_textures_.clear();
 
         is_inited_ = false;
         return 0;
@@ -67,6 +44,16 @@ namespace graphics {
 
     game_engine::Real_t Mesh::GetBoundigBoxVolume() {
         return opengl_object_.GetBoundingBoxVolume();
+    }
+
+    void Mesh::SetMaterial(Material * material)
+    {
+        /* Delete previous material */
+        if (material_ != nullptr) {
+            delete material_;
+        }
+
+        material_ = material;
     }
 
 }

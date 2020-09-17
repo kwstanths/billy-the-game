@@ -40,16 +40,31 @@ namespace opengl {
         pos_z = config_.position_.z;
     }
 
+    glm::vec3 OpenGLCamera::GetPositionVector()
+    {
+        return config_.position_;
+    }
+
     void OpenGLCamera::GetDirectionVector(Real_t & dir_x, Real_t & dir_y, Real_t & dir_z) {
         dir_x = config_.direction_.x;
         dir_y = config_.direction_.y;
         dir_z = config_.direction_.z;
     }
 
+    glm::vec3 OpenGLCamera::GetDirectionVector()
+    {
+        return config_.direction_;
+    }
+
     void OpenGLCamera::GetUpVector(Real_t & up_x, Real_t & up_y, Real_t & up_z) {
         up_x = config_.up_.x;
         up_y = config_.up_.y;
         up_z = config_.up_.z;
+    }
+
+    glm::vec3 OpenGLCamera::GetUpVector()
+    {
+        return config_.up_;
     }
 
     Real_t OpenGLCamera::GetPerspectiveAngle() {
@@ -121,17 +136,19 @@ namespace opengl {
 
     void OpenGLCamera::Ortho2D(Real_t zoom_factor) {
 
+        config_.zoom_factor_ = zoom_factor;
+
         projection_matrix_ = glm::ortho(
-            -1.0 * context_->GetWindowWidth() / zoom_factor, 1.0 * context_->GetWindowWidth() / zoom_factor,
-            -1.0 * context_->GetWindowHeight() / zoom_factor, 1.0 * context_->GetWindowHeight() / zoom_factor,
-            0.1, 100.0);
+            -1.0f * context_->GetWindowWidth() / zoom_factor, 1.0f * context_->GetWindowWidth() / zoom_factor,
+            -1.0f * context_->GetWindowHeight() / zoom_factor, 1.0f * context_->GetWindowHeight() / zoom_factor,
+            static_cast<float>(config_.z_near_), static_cast<float>(config_.z_far_));
     }
 
     void OpenGLCamera::Project3D() {
-     
+
         projection_matrix_ = glm::perspective(perspective_angle_,
             (1.0f * context_->GetWindowWidth()) / (1.0f * context_->GetWindowHeight()),
-            0.1f, 100.0f);
+            static_cast<float>(config_.z_near_), static_cast<float>(config_.z_far_));
     }
 
 }

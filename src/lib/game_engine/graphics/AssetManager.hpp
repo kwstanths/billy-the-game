@@ -6,6 +6,7 @@
 #include "game_engine/utility/HashTable.hpp"
 #include "game_engine/graphics/Model.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
+#include "game_engine/graphics/opengl/OpenGLShaders.hpp"
 
 
 namespace game_engine {
@@ -46,15 +47,29 @@ namespace graphics {
         */
         void InsertModel(std::string name, Model * model);
 
+
+
         /**
-        
+            Search for a texture, based on a file path
+            @param name The file path of the texture
+            @return nullptr = not found, else a pointer to that object
         */
         opengl::OpenGLTexture * FindTexture(std::string name);
 
         /**
-        
+            Insert a texture. Produces a warning if already inserted
+            @param name The name of the texture
+            @param mesh A pointer to the texture
         */
         void InsertTexture(std::string name, opengl::OpenGLTexture * texture);
+
+        /**
+            Try to find a shader, if not found, initialize, insert, and return a pointer to it
+            @param name The name of the texture
+            @param type The type of the texture. Used only if initializing
+            @return A pointer to the texture, nullptr if not found, and can't initialize it 
+        */
+        opengl::OpenGLTexture * GetTexture(std::string name, int type);
 
     private:
         /* Holds the models */

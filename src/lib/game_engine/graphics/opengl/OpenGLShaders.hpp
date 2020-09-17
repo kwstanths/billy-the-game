@@ -62,6 +62,36 @@ namespace game_engine { namespace graphics { namespace opengl {
             @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
         */
         int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+        /**
+            Initialize a vertex, fragment and a geometry shader, compile and link them
+            @param vertex_shader_path The path to a vertex shader file
+            @param fragment_shader_path The path to a fragment shader file
+            @param geometry_shader_path The path to the geometry shader file
+            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+        */
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string geometry_shader_path);
+
+        /**
+            Initialize a vertex, fragment and tesselation shaders, compile and link them
+            @param vertex_shader_path The path to a vertex shader file
+            @param fragment_shader_path The path to a fragment shader file
+            @param tesselation_control_shader The path to the tesselation control shader file
+            @param tesselation_evaluation_shader The path to the tesselation evaluation shader file
+            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+        */
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader);
+
+        /**
+            Initialize a vertex, fragment, tesselation shaders and a geometry shader, compile and link them
+            @param vertex_shader_path The path to a vertex shader file
+            @param fragment_shader_path The path to a fragment shader file
+            @param tesselation_control_shader The path to the tesselation control shader file
+            @param tesselation_evaluation_shader The path to the tesselation evaluation shader file
+            @param geometry_shader_path The path to the geometry shader file
+            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
+        */
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader, std::string geometry_shader_path);
     
         /**
             Destroys and deallocates. Currently does nothing
@@ -116,12 +146,26 @@ namespace game_engine { namespace graphics { namespace opengl {
             Compile and link a shader program
             @param vertex_shader_path The path to a vertex shader file
             @param fragment_shader_path The path to a fragment shader file
+            @param tesselation_control_shader The path to a tesselation control shader file
+            @param tesselation_evaluation_shader The path to a tesselation evaluation shader file
+            @param geometry_shader_path The path to a geometry shader path file
             @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
     
         */
-        int CompileShaders(std::string vertex_file_path, std::string fragment_file_path);
+        int CompileShaders(std::string vertex_file_path, std::string fragment_file_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader, std::string geometry_shader_path);
+
+        /**
+            Compile a shader, and get an id to it
+            @param file_path The shader path
+            @param type The type of shader (vertex, fragment, geometry, etc. )
+            @param[out] return value
+            @return The OpenGL id of the shader 
+        */
+        int CompileShader(std::string file_path, GLuint type, int& ret);
     };
     
+
+
     /* Shader classes for specific shaders and their variables */
     
     /* Text shader */
@@ -331,6 +375,44 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_texture_ssao_;
         GLuint uni_shadow_map_;
         GLuint uni_matrix_view_;
+        GLuint uni_matrix_projection_;
+        GLuint uni_use_shadows_;
+    };
+
+    /* A shader to draw the normals of a model */
+    class OpenGLShaderDrawNormals : public OpenGLShader {
+    public:
+        OpenGLShaderDrawNormals();
+
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string geometry_shader_path);
+
+        GLuint attr_vertex_position_;
+        GLuint attr_vertex_normal_;
+
+        GLuint uni_Model_;
+        GLuint uni_View_;
+        GLuint uni_Projection_;
+    };
+
+    class OpenGLShaderDisplacement : public OpenGLShader {
+    public:
+        OpenGLShaderDisplacement();
+
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader);
+        
+        /* Attributes */
+        GLuint attr_vertex_position_;
+        GLuint attr_vertex_uv_;
+        GLuint attr_vertex_normal_;
+
+        GLuint uni_Model_;
+        GLuint uni_View_;
+        GLuint uni_Projection_;
+        GLuint uni_Lightspace_;
+        GLuint uni_camera_world_position_;
+        GLuint uni_displacement_map_;
+        GLuint uni_normal_map_;
+        GLuint uni_displacement_intensity_;
     };
 }
 }
