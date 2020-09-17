@@ -14,12 +14,15 @@ In Graphics with OpenGL:
 - Screen Space Ambient Occlusion
 - Water rendering with a grid algorithm  
 - Terrain rendering with displacement and normal map through tessellation shaders  
+
 In world building:  
 - Importing maps generated from Tiled
 - Draw call batching  
+
 In physics and interaction:  
 - Custom collision detection
 - QuadTree accelerated ray casting  
+
 Other:  
 - Several data structures created: Uniform grids, Circular buffers, HashTables, and several QuadTree variants
 - Sequential memory allocation with custom allocators  
