@@ -8,6 +8,7 @@
 
 #include "game_engine/graphics/opengl/OpenGLObject.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
+#include "game_engine/graphics/opengl/OpenGLQuery.hpp"
 
 #include "Material.hpp"
 

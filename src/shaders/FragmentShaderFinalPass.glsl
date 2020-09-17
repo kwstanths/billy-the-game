@@ -49,7 +49,7 @@ uniform mat4 matrix_view;
 uniform mat4 matrix_projection;
 uniform bool use_shadows;
 
-#define NR_POINT_LIGHTS 24
+#define NR_POINT_LIGHTS 36
 uniform PointLight point_light[NR_POINT_LIGHTS];
 uniform uint number_of_point_lights;
 
@@ -124,8 +124,10 @@ void main() {
 	
 	/* Calculate point lights color contribution */
 	vec3 point_lights_color = vec3(0, 0, 0);
-	for(uint i = 0u; i < number_of_point_lights; i++)
-		point_lights_color += CalculatePointLight(point_light[i], fragment_position_viewspace, normal_viewspace, view_direction, fragment_color, fragment_specular_intensity, ambient_factor);
+	for(uint i = 0u; i < NR_POINT_LIGHTS; i++){
+        if (i < number_of_point_lights) 
+            point_lights_color += CalculatePointLight(point_light[i], fragment_position_viewspace, normal_viewspace, view_direction, fragment_color, fragment_specular_intensity, ambient_factor);
+    }
 		
 	/* Calculate casting light color contribution */
 	vec3 cast_light_color = CalculateCastingLight(cast_light, fragment_position_viewspace, normal_viewspace, view_direction, fragment_color, fragment_specular_intensity, ambient_factor);
@@ -151,7 +153,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec
 	
 	/* Specular component */
 	/* Find the reflected vector from the light towards the surface normal */
-	float light_specular_strength = pow(max(dot(fragment_normal, half_way_direction), 0.0), 16.0);
+	float light_specular_strength = pow(max(dot(fragment_normal, half_way_direction), 0.0), 128.0);
 	vec3 light_specular = light.specular * light_specular_strength * fragment_specular_intensity;
 	
        //light_ambient = clamp(light_ambient, 0, 0);
@@ -162,7 +164,6 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec
 }
 
 vec3 CalculatePointLight(PointLight light, vec3 fragment_position, vec3 fragment_normal, vec3 view_direction, vec3 fragment_color, float fragment_specular_intensity, float ambient_factor){
-
 	light.position = TransformToViewSpace(vec4(light.position, 1));
 
     /* Calculate ambient component */

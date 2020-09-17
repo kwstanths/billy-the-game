@@ -35,8 +35,11 @@ namespace graphics {
             renderer_->Init(context_);
         }
 
+        /* Init render queues */
         point_lights_to_draw_.Init(GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS);
-        gbuffer_objects_.Init(GAME_ENGINE_RENDERER_MAX_OBJECTS);
+        rendering_queues_ = std::vector<utility::CircularBuffer<MESH_DRAW_t>>(2);
+        rendering_queues_[0].Init(GAME_ENGINE_RENDERER_MAX_OBJECTS);
+        rendering_queues_[1].Init(GAME_ENGINE_RENDERER_MAX_OBJECTS);
         text_to_draw_.Init(512);
 
         is_inited_ = true;
@@ -72,9 +75,9 @@ namespace graphics {
         renderer_->g_buffer_->UnBind();
 
         point_lights_to_draw_.Clear();
-        gbuffer_objects_.Clear();
+        rendering_queues_[0].Clear();
+        rendering_queues_[1].Clear();
         text_to_draw_.Clear();
-        terrain_ = nullptr;
     }
 
     void Renderer::EndFrame() {
@@ -100,19 +103,21 @@ namespace graphics {
     int Renderer::Draw(GraphicsObject * rendering_object) {
         if (!rendering_object->IsInited()) return -1;
 
-        if (gbuffer_objects_.IsFull()) {
-            dt::Console(dt::CRITICAL, "GBuffer objects vector full");
-            return -1;
+        /* Get the meshes of the object to draw, and put them in their respective queues */
+
+        std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
+        for (size_t j = 0; j < meshes.size(); j++) {
+            Mesh * mesh = meshes[j];
+            utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[mesh->material_->rendering_queue_];
+
+            if (queue.IsFull()) {
+                dt::Console(dt::CRITICAL, "draw objects vector full");
+                return -1;
+            }
+            rendering_object->SetModelMatrix();
+            queue.Push(MESH_DRAW_t(mesh, &rendering_object->model_matrix_));
         }
-        gbuffer_objects_.Push(rendering_object);
-        rendering_object->SetModelMatrix();
 
-        return 0;
-    }
-
-    int Renderer::DrawTerrain(GraphicsObject * rendering_object)
-    {
-        terrain_ = rendering_object;
         return 0;
     }
 
@@ -208,7 +213,7 @@ namespace graphics {
         return 0;
     }
 
-    int Renderer::RenderGBuffer(GraphicsObject * rendering_object) {
+    int Renderer::RenderGBuffer(MESH_DRAW_t& draw_call) {
 
         glViewport(0, 0, context_->GetWindowWidth(), context_->GetWindowHeight());
 
@@ -221,13 +226,9 @@ namespace graphics {
         {
         case RENDER_MODE::REGULAR:
         {
-            std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
-            for (size_t j = 0; j < meshes.size(); j++) {
-                Mesh * mesh = meshes[j];
-                mesh->material_->Render(renderer_, mesh->opengl_object_, rendering_object->model_matrix_);
+                Mesh * mesh = draw_call.mesh_;
+                mesh->material_->Render(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
                 draw_calls_++;
-            }
-
             break;
         }
         case RENDER_MODE::VIEW_FRUSTUM_CULLING:
@@ -240,60 +241,24 @@ namespace graphics {
             MultMat(m, v, p);
             f.SetFrustum(m);
 
-            /* Render meshes */
-            std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
-            for (size_t i = 0; i < meshes.size(); i++) {
-                Mesh * mesh = meshes[i];
+            Mesh * mesh = draw_call.mesh_;
+            glm::mat4& model_matrix = *draw_call.model_matrix_;
 
-                float x_offset = rendering_object->translation_matrix_[3][0];
-                float y_offset = rendering_object->translation_matrix_[3][1];
-                float z_offset = rendering_object->translation_matrix_[3][2];
+            /* Get object position */
+            float x_offset = model_matrix[3][0];
+            float y_offset = model_matrix[3][1];
+            float z_offset = model_matrix[3][2];
 
-                opengl::OpenGLObject & gl_object = mesh->opengl_object_;
-                Vector3D min({ gl_object.min_x_ + x_offset, gl_object.min_y_ + y_offset, gl_object.min_z_ + z_offset });
-                Vector3D max({ gl_object.max_x_ + x_offset, gl_object.max_y_ + y_offset, gl_object.max_z_ + z_offset });
-                AABox<3> box(min, max);
-                int ret = f.BoxInFrustum(box);
-                if (ret != Frustum::OUTSIDE) {
-                    mesh->material_->Render(renderer_, mesh->opengl_object_, rendering_object->model_matrix_);
-                    draw_calls_++;
-                }
+            /* Get aabox */
+            opengl::OpenGLObject & gl_object = mesh->opengl_object_;
+            Vector3D min({ gl_object.min_x_ + x_offset, gl_object.min_y_ + y_offset, gl_object.min_z_ + z_offset });
+            Vector3D max({ gl_object.max_x_ + x_offset, gl_object.max_y_ + y_offset, gl_object.max_z_ + z_offset });
+            AABox<3> box(min, max);
+            int ret = f.BoxInFrustum(box);
+            if (ret != Frustum::OUTSIDE) {
+                mesh->material_->Render(renderer_, mesh->opengl_object_, model_matrix);
+                draw_calls_++;
             }
-
-            break;
-        }
-        case RENDER_MODE::OCCLUSION_QUERIES:
-        {
-
-            std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
-            for (size_t j = 0; j < meshes.size(); j++) {
-                Mesh * mesh = meshes[j];
-
-                GLint pixel_count = rendering_object->mesh_queries_[j].GetResult();
-                bool visible = pixel_count > 0;
-
-                rendering_object->mesh_queries_[j].Begin(GL_SAMPLES_PASSED);
-
-                if (visible) {
-                    renderer_->EnableColorWriting(true);
-                    renderer_->EnableDepthWriting(true);
-
-                    mesh->material_->Render(renderer_, mesh->opengl_object_, rendering_object->model_matrix_);
-                    draw_calls_++;
-
-                }
-                else {
-                    renderer_->EnableColorWriting(false);
-                    renderer_->EnableDepthWriting(false);
-
-                    renderer_->DrawBoundingBox(mesh->opengl_object_, rendering_object->model_matrix_);
-                }
-
-                rendering_object->mesh_queries_[j].End();
-            }
-
-            renderer_->EnableColorWriting(true);
-            renderer_->EnableDepthWriting(true);
 
             break;
         }
@@ -328,56 +293,50 @@ namespace graphics {
     void Renderer::FlushDrawCalls() {
 
         draw_calls_ = 0;
+
         /* Check if shadows are enabled or not */
         ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
         if (command.type_ == COMMAND_SHADOW_MAPPING) shadows = static_cast<bool>(command.arg_1_);
-
-        // Render shadow map for all objects in the gbuffer queue
+        /* Render shadow map for all objects in the gbuffer queue */
         renderer_->use_shadows_ = shadows;
         if (shadows) {
             renderer_->shadow_map_->ConfigureViewport();
             renderer_->shadow_map_->Bind();
+            renderer_->EnableColorWriting(false);
+            renderer_->EnableDepthWriting(true);
 
             //glCullFace(GL_FRONT);
             glDisable(GL_CULL_FACE);
 
-            for (utility::CircularBuffer<GraphicsObject *>::iterator itr = gbuffer_objects_.begin(); itr != gbuffer_objects_.end(); ++itr) {
-                GraphicsObject * rendering_object = *itr;
+            /* Render shadow map with the object in the gbuffer queue */
+            utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[0];
 
-                std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
-                for (size_t j = 0; j < meshes.size(); j++) {
-                    Mesh * mesh = meshes[j];
-                    renderer_->DrawShadowMap(mesh->opengl_object_, rendering_object->model_matrix_);
-                    draw_calls_++;
-                }
+            for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
+                MESH_DRAW_t& draw_call = *itr;
+                Mesh * mesh = draw_call.mesh_;
+
+                mesh->material_->RenderShadow(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
+                draw_calls_++;
             }
 
             //glCullFace(GL_BACK);
             glEnable(GL_CULL_FACE);
 
             renderer_->shadow_map_->Unbind();
+            renderer_->EnableColorWriting(true);
         }
 
-        // Render GBuffer
-        for (utility::CircularBuffer<GraphicsObject *>::iterator itr = gbuffer_objects_.begin(); itr != gbuffer_objects_.end(); ++itr) {
-            GraphicsObject * rendering_object = *itr;
-            RenderGBuffer(rendering_object);
+        command = ConsoleParser::GetInstance().GetLastCommand();
+        bool draw_wireframe = command.type_ == COMMAND_WIREFRAME && math::Equal(command.arg_1_, 1.0f);
+        renderer_->DrawWireframe(draw_wireframe);
+        
+        /* Render GBuffer */
+        utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[0];
+        for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
+            MESH_DRAW_t& draw_call = *itr;
+            RenderGBuffer(draw_call);
         }
-
-        if (terrain_ != nullptr) {
-            command = ConsoleParser::GetInstance().GetLastCommand();
-            if (command.type_ == COMMAND_WIREFRAME && math::Equal(command.arg_1_, 1.0f)) {
-                renderer_->DrawWireframe(true);
-            }
-            else {
-                renderer_->DrawWireframe(false);
-            }
-
-            terrain_->SetModelMatrix();
-            RenderGBuffer(terrain_);
-
-            renderer_->DrawWireframe(false);
-        }
+        renderer_->DrawWireframe(false);
 
         // Post processing stack should go here
         // Is AO enabled?
@@ -455,8 +414,7 @@ namespace graphics {
 
                 renderer_->DrawFinalPass(ssao_texture);
             }
-        }
-        else {
+        } else {
             /* If not AO, perform final pass directly */
 
             /* Clear the color of frame buffer to one, since this texture will be used as the ambient color texture */
@@ -483,29 +441,22 @@ namespace graphics {
             draw_calls_++;
         }
 
-        //renderer_->DrawTexture(renderer_->g_buffer_->g_normal_texture_);
+        /* Render forward queue */
+        queue = rendering_queues_[1];
+        for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
+            MESH_DRAW_t& draw_call = *itr;
+            Mesh * mesh = draw_call.mesh_;
 
-        /*for (utility::CircularBuffer<GraphicsObject *>::iterator itr = gbuffer_objects_.begin(); itr != gbuffer_objects_.end(); ++itr) {
-            GraphicsObject * rendering_object = *itr;
-            RenderNormals(rendering_object);
-        }*/
+            mesh->material_->Render(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
+        }
 
-        // Render text with forward rendering
-
-        //std::string occlusion_text;
-        //if (frr_render_mode == RENDER_MODE::REGULAR) occlusion_text = "Regular";
-        //else if (frr_render_mode == RENDER_MODE::VIEW_FRUSTUM_CULLING) occlusion_text = "View frustum culling";
-        //else if (frr_render_mode == RENDER_MODE::OCCLUSION_QUERIES) occlusion_text = "Occlusion queries";
-        //renderer_->Draw2DText(occlusion_text, 0.0f, context_->GetWindowHeight() - 20, 0.5, glm::vec3(1, 0, 0));
-        //draw_calls_++;
-
+        /* Render overlay */
         while (text_to_draw_.Items() > 0) {
             TEXT_DRAW_t text;
             text_to_draw_.Get(text);
             renderer_->Draw2DText(text.text_, text.x, text.y, text.scale, text.color);
             draw_calls_++;
         }
-
         renderer_->Draw2DText("Draw calls: " + std::to_string(draw_calls_) , 0.0f, context_->GetWindowHeight() - 20, 0.5, glm::vec3(1, 0, 0));
 
 

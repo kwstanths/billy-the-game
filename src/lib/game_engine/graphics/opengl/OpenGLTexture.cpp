@@ -7,6 +7,7 @@
 #include "external/stb_image/stb_image.h"
 
 #include "game_engine/ErrorCodes.hpp"
+#include "game_engine/graphics/GraphicsTypes.hpp"
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
@@ -159,33 +160,68 @@ namespace opengl {
     int OpenGLTexture::LoadSTB(const char * imagepath, GLuint * texture_id) {
 
         int width, height, channels;
-        unsigned char * data = stbi_load(imagepath, &width, &height, &channels, 0);
-        if (!data) {
-            return Error::ERROR_ASSET_NOT_FOUND;
+
+        /* If it's a normal map, read 16 bit depth texture */
+        if (type_ == GAME_ENGINE_TEXTURE_TYPE_NORMAL_MAP) {
+            unsigned short * data = stbi_load_16(imagepath, &width, &height, &channels, 0);
+            if (!data) {
+                return Error::ERROR_ASSET_NOT_FOUND;
+                stbi_image_free(data);
+            }
+
+            GLenum format;
+            if (channels == 1) format = GL_RED;
+            else if (channels == 3) format = GL_RGB16;
+            else if (channels == 4) format = GL_RGBA16;
+
+            GLuint textureID;
+            glGenTextures(1, &textureID);
+            glBindTexture(GL_TEXTURE_2D, textureID);
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_SHORT, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            /* Configure wrapping and zooming behaviour */
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filtering_);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            /* Generate the mipmaps */
+
             stbi_image_free(data);
+
+            *texture_id = textureID;
+        } else {
+            /* If it's anything else, read an 8 bit depth texture */
+            unsigned char * data = stbi_load(imagepath, &width, &height, &channels, 0);
+            if (!data) {
+                return Error::ERROR_ASSET_NOT_FOUND;
+                stbi_image_free(data);
+            }
+
+            GLenum format;
+            if (channels == 1) format = GL_RED;
+            else if (channels == 3) format = GL_RGB;
+            else if (channels == 4) format = GL_RGBA;
+
+            GLuint textureID;
+            glGenTextures(1, &textureID);
+            glBindTexture(GL_TEXTURE_2D, textureID);
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            /* Configure wrapping and zooming behaviour */
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filtering_);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            /* Generate the mipmaps */
+
+            stbi_image_free(data);
+
+            *texture_id = textureID;
         }
 
-        GLenum format;
-        if (channels == 1) format = GL_RED;
-        else if (channels == 3) format = GL_RGB;
-        else if (channels == 4) format = GL_RGBA;
 
-        GLuint textureID;
-        glGenTextures(1, &textureID);
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        /* Configure wrapping and zooming behaviour */
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filtering_);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        /* Generate the mipmaps */
-
-        stbi_image_free(data);
-
-        *texture_id = textureID;
 
         return 0;
     }

@@ -4,8 +4,6 @@
 
 #include "game_engine/math/Types.hpp"
 
-#include "game_engine/graphics/opengl/OpenGLQuery.hpp"
-
 #include "GraphicsTypes.hpp"
 #include "Material.hpp"
 #include "Model.hpp"
@@ -82,8 +80,6 @@ namespace graphics {
 
     private:
         bool is_inited_;
-
-        std::vector<opengl::OpenGLQuery> mesh_queries_;
 
         glm::mat4 translation_matrix_;
         glm::mat4 rotation_matrix_;

@@ -4,12 +4,14 @@ The goal is to learn basic rendering techniques, physics, memory
 management, data structures and anything else that might be used 
 in the development of a game, featuring:
 In Graphics with OpenGL:
-- Reading models through assimp, rendering with one diffuse texture, and one specular map
-- Deferred and forward rendering
+- Reading models through assimp
+- Rendering with Phong shading (Point/Directional/Spot lights), one diffuse texture, and one specular map
+- Deferred and forward rendering queues
 - Shadows with simple shadow mapping
 - View frustum culling and occlusion queries
 - Screen Space Ambient Occlusion
-- Water rendering with a grid  
+- Water rendering with a grid algorithm  
+- Terrain rendering with displacement and normal map through tessellation shaders  
 In world building:  
 - Importing maps generated from Tiled
 - Draw call batching generated maps
@@ -18,14 +20,17 @@ In physics and interaction:
 - QuadTree accelerated ray casting  
 Other:  
 - Several data structures created: Uniform grids, Circular buffers, HashTables, and several QuadTree variants
-- Sequential memory allocation with custom allocators
+- Sequential memory allocation with custom allocators  
 
 
-## Current progress - billy the game
+## Current progress - billy the game  
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/CWFcuDfG5MM/0.jpg)](https://www.youtube.com/watch?v=CWFcuDfG5MM&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=11)
 
-## Current progress - Ambient Occlusion
+## Ambient Occlusion  
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jtVoM0I_rxw/0.jpg)](https://www.youtube.com/watch?v=jtVoM0I_rxw&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=10)
+
+## Terrain rendering with tessellation shaders  
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jgliT0StyRw/0.jpg)](https://www.youtube.com/watch?v=jgliT0StyRw)
 
 ## Particles branch
 Fluid simulation  
@@ -37,14 +42,25 @@ Rope and cloth
 3D jelly object  
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/LectfDOBszc/0.jpg)](https://www.youtube.com/watch?v=LectfDOBszc)
 
-## Animation branch
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/_7ZKdgwjL7s/0.jpg)](https://www.youtube.com/watch?v=_7ZKdgwjL7s)
+
+
+## Roadmap  
+In Graphics:  
+- Water rendering with Tessellation shaders and procedural functions instead of displacement maps
+- Cloud rendering through volumetric rendering
+- Replace Phong shading with Physically based rendering
+- Other things like, Particle systems and instancing...  
+In world building:  
+- NPC dialogs, and inventory panels
+
+
+
 
 ## Build and run instructions
 - Create a build folder.  
   - In the top level directory create folder:  {top-levell-directory}/build  
 - Run cmake with destination the build folder, and source folder the top level directory  
-  - Navigate into the build folder, and type: cmake ../  
+  - Navigate into the build folder, and type: 
 - Compile the project  
   - Open the .sln project file with visual studio and build the project (For animation branch, build in Release because of cally3d libs or change the .lib file to the debug one)
 - Locate the executable and copy on the same folder the dependencies  

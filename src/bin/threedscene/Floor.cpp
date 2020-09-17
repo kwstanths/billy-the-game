@@ -28,5 +28,5 @@ int Floor::Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_
 }
 
 void Floor::Draw(ge::graphics::Renderer * renderer) {
-    renderer->DrawTerrain(this);
+    renderer->Draw(this);
 }

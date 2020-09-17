@@ -36,10 +36,6 @@ namespace graphics {
             asset_manager.InsertModel(model_file_path, model_);
         }
 
-        mesh_queries_ = std::vector<opengl::OpenGLQuery>(model_->GetNumberOfMeshes());
-        for (size_t i = 0; i < model_->GetNumberOfMeshes(); i++)
-            mesh_queries_[i].Init();
-
         is_inited_ = true;
         return 0;
     }

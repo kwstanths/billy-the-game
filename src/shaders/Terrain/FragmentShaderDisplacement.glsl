@@ -15,15 +15,24 @@ in TES_OUT {
     vec4 position_lightspace;
 } tes_out;
 
+vec3 TransformNormalFromNormalMap(vec3 normal){
+    return  normal * 2.0 - 1.0;
+}
+
 void main()
 {
     g_position = tes_out.position_viewspace;
     
-    vec3 vertex_normal = texture(normal_map, tes_out.uv).rgb;
+    vec3 tn = TransformNormalFromNormalMap(texture(normal_map, tes_out.uv).rgb);
+    
+    /* TODO Properly transform from normal map space to object space */
+    vec3 vertex_normal = vec3(tn.x, tn.z, tn.y);
+    
+    /* Transform object space normal to view space */
     g_normal = normalize(transpose(inverse(mat3(matrix_view * matrix_model))) * vertex_normal);
     
-    g_albedo_spec.rgb = vec3(0, 0.7, 0);
-    g_albedo_spec.a = 1;
+    g_albedo_spec.rgb = vec3(0, 0.6, 0);
+    g_albedo_spec.a = 0.3;
     
     g_position_light = tes_out.position_lightspace.xyz / tes_out.position_lightspace.w;
 }

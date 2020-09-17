@@ -6,6 +6,7 @@
 #include "Player.hpp"
 #include "Floor.hpp"
 #include "Fire.hpp"
+#include "Sun.hpp"
 
 namespace dt = debug_tools;
 namespace ge = game_engine;
@@ -16,35 +17,40 @@ World::World() : WorldSector() {
 }
 
 int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
-    int ret = WorldSector::Init(10, 10, -40.0f, 40.0f, -40.0f, 40.0f, 10 * 10);
+    int ret = WorldSector::Init(10, 10, -80.0f, 80.0f, -80.0f, 80.0f, 10 * 10);
     if (ret) return ret;
 
+    /* Create a tree */
     {
         Player * player;
         player = NewObj<Player>();
         player->Init(0, 9.3, 0, input, camera, this, engine);
     }
     
-    /*{
-        Player * player;
-        player = NewObj<Player>();
-        player->Init(1.5, 0.0, 0, input, camera, this, engine);
-    }*/
-
     //for (int i = -6; i <= 6; i+=6){
     //    for (int j = -4; j <= 4; j+=4) {
     //        /* Create some players */
     //        Player * player = NewObj<Player>();
     //        player->Init(1.0f * i, 0, 1.0f * j, input, camera, this, engine);
-    //    }
+    //    } 
     //}
 
-    /* Create floor */
+    /* Some lights */
+    for (int i = -60; i <= 60; i+=25){
+        for (int j = -60; j <= 60; j+=20) {
+            /* Create some players */
+            Fire * fire = new Fire();
+            fire->Init(1.0f * i, 10, 1.0f * j, this, engine);
+        }
+    }
+
+    /* The displacement object */
     Floor * floor = NewObj<Floor>();
     floor->Init(0.0f, 0.0f, 0.0f, this);
 
-    Fire * fire = NewObj<Fire>();
-    fire->Init(0.0f, 12.0f, 0.0f, this, engine);
+    /* A sun */
+    Sun * sun = NewObj<Sun>();
+    sun->Init(0.0f, 12.0f, 0.0f, this, engine);
 
     is_inited_ = true;
     return 0;

@@ -16,6 +16,8 @@ namespace game_engine { namespace graphics {
         
         virtual void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) = 0;
 
+        virtual void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) = 0;
+
         size_t rendering_queue_;
     };
 
@@ -27,6 +29,7 @@ namespace game_engine { namespace graphics {
         MaterialDeferredStandard(game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, std::string texture_diffuse, std::string texture_specular);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
         game_engine::math::Vector3D diffuse_;
         game_engine::math::Vector3D specular_;
@@ -39,6 +42,7 @@ namespace game_engine { namespace graphics {
         MaterialDeferredDisplacement(game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, std::string texture_displacement, std::string texture_normal);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
         game_engine::math::Vector3D diffuse_;
         game_engine::math::Vector3D specular_;
