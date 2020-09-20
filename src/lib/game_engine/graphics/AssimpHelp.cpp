@@ -126,7 +126,7 @@ namespace graphics{
     
     }
 
-    int ProcessTextureAtlas(std::string file_path, std::vector<Mesh*>& out_meshes) {
+    int ProcessObjectAtlas(std::string file_path, std::vector<Mesh*>& out_meshes) {
 
         /* Use assimp to load the model */
         Assimp::Importer importer;

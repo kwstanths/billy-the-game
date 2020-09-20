@@ -22,8 +22,7 @@ namespace graphics {
 
     std::vector<Texture_t> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, int texture_type, std::string directory);
 
-
-    int ProcessTextureAtlas(std::string file_path, std::vector<Mesh *>& out_meshes);
+    int ProcessObjectAtlas(std::string file_path, std::vector<Mesh *>& out_meshes);
 
 }
 }

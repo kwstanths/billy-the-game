@@ -20,6 +20,8 @@ out TES_OUT {
     vec4 position_lightspace;
 } tes_out;
 
+#define PI 3.14
+
 vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)                                                   
 {                                                                                               
     return vec2(gl_TessCoord.x) * v0 + vec2(gl_TessCoord.y) * v1 + vec2(gl_TessCoord.z) * v2;   

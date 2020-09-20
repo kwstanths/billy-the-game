@@ -5,6 +5,7 @@
 
 #include "game_engine/utility/HashTable.hpp"
 #include "game_engine/graphics/Model.hpp"
+#include "game_engine/graphics/Material.hpp"
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 #include "game_engine/graphics/opengl/OpenGLShaders.hpp"
 
@@ -71,11 +72,28 @@ namespace graphics {
         */
         opengl::OpenGLTexture * GetTexture(std::string name, int type);
 
+        /**
+            Search for a material, based on an ID
+            @param name The ID of the material
+            @return nullptr = not found, else a pointer to that object
+        */
+        Material * FindMaterial(std::string name);
+
+        /**
+            Insert a material. Produces a warning if already inserted
+            @param name The ID of the material
+            @param mesh A pointer to the material
+        */
+        void InsertMaterial(std::string name, Material * material);
+
+
     private:
         /* Holds the models */
         utility::HashTable<std::string, Model *> * models_;
         /* Holds the textures */
         utility::HashTable<std::string, opengl::OpenGLTexture *> * textures_;
+        /* Holds the material */
+        utility::HashTable<std::string, Material *> * materials_;
 
         /**
             Does nothing in particular. Call Init()

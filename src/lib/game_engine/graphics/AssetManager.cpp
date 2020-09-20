@@ -10,11 +10,13 @@ namespace graphics {
 
     size_t MODELS_NUMBER = 512;
     size_t TEXTURES_NUMBER = 512;
+    size_t MATERIALS_NUMBER = 512;
 
     AssetManager::AssetManager() {
 
         models_ = new utl::HashTable<std::string, Model *>(MODELS_NUMBER, 1.0f);
         textures_ = new utl::HashTable<std::string, gl::OpenGLTexture *>(TEXTURES_NUMBER, 1.0);
+        materials_ = new utl::HashTable<std::string, Material *>(MATERIALS_NUMBER, 1.0);
     }
 
     AssetManager::~AssetManager() {
@@ -88,6 +90,21 @@ namespace graphics {
         if (!ret) return previously_allocated_texture;
         else return nullptr;
 
+    }
+
+    Material * AssetManager::FindMaterial(std::string name) {
+        utl::HashTable<std::string, Material *>::iterator itr = materials_->Find(name);
+        if (itr != materials_->end())
+            return itr.GetValue();
+
+        return nullptr;
+    }
+
+    void AssetManager::InsertMaterial(std::string name, Material * material)
+    {
+        bool ret = materials_->Insert(name, material);
+        if (!ret)
+            dt::Console(dt::WARNING, "AssetManager::InsertMaterial(): Material already present");
     }
 
 }

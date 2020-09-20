@@ -2,6 +2,8 @@
 
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/math/Types.hpp"
+#include "game_engine/math/Vector.hpp"
+#include "game_engine/graphics/Material.hpp"
 
 #include "debug_tools/Console.hpp"
 

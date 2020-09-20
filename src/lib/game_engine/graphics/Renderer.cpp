@@ -111,7 +111,7 @@ namespace graphics {
             utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[mesh->material_->rendering_queue_];
 
             if (queue.IsFull()) {
-                dt::Console(dt::CRITICAL, "draw objects vector full");
+                dt::Console(dt::CRITICAL, "Rendering queue: " + std::to_string(mesh->material_->rendering_queue_) + "is full");
                 return -1;
             }
             rendering_object->SetModelMatrix();
@@ -269,17 +269,6 @@ namespace graphics {
         return 0;
     }
 
-    int Renderer::RenderNormals(GraphicsObject * rendering_object)
-    {
-        std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
-        for (size_t j = 0; j < meshes.size(); j++) {
-            Mesh * mesh = meshes[j];
-            renderer_->DrawNormals(mesh->opengl_object_, rendering_object->model_matrix_);
-            draw_calls_++;
-        }
-        return 0;
-    }
-
     int Renderer::AddPointLight(PointLight * light) {
         if (point_lights_to_draw_.Items() >= GAME_ENGINE_GL_RENDERER_MAX_POINT_LIGHTS) {
             dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");
@@ -327,8 +316,10 @@ namespace graphics {
         }
 
         command = ConsoleParser::GetInstance().GetLastCommand();
-        bool draw_wireframe = command.type_ == COMMAND_WIREFRAME && math::Equal(command.arg_1_, 1.0f);
-        renderer_->DrawWireframe(draw_wireframe);
+        if (command.type_ == COMMAND_WIREFRAME && !math::Equal(draw_wireframe_, static_cast<bool>(command.arg_1_))) {
+            draw_wireframe_ = static_cast<bool>(command.arg_1_);
+        }
+        renderer_->DrawWireframe(draw_wireframe_);
         
         /* Render GBuffer */
         utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[0];
@@ -440,7 +431,7 @@ namespace graphics {
             renderer_->DrawFinalPass(renderer_->frame_buffer_one_->output_texture_);
             draw_calls_++;
         }
-
+        
         /* Render forward queue */
         queue = rendering_queues_[1];
         for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
@@ -448,6 +439,7 @@ namespace graphics {
             Mesh * mesh = draw_call.mesh_;
 
             mesh->material_->Render(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
+            draw_calls_++;
         }
 
         /* Render overlay */

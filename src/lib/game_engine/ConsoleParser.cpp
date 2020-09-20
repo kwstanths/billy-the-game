@@ -144,6 +144,20 @@ namespace game_engine {
             last_command_.type_ = COMMAND_WIREFRAME;
             break;
         }
+        case COMMAND_TERRAIN_NORMALS:
+        {
+            if (tokens.size() <= 1) return;
+            last_command_.arg_1_ = std::stoi(tokens[1]);
+            last_command_.type_ = COMMAND_TERRAIN_NORMALS;
+            break;
+        }
+        case COMMAND_CONSTANT_TESSELLATION:
+        {
+            if (tokens.size() <= 1) return;
+            last_command_.arg_1_ = std::stoi(tokens[1]);
+            last_command_.type_ = COMMAND_CONSTANT_TESSELLATION;
+            break;
+        }
         default:
             break;
         }

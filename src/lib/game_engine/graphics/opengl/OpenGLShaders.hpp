@@ -28,6 +28,7 @@ namespace game_engine { namespace graphics { namespace opengl {
     
     /* Names of the vertices color shader variables used */
     static const char shader_vertices_color_uni_color[] = "fragment_color";
+    static const char shader_vertices_color_uni_alpha[] = "alpha";
     
     /* Names of the g buffer shader variables used*/
     static const char shader_gbuffer_position[] = "g_position";
@@ -244,6 +245,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_View_;
         GLuint uni_Projection_;
         GLuint uni_fragment_color_;
+        GLuint uni_fragment_alpha_;
     };
     
     /**
@@ -392,6 +394,28 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_Model_;
         GLuint uni_View_;
         GLuint uni_Projection_;
+        GLuint uni_color_;
+    };
+
+    class OpenGLShaderDisplacementDrawNormals : public OpenGLShader {
+    public:
+        OpenGLShaderDisplacementDrawNormals();
+
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader, std::string geometry_shader);
+
+        /* Attributes */
+        GLuint attr_vertex_position_;
+        GLuint attr_vertex_uv_;
+        GLuint attr_vertex_normal_;
+
+        GLuint uni_Model_;
+        GLuint uni_View_;
+        GLuint uni_Projection_;
+        GLuint uni_camera_world_position_;
+        GLuint uni_displacement_map_;
+        GLuint uni_displacement_intensity_;
+        GLuint uni_color_;
+        GLuint uni_constant_tessellation_;
     };
 
     class OpenGLShaderDisplacement : public OpenGLShader {
@@ -411,8 +435,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_Lightspace_;
         GLuint uni_camera_world_position_;
         GLuint uni_displacement_map_;
-        GLuint uni_normal_map_;
         GLuint uni_displacement_intensity_;
+        GLuint uni_constant_tessellation_;
     };
 }
 }

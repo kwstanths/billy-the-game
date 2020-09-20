@@ -5,6 +5,7 @@
 
 #include "game_engine/math/RNGenerator.hpp"
 #include "game_engine/math/Types.hpp"
+#include "game_engine/graphics/Material.hpp"
 
 #include "debug_tools/Console.hpp"
 
@@ -22,14 +23,14 @@ bool Sun::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world
     Scale(0.1f, 0.1f, 0.1f);
 
     DirectionalLight::direction_ = glm::normalize(glm::vec3(-1.0f, -1.0f, 0.0f));
-    DirectionalLight::ambient_ = glm::vec3(0.3f, 0.3f, 0.3f);
-    DirectionalLight::diffuse_ = glm::vec3(0.2f, 0.2f, 0.2f);
+    DirectionalLight::ambient_ = glm::vec3(0.1f, 0.1f, 0.1f);
+    DirectionalLight::diffuse_ = glm::vec3(0.7f, 0.7f, 0.7f);
     DirectionalLight::specular_ = glm::vec3(0.2f, 0.2f, 0.2f);
     world->SetDirectionalLight(this);
 
     return ret == 0;
 }
-
+    
 void Sun::Step(double delta_time) {
 
 }

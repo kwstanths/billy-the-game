@@ -21,7 +21,7 @@ namespace graphics {
         Mesh();
 
         int Init(std::vector<Vertex_t> & vertices, 
-            std::vector<unsigned int> & indices, 
+            std::vector<unsigned int> & indices,
             Material * material
         );
 
@@ -40,7 +40,7 @@ namespace graphics {
         std::vector<unsigned int> indices_;
         std::vector<Texture_t> textures_;
         opengl::OpenGLObject opengl_object_;
-        
+
         Material * material_;
     };
 

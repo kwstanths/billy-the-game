@@ -13,7 +13,7 @@ namespace graphics {
     }
 
     int Mesh::Init(std::vector<Vertex_t> & vertices, 
-        std::vector<unsigned int> & indices, 
+        std::vector<unsigned int> & indices,
         Material * material
     ) {
     
@@ -48,10 +48,7 @@ namespace graphics {
 
     void Mesh::SetMaterial(Material * material)
     {
-        /* Delete previous material */
-        if (material_ != nullptr) {
-            delete material_;
-        }
+        if (material_ != nullptr) delete material_;
 
         material_ = material;
     }

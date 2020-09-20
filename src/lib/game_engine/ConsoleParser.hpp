@@ -18,6 +18,8 @@ namespace game_engine {
 #define COMMAND_SSAO_SEPARABLE 7
 #define COMMAND_SHADOW_MAPPING 8
 #define COMMAND_WIREFRAME 9
+#define COMMAND_TERRAIN_NORMALS 10
+#define COMMAND_CONSTANT_TESSELLATION 11
 
     /* The order between these two is very important! */
     static const std::vector<std::string> commands = { 
@@ -31,7 +33,9 @@ namespace game_engine {
         "ssao_separable",
 
         "shadows",
-        "wireframe"
+        "wireframe",
+        "draw_terrain_normals",
+        "constant_tess"
     };
 
     struct ConsoleCommand {

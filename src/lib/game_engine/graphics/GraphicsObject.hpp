@@ -86,6 +86,8 @@ namespace graphics {
         glm::mat4 scale_matrix_;
         glm::mat4 model_matrix_;
 
+        std::vector<Material *> model_materials_;
+
         /**
             Set the model matrix
         */

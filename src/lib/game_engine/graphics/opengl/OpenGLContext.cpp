@@ -73,6 +73,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         ret += shader_shadow_map_.Init("shaders/VertexShaderShadowMap.glsl", "shaders/FragmentShaderShadowMap.glsl");
         ret += shader_draw_normals_.Init("shaders/VertexShaderDrawNormals.glsl", "shaders/FragmentShaderDrawNormals.glsl", "shaders/GeometryShaderDrawNormals.glsl");
         ret += shader_displacement_.Init("shaders/Terrain/VertexShaderDisplacement.glsl", "shaders/Terrain/FragmentShaderDisplacement.glsl", "shaders/Terrain/TesselationControlShaderDisplacement.glsl", "shaders/Terrain/TesselationEvaluationShaderDisplacement.glsl");
+        ret += shader_displacement_draw_normals_.Init("shaders/Terrain/VertexShaderDisplacement.glsl", "shaders/Terrain/FragmentShaderDisplacementDrawNormals.glsl", "shaders/Terrain/TesselationControlShaderDisplacement.glsl", "shaders/Terrain/TesselationEvaluationShaderDisplacementDrawNormals.glsl", "shaders/Terrain/GeometryShaderDisplacementDrawNormals.glsl");
+
         if (ret) dt::Console(dt::CRITICAL, "Shaders compilation failed");
     
         is_inited_ = true;
@@ -156,8 +158,8 @@ namespace game_engine { namespace graphics { namespace opengl {
     int OpenGLContext::ClearColor() {
         if (!is_inited_) return -1;
     
-        //glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+        //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     
         return 0;

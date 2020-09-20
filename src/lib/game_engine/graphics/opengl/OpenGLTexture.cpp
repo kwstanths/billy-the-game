@@ -28,10 +28,10 @@ namespace opengl {
         if (is_inited_) return -1;
 
         filtering_ = filtering;
+        type_ = type;
         int ret = LoadSTB(file_path.c_str(), &texture_);
         if (ret != 0) return ret;
 
-        type_ = type;
 
         is_inited_ = true;
         return 0;
@@ -162,8 +162,8 @@ namespace opengl {
         int width, height, channels;
 
         /* If it's a normal map, read 16 bit depth texture */
-        if (type_ == GAME_ENGINE_TEXTURE_TYPE_NORMAL_MAP) {
-            unsigned short * data = stbi_load_16(imagepath, &width, &height, &channels, 0);
+        if (type_ == GAME_ENGINE_TEXTURE_TYPE_NORMAL_MAP || type_ == GAME_ENGINE_TEXTURE_TYPE_DISPLACEMENT_MAP) {
+            unsigned char * data = stbi_load(imagepath, &width, &height, &channels, 0);
             if (!data) {
                 return Error::ERROR_ASSET_NOT_FOUND;
                 stbi_image_free(data);
@@ -171,13 +171,13 @@ namespace opengl {
 
             GLenum format;
             if (channels == 1) format = GL_RED;
-            else if (channels == 3) format = GL_RGB16;
-            else if (channels == 4) format = GL_RGBA16;
+            else if (channels == 3) format = GL_RGB;
+            else if (channels == 4) format = GL_RGBA;
 
             GLuint textureID;
             glGenTextures(1, &textureID);
             glBindTexture(GL_TEXTURE_2D, textureID);
-            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_SHORT, data);
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
 
             /* Configure wrapping and zooming behaviour */

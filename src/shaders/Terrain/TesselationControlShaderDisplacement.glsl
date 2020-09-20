@@ -3,7 +3,8 @@
 // define the number of CPs in the output patch                                                 
 layout (vertices = 3) out;                                                                      
                                                                                                 
-uniform vec3 camera_world_position;                                                                  
+uniform vec3 camera_world_position;       
+uniform bool constant_tessellation;                                                           
 
 in VS_OUT {
     vec2 uv;
@@ -21,19 +22,23 @@ float GetTessLevel(float Distance0, float Distance1)
 {         
     float AvgDistance = (Distance0 + Distance1) / 2.0;                                          
     
+    float tessellation_factor = 8.0;
     if (AvgDistance <= 40.0) {
-        return 64.0;
-    }
-    else if (AvgDistance <= 80.0) {
-        return 32.0;
-    }
-    else if (AvgDistance <= 100.0){
-        return 16.0;
+        tessellation_factor = 64.0;
+    } else if (AvgDistance <= 80.0) {
+        tessellation_factor = 32.0;
+    } else if (AvgDistance <= 100.0){
+        tessellation_factor = 16.0;
     }else if (AvgDistance <= 130) {
-        return 8.0;
+        tessellation_factor = 8.0;
     }else {
-        return 4.0;
+        tessellation_factor = 4.0;
     }
+    
+    if (constant_tessellation)
+        tessellation_factor = 8.0;
+    
+    return tessellation_factor;
 }
 
 void main()                                                                                     

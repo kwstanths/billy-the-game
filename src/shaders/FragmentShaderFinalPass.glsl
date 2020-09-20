@@ -134,7 +134,7 @@ void main() {
 	
 	/* Sum total components, the minimum color is zero, the maxium color possible the actual color of the fragment */
 	FragColor = vec4(clamp(cast_light_color + point_lights_color + directional_light_color, vec3(0,0,0), fragment_color), 1);
-    
+    FragColor = vec4(cast_light_color + point_lights_color + directional_light_color, 1);
     /* Fix the fragment's depth, since this is drawn using a quad that covers the screen */
     FixDepth();
 }
@@ -153,9 +153,9 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec
 	
 	/* Specular component */
 	/* Find the reflected vector from the light towards the surface normal */
-	float light_specular_strength = pow(max(dot(fragment_normal, half_way_direction), 0.0), 128.0);
+	float light_specular_strength = pow(max(dot(fragment_normal, half_way_direction), 0.0), 64.0);
 	vec3 light_specular = light.specular * light_specular_strength * fragment_specular_intensity;
-	
+
        //light_ambient = clamp(light_ambient, 0, 0);
        //light_diffuse = clamp(light_diffuse, 0, 0);
        //light_specular = clamp(light_specular, 0, 0);

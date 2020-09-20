@@ -46,7 +46,7 @@ namespace graphics {
         std::string file_path = file_name.substr(0, file_name.find_last_of("."));
 
         std::vector<Mesh *> meshes;
-        int ret = ProcessTextureAtlas(file_name, meshes);
+        int ret = ProcessObjectAtlas(file_name, meshes);
 
         for (size_t i = 0; i < meshes.size(); i++) {
             Model * new_model = new Model();

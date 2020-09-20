@@ -49,7 +49,7 @@ namespace graphics {
         KeyControls_t GetControlInput();
 
         /**
-            Draws an object with full lightning. All Draw() calls will happen at the end of the frame. This means 
+            Draws an object with it's set materials. All Draw() calls will happen at the end of the frame. This means 
             that calling this Draw() on an object multiple times within a single frame, will result in drawing the 
             same object multiple times on the last object position/scaling/rotation
             @param rendering_object The object to draw
@@ -155,6 +155,7 @@ namespace graphics {
         bool ssao_blur = true;
         bool draw_ssao_texture = false;
         bool shadows = false;
+        bool draw_wireframe_ = false;
 
         /**
             Set a camera
@@ -168,11 +169,6 @@ namespace graphics {
             @param rendering_object The object to draw
         */
         int RenderGBuffer(MESH_DRAW_t& draw_call);
-
-        /**
-            Render the normals of an object, forward pass
-        */
-        int RenderNormals(GraphicsObject * rendering_object);
 
         /**
             Main rendering pipeline, Gbuffer rendering, AO calculation, final pass

@@ -28,14 +28,15 @@ Other:
 - Sequential memory allocation with custom allocators  
 
 
-## Current progress - billy the game
+## Current progress in main game - billy the game
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/M_0gH1M3FH0/0.jpg)](https://www.youtube.com/watch?v=M_0gH1M3FH0&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=12)
 
-## Ambient Occlusion  
+## Current progress in 3D:   
+Ambient Occlusion    
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jtVoM0I_rxw/0.jpg)](https://www.youtube.com/watch?v=jtVoM0I_rxw&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=10)
 
-## Terrain rendering with tessellation shaders  
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jgliT0StyRw/0.jpg)](https://www.youtube.com/watch?v=jgliT0StyRw)
+Terrain rendering with tessellation shaders  
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jgliT0StyRw/0.jpg)](https://www.youtube.com/watch?v=aVAk7tuQ9Bw&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=2)
 
 ## Particles branch
 Fluid simulation  
