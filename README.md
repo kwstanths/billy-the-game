@@ -36,7 +36,7 @@ Ambient Occlusion
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jtVoM0I_rxw/0.jpg)](https://www.youtube.com/watch?v=jtVoM0I_rxw&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=10)
 
 Terrain rendering with tessellation shaders  
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jgliT0StyRw/0.jpg)](https://www.youtube.com/watch?v=aVAk7tuQ9Bw&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=2)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/aVAk7tuQ9Bw/0.jpg)](https://www.youtube.com/watch?v=aVAk7tuQ9Bw&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=2)
 
 ## Particles branch
 Fluid simulation  
