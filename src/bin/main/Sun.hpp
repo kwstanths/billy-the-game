@@ -1,8 +1,8 @@
 #ifndef __Sun_hpp__
 #define __Sun_hpp__
 
-#include "game_engine/GameEngine.hpp"
-#include "game_engine/WorldObject.hpp"
+#include "game_engine/core/GameEngine.hpp"
+#include "game_engine/core/WorldObject.hpp"
 #include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/graphics/GraphicsTypes.hpp"
 #include "game_engine/graphics/Light.hpp"

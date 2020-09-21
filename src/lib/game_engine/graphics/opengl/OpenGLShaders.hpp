@@ -19,12 +19,13 @@ namespace game_engine { namespace graphics { namespace opengl {
     static const char shader_uni_projection[] = "matrix_projection";
     static const char shader_uni_shadow_map[] = "shadow_map";
     static const char shader_sampler_texture[] = "sampler_texture";
+    static const char shader_sampler_texture_diffuse[] = "texture_diffuse";
+    static const char shader_sampler_texture_displacement[] = "displacement_map";
     static const char shader_blur_kernel_size[] = "blur_kernel_size";
     
     /* Names of the text shader variables used */
     static const char shader_text_name_vertex[] = "vertex";
     static const char shader_text_name_uni_texture_color[] = "texture_color";
-    static const char shader_text_name_uni_texture[] = "sampler_texture";
     
     /* Names of the vertices color shader variables used */
     static const char shader_vertices_color_uni_color[] = "fragment_color";
@@ -174,12 +175,6 @@ namespace game_engine { namespace graphics { namespace opengl {
     public:
         OpenGLShaderText();
     
-        /**
-            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
         int Init(std::string vertex_shader_path, std::string fragment_shader_path);
     
         /* Varialbe locations for the shader varialbes used */
@@ -187,32 +182,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint attr_vertex_;
     
         /* Uniforms */
-        GLuint uni_Projection_;
-        GLuint uni_Texture_;
-        GLuint uni_Texture_color_;
-    };
-
-    /* 3D Text shader */
-    class OpenGLShaderText3D : public OpenGLShader {
-    public:
-        OpenGLShaderText3D();
-
-        /**
-            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
-        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
-
-        /* Varialbe locations for the shader varialbes used */
-        /* Attributes */
-        GLuint attr_vertex_position_;
-        GLuint attr_vertex_uv_;
-
-        /* Uniforms */
-        GLuint uni_Model_;
-        GLuint uni_View_;
         GLuint uni_Projection_;
         GLuint uni_Texture_;
         GLuint uni_Texture_color_;
@@ -228,12 +197,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         */
         OpenGLShaderVerticesColor();
     
-        /**
-            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
         int Init(std::string vertex_shader_path, std::string fragment_shader_path);
     
         /* Varialbe locations for the shader varialbes used */
@@ -255,12 +218,6 @@ namespace game_engine { namespace graphics { namespace opengl {
     public:
         OpenGLShaderGBuffer();
     
-        /**
-            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
         int Init(std::string vertex_shader_path, std::string fragment_shader_path);
     
         /* Attributes */
@@ -274,18 +231,32 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_Projection_;
         GLuint uni_Lightspace_;
     };
+
+    /**
+    
+    */
+    class OpenGLShaderStandard : public OpenGLShader {
+    public:
+        OpenGLShaderStandard();
+
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+        /* Attributes */
+        GLuint attr_vertex_position_;
+        GLuint attr_vertex_uv_;
+        GLuint attr_vertex_normal_;
+
+        /* Uniforms */
+        GLuint uni_Model_;
+        GLuint uni_View_;
+        GLuint uni_Projection_;
+    };
     
     /* Shader for shadow map pass */
     class OpenGLShaderShadowMap : public OpenGLShader {
     public:
         OpenGLShaderShadowMap();
     
-        /**
-            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
         int Init(std::string vertex_shader_path, std::string fragment_shader_path);
     
         /* Attributes */
@@ -296,17 +267,25 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_Lightspace_;
     };
     
+    class OpenGLShaderQuad : public OpenGLShader {
+    public:
+        OpenGLShaderQuad();
+        
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+        /* Attributes */
+        GLuint attr_vertex_position_;
+        GLuint attr_vertex_uv_;
+
+        /* Uniforms */
+        GLuint uni_sampler_texture_;
+    };
+
     /* AO shader */
     class OpenGLShaderSSAO : public OpenGLShader {
     public:
         OpenGLShaderSSAO();
     
-        /**
-            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
         int Init(std::string vertex_shader_path, std::string fragment_shader_path);
     
         /* Attributes */
@@ -329,12 +308,6 @@ namespace game_engine { namespace graphics { namespace opengl {
     public:
         OpenGLShaderSeparableAO();
     
-        /**
-            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
         int Init(std::string vertex_shader_path, std::string fragment_shader_path);
     
         /* Attributes */
@@ -357,12 +330,6 @@ namespace game_engine { namespace graphics { namespace opengl {
     public:
         OpenGLShaderFinalPass();
     
-        /**
-            Initialize a vertex and a fragment shader, compile and link them. Initialize the variable locations
-            @param vertex_shader_path The path to a vertex shader file
-            @param fragment_shader_path The path to a fragment shader file
-            @return -1 = Already initialised, 0 = OK, else see ErrorCodes.hpp
-        */
         int Init(std::string vertex_shader_path, std::string fragment_shader_path);
     
         /* Attributes */
@@ -397,6 +364,30 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_color_;
     };
 
+    /* A shader used to draw a displaced mesh */
+    class OpenGLShaderDisplacement : public OpenGLShader {
+    public:
+        OpenGLShaderDisplacement();
+
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader);
+
+        /* Attributes */
+        GLuint attr_vertex_position_;
+        GLuint attr_vertex_uv_;
+        GLuint attr_vertex_normal_;
+
+        GLuint uni_Model_;
+        GLuint uni_View_;
+        GLuint uni_Projection_;
+        GLuint uni_Lightspace_;
+        GLuint uni_camera_world_position_;
+        GLuint uni_displacement_map_;
+        GLuint uni_displacement_intensity_;
+        GLuint uni_constant_tessellation_;
+        GLuint uni_texture_diffuse_;
+    };
+
+    /* A shader used to draw the normals of a displaced mesh */
     class OpenGLShaderDisplacementDrawNormals : public OpenGLShader {
     public:
         OpenGLShaderDisplacementDrawNormals();
@@ -418,26 +409,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_constant_tessellation_;
     };
 
-    class OpenGLShaderDisplacement : public OpenGLShader {
-    public:
-        OpenGLShaderDisplacement();
-
-        int Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader);
-        
-        /* Attributes */
-        GLuint attr_vertex_position_;
-        GLuint attr_vertex_uv_;
-        GLuint attr_vertex_normal_;
-
-        GLuint uni_Model_;
-        GLuint uni_View_;
-        GLuint uni_Projection_;
-        GLuint uni_Lightspace_;
-        GLuint uni_camera_world_position_;
-        GLuint uni_displacement_map_;
-        GLuint uni_displacement_intensity_;
-        GLuint uni_constant_tessellation_;
-    };
 }
 }
 }

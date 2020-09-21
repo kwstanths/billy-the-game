@@ -1,9 +1,9 @@
 #ifndef __WorldPortal_hpp__
 #define __WorldPortal_hpp__
 
-#include "game_engine/InteractableObject.hpp"
-#include "game_engine/WorldObject.hpp"
-#include "game_engine/GameEngine.hpp"
+#include "game_engine/core/InteractableObject.hpp"
+#include "game_engine/core/WorldObject.hpp"
+#include "game_engine/core/GameEngine.hpp"
 
 #include "Camera.hpp"
 #include "Maps/World.hpp"

@@ -6,7 +6,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "external/stb_image/stb_image.h"
 
-#include "game_engine/ErrorCodes.hpp"
+#include "game_engine/core/ErrorCodes.hpp"
 #include "game_engine/graphics/GraphicsTypes.hpp"
 
 #include "debug_tools/Console.hpp"

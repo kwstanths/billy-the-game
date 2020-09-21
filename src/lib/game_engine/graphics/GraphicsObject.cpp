@@ -1,7 +1,8 @@
 #include "GraphicsObject.hpp"
 #include "Renderer.hpp"
 
-#include "game_engine/ErrorCodes.hpp"
+#include "game_engine/core/ErrorCodes.hpp"
+#include "game_engine/core/FileSystem.hpp"
 #include "game_engine/math/Matrices.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
@@ -21,19 +22,20 @@ namespace graphics {
         is_inited_ = false;
     }
 
-    int GraphicsObject::Init(Real_t x, Real_t y, Real_t z, std::string model_file_path) {
+    int GraphicsObject::Init(Real_t x, Real_t y, Real_t z, std::string model_file) {
 
         translation_matrix_ = math::GetTranslateMatrix(x, y, z);
         scale_matrix_ = math::GetScaleMatrix(1.0f, 1.0f, 1.0f);
 
         /* If model already loaded, then use the same */
         AssetManager& asset_manager = AssetManager::GetInstance();
-        model_ = asset_manager.FindModel(model_file_path);
+        std::string assets_dir = FileSystem::GetInstance().GetDirectoryAssets();
+        model_ = asset_manager.FindModel(assets_dir + model_file);
         if (model_ == nullptr) {
             /* Else load it, and insert it in the asset manager */
             model_ = new Model();
-            model_->Init(model_file_path);
-            asset_manager.InsertModel(model_file_path, model_);
+            model_->Init(model_file);
+            asset_manager.InsertModel(assets_dir + model_file, model_);
         }
 
         is_inited_ = true;
@@ -42,12 +44,13 @@ namespace graphics {
 
     int GraphicsObject::InitObjectAtlas(std::string file_name) {
 
-        AssetManager& asset_manager = AssetManager::GetInstance();
-        std::string file_path = file_name.substr(0, file_name.find_last_of("."));
-
         std::vector<Mesh *> meshes;
         int ret = ProcessObjectAtlas(file_name, meshes);
 
+        std::string directory = FileSystem::GetInstance().GetDirectoryAssets();
+        std::string file_path = directory + file_name.substr(0, file_name.find_last_of("."));
+
+        AssetManager& asset_manager = AssetManager::GetInstance();
         for (size_t i = 0; i < meshes.size(); i++) {
             Model * new_model = new Model();
             new_model->Init({ meshes[i] });

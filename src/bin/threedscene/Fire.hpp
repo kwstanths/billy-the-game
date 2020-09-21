@@ -5,8 +5,8 @@
 #include "game_engine/graphics/GraphicsTypes.hpp"
 #include "game_engine/graphics/Light.hpp"
 #include "game_engine/math/Types.hpp"
-#include "game_engine/GameEngine.hpp"
-#include "game_engine/WorldObject.hpp"
+#include "game_engine/core/GameEngine.hpp"
+#include "game_engine/core/WorldObject.hpp"
 
 class Fire : public::game_engine::graphics::PointLight {
 public:

@@ -9,7 +9,7 @@ namespace dt = debug_tools;
 
 bool Sun::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world, ge::GameEngine * engine) {
 
-    int ret = WorldObject::Init("assets/circle.obj", x, y, z);
+    int ret = WorldObject::Init("circle.obj", x, y, z);
     world->AddObject(this, x, y, z);
 
     DirectionalLight::direction_ = glm::vec3(0, 0, -1);

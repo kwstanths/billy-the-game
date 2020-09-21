@@ -5,7 +5,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "game_engine/ErrorCodes.hpp"
+#include "game_engine/core/ErrorCodes.hpp"
 
 namespace game_engine {
 namespace graphics {

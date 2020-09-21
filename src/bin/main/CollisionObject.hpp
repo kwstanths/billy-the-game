@@ -3,9 +3,9 @@
 
 #include <string>
 
-#include "game_engine/GameEngine.hpp"
-#include "game_engine/WorldObject.hpp"
-#include "game_engine/WorldSector.hpp"
+#include "game_engine/core/GameEngine.hpp"
+#include "game_engine/core/WorldObject.hpp"
+#include "game_engine/core/WorldSector.hpp"
 #include "game_engine/math/Types.hpp"
 
 #include "Maps/MapProperties.hpp"

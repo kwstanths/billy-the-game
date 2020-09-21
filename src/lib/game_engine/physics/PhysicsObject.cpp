@@ -1,7 +1,7 @@
 #include "PhysicsObject.hpp"
 #include "PhysicsEngine.hpp"
 
-#include "game_engine/ErrorCodes.hpp"
+#include "game_engine/core/ErrorCodes.hpp"
 #include "game_engine/math/AABox.hpp"
 
 #include "debug_tools/CodeReminder.hpp"

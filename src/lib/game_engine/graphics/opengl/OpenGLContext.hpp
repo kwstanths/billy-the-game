@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "game_engine/Controls.hpp"
+#include "game_engine/core/Controls.hpp"
 
 #include "OpenGLIncludes.hpp"
 #include "OpenGLShaders.hpp"
@@ -105,11 +105,11 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         OpenGLShaderVerticesColor shader_vertices_color_;
         OpenGLShaderText shader_text_;
-        OpenGLShaderText3D shader_text_3d_;
-        OpenGLShader shader_quad_;
-        OpenGLShaderGBuffer shader_gbuffer_ssao_;
+        OpenGLShaderGBuffer shader_gbuffer_;
+        OpenGLShaderStandard shader_standard_;
         OpenGLShaderSSAO shader_ssao_;
         OpenGLShaderSeparableAO shader_separable_ao_;
+        OpenGLShaderQuad shader_quad_;
         OpenGLShader shader_blur_;
         OpenGLShaderFinalPass shader_final_pass_;
         OpenGLShaderShadowMap shader_shadow_map_;

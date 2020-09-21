@@ -57,7 +57,7 @@ namespace game_engine {
         /* Initialize the circular buffer for deleting objects */
         delete_objects_buffer_.Init(128);
 
-        use_visible_world_window_ = ConfigurationFile::instance().UseVisibleWindow();
+        use_visible_world_window_ = ConfigurationFile::GetInstance().UseVisibleWindow();
 
         {
             /* 

@@ -21,7 +21,7 @@ namespace game_engine {
         
         int ret;
         
-        ret = debug_object_point_.Init(0, 0, 0, "assets/debug.obj");
+        ret = debug_object_point_.Init(0, 0, 0, "debug.obj");
         if (ret) return ret;
 
         is_inited_ = true;

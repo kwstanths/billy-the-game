@@ -5,8 +5,8 @@
 #include "game_engine/graphics/Renderer.hpp"
 #include "game_engine/graphics/GraphicsTypes.hpp"
 #include "game_engine/math/Types.hpp"
-#include "game_engine/GameEngine.hpp"
-#include "game_engine/WorldObject.hpp"
+#include "game_engine/core/GameEngine.hpp"
+#include "game_engine/core/WorldObject.hpp"
 
 #include "Sun.hpp"
 

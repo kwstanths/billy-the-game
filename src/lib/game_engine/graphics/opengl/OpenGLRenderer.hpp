@@ -71,18 +71,23 @@ namespace game_engine { namespace graphics { namespace opengl {
         /**
             Draws the object using a GBuffer
         */
-        int DrawGBuffer(OpenGLObject & object, glm::mat4 model, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
+        int DrawGBufferStandard(OpenGLObject & object, glm::mat4 model, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
     
         /**
             Draws the object with displacement, using a GBuffer
         */
-        int DrawDisplacement(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, float displacement_mult);
+        int DrawGBufferDisplacement(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, float displacement_mult, OpenGLTexture * diffuse_texture);
 
         /**
         
         */
         int DrawDisplacementNormals(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, float displacement_mult, glm::vec3 color);
     
+        /**
+        
+        */
+        int DrawStandard(OpenGLObject & object, glm::mat4 model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
+
         /**
             Draws the object with a single color
         */
@@ -209,9 +214,11 @@ namespace game_engine { namespace graphics { namespace opengl {
         /* Verices color only shaders */
         OpenGLShaderVerticesColor shader_vertices_color_;
         /* texture drawing shader */
-        OpenGLShader shader_quad_;
+        OpenGLShaderQuad shader_quad_;
         /* gbuffer shader used */
         OpenGLShaderGBuffer shader_gbuffer_;
+        /* Standard forward shader */
+        OpenGLShaderStandard shader_standard_;
         /* SSAO shader */
         OpenGLShaderSSAO shader_ssao_;
         /* Separable AO shader */

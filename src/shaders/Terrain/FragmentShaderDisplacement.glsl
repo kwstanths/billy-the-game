@@ -8,6 +8,7 @@ layout(location = 3) out vec3 g_position_light;
 uniform mat4 matrix_model;
 uniform mat4 matrix_view;
 uniform sampler2D displacement_map;
+uniform sampler2D texture_diffuse;
 uniform float displacement_intensity;
 
 in TES_OUT {
@@ -35,7 +36,7 @@ void main()
     /* Transform object space normal to view space */
     g_normal = normalize(transpose(inverse(mat3(matrix_view * matrix_model))) * vertex_normal);
     
-    g_albedo_spec.rgb = vec3(0.0, 0.8, 0);
+    g_albedo_spec.rgb = texture(texture_diffuse, 25 * tes_out.uv).rgb;
     g_albedo_spec.a = 0.1;
     
     g_position_light = tes_out.position_lightspace.xyz / tes_out.position_lightspace.w;

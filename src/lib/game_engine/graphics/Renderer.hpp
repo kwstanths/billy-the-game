@@ -1,9 +1,9 @@
 #ifndef __Renderer_hpp__
 #define __Renderer_hpp__
 
+#include "game_engine/core/Controls.hpp"
+#include "game_engine/core/ConsoleParser.hpp"
 #include "game_engine/math/Types.hpp"
-#include "game_engine/Controls.hpp"
-#include "game_engine/ConsoleParser.hpp"
 #include "game_engine/graphics/opengl/OpenGLContext.hpp"
 #include "game_engine/graphics/opengl/OpenGLRenderer.hpp"
 #include "game_engine/graphics/opengl/OpenGLObject.hpp"

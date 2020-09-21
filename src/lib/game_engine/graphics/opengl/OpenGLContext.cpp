@@ -1,6 +1,7 @@
 #include "OpenGLContext.hpp"
 
-#include "game_engine/ErrorCodes.hpp"
+#include "game_engine/core/ErrorCodes.hpp"
+#include "game_engine/core/FileSystem.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 
@@ -59,21 +60,23 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
     
+        std::string shaders_dir = FileSystem::GetInstance().GetDirectoryShaders();
+
         /* Compile and link shaders */
         int ret = 0;
-        ret += shader_text_.Init("shaders/VertexShaderText.glsl", "shaders/FragmentShaderText.glsl");
-        //ret += shader_text_3d_.Init("shaders/VertexShaderText3D.glsl", "shaders/FragmentShaderText3D.glsl");
-        ret += shader_vertices_color_.Init("shaders/VertexShaderVerticesColor.glsl", "shaders/FragmentShaderVerticesColor.glsl");
-        ret += shader_quad_.Init("shaders/VertexShaderQuad.glsl", "shaders/FragmentShaderQuad.glsl");
-        ret += shader_gbuffer_ssao_.Init("shaders/VertexShaderGBuffer.glsl", "shaders/FragmentShaderGBuffer.glsl");
-        ret += shader_ssao_.Init("shaders/PostProcessing/VertexShaderSSAO.glsl", "shaders/PostProcessing/FragmentShaderSSAO.glsl");
-        ret += shader_separable_ao_.Init("shaders/PostProcessing/VertexShaderSeparableAO.glsl", "shaders/PostProcessing/FragmentShaderSeparableAO.glsl");
-        ret += shader_blur_.Init("shaders/PostProcessing/VertexShaderBlur.glsl", "shaders/PostProcessing/FragmentShaderBlur.glsl");
-        ret += shader_final_pass_.Init("shaders/VertexShaderFinalPass.glsl", "shaders/FragmentShaderFinalPass.glsl");
-        ret += shader_shadow_map_.Init("shaders/VertexShaderShadowMap.glsl", "shaders/FragmentShaderShadowMap.glsl");
-        ret += shader_draw_normals_.Init("shaders/VertexShaderDrawNormals.glsl", "shaders/FragmentShaderDrawNormals.glsl", "shaders/GeometryShaderDrawNormals.glsl");
-        ret += shader_displacement_.Init("shaders/Terrain/VertexShaderDisplacement.glsl", "shaders/Terrain/FragmentShaderDisplacement.glsl", "shaders/Terrain/TesselationControlShaderDisplacement.glsl", "shaders/Terrain/TesselationEvaluationShaderDisplacement.glsl");
-        ret += shader_displacement_draw_normals_.Init("shaders/Terrain/VertexShaderDisplacement.glsl", "shaders/Terrain/FragmentShaderDisplacementDrawNormals.glsl", "shaders/Terrain/TesselationControlShaderDisplacement.glsl", "shaders/Terrain/TesselationEvaluationShaderDisplacementDrawNormals.glsl", "shaders/Terrain/GeometryShaderDisplacementDrawNormals.glsl");
+        ret += shader_text_.Init(shaders_dir + "/VertexShaderText.glsl", shaders_dir + "/FragmentShaderText.glsl");
+        ret += shader_vertices_color_.Init(shaders_dir + "/VertexShaderVerticesColor.glsl", shaders_dir + "/FragmentShaderVerticesColor.glsl");
+        ret += shader_quad_.Init(shaders_dir + "/VertexShaderQuad.glsl", shaders_dir + "/FragmentShaderQuad.glsl");
+        ret += shader_gbuffer_.Init(shaders_dir + "/VertexShaderGBuffer.glsl", shaders_dir + "/FragmentShaderGBuffer.glsl");
+        ret += shader_standard_.Init(shaders_dir + "/VertexShaderGBuffer.glsl", shaders_dir + "/FragmentShaderStandard.glsl");
+        ret += shader_ssao_.Init(shaders_dir + "/VertexShaderQuad.glsl", shaders_dir + "/PostProcessing/FragmentShaderSSAO.glsl");
+        ret += shader_separable_ao_.Init(shaders_dir + "/VertexShaderQuad.glsl", shaders_dir + "/PostProcessing/FragmentShaderSeparableAO.glsl");
+        ret += shader_blur_.Init(shaders_dir + "/VertexShaderQuad.glsl", shaders_dir + "/PostProcessing/FragmentShaderBlur.glsl");
+        ret += shader_final_pass_.Init(shaders_dir + "/VertexShaderQuad.glsl", shaders_dir + "/FragmentShaderFinalPass.glsl");
+        ret += shader_shadow_map_.Init(shaders_dir + "/VertexShaderShadowMap.glsl", shaders_dir + "/FragmentShaderShadowMap.glsl");
+        ret += shader_draw_normals_.Init(shaders_dir + "/VertexShaderDrawNormals.glsl", shaders_dir + "/FragmentShaderDrawNormals.glsl", shaders_dir + "/GeometryShaderDrawNormals.glsl");
+        ret += shader_displacement_.Init(shaders_dir + "/Terrain/VertexShaderDisplacement.glsl", shaders_dir + "/Terrain/FragmentShaderDisplacement.glsl", shaders_dir + "/Terrain/TesselationControlShaderDisplacement.glsl", shaders_dir + "/Terrain/TesselationEvaluationShaderDisplacement.glsl");
+        ret += shader_displacement_draw_normals_.Init(shaders_dir + "/Terrain/VertexShaderDisplacement.glsl", shaders_dir + "/Terrain/FragmentShaderDisplacementDrawNormals.glsl", shaders_dir + "/Terrain/TesselationControlShaderDisplacement.glsl", shaders_dir + "/Terrain/TesselationEvaluationShaderDisplacementDrawNormals.glsl", shaders_dir + "/Terrain/GeometryShaderDisplacementDrawNormals.glsl");
 
         if (ret) dt::Console(dt::CRITICAL, "Shaders compilation failed");
     
@@ -152,7 +155,7 @@ namespace game_engine { namespace graphics { namespace opengl {
     }
     
     std::string OpenGLContext::GetFontLocation() {
-        return config_.font_file_path;
+        return FileSystem::GetInstance().GetDirectoryAssets() + config_.font_file_path;
     }
     
     int OpenGLContext::ClearColor() {

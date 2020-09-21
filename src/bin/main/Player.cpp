@@ -7,7 +7,7 @@
 
 #include "debug_tools/Console.hpp"
 
-#include "game_engine/InteractableObject.hpp"
+#include "game_engine/core/InteractableObject.hpp"
 
 namespace dt = debug_tools;
 namespace ge = game_engine;
@@ -29,7 +29,7 @@ int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera
     engine_ = engine;
     camera_ = camera;
 
-    int ret = WorldObject::Init("assets/player.obj", x, y, z);
+    int ret = WorldObject::Init("player.obj", x, y, z);
     world->AddObject(this, x, y, z);
     Scale(0.6, 0.6, 0.6);
 

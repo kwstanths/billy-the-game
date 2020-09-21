@@ -38,19 +38,37 @@ namespace game_engine { namespace graphics {
         opengl::OpenGLTexture * texture_specular_;
     };
 
+    /** 
+        Material used for standard drawing, forward pass
+    */
+    class MaterialForwardStandard : public Material {
+    public:
+        MaterialForwardStandard(game_engine::math::Vector3D ambient, game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, Real_t shininess, std::string texture_diffuse, std::string texture_specular);
+
+        void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+
+        game_engine::math::Vector3D ambient_;
+        game_engine::math::Vector3D diffuse_;
+        game_engine::math::Vector3D specular_;
+        Real_t shininess_;
+        opengl::OpenGLTexture * texture_diffuse_;
+        opengl::OpenGLTexture * texture_specular_;
+    };
+
     /**
         Material used for displcament map rendering, deferred pass
     */
     class MaterialDeferredDisplacement : public Material {
     public:
-        MaterialDeferredDisplacement(game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, std::string texture_displacement);
+        MaterialDeferredDisplacement(std::string texture_displacement, std::string texture_diffuse);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
         void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
         game_engine::math::Vector3D diffuse_;
-        game_engine::math::Vector3D specular_;
         opengl::OpenGLTexture * texture_displacement_;
+        opengl::OpenGLTexture * texture_diffuse_;
         Real_t displacement_intensity_ = 1;
     };
 

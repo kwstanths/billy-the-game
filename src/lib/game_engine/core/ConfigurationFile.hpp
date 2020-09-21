@@ -9,7 +9,7 @@ namespace game_engine {
     class ConfigurationFile {
     public:
 
-        static ConfigurationFile &instance() {
+        static ConfigurationFile &GetInstance() {
             static ConfigurationFile instance;
 
             return instance;

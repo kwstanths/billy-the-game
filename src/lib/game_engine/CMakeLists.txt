@@ -12,8 +12,8 @@ project(${NAME})
 include_directories(${ENGINE_INCLUDE_DIRS})
 
 # Sources
-file(GLOB ${NAME}_HEADERS *.hpp)
-file(GLOB ${NAME}_SOURCES *.cpp)
+file(GLOB ${NAME}_CORE_HEADERS core/*.hpp)
+file(GLOB ${NAME}_CORE_SOURCES core/*.cpp)
 file(GLOB ${NAME}_PHY_HEADERS physics/*.hpp)
 file(GLOB ${NAME}_PHY_SOURCES physics/*.cpp)
 file(GLOB ${NAME}_MATH_HEADERS math/*.hpp)
@@ -30,6 +30,7 @@ file(GLOB ${NAME}_GL_SOURCES graphics/opengl/*.cpp)
 # Target
 add_library(
 	${NAME} ${${NAME}_HEADERS} ${${NAME}_SOURCES} 
+	${${NAME}_CORE_HEADERS} ${${NAME}_CORE_SOURCES}
 	${${NAME}_PHY_HEADERS} ${${NAME}_PHY_SOURCES}
 	${${NAME}_MATH_HEADERS} ${${NAME}_MATH_SOURCES}
 	${${NAME}_MEM_HEADERS} ${${NAME}_MEM_SOURCES}
@@ -38,8 +39,8 @@ add_library(
 	${${NAME}_GL_HEADERS} ${${NAME}_GL_SOURCES}
 	)
 
-source_group("core\\Headers"		FILES	${${NAME}_HEADERS})
-source_group("core\\Sources"		FILES	${${NAME}_SOURCES})
+source_group("core\\Headers"		FILES	${${NAME}_CORE_HEADERS})
+source_group("core\\Sources"		FILES	${${NAME}_CORE_SOURCES})
 source_group("physics\\Headers"		FILES	${${NAME}_PHY_HEADERS})
 source_group("physics\\Sources"		FILES	${${NAME}_PHY_SOURCES})
 source_group("math\\Headers"		FILES	${${NAME}_MATH_HEADERS})
