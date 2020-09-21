@@ -1,7 +1,7 @@
 #include "OpenGLCamera.hpp"
 
 #include "game_engine/math/HelpFunctions.hpp"
-#include "game_engine/ErrorCodes.hpp"
+#include "game_engine/core/ErrorCodes.hpp"
 
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;

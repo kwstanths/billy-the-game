@@ -1,5 +1,6 @@
 #include "AssimpHelp.hpp"
 
+#include "game_engine/core/FileSystem.hpp"
 #include "game_engine/math/Vector.hpp"
 
 #include "Material.hpp"
@@ -12,15 +13,16 @@ namespace graphics{
 
     int LoadModel(std::string file_path, std::vector<Mesh *>& out_meshes) {
 
+        std::string directory = FileSystem::GetInstance().GetDirectoryAssets();
+        std::string full_path = directory + "/" + file_path;
+
         /* Use assimp to load the model */
         Assimp::Importer importer;
-        const aiScene * scene = importer.ReadFile(file_path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene * scene = importer.ReadFile(full_path, aiProcess_Triangulate | aiProcess_FlipUVs);
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             dt::ConsoleInfoL(dt::WARNING, "Assimp::ReadFile error", "error", importer.GetErrorString());
             return -1;
         }
-    
-        std::string directory = file_path.substr(0, file_path.find_last_of('/'));
     
         ProcessNode(scene->mRootNode, scene, directory, out_meshes);
     
@@ -90,10 +92,10 @@ namespace graphics{
             material->Get(AI_MATKEY_SHININESS, shininess);
     
             diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP, directory);
-            if (diffuseMaps.size() == 0) diffuseMaps.push_back(Texture_t(std::string("assets/textures/spec_map_empty.png"), GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP));
+            if (diffuseMaps.size() == 0) diffuseMaps.push_back(Texture_t(directory + std::string("/textures/spec_map_empty.png"), GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP));
     
             specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP, directory);
-            if (specularMaps.size() == 0) specularMaps.push_back(Texture_t(std::string("assets/textures/spec_map_empty.png"), GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP));
+            if (specularMaps.size() == 0) specularMaps.push_back(Texture_t(directory + std::string("/textures/spec_map_empty.png"), GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP));
 
             /* Not imported currently. They have to be set explicitly when seting a material for a mesh */
             normalMaps = LoadMaterialTextures(material, aiTextureType_NORMALS, GAME_ENGINE_TEXTURE_TYPE_NORMAL_MAP, directory);
@@ -128,15 +130,16 @@ namespace graphics{
 
     int ProcessObjectAtlas(std::string file_path, std::vector<Mesh*>& out_meshes) {
 
+        std::string directory = FileSystem::GetInstance().GetDirectoryAssets();
+        std::string full_path = directory + "/" + file_path;
+
         /* Use assimp to load the model */
         Assimp::Importer importer;
-        const aiScene * scene = importer.ReadFile(file_path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene * scene = importer.ReadFile(full_path, aiProcess_Triangulate | aiProcess_FlipUVs);
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             dt::ConsoleInfoL(dt::WARNING, "Assimp::ReadFile error", "error", importer.GetErrorString());
             return -1;
         }
-
-        std::string directory = file_path.substr(0, file_path.find_last_of('/'));
 
         ProcessNode(scene->mRootNode, scene, directory, out_meshes);
 

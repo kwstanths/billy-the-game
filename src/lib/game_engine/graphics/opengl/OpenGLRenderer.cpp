@@ -2,7 +2,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "game_engine/ConsoleParser.hpp"
+#include "game_engine/core/ConsoleParser.hpp"
 #include "game_engine/math/RNG.hpp"
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/graphics/GraphicsTypes.hpp"
@@ -41,15 +41,22 @@ namespace game_engine { namespace graphics { namespace opengl {
             /* Used to draw textures */
             shader_quad_ = context_->shader_quad_;
             shader_quad_.Use();
-            shader_quad_.SetUniformInt(shader_quad_.GetUniformLocation(shader_sampler_texture), 0);
+            shader_quad_.SetUniformInt(shader_quad_.uni_sampler_texture_, 0);
         }
     
         {
             /* The G buffer shader */
-            shader_gbuffer_ = context_->shader_gbuffer_ssao_;
+            shader_gbuffer_ = context_->shader_gbuffer_;
             shader_gbuffer_.Use();
             shader_gbuffer_.SetUniformInt(shader_gbuffer_.GetUniformLocation("object_material.texture_diffuse"), 0);
             shader_gbuffer_.SetUniformInt(shader_gbuffer_.GetUniformLocation("object_material.texture_specular"), 1);
+        }
+
+        {
+            shader_standard_ = context_->shader_standard_;
+            shader_standard_.Use();
+            shader_standard_.SetUniformInt(shader_standard_.GetUniformLocation("object_material.texture_diffuse"), 0);
+            shader_standard_.SetUniformInt(shader_standard_.GetUniformLocation("object_material.texture_specular"), 1);
         }
     
         {
@@ -197,6 +204,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_displacement_ = context->shader_displacement_;
         shader_displacement_.Use();
         shader_displacement_.SetUniformInt(shader_displacement_.uni_displacement_map_, 0);
+        shader_displacement_.SetUniformInt(shader_displacement_.uni_texture_diffuse_, 1);
 
         shader_displacement_draw_normals_ = context->shader_displacement_draw_normals_;
         shader_displacement_draw_normals_.Use();
@@ -269,6 +277,10 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_gbuffer_.Use();
         shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_View_, camera->view_matrix_);
         shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_Projection_, camera->projection_matrix_);
+
+        shader_standard_.Use();
+        shader_standard_.SetUniformMat4(shader_standard_.uni_View_, camera->view_matrix_);
+        shader_standard_.SetUniformMat4(shader_standard_.uni_Projection_, camera->projection_matrix_);
     
         shader_ssao_.Use();
         shader_ssao_.SetUniformMat4(shader_ssao_.uni_matrix_projection_, camera->projection_matrix_);
@@ -293,7 +305,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_displacement_draw_normals_.SetUniformMat4(shader_displacement_draw_normals_.uni_Projection_, camera->projection_matrix_);
     }
     
-    int OpenGLRenderer::DrawGBuffer(OpenGLObject & object, glm::mat4 model, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture) {
+    int OpenGLRenderer::DrawGBufferStandard(OpenGLObject & object, glm::mat4 model, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture) {
     
         if (!is_inited_) return -1;
         if (!object.IsInited()) return -1;
@@ -320,6 +332,101 @@ namespace game_engine { namespace graphics { namespace opengl {
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
     
+        return 0;
+    }
+
+    int OpenGLRenderer::DrawGBufferDisplacement(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, float displacement_mult, OpenGLTexture * diffuse_texture)
+    {
+        glBindVertexArray(object.VAO_);
+        glPatchParameteri(GL_PATCH_VERTICES, 3);
+
+        ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
+        if (command.type_ == COMMAND_CONSTANT_TESSELLATION && !math::Equal(constant_tessellation_, static_cast<bool>(command.arg_1_))) {
+            constant_tessellation_ = static_cast<bool>(command.arg_1_);
+        }
+
+        glm::vec3 camera_position;
+        camera_->GetPositionVector(camera_position.x, camera_position.y, camera_position.z);
+
+        shader_displacement_.Use();
+        shader_displacement_.SetUniformMat4(shader_displacement_.uni_Model_, model);
+        shader_displacement_.SetUniformVec3(shader_displacement_.uni_camera_world_position_, camera_position);
+        shader_displacement_.SetUniformFloat(shader_displacement_.uni_displacement_intensity_, displacement_mult);
+        shader_displacement_.SetUniformBool(shader_displacement_.uni_constant_tessellation_, constant_tessellation_);
+
+        object.SetupAttributes(&shader_displacement_);
+
+        displacement_texture->ActivateTexture(0);
+        diffuse_texture->ActivateTexture(1);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.element_buffer_);
+        glDrawElements(GL_PATCHES, object.total_indices_, GL_UNSIGNED_INT, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        glBindVertexArray(0);
+        return 0;
+    }
+
+    int OpenGLRenderer::DrawDisplacementNormals(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, float displacement_mult, glm::vec3 color)
+    {
+        glBindVertexArray(object.VAO_);
+        glPatchParameteri(GL_PATCH_VERTICES, 3);
+
+        ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
+        if (command.type_ == COMMAND_CONSTANT_TESSELLATION && !math::Equal(constant_tessellation_, static_cast<bool>(command.arg_1_))) {
+            constant_tessellation_ = static_cast<bool>(command.arg_1_);
+        }
+
+        glm::vec3 camera_position;
+        camera_->GetPositionVector(camera_position.x, camera_position.y, camera_position.z);
+
+        shader_displacement_draw_normals_.Use();
+        shader_displacement_draw_normals_.SetUniformMat4(shader_displacement_draw_normals_.uni_Model_, model);
+        shader_displacement_draw_normals_.SetUniformVec3(shader_displacement_draw_normals_.uni_camera_world_position_, camera_position);
+        shader_displacement_draw_normals_.SetUniformFloat(shader_displacement_draw_normals_.uni_displacement_intensity_, displacement_mult);
+        shader_displacement_draw_normals_.SetUniformVec3(shader_displacement_draw_normals_.uni_color_, color);
+        shader_displacement_draw_normals_.SetUniformBool(shader_displacement_draw_normals_.uni_constant_tessellation_, constant_tessellation_);
+
+        object.SetupAttributes(&shader_displacement_);
+
+        displacement_texture->ActivateTexture(0);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.element_buffer_);
+        glDrawElements(GL_PATCHES, object.total_indices_, GL_UNSIGNED_INT, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        glBindVertexArray(0);
+        return 0;
+    }
+
+    int OpenGLRenderer::DrawStandard(OpenGLObject & object, glm::mat4 model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture)
+    {
+
+        if (!is_inited_) return -1;
+        if (!object.IsInited()) return -1;
+
+        /* TODO commented components not used */
+        shader_standard_.Use();
+        /* Set the model uniform */
+        shader_standard_.SetUniformMat4(shader_standard_.uni_Model_, model);
+        shader_standard_.SetUniformVec3(shader_standard_.GetUniformLocation("object_material.ambient"), ambient);
+        shader_standard_.SetUniformVec3(shader_standard_.GetUniformLocation("object_material.diffuse"), diffuse);
+        shader_standard_.SetUniformVec3(shader_standard_.GetUniformLocation("object_material.specular"), specular);
+        shader_standard_.SetUniformFloat(shader_standard_.GetUniformLocation("object_material.shininess"), shininess);
+
+        glBindVertexArray(object.VAO_);
+
+        object.SetupAttributes(&shader_gbuffer_);
+
+        diffuse_texture->ActivateTexture(0);
+        specular_texture->ActivateTexture(1);
+
+        object.Render();
+
+        /* Unbind */
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindVertexArray(0);
+
         return 0;
     }
 
@@ -594,6 +701,12 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_final_pass_.SetUniformVec3(shader_final_pass_.GetUniformLocation("directional_light.ambient"), color_ambient);
         shader_final_pass_.SetUniformVec3(shader_final_pass_.GetUniformLocation("directional_light.diffuse"), color_diffuse);
         shader_final_pass_.SetUniformVec3(shader_final_pass_.GetUniformLocation("directional_light.specular"), color_specular);
+        
+        shader_standard_.Use();
+        shader_standard_.SetUniformVec3(shader_standard_.GetUniformLocation("directional_light.direction"), direction);
+        shader_standard_.SetUniformVec3(shader_standard_.GetUniformLocation("directional_light.ambient"), color_ambient);
+        shader_standard_.SetUniformVec3(shader_standard_.GetUniformLocation("directional_light.diffuse"), color_diffuse);
+        shader_standard_.SetUniformVec3(shader_standard_.GetUniformLocation("directional_light.specular"), color_specular);
 
         return 0;
     }
@@ -660,69 +773,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
-    int OpenGLRenderer::DrawDisplacement(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, float displacement_mult)
-    {
-        glBindVertexArray(object.VAO_);
-        glPatchParameteri(GL_PATCH_VERTICES, 3);
-
-        ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
-        if (command.type_ == COMMAND_CONSTANT_TESSELLATION && !math::Equal(constant_tessellation_, static_cast<bool>(command.arg_1_))) {
-            constant_tessellation_ = static_cast<bool>(command.arg_1_);
-        }
-
-        glm::vec3 camera_position;
-        camera_->GetPositionVector(camera_position.x, camera_position.y, camera_position.z);
-
-        shader_displacement_.Use();
-        shader_displacement_.SetUniformMat4(shader_displacement_.uni_Model_, model);
-        shader_displacement_.SetUniformVec3(shader_displacement_.uni_camera_world_position_, camera_position);
-        shader_displacement_.SetUniformFloat(shader_displacement_.uni_displacement_intensity_, displacement_mult);
-        shader_displacement_.SetUniformBool(shader_displacement_.uni_constant_tessellation_, constant_tessellation_);
-
-        object.SetupAttributes(&shader_displacement_);
-
-        displacement_texture->ActivateTexture(0);
-        
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.element_buffer_);
-        glDrawElements(GL_PATCHES, object.total_indices_, GL_UNSIGNED_INT, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-        glBindVertexArray(0);
-        return 0;
-    }
-
-    int OpenGLRenderer::DrawDisplacementNormals(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, float displacement_mult, glm::vec3 color)
-    {
-        glBindVertexArray(object.VAO_);
-        glPatchParameteri(GL_PATCH_VERTICES, 3);
-
-        ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
-        if (command.type_ == COMMAND_CONSTANT_TESSELLATION && !math::Equal(constant_tessellation_, static_cast<bool>(command.arg_1_))) {
-            constant_tessellation_ = static_cast<bool>(command.arg_1_);
-        }
-
-        glm::vec3 camera_position;
-        camera_->GetPositionVector(camera_position.x, camera_position.y, camera_position.z);
-
-        shader_displacement_draw_normals_.Use();
-        shader_displacement_draw_normals_.SetUniformMat4(shader_displacement_draw_normals_.uni_Model_, model);
-        shader_displacement_draw_normals_.SetUniformVec3(shader_displacement_draw_normals_.uni_camera_world_position_, camera_position);
-        shader_displacement_draw_normals_.SetUniformFloat(shader_displacement_draw_normals_.uni_displacement_intensity_, displacement_mult);
-        shader_displacement_draw_normals_.SetUniformVec3(shader_displacement_draw_normals_.uni_color_, color);
-        shader_displacement_draw_normals_.SetUniformBool(shader_displacement_draw_normals_.uni_constant_tessellation_, constant_tessellation_);
-
-        object.SetupAttributes(&shader_displacement_);
-
-        displacement_texture->ActivateTexture(0);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.element_buffer_);
-        glDrawElements(GL_PATCHES, object.total_indices_, GL_UNSIGNED_INT, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-        glBindVertexArray(0);
-        return 0;
-    }
-
     int OpenGLRenderer::DrawColor(OpenGLObject & object, glm::mat4 & model, glm::vec3 color, float alpha)
     {
         glBindVertexArray(object.VAO_);
@@ -744,10 +794,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         glBindVertexArray(VAO_Quad_);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glBindVertexArray(0);
-    
-    
     }
 
-        }
-    }
+}
+}
 }

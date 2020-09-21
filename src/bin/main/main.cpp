@@ -2,7 +2,7 @@
 #include <Windows.h>
 #endif
 
-#include "game_engine/GameEngine.hpp"
+#include "game_engine/core/GameEngine.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"

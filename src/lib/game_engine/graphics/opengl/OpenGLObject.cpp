@@ -1,7 +1,7 @@
 #include "OpenGLObject.hpp"
 
 #include "game_engine/math/Matrices.hpp"
-#include "game_engine/FileIO.hpp"
+#include "game_engine/core/FileIO.hpp"
 
 #include "debug_tools/Console.hpp"
 

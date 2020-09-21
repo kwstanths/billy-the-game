@@ -1,7 +1,7 @@
 #include "Mesh.hpp"
 
 #include "AssetManager.hpp"
-#include "game_engine/ErrorCodes.hpp"
+#include "game_engine/core/ErrorCodes.hpp"
 
 namespace gl = game_engine::graphics::opengl;
 

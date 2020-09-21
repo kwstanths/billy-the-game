@@ -25,7 +25,7 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     //{
     //    Player * player;
     //    player = NewObj<Player>();
-    //    player->Init(0, 9.3, 0, input, camera, this, engine);
+    //    player->Init(0, 8.3, 0, input, camera, this, engine);
     //}
     
     //for (int i = -6; i <= 6; i+=6){
@@ -50,7 +50,7 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     floor->Init(0.0f, 0.0f, 0.0f, this);
 
     FloorNormals * floor_normals = NewObj<FloorNormals>();
-    floor_normals->Init(0.0f, 0.0f, 0.0f, this);
+    floor_normals->Init(0.0f, 6.6f, 0.0f, this);
 
     /* A sun */
     Sun * sun = NewObj<Sun>();

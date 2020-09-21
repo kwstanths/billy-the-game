@@ -24,7 +24,7 @@ namespace game_engine { namespace graphics {
 
     void MaterialDeferredStandard::Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
-        renderer->DrawGBuffer(object, model, diffuse_.ToGlm(), specular_.ToGlm(), texture_diffuse_, texture_specular_);
+        renderer->DrawGBufferStandard(object, model, diffuse_.ToGlm(), specular_.ToGlm(), texture_diffuse_, texture_specular_);
     }
 
     void MaterialDeferredStandard::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
@@ -32,20 +32,47 @@ namespace game_engine { namespace graphics {
         renderer->DrawShadowMap(object, model);
     }
 
-    MaterialDeferredDisplacement::MaterialDeferredDisplacement(game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, std::string texture_displacement)
+
+    MaterialForwardStandard::MaterialForwardStandard(game_engine::math::Vector3D ambient, game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, Real_t shininess, std::string texture_diffuse, std::string texture_specular)
     {
+        ambient_ = ambient;
         diffuse_ = diffuse;
         specular_ = specular;
+        shininess_ = shininess;
 
         AssetManager& instance = AssetManager::GetInstance();
+        texture_diffuse_ = instance.GetTexture(texture_diffuse, GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP);
+        texture_specular_ = instance.GetTexture(texture_specular, GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP);
+
+        rendering_queue_ = 1;
+    }
+
+    void MaterialForwardStandard::Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        renderer->DrawStandard(object, model, ambient_.ToGlm(), diffuse_.ToGlm(), specular_.ToGlm(), shininess_, texture_diffuse_, texture_specular_);
+        glDisable(GL_BLEND);
+    }
+
+    void MaterialForwardStandard::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
+    {
+        /* empty */
+    }
+
+
+    MaterialDeferredDisplacement::MaterialDeferredDisplacement(std::string texture_displacement, std::string texture_diffuse)
+    {
+        AssetManager& instance = AssetManager::GetInstance();
         texture_displacement_ = instance.GetTexture(texture_displacement, GAME_ENGINE_TEXTURE_TYPE_DISPLACEMENT_MAP);
+        texture_diffuse_ = instance.GetTexture(texture_diffuse, GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP);
 
         rendering_queue_ = 0;
     }
 
     void MaterialDeferredDisplacement::Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
-        renderer->DrawDisplacement(object, model, texture_displacement_, displacement_intensity_);
+        renderer->DrawGBufferDisplacement(object, model, texture_displacement_, displacement_intensity_, texture_diffuse_);
     }
 
     void MaterialDeferredDisplacement::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
@@ -53,6 +80,7 @@ namespace game_engine { namespace graphics {
         /* TODO Tesselation shader shadow map not implemented */
         return;
     }
+
 
     MaterialForwardDrawNormals::MaterialForwardDrawNormals(game_engine::math::Vector3D color)
     {
@@ -70,6 +98,7 @@ namespace game_engine { namespace graphics {
     {
         /* empty */
     }
+
 
     MaterialForwardColor::MaterialForwardColor(game_engine::math::Vector3D color)
     {
@@ -109,6 +138,7 @@ namespace game_engine { namespace graphics {
 
     void MaterialForwardDisplacementDrawNormals::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
+        /* empty */
     }
 
 }

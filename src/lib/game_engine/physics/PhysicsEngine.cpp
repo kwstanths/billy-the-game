@@ -2,7 +2,7 @@
 
 #include "game_engine/memory/MemoryManager.hpp"
 
-#include "game_engine/ErrorCodes.hpp"
+#include "game_engine/core/ErrorCodes.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"

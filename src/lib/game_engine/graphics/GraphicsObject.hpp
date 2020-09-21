@@ -28,7 +28,7 @@ namespace graphics {
             @param z Position z coordinate
             @param model_file_path A disk path of the asset
         */
-        int Init(Real_t x, Real_t y, Real_t z, std::string model_file_path);
+        int Init(Real_t x, Real_t y, Real_t z, std::string model_file);
 
         static int InitObjectAtlas(std::string file_name);
 

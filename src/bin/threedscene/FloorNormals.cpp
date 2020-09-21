@@ -2,23 +2,30 @@
 
 namespace ge = game_engine;
 
+#include "game_engine/core/ConsoleParser.hpp"
+#include "game_engine/core/FileSystem.hpp"
 #include "game_engine/graphics/Material.hpp"
 #include "game_engine/math/Vector.hpp"
-#include "game_engine/ConsoleParser.hpp"
 
 FloorNormals::FloorNormals() {
     is_inited_ = false;
 }
 
 int FloorNormals::Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_t z, game_engine::WorldSector * world) {
-    int ret = WorldObject::Init("assets/plane2.obj", x, y, z);
+    int ret = WorldObject::Init("plane2.obj", x, y, z);
     world->AddObject(this, x, y, z);
 
     //Rotate(ge::math::GetRadians(90.0f), glm::vec3(-1, 0, 0));
+    
+    std::string asssets_directory = ge::FileSystem::GetInstance().GetDirectoryAssets();
 
-    ge::graphics::MaterialForwardDisplacementDrawNormals * material = new ge::graphics::MaterialForwardDisplacementDrawNormals(ge::math::Vector3D(1, 1, 0), "assets/textures/DoubleBasin_big.png");
+    /*ge::graphics::MaterialForwardDisplacementDrawNormals * material = new ge::graphics::MaterialForwardDisplacementDrawNormals(ge::math::Vector3D(1, 1, 0), asssets_directory + "textures/DoubleBasin_big.png");
     material->texture_displacement_->SetFiltering(GL_LINEAR);
     material->displacement_intensity_ = 12;
+*/
+
+    ge::graphics::MaterialForwardStandard * material = new ge::graphics::MaterialForwardStandard(ge::math::Vector3D(0, 0, 0.2f), 
+        ge::math::Vector3D(0.2, 0, 0.8), ge::math::Vector3D(1, 1, 1), 64.0f, asssets_directory + "textures/spec_map_empty.png", asssets_directory + "textures/spec_map_empty.png");
 
     SetMaterial(material, -1);
 
@@ -34,6 +41,6 @@ void FloorNormals::Draw(ge::graphics::Renderer * renderer) {
         draw_ = static_cast<bool>(command.arg_1_);
     }
     
-    if (draw_)
+    //if (draw_)
         renderer->Draw(this);
 }

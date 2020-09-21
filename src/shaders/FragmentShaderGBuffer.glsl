@@ -27,7 +27,7 @@ uniform Material object_material;
 void main(){
     
 	vec4 texture_color = texture(object_material.texture_diffuse, vs_in.uv);
-	if (texture_color.rgb == vec3(1,1,1) || texture_color.a < 0.1) 
+	if (texture_color.a < 0.1) 
         discard;
 	
     /* Ambient and shininess components of the material are not stored */

@@ -1,7 +1,7 @@
 #ifndef __Input_hpp__
 #define __Input_hpp__
 
-#include "game_engine/GameEngine.hpp"
+#include "game_engine/core/GameEngine.hpp"
 
 /**
     Control input

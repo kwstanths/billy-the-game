@@ -5,8 +5,8 @@
 #include "game_engine/graphics/GraphicsTypes.hpp"
 #include "game_engine/graphics/Light.hpp"
 #include "game_engine/math/Types.hpp"
-#include "game_engine/GameEngine.hpp"
-#include "game_engine/WorldObject.hpp"
+#include "game_engine/core/GameEngine.hpp"
+#include "game_engine/core/WorldObject.hpp"
 
 class Sun : public game_engine::WorldObject, public::game_engine::graphics::DirectionalLight {
 public:

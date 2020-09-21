@@ -1,8 +1,8 @@
 #ifndef __World_hpp__
 #define __World_hpp__
 
-#include "game_engine/WorldSector.hpp"
-#include "game_engine/GameEngine.hpp"
+#include "game_engine/core/WorldSector.hpp"
+#include "game_engine/core/GameEngine.hpp"
 
 #include "Input.hpp"
 #include "Camera.hpp"

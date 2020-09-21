@@ -70,5 +70,5 @@ In world building:
 - Compile the project  
   - Open the .sln project file with visual studio and build the project (For animation branch, build in Release because of cally3d libs or change the .lib file to the debug one)
 - Locate the executable and copy on the same folder the dependencies  
-  - The folders: assets, fonts, src/shaders, map files, config files
+  - The folders: config files, map files for main binary. Configure config.txt to point to the assets and shaders folders 
   - The dependencies: freetype271.dll, assimp-vc140-mt.dll

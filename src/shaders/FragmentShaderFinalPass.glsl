@@ -134,7 +134,7 @@ void main() {
 	
 	/* Sum total components, the minimum color is zero, the maxium color possible the actual color of the fragment */
 	FragColor = vec4(clamp(cast_light_color + point_lights_color + directional_light_color, vec3(0,0,0), fragment_color), 1);
-    FragColor = vec4(cast_light_color + point_lights_color + directional_light_color, 1);
+    
     /* Fix the fragment's depth, since this is drawn using a quad that covers the screen */
     FixDepth();
 }

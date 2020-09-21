@@ -4,8 +4,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "game_engine/ErrorCodes.hpp"
-#include "game_engine/ConfigurationFile.hpp"
+#include "game_engine/core/ErrorCodes.hpp"
+#include "game_engine/core/ConfigurationFile.hpp"
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/math/Vector.hpp"
 #include "game_engine/math/Matrices.hpp"
@@ -217,7 +217,7 @@ namespace graphics {
 
         glViewport(0, 0, context_->GetWindowWidth(), context_->GetWindowHeight());
 
-        frr_render_mode = static_cast<RENDER_MODE>(ConfigurationFile::instance().GetRenderingMethod());
+        frr_render_mode = static_cast<RENDER_MODE>(ConfigurationFile::GetInstance().GetRenderingMethod());
 
         /* Bind the gbuffer, and draw the geometry */
         renderer_->g_buffer_->Bind();
@@ -331,7 +331,7 @@ namespace graphics {
 
         // Post processing stack should go here
         // Is AO enabled?
-        bool ssao = ConfigurationFile::instance().DoSSAO();
+        bool ssao = ConfigurationFile::GetInstance().DoSSAO();
         if (ssao) {
             ConsoleCommand command;
             /* Perform SSAO on the GBuffer */
@@ -432,7 +432,9 @@ namespace graphics {
             draw_calls_++;
         }
         
+
         /* Render forward queue */
+        renderer_->DrawWireframe(draw_wireframe_);
         queue = rendering_queues_[1];
         for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
             MESH_DRAW_t& draw_call = *itr;
@@ -441,6 +443,8 @@ namespace graphics {
             mesh->material_->Render(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
             draw_calls_++;
         }
+        renderer_->DrawWireframe(false);
+
 
         /* Render overlay */
         while (text_to_draw_.Items() > 0) {

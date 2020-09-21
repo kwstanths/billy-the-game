@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "game_engine/WorldSector.hpp"
-#include "game_engine/GameEngine.hpp"
+#include "game_engine/core/WorldSector.hpp"
+#include "game_engine/core/GameEngine.hpp"
 #include "game_engine/utility/FIFOWorker.hpp"
 #include "game_engine/math/AABox.hpp"
 

@@ -9,7 +9,7 @@
 
 #include "debug_tools/Console.hpp"
 
-#include "game_engine/ErrorCodes.hpp"
+#include "game_engine/core/ErrorCodes.hpp"
 
 namespace dt = debug_tools;
 
