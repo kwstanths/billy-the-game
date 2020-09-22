@@ -8,6 +8,7 @@
 #include "FloorNormals.hpp"
 #include "Fire.hpp"
 #include "Sun.hpp"
+#include "Water.hpp"
 
 namespace dt = debug_tools;
 namespace ge = game_engine;
@@ -50,7 +51,10 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     floor->Init(0.0f, 0.0f, 0.0f, this);
 
     FloorNormals * floor_normals = NewObj<FloorNormals>();
-    floor_normals->Init(0.0f, 6.6f, 0.0f, this);
+    floor_normals->Init(0.0f, 0.0f, 0.0f, this);
+
+    Water * water = NewObj<Water>();
+    water->Init(0.0f, 5.6f, 0.0f, this);
 
     /* A sun */
     Sun * sun = NewObj<Sun>();

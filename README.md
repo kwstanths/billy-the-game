@@ -63,12 +63,12 @@ In world building:
 
 
 ## Build and run instructions
-- Create a build folder.  
-  - In the top level directory create folder:  {top-levell-directory}/build  
+- Create a build folder  
+  - In the top level directory create folder:  {top-levell-directory}/build/  
 - Run cmake with destination the build folder, and source folder the top level directory  
-  - Navigate into the build folder, and type: 
+  - Navigate into the build folder, and type: cmake ../
 - Compile the project  
   - Open the .sln project file with visual studio and build the project (For animation branch, build in Release because of cally3d libs or change the .lib file to the debug one)
 - Locate the executable and copy on the same folder the dependencies  
-  - The folders: config files, map files for main binary. Configure config.txt to point to the assets and shaders folders 
+  - The files: config.txt files, map files for main binary. Configure config.txt to point to your assets and shaders folders 
   - The dependencies: freetype271.dll, assimp-vc140-mt.dll

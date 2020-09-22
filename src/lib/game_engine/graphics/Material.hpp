@@ -61,12 +61,12 @@ namespace game_engine { namespace graphics {
     */
     class MaterialDeferredDisplacement : public Material {
     public:
-        MaterialDeferredDisplacement(std::string texture_displacement, std::string texture_diffuse);
+        MaterialDeferredDisplacement(Real_t specular_intensity, std::string texture_displacement, std::string texture_diffuse);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
         void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
-        game_engine::math::Vector3D diffuse_;
+        Real_t specular_intensity_;
         opengl::OpenGLTexture * texture_displacement_;
         opengl::OpenGLTexture * texture_diffuse_;
         Real_t displacement_intensity_ = 1;
@@ -112,6 +112,21 @@ namespace game_engine { namespace graphics {
 
         Real_t alpha_;
         game_engine::math::Vector3D color_;
+    };
+
+    class MaterialForwardWater : public Material {
+    public:
+        MaterialForwardWater(game_engine::math::Vector3D ambient, game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, Real_t shininess, std::string texture_diffuse, std::string texture_specular);
+
+        void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+
+        game_engine::math::Vector3D ambient_;
+        game_engine::math::Vector3D diffuse_;
+        game_engine::math::Vector3D specular_;
+        Real_t shininess_;
+        opengl::OpenGLTexture * texture_diffuse_;
+        opengl::OpenGLTexture * texture_specular_;
     };
 
 }

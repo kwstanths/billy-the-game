@@ -75,11 +75,11 @@ namespace game_engine { namespace graphics { namespace opengl {
         ret += shader_final_pass_.Init(shaders_dir + "/VertexShaderQuad.glsl", shaders_dir + "/FragmentShaderFinalPass.glsl");
         ret += shader_shadow_map_.Init(shaders_dir + "/VertexShaderShadowMap.glsl", shaders_dir + "/FragmentShaderShadowMap.glsl");
         ret += shader_draw_normals_.Init(shaders_dir + "/VertexShaderDrawNormals.glsl", shaders_dir + "/FragmentShaderDrawNormals.glsl", shaders_dir + "/GeometryShaderDrawNormals.glsl");
-        ret += shader_displacement_.Init(shaders_dir + "/Terrain/VertexShaderDisplacement.glsl", shaders_dir + "/Terrain/FragmentShaderDisplacement.glsl", shaders_dir + "/Terrain/TesselationControlShaderDisplacement.glsl", shaders_dir + "/Terrain/TesselationEvaluationShaderDisplacement.glsl");
-        ret += shader_displacement_draw_normals_.Init(shaders_dir + "/Terrain/VertexShaderDisplacement.glsl", shaders_dir + "/Terrain/FragmentShaderDisplacementDrawNormals.glsl", shaders_dir + "/Terrain/TesselationControlShaderDisplacement.glsl", shaders_dir + "/Terrain/TesselationEvaluationShaderDisplacementDrawNormals.glsl", shaders_dir + "/Terrain/GeometryShaderDisplacementDrawNormals.glsl");
-
+        ret += shader_displacement_.Init(shaders_dir + "/Terrain/VertexShaderTessellation.glsl", shaders_dir + "/Terrain/FragmentShaderDisplacement.glsl", shaders_dir + "/Terrain/TessellationControlShaderDisplacement.glsl", shaders_dir + "/Terrain/TessellationEvaluationShaderDisplacement.glsl");
+        ret += shader_displacement_draw_normals_.Init(shaders_dir + "/Terrain/VertexShaderTessellation.glsl", shaders_dir + "/Terrain/FragmentShaderDisplacementDrawNormals.glsl", shaders_dir + "/Terrain/TessellationControlShaderDisplacement.glsl", shaders_dir + "/Terrain/TessellationEvaluationShaderDisplacementDrawNormals.glsl", shaders_dir + "/Terrain/GeometryShaderDisplacementDrawNormals.glsl");
+        ret += shader_water_.Init(shaders_dir + "/Terrain/VertexShaderTessellation.glsl", shaders_dir + "/Terrain/FragmentShaderWater.glsl", shaders_dir + "/Terrain/TessellationControlShaderDisplacement.glsl", shaders_dir + "/Terrain/TessellationEvaluationShaderWater.glsl");
         if (ret) dt::Console(dt::CRITICAL, "Shaders compilation failed");
-    
+        
         is_inited_ = true;
         return 0;
     }

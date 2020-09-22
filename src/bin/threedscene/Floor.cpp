@@ -15,12 +15,13 @@ int Floor::Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_
     world->AddObject(this, x, y, z);
 
     //Rotate(ge::math::GetRadians(90.0f), glm::vec3(-1, 0, 0));
+    Scale(0.5, 0.5, 0.5);
 
     std::string asssets_directory = ge::FileSystem::GetInstance().GetDirectoryAssets();
 
-    ge::graphics::MaterialDeferredDisplacement * material = new ge::graphics::MaterialDeferredDisplacement(asssets_directory + "textures/DoubleBasin_big.png", asssets_directory + "textures/grass.png");
+    ge::graphics::MaterialDeferredDisplacement * material = new ge::graphics::MaterialDeferredDisplacement(0, asssets_directory + "textures/Heightmap_Island.png", asssets_directory + "textures/grass.png");
     material->texture_displacement_->SetFiltering(GL_LINEAR);
-    material->displacement_intensity_ = 12;
+    material->displacement_intensity_ = 7;
 
     SetMaterial(material, -1);
 

@@ -7,6 +7,7 @@
 #include "game_engine/math/HelpFunctions.hpp"
 #include "game_engine/graphics/GraphicsTypes.hpp"
 #include "game_engine/graphics/AssetManager.hpp"
+#include "game_engine/core/FileSystem.hpp"
 
 #include "debug_tools/Console.hpp"
 
@@ -162,7 +163,31 @@ namespace game_engine { namespace graphics { namespace opengl {
             shader_final_pass_.SetUniformInt(shader_final_pass_.uni_texture_gbuffer_position_light_, 4);
             shader_final_pass_.SetUniformInt(shader_final_pass_.uni_shadow_map_, 5);
         }
-    
+
+        {
+            shader_draw_normals_ = context->shader_draw_normals_;
+        }
+
+        {
+            shader_displacement_ = context->shader_displacement_;
+            shader_displacement_.Use();
+            shader_displacement_.SetUniformInt(shader_displacement_.uni_displacement_map_, 0);
+            shader_displacement_.SetUniformInt(shader_displacement_.uni_texture_diffuse_, 1);
+        }
+
+        {
+            shader_displacement_draw_normals_ = context->shader_displacement_draw_normals_;
+            shader_displacement_draw_normals_.Use();
+            shader_displacement_draw_normals_.SetUniformInt(shader_displacement_draw_normals_.uni_displacement_map_, 0);
+        }
+
+        {
+            shader_water_ = context->shader_water_;
+            shader_water_.Use();
+            shader_water_.SetUniformInt(shader_water_.GetUniformLocation("object_material.texture_diffuse"), 0);
+            shader_water_.SetUniformInt(shader_water_.GetUniformLocation("object_material.texture_specular"), 1);
+        }
+
         /* Init GBuffer */
         g_buffer_->Init(context_);
         /* Init other frame buffers */
@@ -197,20 +222,8 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         /* Initialize an empty texture, used in several places */
         AssetManager& instance = AssetManager::GetInstance();
-        texture_empty_ = instance.GetTexture("assets/textures/spec_map_empty.png", GAME_ENGINE_TEXTURE_TYPE_EMPTY);
-    
-        shader_draw_normals_ = context->shader_draw_normals_;
-
-        shader_displacement_ = context->shader_displacement_;
-        shader_displacement_.Use();
-        shader_displacement_.SetUniformInt(shader_displacement_.uni_displacement_map_, 0);
-        shader_displacement_.SetUniformInt(shader_displacement_.uni_texture_diffuse_, 1);
-
-        shader_displacement_draw_normals_ = context->shader_displacement_draw_normals_;
-        shader_displacement_draw_normals_.Use();
-        shader_displacement_draw_normals_.SetUniformInt(shader_displacement_draw_normals_.uni_displacement_map_, 0);
-
-
+        texture_empty_ = instance.GetTexture(FileSystem::GetInstance().GetDirectoryAssets() + "/textures/spec_map_empty.png", GAME_ENGINE_TEXTURE_TYPE_EMPTY);
+   
         is_inited_ = true;
         return 0;
     }
@@ -303,6 +316,10 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_displacement_draw_normals_.Use();
         shader_displacement_draw_normals_.SetUniformMat4(shader_displacement_draw_normals_.uni_View_, camera->view_matrix_);
         shader_displacement_draw_normals_.SetUniformMat4(shader_displacement_draw_normals_.uni_Projection_, camera->projection_matrix_);
+
+        shader_water_.Use();
+        shader_water_.SetUniformMat4(shader_water_.uni_View_, camera->view_matrix_);
+        shader_water_.SetUniformMat4(shader_water_.uni_Projection_, camera->projection_matrix_);
     }
     
     int OpenGLRenderer::DrawGBufferStandard(OpenGLObject & object, glm::mat4 model, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture) {
@@ -335,7 +352,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
-    int OpenGLRenderer::DrawGBufferDisplacement(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, float displacement_mult, OpenGLTexture * diffuse_texture)
+    int OpenGLRenderer::DrawGBufferDisplacement(OpenGLObject & object, glm::mat4 & model, float specular_intensity, OpenGLTexture * displacement_texture, float displacement_mult, OpenGLTexture * diffuse_texture)
     {
         glBindVertexArray(object.VAO_);
         glPatchParameteri(GL_PATCH_VERTICES, 3);
@@ -353,6 +370,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_displacement_.SetUniformVec3(shader_displacement_.uni_camera_world_position_, camera_position);
         shader_displacement_.SetUniformFloat(shader_displacement_.uni_displacement_intensity_, displacement_mult);
         shader_displacement_.SetUniformBool(shader_displacement_.uni_constant_tessellation_, constant_tessellation_);
+        shader_displacement_.SetUniformFloat(shader_displacement_.uni_specular_intensity_, specular_intensity);
+
 
         object.SetupAttributes(&shader_displacement_);
 
@@ -427,6 +446,43 @@ namespace game_engine { namespace graphics { namespace opengl {
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
 
+        return 0;
+    }
+
+    int OpenGLRenderer::DrawWater(OpenGLObject & object, glm::mat4 model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture)
+    {
+        glBindVertexArray(object.VAO_);
+        glPatchParameteri(GL_PATCH_VERTICES, 3);
+
+        ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
+        if (command.type_ == COMMAND_CONSTANT_TESSELLATION && !math::Equal(constant_tessellation_, static_cast<bool>(command.arg_1_))) {
+            constant_tessellation_ = static_cast<bool>(command.arg_1_);
+        }
+
+        glm::vec3 camera_position;
+        camera_->GetPositionVector(camera_position.x, camera_position.y, camera_position.z);
+        float time = glfwGetTime();
+
+        shader_water_.Use();
+        shader_water_.SetUniformMat4(shader_water_.uni_Model_, model);
+        shader_water_.SetUniformVec3(shader_water_.uni_camera_world_position_, camera_position);
+        shader_water_.SetUniformBool(shader_water_.uni_constant_tessellation_, constant_tessellation_);
+        shader_water_.SetUniformFloat(shader_water_.uni_time_, time);
+        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("object_material.ambient"), ambient);
+        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("object_material.diffuse"), diffuse);
+        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("object_material.specular"), specular);
+        shader_water_.SetUniformFloat(shader_water_.GetUniformLocation("object_material.shininess"), shininess);
+
+        object.SetupAttributes(&shader_displacement_);
+
+        diffuse_texture->ActivateTexture(0);
+        specular_texture->ActivateTexture(1);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.element_buffer_);
+        glDrawElements(GL_PATCHES, object.total_indices_, GL_UNSIGNED_INT, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        glBindVertexArray(0);
         return 0;
     }
 
@@ -707,6 +763,12 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_standard_.SetUniformVec3(shader_standard_.GetUniformLocation("directional_light.ambient"), color_ambient);
         shader_standard_.SetUniformVec3(shader_standard_.GetUniformLocation("directional_light.diffuse"), color_diffuse);
         shader_standard_.SetUniformVec3(shader_standard_.GetUniformLocation("directional_light.specular"), color_specular);
+
+        shader_water_.Use();
+        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("directional_light.direction"), direction);
+        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("directional_light.ambient"), color_ambient);
+        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("directional_light.diffuse"), color_diffuse);
+        shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("directional_light.specular"), color_specular);
 
         return 0;
     }

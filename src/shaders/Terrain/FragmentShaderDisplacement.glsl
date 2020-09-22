@@ -10,6 +10,7 @@ uniform mat4 matrix_view;
 uniform sampler2D displacement_map;
 uniform sampler2D texture_diffuse;
 uniform float displacement_intensity;
+uniform float specular_intensity;
 
 in TES_OUT {
     vec2 uv;
@@ -37,7 +38,7 @@ void main()
     g_normal = normalize(transpose(inverse(mat3(matrix_view * matrix_model))) * vertex_normal);
     
     g_albedo_spec.rgb = texture(texture_diffuse, 25 * tes_out.uv).rgb;
-    g_albedo_spec.a = 0.1;
+    g_albedo_spec.a = specular_intensity;
     
     g_position_light = tes_out.position_lightspace.xyz / tes_out.position_lightspace.w;
 }
