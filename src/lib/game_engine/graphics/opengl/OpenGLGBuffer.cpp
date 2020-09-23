@@ -27,7 +27,7 @@ namespace opengl {
         /* Store position */
         glGenTextures(1, &g_position_texture_);
         glBindTexture(GL_TEXTURE_2D, g_position_texture_);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, context_->GetWindowWidth(), context_->GetWindowHeight(), 0, GL_RGB, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, context_->GetWindowWidth(), context_->GetWindowHeight(), 0, GL_RGBA, GL_FLOAT, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, g_position_texture_, 0);
@@ -35,7 +35,7 @@ namespace opengl {
         /* Store normal */
         glGenTextures(1, &g_normal_texture_);
         glBindTexture(GL_TEXTURE_2D, g_normal_texture_);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, context_->GetWindowWidth(), context_->GetWindowHeight(), 0, GL_RGB, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, context_->GetWindowWidth(), context_->GetWindowHeight(), 0, GL_RGBA, GL_FLOAT, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, g_normal_texture_, 0);
@@ -51,22 +51,25 @@ namespace opengl {
         /* Store ambient color and shadow visibility */
         glGenTextures(1, &g_position_light_);
         glBindTexture(GL_TEXTURE_2D, g_position_light_);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, context_->GetWindowWidth(), context_->GetWindowHeight(), 0, GL_RGB, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, context_->GetWindowWidth(), context_->GetWindowHeight(), 0, GL_RGBA, GL_FLOAT, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, g_position_light_, 0);
 
-
         /* Configure the render targets */
+
+        /* Create a depth buffer */
+        glGenTextures(1, &depth_texture_);
+        glBindTexture(GL_TEXTURE_2D, depth_texture_);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, context_->GetWindowWidth(), context_->GetWindowHeight(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_texture_, 0);
+
+        // finally check if framebuffer is complete
         unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
         glDrawBuffers(4, attachments);
 
-        /* Create a depth buffer */
-        glGenRenderbuffers(1, &rbo_depth_texture_);
-        glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth_texture_);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, context_->GetWindowWidth(), context_->GetWindowHeight());
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth_texture_);
-        // finally check if framebuffer is complete
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
             dt::Console(dt::CRITICAL, "GBuffer not complete");
             UnBind();

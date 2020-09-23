@@ -28,15 +28,15 @@ float GetTessLevel(float Distance0, float Distance1)
     } else if (AvgDistance <= 80.0) {
         tessellation_factor = 16.0;
     } else if (AvgDistance <= 100.0){
-        tessellation_factor = 7.0;
-    }else if (AvgDistance <= 130) {
         tessellation_factor = 8.0;
-    }else {
+    }else if (AvgDistance <= 130) {
         tessellation_factor = 4.0;
+    }else {
+        tessellation_factor = 2.0;
     }
     
     if (constant_tessellation)
-        tessellation_factor = 8.0;
+        tessellation_factor = 4.0;
     
     return tessellation_factor;
 }

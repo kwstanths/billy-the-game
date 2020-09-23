@@ -150,7 +150,7 @@ namespace game_engine { namespace graphics {
 
 
 
-    MaterialForwardWater::MaterialForwardWater(game_engine::math::Vector3D ambient, game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, Real_t shininess, std::string texture_diffuse, std::string texture_specular)
+    MaterialForwardWater::MaterialForwardWater(game_engine::math::Vector3D ambient, game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, Real_t shininess, std::string texture_diffuse, std::string texture_specular, std::string texture_bump)
     {
         ambient_ = ambient;
         diffuse_ = diffuse;
@@ -160,6 +160,7 @@ namespace game_engine { namespace graphics {
         AssetManager& instance = AssetManager::GetInstance();
         texture_diffuse_ = instance.GetTexture(texture_diffuse, GAME_ENGINE_TEXTURE_TYPE_DIFFUSE_MAP);
         texture_specular_ = instance.GetTexture(texture_specular, GAME_ENGINE_TEXTURE_TYPE_SPECULAR_MAP);
+        texture_bump_ = instance.GetTexture(texture_bump, GAME_ENGINE_TEXTURE_TYPE_NORMAL_MAP);
 
         rendering_queue_ = 1;
     }
@@ -168,7 +169,7 @@ namespace game_engine { namespace graphics {
     {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        renderer->DrawWater(object, model, ambient_.ToGlm(), diffuse_.ToGlm(), specular_.ToGlm(), shininess_, texture_diffuse_, texture_specular_);
+        renderer->DrawWater(object, model, ambient_.ToGlm(), diffuse_.ToGlm(), specular_.ToGlm(), shininess_, texture_diffuse_, texture_specular_, texture_bump_, waves_);
         glDisable(GL_BLEND);
     }
 

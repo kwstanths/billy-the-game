@@ -7,6 +7,16 @@ uniform mat4 matrix_view;
 uniform mat4 matrix_projection;
 uniform float time;
 
+struct Wave {
+    vec3 direction;
+    float wavelength;
+    float amplitude;
+};
+
+#define NR_WAVES 4
+uniform Wave waves[NR_WAVES];
+uniform uint number_of_waves;
+
 in TCS_OUT {
     vec2 uv;
     vec3 normal_worldspace;
@@ -17,7 +27,6 @@ out VS_OUT {
     vec2 uv;
     vec3 normal_viewspace;
     vec3 fragment_position_worldspace;
-    vec3 fragment_position_worldspace_undisplaced;
 } tes_out;
 
 #define PI 3.14
@@ -43,26 +52,27 @@ void main()
     normal_worldspace = normalize(normal_worldspace);
     
     vec3 position_worldspace = interpolate3D(tes_in[0].position_worldspace, tes_in[1].position_worldspace, tes_in[2].position_worldspace);
-    tes_out.fragment_position_worldspace_undisplaced = position_worldspace;
-    
+
     vec3 displacement = vec3(0, 0, 0);
-    
-    /* add waves */
-    vec3 direction = vec3(-1, 0, 0.01);
-    float wavelength = 15.5;
-    float amp = 0.15;
-    
-    float pdotk = dot(position_worldspace, direction);
-    float vel = sqrt(1.5621f * wavelength);
-    float phase = (6.28f / wavelength) * (pdotk + vel * time);
-    
-    vec2 offset;
-    offset.x = sin(phase);
-    offset.y = cos(phase);
-    offset.x *= - amp;
-    offset.y *= - amp;
-    
-    displacement += vec3(direction.x * offset.x, - offset.y, direction.z * offset.x);
+    for(uint i = 0u; i < NR_WAVES; i++){
+        if (i < number_of_waves) {
+            vec3 direction = waves[i].direction;
+            float wavelength = waves[i].wavelength;
+            float amp = waves[i].amplitude;
+            
+            float pdotk = dot(position_worldspace, direction);
+            float vel = sqrt(1.5621f * wavelength);
+            float phase = (6.28f / wavelength) * (pdotk + vel * time);
+            
+            vec2 offset;
+            offset.x = sin(phase);
+            offset.y = cos(phase);
+            offset.x *= - amp;
+            offset.y *= - amp;
+            
+            displacement += vec3(direction.x * offset.x, - offset.y, direction.z * offset.x);
+        }
+    }
 
     position_worldspace += displacement;
 

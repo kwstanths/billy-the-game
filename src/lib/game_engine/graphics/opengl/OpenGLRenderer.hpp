@@ -91,7 +91,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         /**
         
         */
-        int DrawWater(OpenGLObject & object, glm::mat4 model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
+        int DrawWater(OpenGLObject & object, glm::mat4 model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture, OpenGLTexture * bump_texture, std::vector<Wave_t>& waves);
 
         /**
             Draws the object with a single color

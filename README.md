@@ -13,7 +13,8 @@ In Graphics with OpenGL:
 - View frustum culling and occlusion queries
 - Screen Space Ambient Occlusion
 - Water rendering with a grid algorithm  
-- Terrain rendering with displacement and normal map through tessellation shaders  
+- Terrain rendering with displacement with tessellation shaders  
+- Water rendering with displacement and bump mapping with tessellation shaders  
 
 In world building:  
 - Importing maps generated from Tiled
@@ -28,7 +29,7 @@ Other:
 - Sequential memory allocation with custom allocators  
 
 
-## Current progress in main game - billy the game
+## Current progress in main game - billy the game:  
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/M_0gH1M3FH0/0.jpg)](https://www.youtube.com/watch?v=M_0gH1M3FH0&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=12)
 
 ## Current progress in 3D:   
@@ -38,7 +39,11 @@ Ambient Occlusion
 Terrain rendering with tessellation shaders  
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jgliT0StyRw/0.jpg)](https://www.youtube.com/watch?v=aVAk7tuQ9Bw&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=2)
 
-## Particles branch
+Water rendering with tessellation shaders  
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jwRu5GqTlpOY/0.jpg)](https://www.youtube.com/watch?v=wRu5GqTlpOY&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=3)
+
+
+## Particles branch:  
 Fluid simulation  
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/GZs0-xvkecA/0.jpg)](https://www.youtube.com/watch?v=GZs0-xvkecA)
 
@@ -52,7 +57,6 @@ Rope and cloth
 
 ## Roadmap  
 In Graphics:  
-- Water rendering with Tessellation shaders and procedural functions instead of displacement maps
 - Cloud rendering through volumetric rendering
 - Replace Phong shading with Physically based rendering
 - Other things like, Particle systems and instancing...  

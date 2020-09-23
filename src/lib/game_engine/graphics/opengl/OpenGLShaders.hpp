@@ -432,6 +432,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_camera_world_position_;
         GLuint uni_constant_tessellation_;
         GLuint uni_time_;
+        GLuint uni_texture_bump_;
+        GLuint uni_texture_depth_;
     };
 
 }

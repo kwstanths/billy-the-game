@@ -6,6 +6,8 @@
 #include "opengl/OpenGLRenderer.hpp"
 #include "opengl/OpenGLObject.hpp"
 
+#include "GraphicsTypes.hpp"
+
 #include "game_engine/math/Vector.hpp"
 
 namespace game_engine { namespace graphics {
@@ -114,9 +116,11 @@ namespace game_engine { namespace graphics {
         game_engine::math::Vector3D color_;
     };
 
+    /* Material used to draw the water, forward pass */
     class MaterialForwardWater : public Material {
     public:
-        MaterialForwardWater(game_engine::math::Vector3D ambient, game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, Real_t shininess, std::string texture_diffuse, std::string texture_specular);
+
+        MaterialForwardWater(game_engine::math::Vector3D ambient, game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, Real_t shininess, std::string texture_diffuse, std::string texture_specular, std::string texture_bump);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
         void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
@@ -127,6 +131,8 @@ namespace game_engine { namespace graphics {
         Real_t shininess_;
         opengl::OpenGLTexture * texture_diffuse_;
         opengl::OpenGLTexture * texture_specular_;
+        opengl::OpenGLTexture * texture_bump_;
+        std::vector<Wave_t> waves_;
     };
 
 }

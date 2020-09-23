@@ -4,8 +4,8 @@
 #include "debug_tools/Console.hpp"
 
 #include "Player.hpp"
+#include "Heightmap.hpp"
 #include "Floor.hpp"
-#include "FloorNormals.hpp"
 #include "Fire.hpp"
 #include "Sun.hpp"
 #include "Water.hpp"
@@ -23,11 +23,11 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     if (ret) return ret;
 
     /* Create a tree */
-    //{
-    //    Player * player;
-    //    player = NewObj<Player>();
-    //    player->Init(0, 8.3, 0, input, camera, this, engine);
-    //}
+    {
+        Player * player;
+        player = NewObj<Player>();
+        player->Init(0, 7.9, 8, input, camera, this, engine);
+    }
     
     //for (int i = -6; i <= 6; i+=6){
     //    for (int j = -4; j <= 4; j+=4) {
@@ -46,12 +46,12 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     //    }
     //}
 
-    /* The displacement object */
     Floor * floor = NewObj<Floor>();
-    floor->Init(0.0f, 0.0f, 0.0f, this);
+    floor->Init(0, 1, 0, this);
 
-    FloorNormals * floor_normals = NewObj<FloorNormals>();
-    floor_normals->Init(0.0f, 0.0f, 0.0f, this);
+    /* The displacement object */
+    Heightmap * heightmap = NewObj<Heightmap>();
+    heightmap->Init(0.0f, 0.0f, 0.0f, this, "textures/Heightmap_Island.png");
 
     Water * water = NewObj<Water>();
     water->Init(0.0f, 5.6f, 0.0f, this);

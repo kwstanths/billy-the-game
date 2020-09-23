@@ -186,6 +186,8 @@ namespace game_engine { namespace graphics { namespace opengl {
             shader_water_.Use();
             shader_water_.SetUniformInt(shader_water_.GetUniformLocation("object_material.texture_diffuse"), 0);
             shader_water_.SetUniformInt(shader_water_.GetUniformLocation("object_material.texture_specular"), 1);
+            shader_water_.SetUniformInt(shader_water_.uni_texture_bump_, 2);
+            shader_water_.SetUniformInt(shader_water_.uni_texture_depth_, 3);
         }
 
         /* Init GBuffer */
@@ -449,7 +451,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
-    int OpenGLRenderer::DrawWater(OpenGLObject & object, glm::mat4 model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture)
+    int OpenGLRenderer::DrawWater(OpenGLObject & object, glm::mat4 model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture, OpenGLTexture * bump_texture, std::vector<Wave_t>& waves)
     {
         glBindVertexArray(object.VAO_);
         glPatchParameteri(GL_PATCH_VERTICES, 3);
@@ -473,10 +475,22 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_water_.SetUniformVec3(shader_water_.GetUniformLocation("object_material.specular"), specular);
         shader_water_.SetUniformFloat(shader_water_.GetUniformLocation("object_material.shininess"), shininess);
 
+        size_t nr_waves = std::min(waves.size(), 4u);
+        shader_water_.SetUniformUInt(shader_water_.GetUniformLocation("number_of_waves"), nr_waves);
+        for (size_t i = 0; i < nr_waves; i++) {
+            std::string shader_name = "waves[" + std::to_string(i) + "]";
+            shader_water_.SetUniformVec3(shader_water_.GetUniformLocation(shader_name + ".direction"), glm::normalize(waves[i].direction_));
+            shader_water_.SetUniformFloat(shader_water_.GetUniformLocation(shader_name + ".wavelength"), waves[i].wavelength_);
+            shader_water_.SetUniformFloat(shader_water_.GetUniformLocation(shader_name + ".amplitude"), waves[i].amplitude_);
+        }
+
         object.SetupAttributes(&shader_displacement_);
 
         diffuse_texture->ActivateTexture(0);
         specular_texture->ActivateTexture(1);
+        bump_texture->ActivateTexture(2);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, g_buffer_->depth_texture_);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.element_buffer_);
         glDrawElements(GL_PATCHES, object.total_indices_, GL_UNSIGNED_INT, 0);

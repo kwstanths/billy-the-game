@@ -432,7 +432,7 @@ namespace graphics {
             draw_calls_++;
         }
         
-
+        
         /* Render forward queue */
         renderer_->DrawWireframe(draw_wireframe_);
         queue = rendering_queues_[1];
