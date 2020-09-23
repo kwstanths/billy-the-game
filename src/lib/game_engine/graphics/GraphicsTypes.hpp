@@ -83,6 +83,16 @@ namespace graphics {
         Attenuation_t(Real_t c, Real_t l, Real_t q) : constant_(c), linear_(l), quadratic_(q) {};
     };
 
+    /**
+    
+    */
+    struct Wave_t {
+        glm::vec3 direction_;
+        Real_t wavelength_;
+        Real_t amplitude_;
+        Wave_t(glm::vec3 direction, Real_t wavelength, Real_t amplitude) : direction_(direction), wavelength_(wavelength), amplitude_(amplitude) {};
+    };
+
 }
 }
 #endif

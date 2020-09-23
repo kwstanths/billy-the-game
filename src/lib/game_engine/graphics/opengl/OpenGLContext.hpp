@@ -116,6 +116,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         OpenGLShaderDrawNormals shader_draw_normals_;
         OpenGLShaderDisplacement shader_displacement_;
         OpenGLShaderDisplacementDrawNormals shader_displacement_draw_normals_;
+        OpenGLShaderWater shader_water_;
 
         GLFWwindow * glfw_window_ = nullptr;
     };

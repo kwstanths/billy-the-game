@@ -427,6 +427,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((uni_constant_tessellation_ = GetUniformLocation("constant_tessellation")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_displacement_intensity_ = GetUniformLocation("displacement_intensity")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_texture_diffuse_ = GetUniformLocation(shader_sampler_texture_diffuse)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_specular_intensity_ = GetUniformLocation(shader_uni_specular_intensity)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }
@@ -452,6 +453,31 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((uni_displacement_intensity_ = GetUniformLocation("displacement_intensity")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_constant_tessellation_ = GetUniformLocation("constant_tessellation")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_color_ = GetUniformLocation(shader_vertices_color_uni_color)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+
+        return 0;
+    }
+
+    OpenGLShaderWater::OpenGLShaderWater()
+    {
+    }
+
+    int OpenGLShaderWater::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader)
+    {
+        int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path, tesselation_control_shader, tesselation_evaluation_shader);
+        if (ret != 0) return ret;
+
+        if ((attr_vertex_position_ = GetAttributeLocation(shader_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_uv_ = GetAttributeLocation(shader_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_normal_ = GetAttributeLocation(shader_vertex_normal)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        //if ((uni_Lightspace_ = GetUniformLocation(shader_uni_lightspace)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_camera_world_position_ = GetUniformLocation("camera_world_position")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_constant_tessellation_ = GetUniformLocation("constant_tessellation")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_time_ = GetUniformLocation(shader_time)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_texture_bump_ = GetUniformLocation("bump_texture")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_texture_depth_ = GetUniformLocation("depth_texture")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }

@@ -19,13 +19,9 @@ int FloorNormals::Init(game_engine::Real_t x, game_engine::Real_t y, game_engine
     
     std::string asssets_directory = ge::FileSystem::GetInstance().GetDirectoryAssets();
 
-    /*ge::graphics::MaterialForwardDisplacementDrawNormals * material = new ge::graphics::MaterialForwardDisplacementDrawNormals(ge::math::Vector3D(1, 1, 0), asssets_directory + "textures/DoubleBasin_big.png");
+    ge::graphics::MaterialForwardDisplacementDrawNormals * material = new ge::graphics::MaterialForwardDisplacementDrawNormals(ge::math::Vector3D(1, 1, 0), asssets_directory + "textures/DoubleBasin_big.png");
     material->texture_displacement_->SetFiltering(GL_LINEAR);
-    material->displacement_intensity_ = 12;
-*/
-
-    ge::graphics::MaterialForwardStandard * material = new ge::graphics::MaterialForwardStandard(ge::math::Vector3D(0, 0, 0.2f), 
-        ge::math::Vector3D(0.2, 0, 0.8), ge::math::Vector3D(1, 1, 1), 64.0f, asssets_directory + "textures/spec_map_empty.png", asssets_directory + "textures/spec_map_empty.png");
+    material->displacement_intensity_ = 10;
 
     SetMaterial(material, -1);
 
@@ -41,6 +37,6 @@ void FloorNormals::Draw(ge::graphics::Renderer * renderer) {
         draw_ = static_cast<bool>(command.arg_1_);
     }
     
-    //if (draw_)
+    if (draw_)
         renderer->Draw(this);
 }

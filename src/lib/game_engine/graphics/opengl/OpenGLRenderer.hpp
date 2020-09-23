@@ -76,7 +76,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         /**
             Draws the object with displacement, using a GBuffer
         */
-        int DrawGBufferDisplacement(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, float displacement_mult, OpenGLTexture * diffuse_texture);
+        int DrawGBufferDisplacement(OpenGLObject & object, glm::mat4 & model, float specular_intensity, OpenGLTexture * displacement_texture, float displacement_mult, OpenGLTexture * diffuse_texture);
 
         /**
         
@@ -87,6 +87,11 @@ namespace game_engine { namespace graphics { namespace opengl {
         
         */
         int DrawStandard(OpenGLObject & object, glm::mat4 model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
+
+        /**
+        
+        */
+        int DrawWater(OpenGLObject & object, glm::mat4 model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture, OpenGLTexture * bump_texture, std::vector<Wave_t>& waves);
 
         /**
             Draws the object with a single color
@@ -233,8 +238,10 @@ namespace game_engine { namespace graphics { namespace opengl {
         OpenGLShaderDrawNormals shader_draw_normals_;
         /* Shader used to draw displacement textures */
         OpenGLShaderDisplacement shader_displacement_;
+        /* Shader used to draw the normals of displaced mesh */
         OpenGLShaderDisplacementDrawNormals shader_displacement_draw_normals_;
-    
+        OpenGLShaderWater shader_water_;
+
         /* VAO and VBO for quad rendering */
         GLuint VAO_Quad_;
         GLuint VBO_Quad_;
