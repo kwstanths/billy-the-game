@@ -40,7 +40,7 @@ Terrain rendering with tessellation shaders
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/aVAk7tuQ9Bw/0.jpg)](https://www.youtube.com/watch?v=aVAk7tuQ9Bw&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=2)
 
 Water rendering with tessellation shaders  
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jwRu5GqTlpOY/0.jpg)](https://www.youtube.com/watch?v=wRu5GqTlpOY&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=3)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/wRu5GqTlpOY/0.jpg)](https://www.youtube.com/watch?v=wRu5GqTlpOY&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=3)
 
 
 ## Particles branch:  
