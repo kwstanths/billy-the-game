@@ -108,14 +108,17 @@ namespace graphics {
         std::vector<Mesh *>& meshes = rendering_object->model_->meshes_;
         for (size_t j = 0; j < meshes.size(); j++) {
             Mesh * mesh = meshes[j];
-            utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[mesh->material_->rendering_queue_];
+            // If the material of  the mesh has been overriden, use the new, otherwise, use the base model material
+            Material * material = (rendering_object->model_materials_[j] != nullptr) ? rendering_object->model_materials_[j] : rendering_object->model_->materials_[j];
+
+            utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[material->rendering_queue_];
 
             if (queue.IsFull()) {
-                dt::Console(dt::CRITICAL, "Rendering queue: " + std::to_string(mesh->material_->rendering_queue_) + "is full");
+                dt::Console(dt::CRITICAL, "Rendering queue: " + std::to_string(material->rendering_queue_) + "is full");
                 return -1;
             }
             rendering_object->SetModelMatrix();
-            queue.Push(MESH_DRAW_t(mesh, &rendering_object->model_matrix_));
+            queue.Push(MESH_DRAW_t(mesh, material, &rendering_object->model_matrix_));
         }
 
         return 0;
@@ -227,7 +230,7 @@ namespace graphics {
         case RENDER_MODE::REGULAR:
         {
                 Mesh * mesh = draw_call.mesh_;
-                mesh->material_->Render(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
+                draw_call.material_->Render(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
                 draw_calls_++;
             break;
         }
@@ -256,7 +259,7 @@ namespace graphics {
             AABox<3> box(min, max);
             int ret = f.BoxInFrustum(box);
             if (ret != Frustum::OUTSIDE) {
-                mesh->material_->Render(renderer_, mesh->opengl_object_, model_matrix);
+                draw_call.material_->Render(renderer_, mesh->opengl_object_, model_matrix);
                 draw_calls_++;
             }
 
@@ -286,7 +289,8 @@ namespace graphics {
         /* Check if shadows are enabled or not */
         ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
         if (command.type_ == COMMAND_SHADOW_MAPPING) shadows = static_cast<bool>(command.arg_1_);
-        /* Render shadow map for all objects in the gbuffer queue */
+        
+        /* Render a simple shadow map for all objects in the gbuffer queue */
         renderer_->use_shadows_ = shadows;
         if (shadows) {
             renderer_->shadow_map_->ConfigureViewport();
@@ -304,7 +308,7 @@ namespace graphics {
                 MESH_DRAW_t& draw_call = *itr;
                 Mesh * mesh = draw_call.mesh_;
 
-                mesh->material_->RenderShadow(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
+                draw_call.material_->RenderShadow(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
                 draw_calls_++;
             }
 
@@ -321,6 +325,7 @@ namespace graphics {
         }
         renderer_->DrawWireframe(draw_wireframe_);
         
+
         /* Render GBuffer */
         utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[0];
         for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
@@ -328,6 +333,7 @@ namespace graphics {
             RenderGBuffer(draw_call);
         }
         renderer_->DrawWireframe(false);
+
 
         // Post processing stack should go here
         // Is AO enabled?
@@ -440,7 +446,7 @@ namespace graphics {
             MESH_DRAW_t& draw_call = *itr;
             Mesh * mesh = draw_call.mesh_;
 
-            mesh->material_->Render(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
+            draw_call.material_->Render(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
             draw_calls_++;
         }
         renderer_->DrawWireframe(false);
@@ -453,7 +459,7 @@ namespace graphics {
             renderer_->Draw2DText(text.text_, text.x, text.y, text.scale, text.color);
             draw_calls_++;
         }
-        renderer_->Draw2DText("Draw calls: " + std::to_string(draw_calls_) , 0.0f, context_->GetWindowHeight() - 20, 0.5, glm::vec3(1, 0, 0));
+        renderer_->Draw2DText("Draw calls: " + std::to_string(draw_calls_) , 0.0f, context_->GetWindowHeight() - 50, 0.5, glm::vec3(1, 0, 0));
 
 
     }

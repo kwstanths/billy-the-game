@@ -19,11 +19,10 @@ int Water::Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_
 
     std::string asssets_directory = ge::FileSystem::GetInstance().GetDirectoryAssets();
 
-    ge::graphics::MaterialForwardWater * material = new ge::graphics::MaterialForwardWater(ge::math::Vector3D(0, 0.2, 0.8), ge::math::Vector3D(0, 0.2, 0.8), ge::math::Vector3D(0.3, 0.5, 0.5), 32, asssets_directory + "textures/spec_map_empty.png", asssets_directory + "textures/spec_map_empty.png", asssets_directory + "textures/bump5.jpg");
+    ge::graphics::MaterialForwardWater * material = new ge::graphics::MaterialForwardWater(ge::math::Vector3D(0.1, 0.1, 0.3), ge::math::Vector3D(0.09, 0.09, 0.43), ge::math::Vector3D(0.5, 0.5, 0.5), 20, asssets_directory + "textures/spec_map_empty.png", asssets_directory + "textures/spec_map_empty.png", asssets_directory + "textures/bump5.jpg");
     material->waves_.push_back(game_engine::graphics::Wave_t(ge::math::Vector3D(-1, 0, 0.01).ToGlm(), 35.5, 0.13));
     material->waves_.push_back(game_engine::graphics::Wave_t(ge::math::Vector3D(-1, 0, -1).ToGlm(), 25.5, 0.12));
     material->waves_.push_back(game_engine::graphics::Wave_t(ge::math::Vector3D(-1, 0, 1).ToGlm(), 25.5, 0.12));
-
     material->texture_bump_->SetFiltering(GL_LINEAR);
 
     SetMaterial(material, -1);

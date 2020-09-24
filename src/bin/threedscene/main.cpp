@@ -3,6 +3,7 @@
 #endif
 
 #include "game_engine/core/GameEngine.hpp"
+#include "game_engine/core/ConsoleParser.hpp"
 
 #include "debug_tools/CodeReminder.hpp"
 #include "debug_tools/Console.hpp"
@@ -21,8 +22,8 @@ int main(int argc, char ** argv) {
 
     /* Configuration parameters for the engine */
     gl::OpenGLContextConfig_t context_params;
-    context_params.window_width_ = 1400;
-    context_params.window_height_ = 900;
+    context_params.window_width_ = 1920;
+    context_params.window_height_ = 1080;
     context_params.window_name_ = "billy";
     context_params.font_file_path = "fonts/Arial.ttf";
     ge::GameEngineConfig_t engine_params;
@@ -44,6 +45,7 @@ int main(int argc, char ** argv) {
     World world;
     world.Init(&input, camera, &engine);
 
+    float camera_speed = 10;
     /* Set the active world in the engine */
     engine.SetWorld(&world);
     do {
@@ -57,7 +59,12 @@ int main(int argc, char ** argv) {
         if (controls.ZOOM_IN_) camera->Zoom(-10 * delta_time);
         if (controls.ZOOM_OUT_) camera->Zoom(10 * delta_time);
 
-        float move_offset = 10 * static_cast<float>(delta_time);
+        game_engine::ConsoleCommand command = game_engine::ConsoleParser::GetInstance().GetLastCommand();
+        if (command.type_ == COMMAND_CAMERA_SPEED) {
+            camera_speed = command.arg_1_;
+        }
+
+        float move_offset = camera_speed * static_cast<float>(delta_time);
         camera->KeyboardMoveFlightMode(controls.MOVE_UP_ * move_offset - controls.MOVE_DOWN_ * move_offset, -controls.MOVE_LEFT_ * move_offset + controls.MOVE_RIGHT_ * move_offset);
 
         engine.Step(delta_time);

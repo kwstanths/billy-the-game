@@ -13,13 +13,11 @@ namespace graphics {
     }
 
     int Mesh::Init(std::vector<Vertex_t> & vertices, 
-        std::vector<unsigned int> & indices,
-        Material * material
+        std::vector<unsigned int> & indices
     ) {
     
         vertices_ = vertices;
         indices_ = indices;
-        material_ = material;
 
         /* opengl object */
         opengl_object_.Init(vertices_, indices_);
@@ -46,12 +44,6 @@ namespace graphics {
         return opengl_object_.GetBoundingBoxVolume();
     }
 
-    void Mesh::SetMaterial(Material * material)
-    {
-        if (material_ != nullptr) delete material_;
-
-        material_ = material;
-    }
 
 }
 }

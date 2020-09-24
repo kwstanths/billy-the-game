@@ -75,8 +75,8 @@ namespace game_engine { namespace graphics {
     };
 
     /**
-    Material used for displcament map rendering, deferred pass
-*/
+        Material used for rendering the normals of a displacement map, deferred pass
+    */
     class MaterialForwardDisplacementDrawNormals : public Material {
     public:
         MaterialForwardDisplacementDrawNormals (game_engine::math::Vector3D normal_color, std::string texture_displacement);
@@ -116,7 +116,7 @@ namespace game_engine { namespace graphics {
         game_engine::math::Vector3D color_;
     };
 
-    /* Material used to draw the water, forward pass */
+    /* Material used to draw water, forward pass */
     class MaterialForwardWater : public Material {
     public:
 

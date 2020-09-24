@@ -38,7 +38,7 @@ namespace game_engine { namespace graphics { namespace opengl {
             return Error::ERROR_GLFW_WINDOW;
         }
     
-        glfwSetWindowPos(glfw_window_, 20, 50);
+        glfwSetWindowPos(glfw_window_, 20, 5);
     
         /* Initialize GLEW */
         glfwMakeContextCurrent(glfw_window_);

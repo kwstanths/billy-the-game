@@ -19,15 +19,15 @@ World::World() : WorldSector() {
 }
 
 int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
-    int ret = WorldSector::Init(10, 10, -80.0f, 80.0f, -80.0f, 80.0f, 10 * 10);
+    int ret = WorldSector::Init(10, 10, -550.0f, 550.0f, -550.0f, 550.0f, 10 * 10);
     if (ret) return ret;
 
     /* Create a tree */
-    {
-        Player * player;
-        player = NewObj<Player>();
-        player->Init(0, 7.9, 8, input, camera, this, engine);
-    }
+    //{
+    //    Player * player;
+    //    player = NewObj<Player>();
+    //    player->Init(0, 7.9, 8, input, camera, this, engine);
+    //}
     
     //for (int i = -6; i <= 6; i+=6){
     //    for (int j = -4; j <= 4; j+=4) {
@@ -47,16 +47,77 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     //}
 
     Floor * floor = NewObj<Floor>();
-    floor->Init(0, 1, 0, this);
+    floor->Init(150, 1, 150, this);
 
-    /* The displacement object */
-    Heightmap * heightmap = NewObj<Heightmap>();
-    heightmap->Init(0.0f, 0.0f, 0.0f, this, "textures/Heightmap_Island.png");
+    /* Draw some displacement maps */
+    {
+        Heightmap * heightmap = NewObj<Heightmap>();
+        heightmap->Init(0.0f, 0.0f, 0.0f, this, "textures/DoubleBasin_big.png");
+    }
+    {
+        Heightmap * heightmap = NewObj<Heightmap>();
+        heightmap->Init(0.0f, 0.0f, 100.0f, this, "textures/Heightmap_Mountain.png");
+    }
+    {
+        Heightmap * heightmap = NewObj<Heightmap>();
+        heightmap->Init(000.0f, 0.0f, 200.0f, this, "textures/world.png");
+    }
+    {
+        Heightmap * heightmap = NewObj<Heightmap>();
+        heightmap->Init(100.0f, 0.0f, 0.0f, this, "textures/Heightmap_Billow.png");
+    }
+    {
+        Heightmap * heightmap = NewObj<Heightmap>();
+        heightmap->Init(100.0f, 0.0f, 100.0f, this, "textures/Heightmap_Plateau.png");
+    }
+    {
+        Heightmap * heightmap = NewObj<Heightmap>();
+        heightmap->Init(100.0f, 0.0f, 200.0f, this, "textures/Heightmap_Plateau.png");
+    }
+    {
+        Heightmap * heightmap = NewObj<Heightmap>();
+        heightmap->Init(200.0f, 0.0f, 0.0f, this, "textures/DoubleBasin_big.png");
+    }
+    {
+        Heightmap * heightmap = NewObj<Heightmap>();
+        heightmap->Init(200.0f, 0.0f, 100.0f, this, "textures/Heightmap_Mountain.png");
+    }
+    {
+        Heightmap * heightmap = NewObj<Heightmap>();
+        heightmap->Init(300.0f, 0.0f, 0.0f, this, "textures/Heightmap_Billow.png");
+    }
+    {
+        Heightmap * heightmap = NewObj<Heightmap>();
+        heightmap->Init(300.0f, 0.0f, 100.0f, this, "textures/Heightmap_Plateau.png");
+    }
+    {
+        Heightmap * heightmap = NewObj<Heightmap>();
+        heightmap->Init(300.0f, 0.0f, 200.0f, this, "textures/Heightmap_Plateau.png");
+    }
+    {
+        Heightmap * heightmap = NewObj<Heightmap>();
+        heightmap->Init(200.0f, 0.0f, 200.0f, this, "textures/world.png");
+    }
 
-    Water * water = NewObj<Water>();
-    water->Init(0.0f, 5.6f, 0.0f, this);
+    /* Draw some water patches */
+    {
+        Water * water = NewObj<Water>();
+        water->Init(0.0f, 6.0f, 0.0f, this);
+    }
+    {
+        Water * water = NewObj<Water>();
+        water->Init(0.0f, 6.0f, 320.0f, this);
+    }
+    {
+        Water * water = NewObj<Water>();
+        water->Init(320.0f, 6.0f, 00.0f, this);
+    }
+    {
+        Water * water = NewObj<Water>();
+        water->Init(320.0f, 6.0f, 320.0f, this);
+    }
 
-    /* A sun */
+    /* Draw a sun */
     Sun * sun = NewObj<Sun>();
     sun->Init(0.0f, 12.0f, 0.0f, this, engine);
 

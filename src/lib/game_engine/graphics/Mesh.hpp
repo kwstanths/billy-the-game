@@ -10,8 +10,6 @@
 #include "game_engine/graphics/opengl/OpenGLTexture.hpp"
 #include "game_engine/graphics/opengl/OpenGLQuery.hpp"
 
-#include "Material.hpp"
-
 namespace game_engine {
 namespace graphics {
 
@@ -21,8 +19,7 @@ namespace graphics {
         Mesh();
 
         int Init(std::vector<Vertex_t> & vertices, 
-            std::vector<unsigned int> & indices,
-            Material * material
+            std::vector<unsigned int> & indices
         );
 
         int Destroy();
@@ -31,17 +28,12 @@ namespace graphics {
 
         game_engine::Real_t GetBoundigBoxVolume();
 
-        void SetMaterial(Material * material);
-
     private:
         bool is_inited_;
 
         std::vector<Vertex_t> vertices_;
         std::vector<unsigned int> indices_;
-        std::vector<Texture_t> textures_;
         opengl::OpenGLObject opengl_object_;
-
-        Material * material_;
     };
 
 }

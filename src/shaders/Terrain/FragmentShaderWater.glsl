@@ -62,7 +62,9 @@ void main(){
         discard;
 	
     vec3 fragment_position_viewspace = (matrix_view * vec4(fs_in.fragment_position_worldspace, 1)).xyz;
-    vec3 normal_viewspace = CalculateBumpNormal();
+    vec3 normal = CalculateBumpNormal();
+    vec3 normal_viewspace = normalize(transpose(inverse(mat3(matrix_view * matrix_model))) * normal);
+    
     float fragment_specular_intensity = texture(object_material.texture_specular, fs_in.uv).r + + object_material.specular.r;
 
     vec3 view_direction = normalize(-fragment_position_viewspace);
@@ -78,43 +80,42 @@ void main(){
 float LinearizeDepth(float depth) 
 {    
     float near = 0.1;
-    float far = 300;
+    float far = 600;
     float z = depth * 2.0 - 1.0; // back to NDC 
     return (2.0 * near * far) / (far + near - z * (far - near));	
 }
 
 float CalculateTransparency(){
-    float depth = texture(depth_texture, gl_FragCoord.xy / vec2(1400, 900)).r;
+    float depth = texture(depth_texture, gl_FragCoord.xy / vec2(1920, 1080)).r;
     depth = LinearizeDepth(depth);
     
     float curent_depth = LinearizeDepth(gl_FragCoord.z);
     
-    return max((depth - curent_depth) / 2, 0.1);
+    return max(abs(depth - curent_depth) / 3, 0.1);
 }
 
 vec3 CalculateColor(vec3 view_direction, vec3 normal_viewspace){
     float cos_angle = max(dot(view_direction, normal_viewspace), 0);
 
-    vec3 shallow = vec3(0.36, 0.42, 0.8);
+    vec3 shallow = vec3(0.16, 0.12, 0.7);
     vec3 deep = object_material.diffuse;
-    
     vec3 water_color = deep * cos_angle + shallow * (1 - cos_angle);
+    
     return water_color;
 }
 
 vec3 CalculateBumpNormal(){
     vec2 uv = fs_in.uv;
     
-    vec4 t0 = texture(bump_texture, uv * 100 * 0.02 + 2 * 0.07 * vec2(1, 0) * (time / 10) * vec2(-1, -1));
-    vec4 t1 = texture(bump_texture, uv * 100 * 0.03 + 2 * 0.057 * vec2(0.86, 0.5) * (time / 10) * vec2(1, -1));
-    vec4 t2 = texture(bump_texture, uv * 100 * 0.05 + 2 * 0.047 * vec2(0.86, -0.5) * (time / 10) * vec2(-1, 1));
-    vec4 t3 = texture(bump_texture, uv * 100 * 0.07 + 2 * 0.037 * vec2(0.7, 0.7) * (time / 10));
+    vec4 t0 = 2 * texture(bump_texture, uv * 100 * 0.02 + 2 * 0.07 * vec2(1, 0) * (time / 10) * vec2(-1, -1)) -1;
+    vec4 t1 = 2 * texture(bump_texture, uv * 100 * 0.03 + 2 * 0.057 * vec2(0.86, 0.5) * (time / 10) * vec2(1, -1)) -1;
+    vec4 t2 = 2* texture(bump_texture, uv * 100 * 0.05 + 2 * 0.047 * vec2(0.86, -0.5) * (time / 10) * vec2(-1, 1)) -1;
+    vec4 t3 = 2 *texture(bump_texture, uv * 100 * 0.07 + 2 * 0.037 * vec2(0.7, 0.7) * (time / 10)) -1;
     
-    vec3 N = (t0 + t1 + t2 + t3).xzy * 2.0 - 3.3;
-    N.xz *= 2.0;
+    vec3 N = (t0 + t1 + t2 + t3).xzy;
+    N.xz *= 4;
     N = normalize(N);
-    
-    return normalize(transpose(inverse(mat3(matrix_view * matrix_model))) * N);
+    return N;
 }
 
 /* Calculate the normal by using the waves themselves, not used */
@@ -164,7 +165,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec
 	/* Find the reflected vector from the light towards the surface normal */
 	float light_specular_strength = pow(max(dot(fragment_normal, half_way_direction), 0.0), shininess);
 	vec3 light_specular = light.specular * light_specular_strength * fragment_specular_intensity;
-
+    
        //light_ambient = clamp(light_ambient, 0, 0);
        //light_diffuse = clamp(light_diffuse, 0, 0);
        //light_specular = clamp(light_specular, 0, 0);

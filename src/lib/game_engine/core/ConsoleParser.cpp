@@ -69,7 +69,6 @@ namespace game_engine {
         if (itr == command_types_.end()) return;
 
         int type = itr->second;
-        
         switch (type)
         {
         case COMMAND_SSAO_RADIUS:
@@ -156,6 +155,13 @@ namespace game_engine {
             if (tokens.size() <= 1) return;
             last_command_.arg_1_ = std::stoi(tokens[1]);
             last_command_.type_ = COMMAND_CONSTANT_TESSELLATION;
+            break;
+        }
+        case COMMAND_CAMERA_SPEED:
+        {
+            if (tokens.size() <= 1) return;
+            last_command_.arg_1_ = std::stoi(tokens[1]);
+            last_command_.type_ = COMMAND_CAMERA_SPEED;
             break;
         }
         default:

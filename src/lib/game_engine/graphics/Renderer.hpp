@@ -115,12 +115,13 @@ namespace graphics {
 
     private:
 
-        /* Temporary storage for a mesh draw call */
+        /* Temporary storage for a draw call */
         struct MESH_DRAW_t {
             Mesh * mesh_ = nullptr;
+            Material * material_ = nullptr;
             glm::mat4 * model_matrix_ = nullptr;
             MESH_DRAW_t() {};
-            MESH_DRAW_t(Mesh * mesh, glm::mat4 * model_matrix) : mesh_(mesh), model_matrix_(model_matrix) {};
+            MESH_DRAW_t(Mesh * mesh, Material * material, glm::mat4 * model_matrix) : mesh_(mesh), material_(material), model_matrix_(model_matrix) {};
         };
 
         /* Temporary storage for a text draw call */

@@ -20,6 +20,7 @@ namespace game_engine {
 #define COMMAND_WIREFRAME 9
 #define COMMAND_TERRAIN_NORMALS 10
 #define COMMAND_CONSTANT_TESSELLATION 11
+#define COMMAND_CAMERA_SPEED 12
 
     /* The order between these two is very important! */
     static const std::vector<std::string> commands = { 
@@ -35,7 +36,8 @@ namespace game_engine {
         "shadows",
         "wireframe",
         "draw_terrain_normals",
-        "constant_tess"
+        "constant_tess",
+        "camera_speed"
     };
 
     struct ConsoleCommand {

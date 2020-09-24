@@ -58,6 +58,7 @@ namespace game_engine { namespace graphics {
 
     void MaterialForwardStandard::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
+        /* TODO Standard forward rendering shadow mapping not implemented */
         /* empty */
     }
 
@@ -81,7 +82,7 @@ namespace game_engine { namespace graphics {
 
     void MaterialDeferredDisplacement::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
-        /* TODO Tesselation shader shadow map not implemented */
+        /* TODO Displacement map rendering shadow mapping not implemented */
         return;
     }
 
@@ -101,6 +102,7 @@ namespace game_engine { namespace graphics {
 
     void MaterialForwardDrawNormals::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
+        /* does not cast shadow */
         /* empty */
     }
 
@@ -123,6 +125,7 @@ namespace game_engine { namespace graphics {
 
     void MaterialForwardColor::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
+        /* does not cast shadow */
         /* empty */
     }
 
@@ -145,6 +148,7 @@ namespace game_engine { namespace graphics {
 
     void MaterialForwardDisplacementDrawNormals::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
+        /* does not cast shadow */
         /* empty */
     }
 

@@ -476,8 +476,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((uni_camera_world_position_ = GetUniformLocation("camera_world_position")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_constant_tessellation_ = GetUniformLocation("constant_tessellation")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_time_ = GetUniformLocation(shader_time)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_texture_bump_ = GetUniformLocation("bump_texture")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_texture_depth_ = GetUniformLocation("depth_texture")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_texture_bump_ = GetUniformLocation("bump_texture")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }

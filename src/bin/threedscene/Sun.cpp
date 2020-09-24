@@ -22,7 +22,7 @@ bool Sun::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world
 
     Scale(0.1f, 0.1f, 0.1f);
 
-    DirectionalLight::direction_ = glm::normalize(glm::vec3(-1.0f, -0.5f, 0.0f));
+    DirectionalLight::direction_ = glm::normalize(glm::vec3(-1.0f, -1.0f, 0.0f));
     DirectionalLight::ambient_ = glm::vec3(0.2f, 0.2f, 0.2f);
     DirectionalLight::diffuse_ = glm::vec3(0.8f, 0.8f, 0.8f);
     DirectionalLight::specular_ = glm::vec3(0.3f, 0.3f, 0.3f);

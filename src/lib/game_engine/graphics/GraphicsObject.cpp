@@ -38,22 +38,24 @@ namespace graphics {
             asset_manager.InsertModel(assets_dir + model_file, model_);
         }
 
+        model_materials_ = std::vector<Material *>(model_->GetNumberOfMeshes(), nullptr);
+
         is_inited_ = true;
         return 0;
     }
 
     int GraphicsObject::InitObjectAtlas(std::string file_name) {
 
-        std::vector<Mesh *> meshes;
-        int ret = ProcessObjectAtlas(file_name, meshes);
+        std::vector<AssimpData_t> model_data;
+        int ret = ProcessObjectAtlas(file_name, model_data);
 
         std::string directory = FileSystem::GetInstance().GetDirectoryAssets();
         std::string file_path = directory + file_name.substr(0, file_name.find_last_of("."));
 
         AssetManager& asset_manager = AssetManager::GetInstance();
-        for (size_t i = 0; i < meshes.size(); i++) {
+        for (size_t i = 0; i < model_data.size(); i++) {
             Model * new_model = new Model();
-            new_model->Init({ meshes[i] });
+            new_model->Init({ model_data[i].mesh_ }, { model_data[i].material_ });
             asset_manager.InsertModel(file_path + "_" + std::to_string(i) + ".obj", new_model);
         }
 
@@ -102,7 +104,16 @@ namespace graphics {
 
     void GraphicsObject::SetMaterial(Material * material, int mesh_index)
     {
-        model_->SetMaterial(material, mesh_index);
+        if (mesh_index == -1) {
+            for (size_t i = 0; i < model_materials_.size(); i++) {
+                model_materials_[i] = material;
+            }
+            return;
+        } else if (mesh_index >= model_materials_.size()) {
+            return;
+        }
+
+        model_materials_[mesh_index] = material;
     }
 
     void GraphicsObject::SetModelMatrix() {

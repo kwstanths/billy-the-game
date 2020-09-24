@@ -11,7 +11,7 @@ namespace math = game_engine::math;
 namespace game_engine {
 namespace graphics{
 
-    int LoadModel(std::string file_path, std::vector<Mesh *>& out_meshes) {
+    int LoadModel(std::string file_path, std::vector<AssimpData_t>& out_meshes) {
 
         std::string directory = FileSystem::GetInstance().GetDirectoryAssets();
         std::string full_path = directory + "/" + file_path;
@@ -29,7 +29,7 @@ namespace graphics{
         return 0;
     }
     
-    int ProcessNode(aiNode * node, const aiScene * scene, std::string directory, std::vector<Mesh *>& out_meshes) {
+    int ProcessNode(aiNode * node, const aiScene * scene, std::string directory, std::vector<AssimpData_t>& out_meshes) {
         /* process all the node's meshes (if any) */
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
             aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
@@ -44,7 +44,7 @@ namespace graphics{
         return 0;
     }
     
-    Mesh * ProcessMesh(aiMesh *mesh, const aiScene *scene, std::string directory) {
+    AssimpData_t ProcessMesh(aiMesh *mesh, const aiScene *scene, std::string directory) {
         std::vector<Vertex_t> vertices;
         std::vector<unsigned int> indices;
         std::vector<Texture_t> textures;
@@ -85,7 +85,7 @@ namespace graphics{
 
         if (mesh->mMaterialIndex >= 0) {
             aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-    
+            
             material->Get(AI_MATKEY_COLOR_AMBIENT, color_ambient);
             material->Get(AI_MATKEY_COLOR_DIFFUSE, color_diffuse);
             material->Get(AI_MATKEY_COLOR_SPECULAR, color_specular);
@@ -108,9 +108,9 @@ namespace graphics{
         MaterialDeferredStandard * material_default = new MaterialDeferredStandard(diffuse_color, specular_color, diffuseMaps[0].path_, specularMaps[0].path_);
 
         Mesh * temp_mesh = new Mesh();
-        temp_mesh->Init(vertices, indices, material_default);
+        temp_mesh->Init(vertices, indices);
     
-        return temp_mesh;
+        return AssimpData_t(temp_mesh, material_default);
     }
     
     std::vector<Texture_t> LoadMaterialTextures(aiMaterial * mat, aiTextureType type, int texture_type, std::string directory) {
@@ -128,7 +128,7 @@ namespace graphics{
     
     }
 
-    int ProcessObjectAtlas(std::string file_path, std::vector<Mesh*>& out_meshes) {
+    int ProcessObjectAtlas(std::string file_path, std::vector<AssimpData_t>& out_meshes) {
 
         std::string directory = FileSystem::GetInstance().GetDirectoryAssets();
         std::string full_path = directory + "/" + file_path;

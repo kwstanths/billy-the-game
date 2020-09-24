@@ -36,11 +36,11 @@ Other:
 Ambient Occlusion    
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jtVoM0I_rxw/0.jpg)](https://www.youtube.com/watch?v=jtVoM0I_rxw&list=PLocuszpm1snUGVn5kgk-LlLE86c4E2u7H&index=10)
 
-Terrain rendering with tessellation shaders  
+Tessellation, terrain:    
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/aVAk7tuQ9Bw/0.jpg)](https://www.youtube.com/watch?v=aVAk7tuQ9Bw&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=2)
 
-Water rendering with tessellation shaders  
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/wRu5GqTlpOY/0.jpg)](https://www.youtube.com/watch?v=wRu5GqTlpOY&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=3)
+Tessellation, water:    
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/AP2Zud0mouY/0.jpg)](https://www.youtube.com/watch?v=AP2Zud0mouY&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=4)
 
 
 ## Particles branch:  

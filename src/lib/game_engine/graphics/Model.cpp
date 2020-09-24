@@ -14,34 +14,25 @@ namespace graphics {
 
     int Model::Init(std::string model_file_path) {
         
-        int ret = LoadModel(model_file_path, meshes_);
+        std::vector<AssimpData_t> model_data;
+
+        int ret = LoadModel(model_file_path, model_data);
         if (ret) return ret;
 
-        /**
-            Sort meshes with decreasing volume, this means that the render will see the meshes in this order
-            it may help in occlusion queries, we render the big occluders first
-        */
-        std::sort(meshes_.begin(), meshes_.end(),
-            [](Mesh * a, Mesh * b) -> bool {
-            return a->GetBoundigBoxVolume() > b->GetBoundigBoxVolume();
-        });
+        /* Keep the meshes, return the materials */
+        for (size_t i = 0; i < model_data.size(); i++) {
+            meshes_.push_back(model_data[i].mesh_);
+            materials_.push_back(model_data[i].material_);
+        }
 
         is_inited_ = true;
         
         return 0;
     }
 
-    int Model::Init(std::vector<Mesh*> meshes) {
+    int Model::Init(std::vector<Mesh*> meshes, std::vector<Material *> materials) {
         meshes_ = meshes;
-        
-        /**
-            Sort meshes with decreasing volume, this means that the render will see the meshes in this order
-            it may help in occlusion queries, we render the big occluders first
-        */
-        std::sort(meshes_.begin(), meshes_.end(),
-            [](Mesh * a, Mesh * b) -> bool {
-            return a->GetBoundigBoxVolume() > b->GetBoundigBoxVolume();
-        });
+        materials_ = materials;
 
         is_inited_ = true;
         return 0;
@@ -69,20 +60,6 @@ namespace graphics {
     size_t Model::GetNumberOfMeshes() {
         return meshes_.size();
     }
-
-    void Model::SetMaterial(Material * material, int index)
-    {
-        if (index < 0) {
-            for (size_t i = 0; i < meshes_.size(); i++) {
-                meshes_[i]->SetMaterial(material);
-            }
-        } else if (index >= meshes_.size()) {
-            return;
-        } else {
-            meshes_[index]->SetMaterial(material);
-        }
-    }
-    
 
 }
 }

@@ -70,7 +70,7 @@ namespace graphics {
         void Rotate(Real_t angle, glm::vec3 axis);
 
         /**
-            Set the material for mesh with index mesh_index
+            Override the default material for mesh with index mesh_index
             @param material The new material
             @param mesh_index The mesh to change, -1 = Change all meshes to that material
         */
