@@ -478,6 +478,25 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((uni_time_ = GetUniformLocation(shader_time)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_texture_depth_ = GetUniformLocation("depth_texture")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_texture_bump_ = GetUniformLocation("bump_texture")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_texture_cubemap_ = GetUniformLocation(shader_skybox)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_environment_reflectance_ = GetUniformLocation("environment_reflectance")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+
+        return 0;
+    }
+
+    OpenGLShaderSkybox::OpenGLShaderSkybox()
+    {
+    }
+
+    int OpenGLShaderSkybox::Init(std::string vertex_shader_path, std::string fragment_shader_path)
+    {
+        int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
+        if (ret != 0) return ret;
+
+        if ((attr_vertex_position_ = GetAttributeLocation("vertex_position_worldspace")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_texture_cubemap_ = GetUniformLocation(shader_skybox)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }

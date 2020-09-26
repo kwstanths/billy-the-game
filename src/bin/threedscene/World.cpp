@@ -1,6 +1,11 @@
 #include "World.hpp"
 
+#include <vector>
+
 #include "game_engine/math/HelpFunctions.hpp"
+#include "game_engine/graphics/Material.hpp"
+#include "game_engine/core/FileSystem.hpp"
+
 #include "debug_tools/Console.hpp"
 
 #include "Player.hpp"
@@ -46,80 +51,104 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     //    }
     //}
 
+    /* Create a floor, solid green color everywhere */
     Floor * floor = NewObj<Floor>();
-    floor->Init(150, 1, 150, this);
+    floor->Init(150, -3, 150, this);
 
-    /* Draw some displacement maps */
+    /* Draw some islands */
     {
         Heightmap * heightmap = NewObj<Heightmap>();
-        heightmap->Init(0.0f, 0.0f, 0.0f, this, "textures/DoubleBasin_big.png");
+        heightmap->Init(0.0f, -5.0f, 0.0f, this, "textures/Heightmap_Island.png");
     }
+
     {
         Heightmap * heightmap = NewObj<Heightmap>();
-        heightmap->Init(0.0f, 0.0f, 100.0f, this, "textures/Heightmap_Mountain.png");
+        heightmap->Init(300.0f, -5.0f, 0.0f, this, "textures/Heightmap_Island.png");
     }
+
     {
         Heightmap * heightmap = NewObj<Heightmap>();
-        heightmap->Init(000.0f, 0.0f, 200.0f, this, "textures/world.png");
+        heightmap->Init(0.0f, -5.0f, 300.0f, this, "textures/Heightmap_Island.png");
     }
+
     {
         Heightmap * heightmap = NewObj<Heightmap>();
-        heightmap->Init(100.0f, 0.0f, 0.0f, this, "textures/Heightmap_Billow.png");
+        heightmap->Init(300.0f, -5.0f, 300.0f, this, "textures/Heightmap_Island.png");
     }
+
     {
         Heightmap * heightmap = NewObj<Heightmap>();
-        heightmap->Init(100.0f, 0.0f, 100.0f, this, "textures/Heightmap_Plateau.png");
+        heightmap->Init(-300.0f, -5.0f, 0.0f, this, "textures/Heightmap_Island.png");
     }
+
     {
         Heightmap * heightmap = NewObj<Heightmap>();
-        heightmap->Init(100.0f, 0.0f, 200.0f, this, "textures/Heightmap_Plateau.png");
-    }
-    {
-        Heightmap * heightmap = NewObj<Heightmap>();
-        heightmap->Init(200.0f, 0.0f, 0.0f, this, "textures/DoubleBasin_big.png");
-    }
-    {
-        Heightmap * heightmap = NewObj<Heightmap>();
-        heightmap->Init(200.0f, 0.0f, 100.0f, this, "textures/Heightmap_Mountain.png");
-    }
-    {
-        Heightmap * heightmap = NewObj<Heightmap>();
-        heightmap->Init(300.0f, 0.0f, 0.0f, this, "textures/Heightmap_Billow.png");
-    }
-    {
-        Heightmap * heightmap = NewObj<Heightmap>();
-        heightmap->Init(300.0f, 0.0f, 100.0f, this, "textures/Heightmap_Plateau.png");
-    }
-    {
-        Heightmap * heightmap = NewObj<Heightmap>();
-        heightmap->Init(300.0f, 0.0f, 200.0f, this, "textures/Heightmap_Plateau.png");
-    }
-    {
-        Heightmap * heightmap = NewObj<Heightmap>();
-        heightmap->Init(200.0f, 0.0f, 200.0f, this, "textures/world.png");
+        heightmap->Init(0.0f, -5.0f, -300.0f, this, "textures/Heightmap_Island.png");
     }
 
     /* Draw some water patches */
     {
         Water * water = NewObj<Water>();
-        water->Init(0.0f, 6.0f, 0.0f, this);
+        water->Init(0.0f, 0.0f, 0.0f, this);
     }
+
     {
         Water * water = NewObj<Water>();
-        water->Init(0.0f, 6.0f, 320.0f, this);
+        water->Init(0.0f, 0.0f, -480.0f, this);
     }
+
     {
         Water * water = NewObj<Water>();
-        water->Init(320.0f, 6.0f, 00.0f, this);
+        water->Init(0.0, 0.0f, 480.0f, this);
     }
+
     {
         Water * water = NewObj<Water>();
-        water->Init(320.0f, 6.0f, 320.0f, this);
+        water->Init(480.0f, 0.0f, -480.0f, this);
+    }
+
+    {
+        Water * water = NewObj<Water>();
+        water->Init(480.0f, 0.0f, 0.0f, this);
+    }
+
+    {
+        Water * water = NewObj<Water>();
+        water->Init(480.0f, 0.0f, 480.0f, this);
+    }
+
+    {
+        Water * water = NewObj<Water>();
+        water->Init(-480.0f, 0.0f, -480.0f, this);
+    }
+
+    {
+        Water * water = NewObj<Water>();
+        water->Init(-480.0f, 0.0f, 0.0f, this);
+    }
+
+    {
+        Water * water = NewObj<Water>();
+        water->Init(-480.0f, 0.0f, 480.0f, this);
     }
 
     /* Draw a sun */
     Sun * sun = NewObj<Sun>();
-    sun->Init(0.0f, 12.0f, 0.0f, this, engine);
+    sun->Init(300, 300, 0.0f, this, engine);
+
+    /* Create a skybox */
+    std::string asssets_directory = ge::FileSystem::GetInstance().GetDirectoryAssets();
+    std::vector<std::string> faces
+    {
+        asssets_directory + "textures/ulukai/right.png",
+        asssets_directory + "textures/ulukai/left.png",
+        asssets_directory + "textures/ulukai/top.png",
+        asssets_directory + "textures/ulukai/bottom.png",
+        asssets_directory + "textures/ulukai/front.png",
+        asssets_directory + "textures/ulukai/back.png"
+    };
+    ge::graphics::MaterialSkybox * skybox = new ge::graphics::MaterialSkybox(faces);
+    engine->GetRenderer()->SetSkybox(skybox);
 
     is_inited_ = true;
     return 0;

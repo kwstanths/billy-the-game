@@ -19,6 +19,7 @@ public:
     virtual void Draw(game_engine::graphics::Renderer * renderer) override;
 
 private:
+    game_engine::GameEngine * engine_;
 
 };
 

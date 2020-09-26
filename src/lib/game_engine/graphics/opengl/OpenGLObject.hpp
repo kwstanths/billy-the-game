@@ -98,12 +98,32 @@ namespace opengl {
         void GenerateBoundingBox(std::vector<game_engine::graphics::Vertex_t>& vertices);
     };
 
+
+
     class OpenGLTriangle : public OpenGLObject {
         friend class OpenGLRenderer;
     public:
         OpenGLTriangle();
 
         int Init(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);
+    };
+
+
+
+    class OpenGLSkyboxCube {
+        friend class OpenGLRenderer;
+    public:
+        OpenGLSkyboxCube();
+
+        int Init();
+
+        void Render();
+
+    private:
+        bool is_inited_ = false;
+
+        size_t total_indices_;
+        GLuint VAO_, vertex_buffer_, element_buffer_;
     };
 
 }

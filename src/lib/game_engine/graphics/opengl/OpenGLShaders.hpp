@@ -23,6 +23,8 @@ namespace game_engine { namespace graphics { namespace opengl {
     static const char shader_sampler_texture_displacement[] = "displacement_map";
     static const char shader_blur_kernel_size[] = "blur_kernel_size";
     static const char shader_time[] = "time";
+    static const char shader_skybox[] = "skybox";
+
     
     /* Names of the text shader variables used */
     static const char shader_text_name_vertex[] = "vertex";
@@ -432,8 +434,25 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_camera_world_position_;
         GLuint uni_constant_tessellation_;
         GLuint uni_time_;
+        GLuint uni_camera_position_;
         GLuint uni_texture_bump_;
         GLuint uni_texture_depth_;
+        GLuint uni_texture_cubemap_;
+        GLuint uni_environment_reflectance_;
+    };
+
+    class OpenGLShaderSkybox : public OpenGLShader {
+    public:
+        OpenGLShaderSkybox();
+
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+        /* Attributes */
+        GLuint attr_vertex_position_;
+
+        GLuint uni_View_;
+        GLuint uni_Projection_;
+        GLuint uni_texture_cubemap_;
     };
 
 }

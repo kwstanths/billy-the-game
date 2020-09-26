@@ -16,6 +16,7 @@
 #include "Mesh.hpp"
 #include "AssetManager.hpp"
 #include "Light.hpp"
+#include "Material.hpp"
 
 namespace game_engine {
     
@@ -38,15 +39,21 @@ namespace graphics {
 
         bool IsInited();
 
+        /* Set view and projection matrices for the current frame */
         void SetView();
 
+        /* Prepare the start of the rendering */
         void StartFrame();
 
+        /* Render everything */
         void EndFrame();
 
         void SetWindowSize(size_t width, size_t height);
 
         KeyControls_t GetControlInput();
+
+        /* Set the skybox material for the current frame */
+        void SetSkybox(MaterialSkybox * skybox);
 
         /**
             Draws an object with it's set materials. All Draw() calls will happen at the end of the frame. This means 
@@ -140,6 +147,8 @@ namespace graphics {
         std::vector<utility::CircularBuffer<MESH_DRAW_t>> rendering_queues_;
         /* Hold the text to draw */
         utility::CircularBuffer<TEXT_DRAW_t> text_to_draw_;
+        /* */
+        MaterialSkybox * skybox_ = nullptr;
 
         /* Variables needed for opengl drawiing */
         opengl::OpenGLContext * context_ = nullptr;

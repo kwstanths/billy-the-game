@@ -14,7 +14,7 @@ In Graphics with OpenGL:
 - Screen Space Ambient Occlusion
 - Water rendering with a grid algorithm  
 - Terrain rendering with displacement with tessellation shaders  
-- Water rendering with displacement and bump mapping with tessellation shaders  
+- Water rendering with displacement and bump mapping with tessellation shaders, and skybox reflections
 
 In world building:  
 - Importing maps generated from Tiled
@@ -58,8 +58,11 @@ Rope and cloth
 ## Roadmap  
 In Graphics:  
 - Cloud rendering through volumetric rendering
+- Cascaded shadow mapping
 - Replace Phong shading with Physically based rendering
+- Create some post processing effects, fog, bloom, etc. 
 - Other things like, Particle systems and instancing...  
+
 In world building:  
 - NPC dialogs, and inventory panels
 

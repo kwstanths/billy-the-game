@@ -15,13 +15,14 @@ int Heightmap::Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::R
     world->AddObject(this, x, y, z);
 
     //Rotate(ge::math::GetRadians(90.0f), glm::vec3(-1, 0, 0));
-    Scale(0.5, 0.5, 0.5);
+    //Scale(0.5, 0.5, 0.5);
 
     std::string asssets_directory = ge::FileSystem::GetInstance().GetDirectoryAssets();
 
+    /* Override default material */
     ge::graphics::MaterialDeferredDisplacement * material = new ge::graphics::MaterialDeferredDisplacement(0, asssets_directory + file, asssets_directory + "textures/grass.png");
     material->texture_displacement_->SetFiltering(GL_LINEAR);
-    material->displacement_intensity_ = 9;
+    material->displacement_intensity_ = 12;
 
     SetMaterial(material, -1);
 

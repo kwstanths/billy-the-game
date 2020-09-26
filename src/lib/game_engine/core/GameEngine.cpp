@@ -162,6 +162,11 @@ namespace game_engine {
         return debugger_;
     }
 
+    graphics::Renderer * GameEngine::GetRenderer()
+    {
+        return renderer_;
+    }
+
     int GameEngine::GetLastError() {
         return last_error_;
     }

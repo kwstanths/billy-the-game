@@ -188,6 +188,13 @@ namespace game_engine { namespace graphics { namespace opengl {
             shader_water_.SetUniformInt(shader_water_.GetUniformLocation("object_material.texture_specular"), 1);
             shader_water_.SetUniformInt(shader_water_.uni_texture_bump_, 2);
             shader_water_.SetUniformInt(shader_water_.uni_texture_depth_, 3);
+            shader_water_.SetUniformInt(shader_water_.uni_texture_cubemap_, 4);
+        }
+
+        {
+            shader_skybox_ = context->shader_skybox_;
+            shader_skybox_.Use();
+            shader_skybox_.SetUniformInt(shader_skybox_.uni_texture_cubemap_, 0);
         }
 
         /* Init GBuffer */
@@ -222,6 +229,9 @@ namespace game_engine { namespace graphics { namespace opengl {
             glBindVertexArray(0);
         }
     
+        skybox_cube_ = new OpenGLSkyboxCube();
+        skybox_cube_->Init();
+
         /* Initialize an empty texture, used in several places */
         AssetManager& instance = AssetManager::GetInstance();
         texture_empty_ = instance.GetTexture(FileSystem::GetInstance().GetDirectoryAssets() + "/textures/spec_map_empty.png", GAME_ENGINE_TEXTURE_TYPE_EMPTY);
@@ -322,6 +332,12 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_water_.Use();
         shader_water_.SetUniformMat4(shader_water_.uni_View_, camera->view_matrix_);
         shader_water_.SetUniformMat4(shader_water_.uni_Projection_, camera->projection_matrix_);
+
+        /* Ignore translation of view matrix */
+        glm::mat4 view = glm::mat4(glm::mat3(camera->view_matrix_));
+        shader_skybox_.Use();
+        shader_skybox_.SetUniformMat4(shader_skybox_.uni_View_, view);
+        shader_skybox_.SetUniformMat4(shader_skybox_.uni_Projection_, camera->projection_matrix_);
     }
     
     int OpenGLRenderer::DrawGBufferStandard(OpenGLObject & object, glm::mat4 model, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture) {
@@ -460,6 +476,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         if (command.type_ == COMMAND_CONSTANT_TESSELLATION && !math::Equal(constant_tessellation_, static_cast<bool>(command.arg_1_))) {
             constant_tessellation_ = static_cast<bool>(command.arg_1_);
         }
+        else if (command.type_ == COMMAND_WATER_REFLECTANCE && !math::Equal(water_reflectance, command.arg_1_)) {
+            water_reflectance = command.arg_1_;
+        }
 
         glm::vec3 camera_position;
         camera_->GetPositionVector(camera_position.x, camera_position.y, camera_position.z);
@@ -483,6 +502,7 @@ namespace game_engine { namespace graphics { namespace opengl {
             shader_water_.SetUniformFloat(shader_water_.GetUniformLocation(shader_name + ".wavelength"), waves[i].wavelength_);
             shader_water_.SetUniformFloat(shader_water_.GetUniformLocation(shader_name + ".amplitude"), waves[i].amplitude_);
         }
+        shader_water_.SetUniformFloat(shader_water_.uni_environment_reflectance_, water_reflectance);
 
         object.SetupAttributes(&shader_displacement_);
 
@@ -491,6 +511,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         bump_texture->ActivateTexture(2);
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, g_buffer_->depth_texture_);
+        skybox_->ActivateTexture(4);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.element_buffer_);
         glDrawElements(GL_PATCHES, object.total_indices_, GL_UNSIGNED_INT, 0);
@@ -624,6 +645,20 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         RenderQuad();
     
+        return 0;
+    }
+
+    int OpenGLRenderer::DrawSkybox(OpenGLCubemap * skybox)
+    {
+        glBindVertexArray(skybox_cube_->VAO_);
+
+        shader_skybox_.Use();
+        skybox->ActivateTexture(0);
+
+        glDepthFunc(GL_LEQUAL);
+        skybox_cube_->Render();
+        glDepthFunc(GL_LESS); 
+
         return 0;
     }
     

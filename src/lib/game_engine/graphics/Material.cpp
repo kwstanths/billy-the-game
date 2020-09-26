@@ -183,6 +183,23 @@ namespace game_engine { namespace graphics {
         /* empty */
     }
 
-}
 
+
+    MaterialSkybox::MaterialSkybox(std::vector<std::string> faces)
+    {
+        texture_cubemap_ = new opengl::OpenGLCubemap();
+        texture_cubemap_->Init(faces);
+    }
+
+    void MaterialSkybox::Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
+    {
+    }
+
+    void MaterialSkybox::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
+    {
+        /* skybox does not cast shadow */
+        /* empty */
+    }
+
+}
 }

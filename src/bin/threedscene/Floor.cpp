@@ -15,7 +15,7 @@ int Floor::Init(game_engine::Real_t x, game_engine::Real_t y, game_engine::Real_
     int ret = WorldObject::Init("grass.obj", x, y, z);
     world->AddObject(this, x, y, z);
 
-    Scale(600, 600, 600);
+    Scale(1100, 1100, 1100);
 
     Rotate(ge::math::GetRadians(90.0f), glm::vec3(-1, 0, 0));
 

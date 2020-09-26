@@ -5,6 +5,7 @@
 
 #include "opengl/OpenGLRenderer.hpp"
 #include "opengl/OpenGLObject.hpp"
+#include "opengl/OpenGLCubemap.hpp"
 
 #include "GraphicsTypes.hpp"
 
@@ -112,7 +113,7 @@ namespace game_engine { namespace graphics {
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
         void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
-        Real_t alpha_;
+        Real_t alpha_ = 1;
         game_engine::math::Vector3D color_;
     };
 
@@ -133,6 +134,17 @@ namespace game_engine { namespace graphics {
         opengl::OpenGLTexture * texture_specular_;
         opengl::OpenGLTexture * texture_bump_;
         std::vector<Wave_t> waves_;
+    };
+
+    /* Material used to draw a skybox, rendered last before overlay */
+    class MaterialSkybox : public Material {
+    public:
+        MaterialSkybox(std::vector<std::string> faces);
+
+        void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+
+        opengl::OpenGLCubemap * texture_cubemap_;
     };
 
 }

@@ -5,6 +5,7 @@
 #include "game_engine/core/WorldObject.hpp"
 #include "game_engine/core/WorldSector.hpp"
 #include "game_engine/graphics/Renderer.hpp"
+#include "game_engine/graphics/Material.hpp"
 #include "game_engine/math/Types.hpp"
 #include "game_engine/physics/PhysicsObject.hpp"
 

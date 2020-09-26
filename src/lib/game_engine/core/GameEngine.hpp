@@ -70,6 +70,9 @@ namespace game_engine {
         */
         void SetCamera(graphics::opengl::OpenGLCamera * camera);
 
+        /** 
+        
+        */
         graphics::opengl::OpenGLCamera * GetCamera();
 
         void SetWindowSize(size_t width, size_t height);
@@ -97,6 +100,11 @@ namespace game_engine {
             @return The debugger. nullptr is returned if Init() error
         */
         Debugger * GetDebugger();
+
+        /**
+        
+        */
+        graphics::Renderer * GetRenderer();
 
         /**
             Get the last error occured, 0 = No error

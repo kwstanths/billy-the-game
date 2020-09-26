@@ -99,6 +99,11 @@ namespace graphics {
         return context_->GetControlsInput();
     }
 
+    void Renderer::SetSkybox(MaterialSkybox * skybox)
+    {
+        skybox_ = skybox;
+        renderer_->skybox_ = skybox->texture_cubemap_;
+    }
 
     int Renderer::Draw(GraphicsObject * rendering_object) {
         if (!rendering_object->IsInited()) return -1;
@@ -325,7 +330,6 @@ namespace graphics {
         }
         renderer_->DrawWireframe(draw_wireframe_);
         
-
         /* Render GBuffer */
         utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[0];
         for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
@@ -450,6 +454,10 @@ namespace graphics {
             draw_calls_++;
         }
         renderer_->DrawWireframe(false);
+
+
+        /* Render the skybox */
+        if (skybox_ != nullptr) renderer_->DrawSkybox(skybox_->texture_cubemap_);
 
 
         /* Render overlay */

@@ -54,7 +54,7 @@ void main(){
 	vec3 directional_light_color = CalculateDirectionalLight(directional_light, normal_viewspace, view_direction, fragment_color, fragment_specular_intensity, object_material.shininess, 1);
 
 	/* Sum total components, the minimum color is zero, the maxium color possible the actual color of the fragment */
-	FragColor = vec4(clamp(directional_light_color, vec3(0,0,0), fragment_color), 0.6);
+	FragColor = vec4(clamp(directional_light_color, vec3(0,0,0), fragment_color), 1);
 }
 
 vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec3 view_direction, vec3 fragment_color, float fragment_specular_intensity, float shininess, float ambient_factor) {

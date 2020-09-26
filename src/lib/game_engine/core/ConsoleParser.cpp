@@ -164,6 +164,13 @@ namespace game_engine {
             last_command_.type_ = COMMAND_CAMERA_SPEED;
             break;
         }
+        case COMMAND_WATER_REFLECTANCE:
+        {
+            if (tokens.size() <= 1) return;
+            last_command_.arg_1_ = std::stof(tokens[1]);
+            last_command_.type_ = COMMAND_WATER_REFLECTANCE;
+            break;
+        }
         default:
             break;
         }

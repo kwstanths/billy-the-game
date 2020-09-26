@@ -17,6 +17,7 @@
 #include "OpenGLGBuffer.hpp"
 #include "OpenGLFrameBufferTexture.hpp"
 #include "OpenGLShadowMap.hpp"
+#include "OpenGLCubemap.hpp"
 
 namespace game_engine { namespace graphics { namespace opengl {
 
@@ -79,22 +80,22 @@ namespace game_engine { namespace graphics { namespace opengl {
         int DrawGBufferDisplacement(OpenGLObject & object, glm::mat4 & model, float specular_intensity, OpenGLTexture * displacement_texture, float displacement_mult, OpenGLTexture * diffuse_texture);
 
         /**
-        
+            Draws an objects normals, forward rendering 
         */
         int DrawDisplacementNormals(OpenGLObject & object, glm::mat4 & model, OpenGLTexture * displacement_texture, float displacement_mult, glm::vec3 color);
     
         /**
-        
+            Draws an object using the standard shader, forward rendering, alpha value currently not processed, hardcoded as 1 in the shader 
         */
         int DrawStandard(OpenGLObject & object, glm::mat4 model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
 
         /**
-        
+            Draws an object using the water shader, forward rendering
         */
         int DrawWater(OpenGLObject & object, glm::mat4 model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture, OpenGLTexture * bump_texture, std::vector<Wave_t>& waves);
 
         /**
-            Draws the object with a single color
+            Draws the object with a single color, forward rendering
         */
         int DrawColor(OpenGLObject & object, glm::mat4 & model, glm::vec3 color, float alpha);
 
@@ -117,6 +118,11 @@ namespace game_engine { namespace graphics { namespace opengl {
             Runs the separable AO algorithm
         */
         int DrawSeparableAO();
+
+        /**
+            Render a skybox
+        */
+        int DrawSkybox(OpenGLCubemap * skybox);
     
         /**
             Applys a bluring algorithm on a texture
@@ -192,6 +198,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         OpenGLFrameBufferTexture * frame_buffer_two_;
         OpenGLShadowMap * shadow_map_;
         bool use_shadows_;
+        OpenGLCubemap * skybox_ = nullptr;
     
     private:
         bool is_inited_;
@@ -199,6 +206,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         OpenGLContext * context_ = nullptr;
         OpenGLText * text_renderer_ = nullptr;
         OpenGLCamera * camera_ = nullptr;
+        OpenGLSkyboxCube * skybox_cube_ = nullptr;
     
         /* AO parameters */
         size_t number_of_samples_;
@@ -215,6 +223,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         float ssao_bias_;
         int blur_kernel_size_;
         bool constant_tessellation_ = false;
+        float water_reflectance = 0.6f;
     
         /* Verices color only shaders */
         OpenGLShaderVerticesColor shader_vertices_color_;
@@ -240,7 +249,10 @@ namespace game_engine { namespace graphics { namespace opengl {
         OpenGLShaderDisplacement shader_displacement_;
         /* Shader used to draw the normals of displaced mesh */
         OpenGLShaderDisplacementDrawNormals shader_displacement_draw_normals_;
+        /* Shader used to draw water */
         OpenGLShaderWater shader_water_;
+        /* Shader used to draw the skybox */
+        OpenGLShaderSkybox shader_skybox_;
 
         /* VAO and VBO for quad rendering */
         GLuint VAO_Quad_;

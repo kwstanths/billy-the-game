@@ -85,6 +85,9 @@ namespace graphics {
             ret = previously_allocated_texture->Init(name, type);
         
             if (!ret) InsertTexture(name, previously_allocated_texture);
+            else {
+                dt::Console(dt::WARNING, "Can't find texture: " + name);
+            }
         }
 
         if (!ret) return previously_allocated_texture;

@@ -37,8 +37,11 @@ uniform mat4 matrix_model;
 uniform mat4 matrix_view;
 uniform DirectionalLight directional_light;
 uniform float time;
+uniform vec3 camera_world_position;  
 uniform sampler2D bump_texture;
 uniform sampler2D depth_texture;
+uniform samplerCube skybox;
+uniform float environment_reflectance = 1;
 
 #define NR_WAVES 4
 uniform Wave waves[NR_WAVES];
@@ -52,7 +55,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec
 
 vec3 CalculateNormal();
 vec3 CalculateBumpNormal();
-vec3 CalculateColor(vec3 view_direction, vec3 normal_viewspace);
+vec3 CalculateColor(vec3 normal_worldspace);
 float CalculateTransparency();
 
 void main(){
@@ -68,7 +71,7 @@ void main(){
     float fragment_specular_intensity = texture(object_material.texture_specular, fs_in.uv).r + + object_material.specular.r;
 
     vec3 view_direction = normalize(-fragment_position_viewspace);
-    vec3 fragment_color = CalculateColor(view_direction, normal_viewspace);
+    vec3 fragment_color = CalculateColor(normal);
     
 	/* Calculate directional light color contribution */
 	vec3 directional_light_color = CalculateDirectionalLight(directional_light, normal_viewspace, view_direction, fragment_color, fragment_specular_intensity, object_material.shininess, 1);
@@ -79,46 +82,60 @@ void main(){
 
 float LinearizeDepth(float depth) 
 {    
-    float near = 0.1;
-    float far = 600;
+    float near = 1;
+    float far = 3000;
     float z = depth * 2.0 - 1.0; // back to NDC 
     return (2.0 * near * far) / (far + near - z * (far - near));	
 }
 
 float CalculateTransparency(){
+    /* Sample depth teture at the current fragment */
     float depth = texture(depth_texture, gl_FragCoord.xy / vec2(1920, 1080)).r;
     depth = LinearizeDepth(depth);
     
+    /* Calcualte current depth */
     float curent_depth = LinearizeDepth(gl_FragCoord.z);
     
+    /* Return a value based on the depth difference */
     return max(abs(depth - curent_depth) / 3, 0.1);
 }
 
-vec3 CalculateColor(vec3 view_direction, vec3 normal_viewspace){
-    float cos_angle = max(dot(view_direction, normal_viewspace), 0);
+vec3 CalculateColor(vec3 normal_worldspace){
+    vec3 view_direction =  normalize(fs_in.fragment_position_worldspace - camera_world_position);
+    
+    float cos_angle = max(dot(view_direction, normal_worldspace), 0);
 
+    /* Changed color based on the viewing angle */
     vec3 shallow = vec3(0.16, 0.12, 0.7);
     vec3 deep = object_material.diffuse;
     vec3 water_color = deep * cos_angle + shallow * (1 - cos_angle);
     
-    return water_color;
+    /* Calculate skybox color */
+    vec3 reflect_direction = reflect(view_direction, normal_worldspace);
+    vec3 env_color = texture(skybox, reflect_direction).rgb;
+    
+    /* Return a combination of them */
+    float F = 0.0 + 1.00 * pow(1 - cos_angle, 8) * environment_reflectance;
+    return env_color * F + water_color * (1 - F);
 }
 
 vec3 CalculateBumpNormal(){
     vec2 uv = fs_in.uv;
     
+    /* Calculate normal from normal map, animate over time */
     vec4 t0 = 2 * texture(bump_texture, uv * 100 * 0.02 + 2 * 0.07 * vec2(1, 0) * (time / 10) * vec2(-1, -1)) -1;
     vec4 t1 = 2 * texture(bump_texture, uv * 100 * 0.03 + 2 * 0.057 * vec2(0.86, 0.5) * (time / 10) * vec2(1, -1)) -1;
-    vec4 t2 = 2* texture(bump_texture, uv * 100 * 0.05 + 2 * 0.047 * vec2(0.86, -0.5) * (time / 10) * vec2(-1, 1)) -1;
+    vec4 t2 = 2 * texture(bump_texture, uv * 100 * 0.05 + 2 * 0.047 * vec2(0.86, -0.5) * (time / 10) * vec2(-1, 1)) -1;
     vec4 t3 = 2 *texture(bump_texture, uv * 100 * 0.07 + 2 * 0.037 * vec2(0.7, 0.7) * (time / 10)) -1;
     
     vec3 N = (t0 + t1 + t2 + t3).xzy;
     N.xz *= 4;
     N = normalize(N);
+    
     return N;
 }
 
-/* Calculate the normal by using the waves themselves, not used */
+/* Calculate the normal by using the waves themselves, not used currently */
 vec3 CalculateNormal(){
     vec3 du = vec3(1, 0, 0);
     vec3 dv = vec3(0, 0, 1);
@@ -162,9 +179,8 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec
 	vec3 light_diffuse = light.diffuse * light_diffuse_strength * fragment_color;
 
 	/* Specular component */
-	/* Find the reflected vector from the light towards the surface normal */
 	float light_specular_strength = pow(max(dot(fragment_normal, half_way_direction), 0.0), shininess);
-	vec3 light_specular = light.specular * light_specular_strength * fragment_specular_intensity;
+    vec3 light_specular = light.specular * light_specular_strength * fragment_specular_intensity;
     
        //light_ambient = clamp(light_ambient, 0, 0);
        //light_diffuse = clamp(light_diffuse, 0, 0);
