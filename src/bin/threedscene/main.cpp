@@ -45,7 +45,7 @@ int main(int argc, char ** argv) {
     World world;
     world.Init(&input, camera, &engine);
 
-    float camera_speed = 50;
+    float camera_speed = 10;
     /* Set the active world in the engine */
     engine.SetWorld(&world);
     do {

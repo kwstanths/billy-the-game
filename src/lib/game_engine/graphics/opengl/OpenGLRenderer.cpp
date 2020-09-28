@@ -203,7 +203,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         frame_buffer_one_->Init(context_, GL_RED);
         frame_buffer_two_->Init(context_, GL_RED);
         /* Init the shadow map */
-        shadow_map_->Init(context, 1248, 1248);
+        shadow_map_->Init(1248, 1248);
     
         /* Initialize a quad geometry */
         {
@@ -275,24 +275,15 @@ namespace game_engine { namespace graphics { namespace opengl {
     }
     
     void OpenGLRenderer::SetShadowMap(glm::mat4 & view_matrix, glm::mat4 & projection_matrix) {
-        shadow_map_->ClearDepth();
-
         glm::mat4 matrix_lightspace = projection_matrix * view_matrix;
         
         shader_shadow_map_.Use();
         shader_shadow_map_.SetUniformMat4(shader_shadow_map_.uni_Lightspace_, matrix_lightspace);
-    
-        shader_gbuffer_.Use();
-        shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_Lightspace_, matrix_lightspace);
-
-        shader_displacement_.Use();
-        shader_displacement_.SetUniformMat4(shader_displacement_.uni_Lightspace_, matrix_lightspace);
     }
     
     void OpenGLRenderer::SetView(OpenGLCamera * camera) {
     
         camera_ = camera;
-    
         camera->CalculateView();
     
         shader_vertices_color_.Use();
@@ -694,8 +685,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         glBindTexture(GL_TEXTURE_2D, ssao_texture);
         glActiveTexture(GL_TEXTURE4);
         glBindTexture(GL_TEXTURE_2D, g_buffer_->g_position_light_);
-        glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, shadow_map_->output_texture_);
+        //glActiveTexture(GL_TEXTURE5);
+        //glBindTexture(GL_TEXTURE_2D, shadow_map_->output_texture_);
     
         RenderQuad();
     

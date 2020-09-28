@@ -62,7 +62,11 @@ namespace graphics {
     void Renderer::StartFrame() {
         context_->ClearColor();
         
-        renderer_->shadow_map_->Bind();
+        renderer_->shadow_map_->Bind(0);
+        renderer_->shadow_map_->ClearDepth();
+        renderer_->shadow_map_->Bind(1);
+        renderer_->shadow_map_->ClearDepth();
+        renderer_->shadow_map_->Bind(2);
         renderer_->shadow_map_->ClearDepth();
         renderer_->shadow_map_->Unbind();
 
@@ -105,6 +109,11 @@ namespace graphics {
         renderer_->skybox_ = skybox->texture_cubemap_;
     }
 
+    void Renderer::SetLightShadows(DirectionalLight * light)
+    {
+        light_shadows_ = light;
+    }
+
     int Renderer::Draw(GraphicsObject * rendering_object) {
         if (!rendering_object->IsInited()) return -1;
 
@@ -130,30 +139,6 @@ namespace graphics {
     }
 
     int Renderer::DrawTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 color) {
-
-        ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
-        if (command.type_ == COMMAND_SHADOW_MAPPING) shadows = static_cast<bool>(command.arg_1_);
-
-        if (shadows) {
-
-            renderer_->shadow_map_->ConfigureViewport();
-            renderer_->shadow_map_->Bind();
-
-            glDisable(GL_CULL_FACE);
-
-            opengl::OpenGLTriangle t;
-            t.Init(v1, v2, v3);
-
-            renderer_->DrawShadowMap(t, glm::mat4(1.0f));
-
-            glEnable(GL_CULL_FACE);
-
-            renderer_->shadow_map_->Unbind();
-
-            t.Destroy();
-        }
-
-        glViewport(0, 0, context_->GetWindowWidth(), context_->GetWindowHeight());
 
         renderer_->g_buffer_->Bind();
         renderer_->DrawGBufferTriangle(v1, v2, v3, color);
@@ -295,31 +280,45 @@ namespace graphics {
         ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
         if (command.type_ == COMMAND_SHADOW_MAPPING) shadows = static_cast<bool>(command.arg_1_);
         
-        /* Render a simple shadow map for all objects in the gbuffer queue */
         renderer_->use_shadows_ = shadows;
-        if (shadows) {
-            renderer_->shadow_map_->ConfigureViewport();
-            renderer_->shadow_map_->Bind();
-            renderer_->EnableColorWriting(false);
-            renderer_->EnableDepthWriting(true);
+        if (shadows && light_shadows_ != nullptr) {
 
-            //glCullFace(GL_FRONT);
-            glDisable(GL_CULL_FACE);
+            glm::mat4 light_view = glm::lookAt(
+                /* Position of the light */
+                glm::vec3(0, 0, 0),
+                /* Where the light is looking at */
+                light_shadows_->direction_,
+                /* Up vector */
+                glm::vec3(0.0f, 1.0f, 0.0f));
 
-            /* Render shadow map with the object in the gbuffer queue */
-            utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[0];
+            renderer_->shadow_map_->CalculateProjectionMatrices(light_shadows_->direction_, camera_, light_view);
 
-            for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
-                MESH_DRAW_t& draw_call = *itr;
-                Mesh * mesh = draw_call.mesh_;
+            size_t n_of_cascades = renderer_->shadow_map_->GetNCascades();
+            for (size_t i = 0; i < n_of_cascades; i++) {
+                renderer_->shadow_map_->Bind(i);
+                renderer_->shadow_map_->ConfigureViewport();
+                renderer_->shadow_map_->ClearDepth();
+                renderer_->EnableColorWriting(false);
+                renderer_->EnableDepthWriting(true);
+                renderer_->SetShadowMap(light_view, renderer_->shadow_map_->GetProjectionMatrix(i));
 
-                draw_call.material_->RenderShadow(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
-                draw_calls_++;
+                //glCullFace(GL_FRONT);
+                glDisable(GL_CULL_FACE);
+
+                /* Render shadow map with the object in the gbuffer queue */
+                utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[0];
+                for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
+                    MESH_DRAW_t& draw_call = *itr;
+                    Mesh * mesh = draw_call.mesh_;
+
+                    draw_call.material_->RenderShadow(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
+                    draw_calls_++;
+                }
+
+                //glCullFace(GL_BACK);
+                glEnable(GL_CULL_FACE);
+
             }
-
-            //glCullFace(GL_BACK);
-            glEnable(GL_CULL_FACE);
-
             renderer_->shadow_map_->Unbind();
             renderer_->EnableColorWriting(true);
         }
@@ -459,6 +458,9 @@ namespace graphics {
         /* Render the skybox */
         if (skybox_ != nullptr) renderer_->DrawSkybox(skybox_->texture_cubemap_);
 
+        if (shadows) {
+            renderer_->DrawTexture(renderer_->shadow_map_->shadow_maps[0]);
+        }
 
         /* Render overlay */
         while (text_to_draw_.Items() > 0) {

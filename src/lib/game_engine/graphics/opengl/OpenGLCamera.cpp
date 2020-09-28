@@ -68,7 +68,7 @@ namespace opengl {
     }
 
     Real_t OpenGLCamera::GetPerspectiveAngle() {
-        return perspective_angle_;
+        return config_.field_of_view_;
     }
 
     void OpenGLCamera::SetPositionVector(Real_t x, Real_t y, Real_t z) {
@@ -126,6 +126,11 @@ namespace opengl {
         return projection_matrix_;
     }
 
+    OpenGLCameraConfig_t OpenGLCamera::GetConfig()
+    {
+        return config_;
+    }
+
     int OpenGLCamera::CalculateView() {
         if (!is_inited_) return false;
 
@@ -146,7 +151,7 @@ namespace opengl {
 
     void OpenGLCamera::Project3D() {
 
-        projection_matrix_ = glm::perspective(perspective_angle_,
+        projection_matrix_ = glm::perspective(config_.field_of_view_,
             (1.0f * context_->GetWindowWidth()) / (1.0f * context_->GetWindowHeight()),
             static_cast<float>(config_.z_near_), static_cast<float>(config_.z_far_));
     }

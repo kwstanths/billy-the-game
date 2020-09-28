@@ -31,6 +31,8 @@ bool Sun::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world
 
     engine_ = engine;
 
+    engine->GetRenderer()->SetLightShadows(this);
+
     return ret == 0;
 }
 
@@ -39,22 +41,6 @@ void Sun::Step(double delta_time) {
 }
 
 void Sun::Draw(grph::Renderer * renderer) {
-
-    /* Set shadow map variables */
-    float scene_size = 20.0;
-    float near_plane = 1.0f, far_plane = 80;
-
-    glm::vec3 looking_at = glm::vec3(GetX(), GetY(), GetZ()) + direction_;
-
-    glm::mat4 lightProjection = glm::ortho(-scene_size, scene_size, -scene_size, scene_size, near_plane, far_plane);
-    glm::mat4 lightView = glm::lookAt(glm::vec3(
-        /* Position of the light */
-        GetX(), GetY(), GetZ()),
-        /* Where the light is looking at */
-        looking_at,
-        /* Up vector */
-        glm::vec3(1.0f, 0.0f, 0.0f));
-    renderer->SetShadowMap(lightView, lightProjection);
 
     WorldObject::Draw(renderer);
 }

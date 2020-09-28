@@ -29,6 +29,8 @@ namespace opengl {
         Real_t zoom_factor_;
         /* z near, z far */
         Real_t z_near_, z_far_;
+        /* */
+        Real_t field_of_view_;
     } OpenGLCameraConfig_t;
 
 
@@ -151,6 +153,11 @@ namespace opengl {
 
         */
         glm::mat4 GetProjectionMatrix();
+
+        /**
+        
+        */
+        OpenGLCameraConfig_t GetConfig();
 
     protected:
 

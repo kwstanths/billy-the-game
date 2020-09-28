@@ -55,6 +55,8 @@ namespace graphics {
         /* Set the skybox material for the current frame */
         void SetSkybox(MaterialSkybox * skybox);
 
+        void SetLightShadows(DirectionalLight * light);
+
         /**
             Draws an object with it's set materials. All Draw() calls will happen at the end of the frame. This means 
             that calling this Draw() on an object multiple times within a single frame, will result in drawing the 
@@ -149,6 +151,8 @@ namespace graphics {
         utility::CircularBuffer<TEXT_DRAW_t> text_to_draw_;
         /* */
         MaterialSkybox * skybox_ = nullptr;
+        /* */
+        DirectionalLight * light_shadows_ = nullptr;
 
         /* Variables needed for opengl drawiing */
         opengl::OpenGLContext * context_ = nullptr;
