@@ -122,6 +122,11 @@ namespace opengl {
         return view_matrix_;
     }
 
+    glm::mat4 OpenGLCamera::GetInverseViewMatrix()
+    {
+        return inverse_view_matrix_;
+    }
+
     glm::mat4 OpenGLCamera::GetProjectionMatrix() {
         return projection_matrix_;
     }
@@ -135,6 +140,7 @@ namespace opengl {
         if (!is_inited_) return false;
 
         view_matrix_ = glm::lookAt(config_.position_, config_.position_ + config_.direction_, config_.up_);
+        inverse_view_matrix_ = glm::inverse(view_matrix_);
 
         return 0;
     }

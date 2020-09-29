@@ -145,12 +145,17 @@ namespace opengl {
         int SetMouceCallback(void(*func)(GLFWwindow *, double, double));
 
         /**
-
+            Get the view matrix of the camera, Calculated by CalculateView()
         */
         glm::mat4 GetViewMatrix();
 
         /**
+            Get the inverse view matrix of the camera, Calculated by CalculateView()
+        */
+        glm::mat4 GetInverseViewMatrix();
 
+        /**
+            Get the projection matrix of the camera, Calculated by CalculateView()
         */
         glm::mat4 GetProjectionMatrix();
 
@@ -171,6 +176,7 @@ namespace opengl {
 
         glm::mat4 view_matrix_;
         glm::mat4 projection_matrix_;
+        glm::mat4 inverse_view_matrix_;
         
         
         /**

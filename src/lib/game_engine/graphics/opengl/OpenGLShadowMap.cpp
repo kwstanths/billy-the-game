@@ -74,15 +74,10 @@ namespace opengl {
         return 0;
     }
 
-    void OpenGLShadowMap::CalculateProjectionMatrices(glm::vec3 light_direction, OpenGLCamera * camera, glm::mat4& light_space)
+    void OpenGLShadowMap::CalculateProjectionMatrices(glm::vec3 light_direction, OpenGLCamera * camera)
     {
+        glm::mat4 view_space_inverse = camera->GetInverseViewMatrix();
         OpenGLCameraConfig_t camera_config = camera->GetConfig();
-
-        glm::vec3 cam_position = camera_config.position_;
-        glm::vec3 cam_target = camera_config.direction_ + cam_position;
-        glm::vec3 cam_up = camera_config.up_;
-        glm::mat4 view_space = glm::lookAt(cam_position, cam_target, cam_up);
-        glm::mat4 view_space_inverse = glm::inverse(view_space);
 
         GLfloat fov = camera_config.field_of_view_;
         float aspect = 1920.0 / 1080.0;
@@ -95,7 +90,7 @@ namespace opengl {
         GLfloat cascade_end[4];
         cascade_end[0] = camera_config.z_near_;
         cascade_end[1] = camera_config.z_near_ + 0.1 * (z_far - z_near);
-        cascade_end[2] = camera_config.z_near_ + 0.3 * (z_far - z_near);
+        cascade_end[2] = camera_config.z_near_ + 0.4 * (z_far - z_near);
         cascade_end[3] = camera_config.z_far_;
 
         for (size_t i = 0; i < n_shadow_maps_; i++) {
@@ -106,22 +101,21 @@ namespace opengl {
 
             glm::vec4 frustum_corners_view_space[8] = {
                 // near face
-                glm::vec4(xn, yn, cascade_end[i], 1.0),
-                glm::vec4(-xn, yn, cascade_end[i], 1.0),
-                glm::vec4(xn, -yn, cascade_end[i], 1.0),
-                glm::vec4(-xn, -yn, cascade_end[i], 1.0),
+                glm::vec4(xn, yn, -cascade_end[i], 1.0),
+                glm::vec4(-xn, yn, -cascade_end[i], 1.0),
+                glm::vec4(xn, -yn, -cascade_end[i], 1.0),
+                glm::vec4(-xn, -yn, -cascade_end[i], 1.0),
 
                 // far face
-                glm::vec4(xf, yf, cascade_end[i + 1], 1.0),
-                glm::vec4(-xf, yf, cascade_end[i + 1], 1.0),
-                glm::vec4(xf, -yf, cascade_end[i + 1], 1.0),
-                glm::vec4(-xf, -yf, cascade_end[i + 1], 1.0)
+                glm::vec4(xf, yf, -cascade_end[i + 1], 1.0),
+                glm::vec4(-xf, yf, -cascade_end[i + 1], 1.0),
+                glm::vec4(xf, -yf, -cascade_end[i + 1], 1.0),
+                glm::vec4(-xf, -yf, -cascade_end[i + 1], 1.0)
             };
-
-
+   
             glm::vec4 frustum_center(0, 0, 0, 0);
             glm::vec4 frustum_corners_world_space[8];
-            for (size_t j = 0; j < 8; j++) {
+            for (size_t j = 0; j < 8; j++) {    
                 frustum_corners_world_space[j] = view_space_inverse * frustum_corners_view_space[j];
                 frustum_center += frustum_corners_world_space[j] / 8.0f;
             }
@@ -135,7 +129,7 @@ namespace opengl {
 
             glm::vec4 frustum_corners_light_space[8];
             for (size_t j = 0; j < 8; j++) {
-                frustum_corners_light_space[j] = light_space * frustum_corners_world_space[j];
+                frustum_corners_light_space[j] = view_matrices_[i] * frustum_corners_world_space[j];
 
                 minX = std::min(minX, frustum_corners_light_space[j].x);
                 maxX = std::max(maxX, frustum_corners_light_space[j].x);
@@ -145,10 +139,15 @@ namespace opengl {
                 maxZ = std::max(maxZ, frustum_corners_light_space[j].z);
             }
 
-            projection_matrices[i] = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
+            glm::vec3 forward = light_direction;
+            glm::vec3 a = glm::vec3(forward.y, -forward.x, 0);
+            view_matrices_[i] = glm::lookAt(
+                glm::vec3(frustum_center) - light_direction * (cascade_end[i+1] - cascade_end[i]),
+                glm::vec3(frustum_center),
+                a);
+
+            projection_matrices_[i] = glm::ortho(minX, maxX, minY, maxY, 0.0f, maxZ - minZ);
         }
-
-
     }
 
     int OpenGLShadowMap::ActivateTextures(size_t index)
@@ -178,7 +177,12 @@ namespace opengl {
     }
 
     glm::mat4 & OpenGLShadowMap::GetProjectionMatrix(size_t index) {
-        return projection_matrices[index];
+        return projection_matrices_[index];
+    }
+
+    glm::mat4 & OpenGLShadowMap::GetViewMatrix(size_t index)
+    {
+        return view_matrices_[index];
     }
 
 }

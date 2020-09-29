@@ -283,15 +283,15 @@ namespace graphics {
         renderer_->use_shadows_ = shadows;
         if (shadows && light_shadows_ != nullptr) {
 
-            glm::mat4 light_view = glm::lookAt(
-                /* Position of the light */
-                glm::vec3(0, 0, 0),
-                /* Where the light is looking at */
-                light_shadows_->direction_,
-                /* Up vector */
-                glm::vec3(0.0f, 1.0f, 0.0f));
+            //glm::mat4 light_view = glm::lookAt(
+            //    /* Position of the light */
+            //    glm::vec3(0, 0, 0),
+            //    /* Where the light is looking at */
+            //    light_shadows_->direction_,
+            //    /* Up vector */
+            //    glm::vec3(0.0f, 1.0f, 0.0f));
 
-            renderer_->shadow_map_->CalculateProjectionMatrices(light_shadows_->direction_, camera_, light_view);
+            renderer_->shadow_map_->CalculateProjectionMatrices(light_shadows_->direction_, camera_);
 
             size_t n_of_cascades = renderer_->shadow_map_->GetNCascades();
             for (size_t i = 0; i < n_of_cascades; i++) {
@@ -300,7 +300,7 @@ namespace graphics {
                 renderer_->shadow_map_->ClearDepth();
                 renderer_->EnableColorWriting(false);
                 renderer_->EnableDepthWriting(true);
-                renderer_->SetShadowMap(light_view, renderer_->shadow_map_->GetProjectionMatrix(i));
+                renderer_->SetShadowMap(renderer_->shadow_map_->GetViewMatrix(i), renderer_->shadow_map_->GetProjectionMatrix(i));
 
                 //glCullFace(GL_FRONT);
                 glDisable(GL_CULL_FACE);
@@ -459,7 +459,7 @@ namespace graphics {
         if (skybox_ != nullptr) renderer_->DrawSkybox(skybox_->texture_cubemap_);
 
         if (shadows) {
-            renderer_->DrawTexture(renderer_->shadow_map_->shadow_maps[0]);
+            renderer_->DrawTexture(renderer_->shadow_map_->shadow_maps[1]);
         }
 
         /* Render overlay */

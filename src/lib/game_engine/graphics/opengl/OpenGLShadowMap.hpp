@@ -26,7 +26,7 @@ namespace opengl {
         int Bind(size_t index);
         int Unbind();
 
-        void CalculateProjectionMatrices(glm::vec3 light_direction, OpenGLCamera * camera, glm::mat4& light_space);
+        void CalculateProjectionMatrices(glm::vec3 light_direction, OpenGLCamera * camera);
 
         int ActivateTextures(size_t index);
 
@@ -38,6 +38,8 @@ namespace opengl {
 
         glm::mat4& GetProjectionMatrix(size_t index);
 
+        glm::mat4& GetViewMatrix(size_t index);
+
         GLuint shadow_maps[3];
     private:
         bool is_inited_;
@@ -47,7 +49,8 @@ namespace opengl {
         GLuint frame_buffer_;
 
         size_t n_shadow_maps_ = 3;
-        glm::mat4 projection_matrices[3];
+        glm::mat4 projection_matrices_[3];
+        glm::mat4 view_matrices_[3];
     };
 
 }
