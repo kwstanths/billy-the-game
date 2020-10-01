@@ -62,7 +62,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         /**
             Sets the necessary matrices for shadow mapping
         */
-        void SetShadowMap(glm::mat4& view_matrix, glm::mat4& projection_matrix);
+        void SetShadowMap(glm::mat4& matrix_lightspace);
     
         /**
             Set the camera related matrices, for all the shaders that need them

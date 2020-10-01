@@ -192,10 +192,6 @@ namespace graphics {
         return 0;
     }
 
-    void Renderer::SetShadowMap(glm::mat4 & light_view_matrix, glm::mat4 & light_projection_matrix) {
-        renderer_->SetShadowMap(light_view_matrix, light_projection_matrix);
-    }
-
     int Renderer::SetCamera(gl::OpenGLCamera * camera) {
         
         if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
@@ -300,7 +296,7 @@ namespace graphics {
                 renderer_->shadow_map_->ClearDepth();
                 renderer_->EnableColorWriting(false);
                 renderer_->EnableDepthWriting(true);
-                renderer_->SetShadowMap(renderer_->shadow_map_->GetViewMatrix(i), renderer_->shadow_map_->GetProjectionMatrix(i));
+                renderer_->SetShadowMap(renderer_->shadow_map_->GetLightspaceMatrix(i));
 
                 //glCullFace(GL_FRONT);
                 glDisable(GL_CULL_FACE);
@@ -457,10 +453,6 @@ namespace graphics {
 
         /* Render the skybox */
         if (skybox_ != nullptr) renderer_->DrawSkybox(skybox_->texture_cubemap_);
-
-        if (shadows) {
-            renderer_->DrawTexture(renderer_->shadow_map_->shadow_maps[1]);
-        }
 
         /* Render overlay */
         while (text_to_draw_.Items() > 0) {

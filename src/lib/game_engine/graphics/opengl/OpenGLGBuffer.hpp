@@ -23,7 +23,7 @@ namespace opengl {
         int UnBind();
 
         /* GBuffer textures */
-        GLuint g_position_texture_, g_normal_texture_, g_albedo_spec_texture_, g_position_light_;
+        GLuint g_position_texture_, g_normal_texture_, g_albedo_spec_texture_;
         GLuint depth_texture_;
 
         void ClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);

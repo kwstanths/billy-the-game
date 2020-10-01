@@ -35,8 +35,10 @@ namespace opengl {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+            float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
         }
 
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_maps[0], 0);
@@ -89,7 +91,7 @@ namespace opengl {
 
         GLfloat cascade_end[4];
         cascade_end[0] = camera_config.z_near_;
-        cascade_end[1] = camera_config.z_near_ + 0.1 * (z_far - z_near);
+        cascade_end[1] = camera_config.z_near_ + 0.2 * (z_far - z_near);
         cascade_end[2] = camera_config.z_near_ + 0.4 * (z_far - z_near);
         cascade_end[3] = camera_config.z_far_;
 
@@ -146,7 +148,9 @@ namespace opengl {
                 glm::vec3(frustum_center),
                 a);
 
-            projection_matrices_[i] = glm::ortho(minX, maxX, minY, maxY, 0.0f, maxZ - minZ);
+            projection_matrices_[i] = glm::ortho(minX, maxX, minY, maxY, 0.0f, 1.5f * (maxZ - minZ));
+            
+            lightspace_[i] = projection_matrices_[i] * view_matrices_[i];
         }
     }
 
@@ -183,6 +187,11 @@ namespace opengl {
     glm::mat4 & OpenGLShadowMap::GetViewMatrix(size_t index)
     {
         return view_matrices_[index];
+    }
+
+    glm::mat4 & OpenGLShadowMap::GetLightspaceMatrix(size_t index)
+    {
+        return lightspace_[index];
     }
 
 }

@@ -24,7 +24,7 @@ int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera
     engine_ = engine;
     camera_ = camera;
 
-    int ret = WorldObject::Init("Tree.obj", x, y, z);
+    int ret = WorldObject::Init("lowpolytree.obj", x, y, z);
     world->AddObject(this, x, y, z);
 
     Scale(0.5, 0.5, 0.5);

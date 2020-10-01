@@ -13,13 +13,11 @@ struct Material {
 layout(location = 0) out vec3 g_position;
 layout(location = 1) out vec3 g_normal;
 layout(location = 2) out vec4 g_albedo_spec;
-layout(location = 3) out vec3 g_position_light;
 
 in VS_OUT {
     vec2 uv;
     vec3 normal_viewspace;
     vec3 fragment_position_viewspace;
-    vec4 fragment_position_lightspace;
 } vs_in;
 
 uniform Material object_material;
@@ -38,6 +36,4 @@ void main(){
     
     g_albedo_spec.rgb = texture_color.rgb + object_material.diffuse;
     g_albedo_spec.a = texture(object_material.texture_specular, vs_in.uv).r + object_material.specular.r;
-    
-    g_position_light = vs_in.fragment_position_lightspace.xyz / vs_in.fragment_position_lightspace.w;
 }

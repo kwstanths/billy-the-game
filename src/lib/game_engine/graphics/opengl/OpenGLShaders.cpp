@@ -265,7 +265,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_Lightspace_ = GetUniformLocation(shader_uni_lightspace)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
     
         return 0;
     }
@@ -325,12 +324,18 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((uni_texture_gbuffer_position_ = GetUniformLocation(shader_gbuffer_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_texture_gbuffer_normal_ = GetUniformLocation(shader_gbuffer_normal)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_texture_gbuffer_albedo_spec_ = GetUniformLocation(shader_gbuffer_albedo_spec)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_texture_gbuffer_position_light_ = GetUniformLocation(shader_gbuffer_position_light)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_texture_ssao_ = GetUniformLocation(shader_final_pass_ssao_texture)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_shadow_map_ = GetUniformLocation(shader_uni_shadow_map)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_matrix_view_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_matrix_view_inverse_ = GetUniformLocation(shader_uni_view_inverse)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_matrix_projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        
         if ((uni_use_shadows_ = GetUniformLocation("use_shadows")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_shadow_map_0_ = GetUniformLocation(shader_uni_shadow_map + "[0]")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_shadow_map_1_ = GetUniformLocation(shader_uni_shadow_map + "[1]")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_shadow_map_2_ = GetUniformLocation(shader_uni_shadow_map + "[2]")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_matrix_lightspace_0_ = GetUniformLocation(shader_uni_lightspace + "[0]")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_matrix_lightspace_1_ = GetUniformLocation(shader_uni_lightspace + "[1]")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_matrix_lightspace_2_ = GetUniformLocation(shader_uni_lightspace + "[2]")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }

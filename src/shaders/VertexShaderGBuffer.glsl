@@ -8,13 +8,11 @@ out VS_OUT {
     vec2 uv;
     vec3 normal_viewspace;
     vec3 fragment_position_viewspace;
-    vec4 fragment_position_lightspace;
 } vs_out;
 
 uniform mat4 matrix_model;
 uniform mat4 matrix_view;
 uniform mat4 matrix_projection;
-uniform mat4 matrix_lightspace;
 
 void main(){
 
@@ -26,9 +24,6 @@ void main(){
     /* Calculate the position of the fragment in view space */
 	vs_out.fragment_position_viewspace = (matrix_view * world_position).xyz;
 	vs_out.uv = vertex_uv;
-    
-    /* Calculate light space position */
-    vs_out.fragment_position_lightspace = matrix_lightspace * world_position;
     
     /* Set output */
     gl_Position =  matrix_projection * matrix_view * world_position;

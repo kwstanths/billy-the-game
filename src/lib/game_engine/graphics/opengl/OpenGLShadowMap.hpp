@@ -40,6 +40,8 @@ namespace opengl {
 
         glm::mat4& GetViewMatrix(size_t index);
 
+        glm::mat4& GetLightspaceMatrix(size_t index);
+
         GLuint shadow_maps[3];
     private:
         bool is_inited_;
@@ -49,8 +51,9 @@ namespace opengl {
         GLuint frame_buffer_;
 
         size_t n_shadow_maps_ = 3;
-        glm::mat4 projection_matrices_[3];
         glm::mat4 view_matrices_[3];
+        glm::mat4 projection_matrices_[3];
+        glm::mat4 lightspace_[3];
     };
 
 }

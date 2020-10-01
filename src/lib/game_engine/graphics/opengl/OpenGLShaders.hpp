@@ -10,51 +10,51 @@
 namespace game_engine { namespace graphics { namespace opengl {
 
     /* Shader variables */
-    static const char shader_vertex_position[] = "vertex_position_modelspace";
-    static const char shader_vertex_uv[] = "vertex_uv";
-    static const char shader_vertex_normal[] = "vertex_normal";
+    /* Shader mesh attributes */
+    static const std::string shader_vertex_position("vertex_position_modelspace");
+    static const std::string shader_vertex_uv("vertex_uv");
+    static const std::string shader_vertex_normal("vertex_normal");
     
-    static const char shader_uni_model[] = "matrix_model";
-    static const char shader_uni_view[] = "matrix_view";
-    static const char shader_uni_projection[] = "matrix_projection";
-    static const char shader_uni_shadow_map[] = "shadow_map";
-    static const char shader_sampler_texture[] = "sampler_texture";
-    static const char shader_sampler_texture_diffuse[] = "texture_diffuse";
-    static const char shader_sampler_texture_displacement[] = "displacement_map";
-    static const char shader_blur_kernel_size[] = "blur_kernel_size";
-    static const char shader_time[] = "time";
-    static const char shader_skybox[] = "skybox";
+    /* Martix uniforms */
+    static const std::string shader_uni_model("matrix_model");
+    static const std::string shader_uni_view("matrix_view");
+    static const std::string shader_uni_projection("matrix_projection");
+    static const std::string shader_uni_view_inverse("matrix_view_inverse");
+    static const std::string shader_uni_lightspace("matrix_lightspace");
 
-    
+    static const std::string shader_uni_shadow_map("shadow_map");
+    static const std::string shader_sampler_texture("sampler_texture");
+    static const std::string shader_sampler_texture_diffuse("texture_diffuse");
+    static const std::string shader_sampler_texture_displacement("displacement_map");
+    static const std::string shader_blur_kernel_size("blur_kernel_size");
+    static const std::string shader_time("time");
+    static const std::string shader_skybox("skybox");
+
     /* Names of the text shader variables used */
-    static const char shader_text_name_vertex[] = "vertex";
-    static const char shader_text_name_uni_texture_color[] = "texture_color";
+    static const std::string shader_text_name_vertex("vertex");
+    static const std::string shader_text_name_uni_texture_color("texture_color");
     
     /* Names of the vertices color shader variables used */
-    static const char shader_vertices_color_uni_color[] = "fragment_color";
-    static const char shader_vertices_color_uni_alpha[] = "alpha";
+    static const std::string shader_vertices_color_uni_color("fragment_color");
+    static const std::string shader_vertices_color_uni_alpha("alpha");
     
     /* Names of the g buffer shader variables used*/
-    static const char shader_gbuffer_position[] = "g_position";
-    static const char shader_gbuffer_normal[] = "g_normal";
-    static const char shader_gbuffer_albedo_spec[] = "g_albedo_spec";
-    static const char shader_gbuffer_position_light[] = "g_position_light";
+    static const std::string shader_gbuffer_position("g_position");
+    static const std::string shader_gbuffer_normal("g_normal");
+    static const std::string shader_gbuffer_albedo_spec("g_albedo_spec");
     
     /* Names of the SSAO shader variables used */
-    static const char shader_ssao_noise_texture[] = "noise_texture";
-    static const char shader_ssao_radius[] = "radius";
-    static const char shader_ssao_samples_size[] = "samples_size";
-    static const char shader_ssao_intensity[] = "intensity";
-    static const char shader_ssao_bias[] = "bias";
+    static const std::string shader_ssao_noise_texture("noise_texture");
+    static const std::string shader_ssao_radius("radius");
+    static const std::string shader_ssao_samples_size("samples_size");
+    static const std::string shader_ssao_intensity("intensity");
+    static const std::string shader_ssao_bias("bias");
     
     /* Names for the final pass shader variables used */
-    static const char shader_final_pass_ssao_texture[] = "ssao_texture";
+    static const std::string shader_final_pass_ssao_texture("ssao_texture");
     
-    /* Names for the shadow map shader */
-    static const char shader_uni_lightspace[] = "matrix_lightspace";
-
     /* Names for the terrain shader */
-    static const char shader_uni_specular_intensity[] = "specular_intensity";
+    static const std::string shader_uni_specular_intensity("specular_intensity");
 
     /**
         A shader class the encapsulates all shader fuctionality
@@ -235,7 +235,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_Model_;
         GLuint uni_View_;
         GLuint uni_Projection_;
-        GLuint uni_Lightspace_;
     };
 
     /**
@@ -346,12 +345,18 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_texture_gbuffer_position_;
         GLuint uni_texture_gbuffer_normal_;
         GLuint uni_texture_gbuffer_albedo_spec_;
-        GLuint uni_texture_gbuffer_position_light_;
         GLuint uni_texture_ssao_;
-        GLuint uni_shadow_map_;
         GLuint uni_matrix_view_;
+        GLuint uni_matrix_view_inverse_;
         GLuint uni_matrix_projection_;
+        
         GLuint uni_use_shadows_;
+        GLuint uni_shadow_map_0_;
+        GLuint uni_shadow_map_1_;
+        GLuint uni_shadow_map_2_;
+        GLuint uni_matrix_lightspace_0_;
+        GLuint uni_matrix_lightspace_1_;
+        GLuint uni_matrix_lightspace_2_;
     };
 
     /* A shader to draw the normals of a model */

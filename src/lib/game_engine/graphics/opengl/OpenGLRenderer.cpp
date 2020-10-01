@@ -160,8 +160,11 @@ namespace game_engine { namespace graphics { namespace opengl {
             shader_final_pass_.SetUniformInt(shader_final_pass_.uni_texture_gbuffer_normal_, 1);
             shader_final_pass_.SetUniformInt(shader_final_pass_.uni_texture_gbuffer_albedo_spec_, 2);
             shader_final_pass_.SetUniformInt(shader_final_pass_.uni_texture_ssao_, 3);
-            shader_final_pass_.SetUniformInt(shader_final_pass_.uni_texture_gbuffer_position_light_, 4);
-            shader_final_pass_.SetUniformInt(shader_final_pass_.uni_shadow_map_, 5);
+            shader_final_pass_.SetUniformInt(shader_final_pass_.uni_shadow_map_0_, 4);
+            shader_final_pass_.SetUniformInt(shader_final_pass_.uni_shadow_map_1_, 5);
+            shader_final_pass_.SetUniformInt(shader_final_pass_.uni_shadow_map_2_, 6);
+
+
         }
 
         {
@@ -274,9 +277,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         }
     }
     
-    void OpenGLRenderer::SetShadowMap(glm::mat4 & view_matrix, glm::mat4 & projection_matrix) {
-        glm::mat4 matrix_lightspace = projection_matrix * view_matrix;
-        
+    void OpenGLRenderer::SetShadowMap(glm::mat4& matrix_lightspace) {
         shader_shadow_map_.Use();
         shader_shadow_map_.SetUniformMat4(shader_shadow_map_.uni_Lightspace_, matrix_lightspace);
     }
@@ -285,7 +286,7 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         camera_ = camera;
         camera->CalculateView();
-    
+        
         shader_vertices_color_.Use();
         shader_vertices_color_.SetUniformMat4(shader_vertices_color_.uni_View_, camera->view_matrix_);
         shader_vertices_color_.SetUniformMat4(shader_vertices_color_.uni_Projection_, camera->projection_matrix_);
@@ -306,6 +307,7 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         shader_final_pass_.Use();
         shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_view_, camera->view_matrix_);
+        shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_view_inverse_, camera->inverse_view_matrix_);
         shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_projection_, camera->projection_matrix_);
 
         shader_draw_normals_.Use();
@@ -674,6 +676,9 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         shader_final_pass_.Use();
         shader_final_pass_.SetUniformBool(shader_final_pass_.uni_use_shadows_, use_shadows_);
+        shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_0_, shadow_map_->GetLightspaceMatrix(0));
+        shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_1_, shadow_map_->GetLightspaceMatrix(1));
+        shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_2_, shadow_map_->GetLightspaceMatrix(2));
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, g_buffer_->g_position_texture_);
@@ -683,11 +688,14 @@ namespace game_engine { namespace graphics { namespace opengl {
         glBindTexture(GL_TEXTURE_2D, g_buffer_->g_albedo_spec_texture_);
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, ssao_texture);
+
         glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, g_buffer_->g_position_light_);
-        //glActiveTexture(GL_TEXTURE5);
-        //glBindTexture(GL_TEXTURE_2D, shadow_map_->output_texture_);
-    
+        glBindTexture(GL_TEXTURE_2D, shadow_map_->shadow_maps[0]);
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, shadow_map_->shadow_maps[1]);
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, shadow_map_->shadow_maps[2]);
+
         RenderQuad();
     
         return 0;

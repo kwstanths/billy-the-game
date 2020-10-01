@@ -48,14 +48,6 @@ namespace opengl {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, g_albedo_spec_texture_, 0);
 
-        /* Store ambient color and shadow visibility */
-        glGenTextures(1, &g_position_light_);
-        glBindTexture(GL_TEXTURE_2D, g_position_light_);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, context_->GetWindowWidth(), context_->GetWindowHeight(), 0, GL_RGBA, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, g_position_light_, 0);
-
         /* Configure the render targets */
 
         /* Create a depth buffer */
@@ -67,7 +59,7 @@ namespace opengl {
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_texture_, 0);
 
         // finally check if framebuffer is complete
-        unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+        unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
         glDrawBuffers(4, attachments);
 
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -105,9 +97,6 @@ namespace opengl {
 
         static const float norm[4] = { 0, 0, 0, 1 };
         glClearTexImage(g_normal_texture_, 0, GL_RGBA, GL_FLOAT, norm);
-
-        static const float light[4] = { 0, 0, 0, 1 };
-        glClearTexImage(g_position_light_, 0, GL_RGBA, GL_FLOAT, light);
 
         static const float color[4] = { red, green, blue, alpha };
         glClearTexImage(g_albedo_spec_texture_, 0, GL_RGBA, GL_FLOAT, color);

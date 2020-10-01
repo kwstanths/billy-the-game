@@ -28,14 +28,14 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     if (ret) return ret;
 
     ///* Create a tree */
-    {
-        Player * player;
-        player = NewObj<Player>();
-        player->Init(0, 7.9, 8, input, camera, this, engine);
-    }
+    //{
+    //    Player * player;
+    //    player = NewObj<Player>();
+    //    player->Init(0, 7.9, 8, input, camera, this, engine);
+    //}
     
-    for (int i = -6; i <= 6; i+=6){
-        for (int j = -4; j <= 4; j+=4) {
+    for (int i = -50; i <= 50; i+=10){
+        for (int j = -50; j <= 50; j+=10) {
             /* Create some players */
             Player * player = NewObj<Player>();
             player->Init(10 + 1.0f * i, 0, 1.0f * j, input, camera, this, engine);
@@ -52,8 +52,8 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     //}
 
     /* Create a floor, solid green color everywhere */
-    //Floor * floor = NewObj<Floor>();
-    //floor->Init(150, -3, 150, this);
+    Floor * floor = NewObj<Floor>();
+    floor->Init(150, 0, 150, this);
 
     /* Draw some islands */
     //{

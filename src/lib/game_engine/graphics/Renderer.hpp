@@ -119,9 +119,6 @@ namespace graphics {
         */
         int Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 
-        /* Set shadow map properties */
-        void SetShadowMap(glm::mat4& light_view_matrix, glm::mat4& light_projection_matrix);
-
     private:
 
         /* Temporary storage for a draw call */
