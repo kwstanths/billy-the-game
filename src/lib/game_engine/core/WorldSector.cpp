@@ -135,7 +135,7 @@ namespace game_engine {
         /* Draw all point lights */
         width = 3.0f * camera_position.z() * tan(camera_angle / 2.0f);
         /* (2 * width) whould be exactly inside the camera view, 4* gives us a little bigger rectangle */
-        math::AABox<2> camera_view_lights_box = math::AABox<2>(Vector2D(camera_position.x(), camera_position.y()), { 2.3f * width * camera_ratio, 2.3f * width });
+        math::AABox<2> camera_view_lights_box = math::AABox<2>(Vector2D(camera_position.x(), camera_position.y()), { 1.4f * width * camera_ratio, 1.4f * width });
 
         /* Get all point lights within the visible world */
         std::vector<graphics::PointLight *> lights_;

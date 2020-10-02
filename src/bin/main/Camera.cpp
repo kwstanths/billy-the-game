@@ -25,6 +25,7 @@ Camera::Camera(int width, int height, ge::Real_t mouse_sensitivity) : OpenGLCame
     config_.zoom_factor_ = 120.7;
     config_.z_near_ = 0.1f;
     config_.z_far_ = 100.0f;
+    config_.field_of_view_ = 45.0f;
 
     /* Configure rest */
     yaw_ = -90.0f;

@@ -29,7 +29,7 @@ namespace opengl {
         Real_t zoom_factor_;
         /* z near, z far */
         Real_t z_near_, z_far_;
-        /* */
+        /* Field of view */
         Real_t field_of_view_;
     } OpenGLCameraConfig_t;
 

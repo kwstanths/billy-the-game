@@ -39,24 +39,29 @@ layout(location = 0) out vec4 FragColor;
 
 in vec2 uv;
 
+/* GBuffer, in viewspace */
 uniform sampler2D g_position;
 uniform sampler2D g_normal;
 uniform sampler2D g_albedo_spec;
-uniform sampler2D ssao_texture;
-uniform sampler2D g_position_light;
 
+/* SAAO texture */
+uniform sampler2D ssao_texture;
+
+/* Matrices */
 uniform mat4 matrix_view;
 uniform mat4 matrix_projection;
 uniform mat4 matrix_view_inverse;
 
+/* CSM info */
 uniform sampler2D shadow_map[3];
 uniform mat4 matrix_lightspace[3];
+uniform float shadow_cascades[3];
 uniform bool use_shadows;
 
+/* Lights info */
 #define NR_POINT_LIGHTS 36
 uniform PointLight point_light[NR_POINT_LIGHTS];
 uniform uint number_of_point_lights;
-
 uniform DirectionalLight directional_light;
 uniform CastingLight cast_light;
 
@@ -82,6 +87,7 @@ float ShadowCalculation(int shadow_map_index, vec4 fragment_position_lightspace)
         return shadow;
         
     float currentDepth = projCoords.z;
+    
     vec2 texelSize = 1.0 / textureSize(shadow_map[shadow_map_index], 0);
     for(int x = -1; x <= 1; ++x) {
         for(int y = -1; y <= 1; ++y) {
@@ -122,17 +128,15 @@ void main() {
     
     if (use_shadows) {
         vec4 fragment_position_worldspace = matrix_view_inverse * vec4(fragment_position_viewspace, 1);
-        float cascades[3];
-        cascades[0] = 19.9;
-        cascades[1] = 39.7;
-        cascades[2] = 100;
+        
+        /* discard actual color, set color based on cascade for debugging */
         vec3 colors[3];
         colors[0] = vec3(1, 0.5, 0.5);
         colors[1] = vec3(0.5, 1, 0.5);
         colors[2] = vec3(0.5, 0.5, 1);
         
         for (int i = 0 ; i < 3 ; i++) {
-            if (-fragment_position_viewspace.z <= cascades[i]) {
+            if (-fragment_position_viewspace.z <= shadow_cascades[i]) {
                 fragment_color = colors[i];
                 vec4 fragment_position_lightspace = matrix_lightspace[i] * fragment_position_worldspace;
                 fragment_in_shadow = ShadowCalculation(i, fragment_position_lightspace);
@@ -146,7 +150,6 @@ void main() {
     
     float ambient_factor = texture(ssao_texture, uv).r;
     vec3 view_direction = normalize(-fragment_position_viewspace);
-
 
 	/* Calculate directional light color contribution */
 	vec3 directional_light_color = CalculateDirectionalLight(directional_light, normal_viewspace, view_direction, fragment_color, fragment_specular_intensity, ambient_factor);
@@ -258,7 +261,7 @@ vec3 CalculateCastingLight(CastingLight light, vec3 fragment_position, vec3 frag
 	float attenuation = 1.0 / (light.constant + 
 							light.linear * distance + 
 							light.quadratic * (distance * distance)); 
-							
+    
 	/* Sum components */
-	return clamp(attenuation * intensity *(light_ambient * (light_diffuse + light_specular)), 0, 1);
+	return clamp(attenuation * intensity * (light_ambient + (light_diffuse + light_specular)), 0, 1);
 }

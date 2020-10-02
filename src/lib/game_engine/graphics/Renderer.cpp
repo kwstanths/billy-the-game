@@ -62,13 +62,8 @@ namespace graphics {
     void Renderer::StartFrame() {
         context_->ClearColor();
         
-        renderer_->shadow_map_->Bind(0);
-        renderer_->shadow_map_->ClearDepth();
-        renderer_->shadow_map_->Bind(1);
-        renderer_->shadow_map_->ClearDepth();
-        renderer_->shadow_map_->Bind(2);
-        renderer_->shadow_map_->ClearDepth();
-        renderer_->shadow_map_->Unbind();
+        renderer_->shadow_maps_->ClearDepth();
+        renderer_->shadow_maps_->Unbind();
 
         renderer_->g_buffer_->Bind();
         // Light blue
@@ -263,7 +258,7 @@ namespace graphics {
             dt::Console(dt::WARNING, "Renderer::AddPointLight(): Maximum number of lights reached");
             return -1;
         }
-
+        
         point_lights_to_draw_.Push(light);
         return 0;
     }
@@ -278,30 +273,22 @@ namespace graphics {
         
         renderer_->use_shadows_ = shadows;
         if (shadows && light_shadows_ != nullptr) {
+            /* Calculate cascaded shadow maps matrices */
+            renderer_->shadow_maps_->CalculateProjectionMatrices(light_shadows_->direction_, camera_);
 
-            //glm::mat4 light_view = glm::lookAt(
-            //    /* Position of the light */
-            //    glm::vec3(0, 0, 0),
-            //    /* Where the light is looking at */
-            //    light_shadows_->direction_,
-            //    /* Up vector */
-            //    glm::vec3(0.0f, 1.0f, 0.0f));
-
-            renderer_->shadow_map_->CalculateProjectionMatrices(light_shadows_->direction_, camera_);
-
-            size_t n_of_cascades = renderer_->shadow_map_->GetNCascades();
+            /* Render the shadow maps with all the GBuffer object */
+            size_t n_of_cascades = renderer_->shadow_maps_->GetNCascades();
             for (size_t i = 0; i < n_of_cascades; i++) {
-                renderer_->shadow_map_->Bind(i);
-                renderer_->shadow_map_->ConfigureViewport();
-                renderer_->shadow_map_->ClearDepth();
+                renderer_->shadow_maps_->Bind(i);
+                renderer_->shadow_maps_->ConfigureViewport();
                 renderer_->EnableColorWriting(false);
                 renderer_->EnableDepthWriting(true);
-                renderer_->SetShadowMap(renderer_->shadow_map_->GetLightspaceMatrix(i));
+                renderer_->SetShadowMap(renderer_->shadow_maps_->GetLightspaceMatrix(i));
 
                 //glCullFace(GL_FRONT);
                 glDisable(GL_CULL_FACE);
 
-                /* Render shadow map with the object in the gbuffer queue */
+                /* Iterate the gbuffer queue */
                 utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[0];
                 for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
                     MESH_DRAW_t& draw_call = *itr;
@@ -315,7 +302,7 @@ namespace graphics {
                 glEnable(GL_CULL_FACE);
 
             }
-            renderer_->shadow_map_->Unbind();
+            renderer_->shadow_maps_->Unbind();
             renderer_->EnableColorWriting(true);
         }
 
@@ -325,6 +312,7 @@ namespace graphics {
         }
         renderer_->DrawWireframe(draw_wireframe_);
         
+
         /* Render GBuffer */
         utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[0];
         for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
@@ -453,6 +441,7 @@ namespace graphics {
 
         /* Render the skybox */
         if (skybox_ != nullptr) renderer_->DrawSkybox(skybox_->texture_cubemap_);
+
 
         /* Render overlay */
         while (text_to_draw_.Items() > 0) {

@@ -336,6 +336,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((uni_matrix_lightspace_0_ = GetUniformLocation(shader_uni_lightspace + "[0]")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_matrix_lightspace_1_ = GetUniformLocation(shader_uni_lightspace + "[1]")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_matrix_lightspace_2_ = GetUniformLocation(shader_uni_lightspace + "[2]")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_shadow_cascade_0_ = GetUniformLocation("shadow_cascades[0]")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_shadow_cascade_1_ = GetUniformLocation("shadow_cascades[1]")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((uni_shadow_cascade_2_ = GetUniformLocation("shadow_cascades[2]")) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }

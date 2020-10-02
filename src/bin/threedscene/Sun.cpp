@@ -24,8 +24,8 @@ bool Sun::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, ge::WorldSector * world
     Scale(0.1, 0.1, 0.1);
 
     DirectionalLight::direction_ = glm::normalize(glm::vec3(-1.0f, -1.0f, 0.0f));
-    DirectionalLight::ambient_ = glm::vec3(0.3f, 0.3f, 0.3f);
-    DirectionalLight::diffuse_ = glm::vec3(0.4f, 0.4f, 0.4f);
+    DirectionalLight::ambient_ = glm::vec3(0.2f, 0.2f, 0.2f);
+    DirectionalLight::diffuse_ = glm::vec3(0.5f, 0.5f, 0.5f);
     DirectionalLight::specular_ = glm::vec3(0.3f, 0.3f, 0.3f);
     world->SetDirectionalLight(this);
     engine->GetRenderer()->SetLightShadows(this);

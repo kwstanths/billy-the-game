@@ -23,7 +23,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         g_buffer_ = new OpenGLGBuffer();
         frame_buffer_one_ = new OpenGLFrameBufferTexture();
         frame_buffer_two_ = new OpenGLFrameBufferTexture();
-        shadow_map_ = new OpenGLShadowMap();
+        shadow_maps_ = new OpenGLCShadowMapS();
     
     }
     
@@ -206,7 +206,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         frame_buffer_one_->Init(context_, GL_RED);
         frame_buffer_two_->Init(context_, GL_RED);
         /* Init the shadow map */
-        shadow_map_->Init(1248, 1248);
+        shadow_maps_->Init(context_, 2048, 2048);
     
         /* Initialize a quad geometry */
         {
@@ -676,9 +676,12 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         shader_final_pass_.Use();
         shader_final_pass_.SetUniformBool(shader_final_pass_.uni_use_shadows_, use_shadows_);
-        shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_0_, shadow_map_->GetLightspaceMatrix(0));
-        shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_1_, shadow_map_->GetLightspaceMatrix(1));
-        shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_2_, shadow_map_->GetLightspaceMatrix(2));
+        shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_0_, shadow_maps_->GetLightspaceMatrix(0));
+        shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_1_, shadow_maps_->GetLightspaceMatrix(1));
+        shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_2_, shadow_maps_->GetLightspaceMatrix(2));
+        shader_final_pass_.SetUniformFloat(shader_final_pass_.uni_shadow_cascade_0_, shadow_maps_->GetCascadeEnd(0));
+        shader_final_pass_.SetUniformFloat(shader_final_pass_.uni_shadow_cascade_1_, shadow_maps_->GetCascadeEnd(1));
+        shader_final_pass_.SetUniformFloat(shader_final_pass_.uni_shadow_cascade_2_, shadow_maps_->GetCascadeEnd(2));
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, g_buffer_->g_position_texture_);
@@ -688,14 +691,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         glBindTexture(GL_TEXTURE_2D, g_buffer_->g_albedo_spec_texture_);
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, ssao_texture);
-
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, shadow_map_->shadow_maps[0]);
-        glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, shadow_map_->shadow_maps[1]);
-        glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, shadow_map_->shadow_maps[2]);
-
+        shadow_maps_->ActivateTextures(4);
+        
         RenderQuad();
     
         return 0;

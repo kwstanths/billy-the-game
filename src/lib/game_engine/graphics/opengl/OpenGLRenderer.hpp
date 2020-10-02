@@ -196,7 +196,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         OpenGLGBuffer * g_buffer_;
         OpenGLFrameBufferTexture * frame_buffer_one_;
         OpenGLFrameBufferTexture * frame_buffer_two_;
-        OpenGLShadowMap * shadow_map_;
+        OpenGLCShadowMapS * shadow_maps_;
         bool use_shadows_;
         OpenGLCubemap * skybox_ = nullptr;
     

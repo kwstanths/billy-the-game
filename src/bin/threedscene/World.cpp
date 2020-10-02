@@ -53,7 +53,7 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
 
     /* Create a floor, solid green color everywhere */
     Floor * floor = NewObj<Floor>();
-    floor->Init(150, 0, 150, this);
+    floor->Init(150, -0.8, 150, this);
 
     /* Draw some islands */
     //{
