@@ -171,6 +171,13 @@ namespace game_engine {
             last_command_.type_ = COMMAND_WATER_REFLECTANCE;
             break;
         }
+        case COMMAND_SHADOW_CASCADES:
+        {
+            if (tokens.size() <= 1) return;
+            last_command_.arg_1_ = std::stoi(tokens[1]);
+            last_command_.type_ = COMMAND_SHADOW_CASCADES;
+            break;
+        }
         default:
             break;
         }

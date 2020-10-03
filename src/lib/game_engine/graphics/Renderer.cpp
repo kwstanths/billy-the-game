@@ -266,6 +266,7 @@ namespace graphics {
     void Renderer::FlushDrawCalls() {
 
         draw_calls_ = 0;
+        draw_calls_shadows_ = 0;
 
         /* Check if shadows are enabled or not */
         ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
@@ -295,7 +296,7 @@ namespace graphics {
                     Mesh * mesh = draw_call.mesh_;
 
                     draw_call.material_->RenderShadow(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
-                    draw_calls_++;
+                    draw_calls_shadows_++;
                 }
 
                 //glCullFace(GL_BACK);
@@ -450,9 +451,8 @@ namespace graphics {
             renderer_->Draw2DText(text.text_, text.x, text.y, text.scale, text.color);
             draw_calls_++;
         }
-        renderer_->Draw2DText("Draw calls: " + std::to_string(draw_calls_) , 0.0f, context_->GetWindowHeight() - 50, 0.5, glm::vec3(1, 0, 0));
-
-
+        renderer_->Draw2DText("Draw calls: " + std::to_string(draw_calls_), 0.0f, context_->GetWindowHeight() - 50, 0.5, glm::vec3(1, 0, 0));
+        renderer_->Draw2DText("Shadow draw calls: " + std::to_string(draw_calls_shadows_) , 0.0f, context_->GetWindowHeight() - 80, 0.5, glm::vec3(1, 0, 0));
     }
 
 }

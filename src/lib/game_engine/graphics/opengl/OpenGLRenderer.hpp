@@ -224,6 +224,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         int blur_kernel_size_;
         bool constant_tessellation_ = false;
         float water_reflectance = 0.6f;
+        bool show_shadow_cascades_ = false;
     
         /* Verices color only shaders */
         OpenGLShaderVerticesColor shader_vertices_color_;

@@ -57,6 +57,7 @@ uniform sampler2D shadow_map[3];
 uniform mat4 matrix_lightspace[3];
 uniform float shadow_cascades[3];
 uniform bool use_shadows;
+uniform bool show_cascades;
 
 /* Lights info */
 #define NR_POINT_LIGHTS 36
@@ -129,7 +130,7 @@ void main() {
     if (use_shadows) {
         vec4 fragment_position_worldspace = matrix_view_inverse * vec4(fragment_position_viewspace, 1);
         
-        /* discard actual color, set color based on cascade for debugging */
+        /* Discard actual color, set color based on cascade for debugging */
         vec3 colors[3];
         colors[0] = vec3(1, 0.5, 0.5);
         colors[1] = vec3(0.5, 1, 0.5);
@@ -137,7 +138,10 @@ void main() {
         
         for (int i = 0 ; i < 3 ; i++) {
             if (-fragment_position_viewspace.z <= shadow_cascades[i]) {
-                fragment_color = colors[i];
+                
+                if (show_cascades) 
+                    fragment_color = colors[i];
+
                 vec4 fragment_position_lightspace = matrix_lightspace[i] * fragment_position_worldspace;
                 fragment_in_shadow = ShadowCalculation(i, fragment_position_lightspace);
                 

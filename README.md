@@ -1,7 +1,7 @@
 # billy-the-game
 Billy the game is a personal project to create an open world 2D game, by using C++, OpenGL and other similar libraries to ease development. 
-The goal is to learn basic rendering techniques, physics, memory 
-management, data structures and anything else that might be used 
+The main goal is to learn basic rendering techniques, physics, memory 
+management, data structures, engine development and anything else that might be used 
 in the development of a game, featuring:  
 
 
@@ -9,7 +9,7 @@ In Graphics with OpenGL:
 - Reading models through assimp
 - Rendering with Phong shading (Point/Directional/Spot lights), one diffuse texture, and one specular map
 - Deferred and forward rendering queues
-- Shadows with simple shadow mapping
+- Shadows with cascaded shadow maps
 - View frustum culling and occlusion queries
 - Screen Space Ambient Occlusion
 - Water rendering with a grid algorithm  
@@ -42,6 +42,10 @@ Tessellation, terrain:
 Tessellation, water:    
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/AP2Zud0mouY/0.jpg)](https://www.youtube.com/watch?v=AP2Zud0mouY&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=4)
 
+Cascaded shadow maps:    
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/B9FWrrfOGlE/0.jpg)](https://www.youtube.com/watch?v=B9FWrrfOGlE)
+
+
 
 ## Particles branch:  
 Fluid simulation  
@@ -56,12 +60,12 @@ Rope and cloth
 
 
 ## Roadmap  
-In Graphics:  
+In Graphics:   
+- Instancing
 - Cloud rendering through volumetric rendering
-- Cascaded shadow mapping
 - Replace Phong shading with Physically based rendering
 - Create some post processing effects, fog, bloom, etc. 
-- Other things like, Particle systems and instancing...  
+- Other things like, particle systems...  
 
 In world building:  
 - NPC dialogs, and inventory panels

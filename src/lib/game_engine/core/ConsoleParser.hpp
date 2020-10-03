@@ -22,6 +22,7 @@ namespace game_engine {
 #define COMMAND_CONSTANT_TESSELLATION 11
 #define COMMAND_CAMERA_SPEED 12
 #define COMMAND_WATER_REFLECTANCE 13
+#define COMMAND_SHADOW_CASCADES 14
 
     /* The order between these two is very important! */
     static const std::vector<std::string> commands = { 
@@ -39,7 +40,8 @@ namespace game_engine {
         "draw_terrain_normals",
         "constant_tess",
         "camera_speed",
-        "skybox_reflectance"
+        "skybox_reflectance",
+        "show_cascades"
     };
 
     struct ConsoleCommand {

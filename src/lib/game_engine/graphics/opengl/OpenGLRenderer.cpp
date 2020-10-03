@@ -674,6 +674,11 @@ namespace game_engine { namespace graphics { namespace opengl {
     
     int OpenGLRenderer::DrawFinalPass(GLuint ssao_texture) {
     
+        ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
+        if (command.type_ == COMMAND_SHADOW_CASCADES && show_shadow_cascades_ != static_cast<bool>(command.arg_1_)) {
+            show_shadow_cascades_ = static_cast<bool>(command.arg_1_);
+        }
+
         shader_final_pass_.Use();
         shader_final_pass_.SetUniformBool(shader_final_pass_.uni_use_shadows_, use_shadows_);
         shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_0_, shadow_maps_->GetLightspaceMatrix(0));
@@ -682,6 +687,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_final_pass_.SetUniformFloat(shader_final_pass_.uni_shadow_cascade_0_, shadow_maps_->GetCascadeEnd(0));
         shader_final_pass_.SetUniformFloat(shader_final_pass_.uni_shadow_cascade_1_, shadow_maps_->GetCascadeEnd(1));
         shader_final_pass_.SetUniformFloat(shader_final_pass_.uni_shadow_cascade_2_, shadow_maps_->GetCascadeEnd(2));
+        shader_final_pass_.SetUniformBool(shader_final_pass_.GetUniformLocation("show_cascades"), show_shadow_cascades_);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, g_buffer_->g_position_texture_);

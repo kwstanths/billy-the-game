@@ -188,6 +188,7 @@ namespace graphics {
 
         /* Used to count the number of draw calls per frame */
         size_t draw_calls_;
+        size_t draw_calls_shadows_;
     };
 
 }
