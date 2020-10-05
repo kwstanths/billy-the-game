@@ -22,6 +22,7 @@ namespace game_engine { namespace graphics {
         virtual void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) = 0;
 
         size_t rendering_queue_;
+        bool instancing_;
     };
 
 
