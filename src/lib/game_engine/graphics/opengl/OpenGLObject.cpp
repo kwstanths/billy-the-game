@@ -97,10 +97,10 @@ namespace game_engine { namespace graphics { namespace opengl {
         glVertexAttribPointer(shader->GetAttributeLocation(shader_vertex_normal), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_t), (void*)offsetof(Vertex_t, normal_));
     }
     
-    void OpenGLObject::Render() {
+    void OpenGLObject::Render(size_t amount) {
         /* Draw with index buffer */
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_);
-        glDrawElements(GL_TRIANGLES, total_indices_, GL_UNSIGNED_INT, (void*)0);
+        glDrawElementsInstanced(GL_TRIANGLES, total_indices_, GL_UNSIGNED_INT, 0, amount);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     

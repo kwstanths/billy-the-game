@@ -22,6 +22,8 @@ namespace graphics {
 
         size_t GetNumberOfMeshes();
 
+        Mesh * GetMesh(size_t index);
+
     private:
         bool is_inited_;
 

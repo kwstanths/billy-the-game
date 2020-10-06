@@ -61,5 +61,10 @@ namespace graphics {
         return meshes_.size();
     }
 
+    Mesh * Model::GetMesh(size_t index)
+    {
+        return meshes_[index];
+    }
+
 }
 }

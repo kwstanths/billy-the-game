@@ -42,6 +42,8 @@ namespace graphics {
         rendering_queues_[1].Init(GAME_ENGINE_RENDERER_MAX_OBJECTS);
         text_to_draw_.Init(512);
 
+        instancing_.Init();
+
         is_inited_ = true;
         return 0;
     }
@@ -187,6 +189,11 @@ namespace graphics {
         return 0;
     }
 
+    void Renderer::AddInstance(Material * material, Mesh * mesh, glm::mat4 & position)
+    {
+        instancing_.AddInstance(mesh, material, position);
+    }
+
     int Renderer::SetCamera(gl::OpenGLCamera * camera) {
         
         if (!is_inited_) return Error::ERROR_GEN_NOT_INIT;
@@ -198,14 +205,7 @@ namespace graphics {
     }
 
     int Renderer::RenderGBuffer(MESH_DRAW_t& draw_call) {
-
-        glViewport(0, 0, context_->GetWindowWidth(), context_->GetWindowHeight());
-
         frr_render_mode = static_cast<RENDER_MODE>(ConfigurationFile::GetInstance().GetRenderingMethod());
-
-        /* Bind the gbuffer, and draw the geometry */
-        renderer_->g_buffer_->Bind();
-
         switch (frr_render_mode)
         {
         case RENDER_MODE::REGULAR:
@@ -248,8 +248,6 @@ namespace graphics {
         }
         }
 
-        renderer_->g_buffer_->UnBind();
-
         return 0;
     }
 
@@ -264,6 +262,10 @@ namespace graphics {
     }
 
     void Renderer::FlushDrawCalls() {
+
+        if (!instancing_.buffers_prepared_) {
+            instancing_.PrepareBuffers();
+        }
 
         draw_calls_ = 0;
         draw_calls_shadows_ = 0;
@@ -315,14 +317,25 @@ namespace graphics {
         
 
         /* Render GBuffer */
+        glViewport(0, 0, context_->GetWindowWidth(), context_->GetWindowHeight());
+        /* Bind the gbuffer, and draw the geometry */
+        renderer_->g_buffer_->Bind();
+
+
         utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[0];
         for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
             MESH_DRAW_t& draw_call = *itr;
             RenderGBuffer(draw_call);
         }
+
+        for (size_t i = 0; i < instancing_.instanced_draws_.size(); i++) {
+            Instancing::InstanceDrawCall& data = instancing_.instanced_draws_[i];
+            data.material_->RenderInstanced(renderer_, data.mesh_->opengl_object_, data.buffer_, data.amount_);
+        }
+        renderer_->g_buffer_->UnBind();
+
         renderer_->DrawWireframe(false);
-
-
+        
         // Post processing stack should go here
         // Is AO enabled?
         bool ssao = ConfigurationFile::GetInstance().DoSSAO();

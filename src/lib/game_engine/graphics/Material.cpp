@@ -26,7 +26,10 @@ namespace game_engine { namespace graphics {
     {
         renderer->DrawGBufferStandard(object, model, diffuse_.ToGlm(), specular_.ToGlm(), texture_diffuse_, texture_specular_);
     }
-
+    void MaterialDeferredStandard::RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount)
+    {
+        renderer->DrawGBufferStandardInstanced(object, models_buffer, amount, diffuse_.ToGlm(), specular_.ToGlm(), texture_diffuse_, texture_specular_);
+    }
     void MaterialDeferredStandard::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
         renderer->DrawShadowMap(object, model);
@@ -55,7 +58,10 @@ namespace game_engine { namespace graphics {
         renderer->DrawStandard(object, model, ambient_.ToGlm(), diffuse_.ToGlm(), specular_.ToGlm(), shininess_, texture_diffuse_, texture_specular_);
         glDisable(GL_BLEND);
     }
+    void MaterialForwardStandard::RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount)
+    {
 
+    }
     void MaterialForwardStandard::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
         /* TODO Standard forward rendering shadow mapping not implemented */
@@ -79,7 +85,10 @@ namespace game_engine { namespace graphics {
     {
         renderer->DrawGBufferDisplacement(object, model, specular_intensity_, texture_displacement_, displacement_intensity_, texture_diffuse_);
     }
+    void MaterialDeferredDisplacement::RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount)
+    {
 
+    }
     void MaterialDeferredDisplacement::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
         /* TODO Displacement map rendering shadow mapping not implemented */
@@ -99,7 +108,10 @@ namespace game_engine { namespace graphics {
     {
         renderer->DrawNormals(object, model, color_.ToGlm());
     }
+    void MaterialForwardDrawNormals::RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount)
+    {
 
+    }
     void MaterialForwardDrawNormals::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
         /* does not cast shadow */
@@ -122,7 +134,10 @@ namespace game_engine { namespace graphics {
         renderer->DrawColor(object, model, color_.ToGlm(), alpha_);
         glDisable(GL_BLEND);
     }
+    void MaterialForwardColor::RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount)
+    {
 
+    }
     void MaterialForwardColor::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
         /* does not cast shadow */
@@ -145,7 +160,10 @@ namespace game_engine { namespace graphics {
     {
         renderer->DrawDisplacementNormals(object, model, texture_displacement_, displacement_intensity_, normal_color_.ToGlm());
     }
+    void MaterialForwardDisplacementDrawNormals::RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount)
+    {
 
+    }
     void MaterialForwardDisplacementDrawNormals::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
         /* does not cast shadow */
@@ -176,7 +194,10 @@ namespace game_engine { namespace graphics {
         renderer->DrawWater(object, model, ambient_.ToGlm(), diffuse_.ToGlm(), specular_.ToGlm(), shininess_, texture_diffuse_, texture_specular_, texture_bump_, waves_);
         glDisable(GL_BLEND);
     }
+    void MaterialForwardWater::RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount)
+    {
 
+    }
     void MaterialForwardWater::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
         /* Water does not cast shadow */
@@ -193,8 +214,12 @@ namespace game_engine { namespace graphics {
 
     void MaterialSkybox::Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
-    }
 
+    }
+    void MaterialSkybox::RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount)
+    {
+
+    }
     void MaterialSkybox::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model)
     {
         /* skybox does not cast shadow */

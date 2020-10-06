@@ -236,6 +236,25 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_View_;
         GLuint uni_Projection_;
     };
+    /**
+        Shader for Gbuffer filling pass, Instnaced
+    */
+    class OpenGLShaderGBufferInstanced: public OpenGLShader {
+    public:
+        OpenGLShaderGBufferInstanced();
+
+        int Init(std::string vertex_shader_path, std::string fragment_shader_path);
+
+        /* Attributes */
+        GLuint attr_vertex_position_;
+        GLuint attr_vertex_uv_;
+        GLuint attr_vertex_normal_;
+        GLuint attr_vertex_model_;
+
+        /* Uniforms */
+        GLuint uni_View_;
+        GLuint uni_Projection_;
+    };
 
     /**
     

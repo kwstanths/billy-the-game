@@ -3,7 +3,9 @@
 #include <vector>
 
 #include "game_engine/math/HelpFunctions.hpp"
+#include "game_engine/math/Matrices.hpp"
 #include "game_engine/graphics/Material.hpp"
+#include "game_engine/graphics/Model.hpp"
 #include "game_engine/core/FileSystem.hpp"
 
 #include "debug_tools/Console.hpp"
@@ -28,32 +30,31 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     if (ret) return ret;
 
     ///* Create a tree */
-    //{
-    //    Player * player;
-    //    player = NewObj<Player>();
-    //    player->Init(0, 7.9, 8, input, camera, this, engine);
-    //}
-    
-    for (int i = -50; i <= 50; i+=10){
-        for (int j = -50; j <= 50; j+=10) {
-            /* Create some players */
-            Player * player = NewObj<Player>();
-            player->Init(10 + 1.0f * i, 0, 1.0f * j, input, camera, this, engine);
-        } 
+    {
+        Player * player;
+        player = NewObj<Player>();
+        player->Init(0, 0, 8, input, camera, this, engine);
     }
 
-    /* Some lights */
-    //for (int i = -60; i <= 60; i+=25){
-    //    for (int j = -60; j <= 60; j+=20) {
-    //        /* Create some players */
-    //        Fire * fire = new Fire();
-    //        fire->Init(1.0f * i, 10, 1.0f * j, this, engine);
-    //    }
-    //}
+    game_engine::graphics::Model * model = new game_engine::graphics::Model();
+    model->Init("lowpolytree.obj");
 
+    std::string assets_dir = game_engine::FileSystem::GetInstance().GetDirectoryAssets();
+    game_engine::graphics::Mesh * mesh_leaves = model->GetMesh(0);
+    game_engine::graphics::Mesh * mesh_bark = model->GetMesh(1);
+    game_engine::graphics::MaterialDeferredStandard * mat_leaves = new game_engine::graphics::MaterialDeferredStandard(math::Vector3D(0.129850, 0.306291, 0.117666), math::Vector3D(0.085514, 0.355277, 0.074845), assets_dir + "textures/spec_map_empty.png", assets_dir + "textures/spec_map_empty.png");
+    game_engine::graphics::MaterialDeferredStandard * mat_bark = new game_engine::graphics::MaterialDeferredStandard(math::Vector3D(0.176206, 0.051816, 0.016055), math::Vector3D(0.015532, 0.005717, 0.002170), assets_dir + "textures/spec_map_empty.png", assets_dir + "textures/spec_map_empty.png");
+    for (int i = -250; i <= 250; i+=10){
+        for (int j = -250; j <= 250; j+=10) {
+            glm::mat4 model = math::GetTranslateMatrix(i, 0, j);
+            engine->GetRenderer()->AddInstance(mat_leaves, mesh_leaves, model);
+            engine->GetRenderer()->AddInstance(mat_bark, mesh_bark, model);
+        }
+    }
+    
     /* Create a floor, solid green color everywhere */
     Floor * floor = NewObj<Floor>();
-    floor->Init(150, -0.8, 150, this);
+    floor->Init(150, -1.8, 150, this);
 
     /* Draw some islands */
     //{

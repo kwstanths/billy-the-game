@@ -15,14 +15,14 @@ namespace game_engine { namespace graphics {
 
     /* Base material */
     class Material {
+        friend class Renderer;
     public:
         
         virtual void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) = 0;
-
+        virtual void RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount) = 0;
         virtual void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) = 0;
 
         size_t rendering_queue_;
-        bool instancing_;
     };
 
 
@@ -34,6 +34,7 @@ namespace game_engine { namespace graphics {
         MaterialDeferredStandard(game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, std::string texture_diffuse, std::string texture_specular);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount) override;
         void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
         game_engine::math::Vector3D diffuse_;
@@ -50,6 +51,7 @@ namespace game_engine { namespace graphics {
         MaterialForwardStandard(game_engine::math::Vector3D ambient, game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, Real_t shininess, std::string texture_diffuse, std::string texture_specular);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount) override;
         void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
         game_engine::math::Vector3D ambient_;
@@ -68,6 +70,7 @@ namespace game_engine { namespace graphics {
         MaterialDeferredDisplacement(Real_t specular_intensity, std::string texture_displacement, std::string texture_diffuse);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount) override;
         void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
         Real_t specular_intensity_;
@@ -84,6 +87,7 @@ namespace game_engine { namespace graphics {
         MaterialForwardDisplacementDrawNormals (game_engine::math::Vector3D normal_color, std::string texture_displacement);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount) override;
         void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
         game_engine::math::Vector3D normal_color_;
@@ -99,6 +103,7 @@ namespace game_engine { namespace graphics {
         MaterialForwardDrawNormals(game_engine::math::Vector3D color);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount) override;
         void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
         game_engine::math::Vector3D color_;
@@ -112,6 +117,7 @@ namespace game_engine { namespace graphics {
         MaterialForwardColor(game_engine::math::Vector3D color);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount) override;
         void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
         Real_t alpha_ = 1;
@@ -125,6 +131,7 @@ namespace game_engine { namespace graphics {
         MaterialForwardWater(game_engine::math::Vector3D ambient, game_engine::math::Vector3D diffuse, game_engine::math::Vector3D specular, Real_t shininess, std::string texture_diffuse, std::string texture_specular, std::string texture_bump);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount) override;
         void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
         game_engine::math::Vector3D ambient_;
@@ -143,6 +150,7 @@ namespace game_engine { namespace graphics {
         MaterialSkybox(std::vector<std::string> faces);
 
         void Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
+        void RenderInstanced(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, GLuint models_buffer, size_t amount) override;
         void RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 & model) override;
 
         opengl::OpenGLCubemap * texture_cubemap_;

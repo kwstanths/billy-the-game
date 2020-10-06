@@ -68,6 +68,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         ret += shader_vertices_color_.Init(shaders_dir + "/VertexShaderVerticesColor.glsl", shaders_dir + "/FragmentShaderVerticesColor.glsl");
         ret += shader_quad_.Init(shaders_dir + "/VertexShaderQuad.glsl", shaders_dir + "/FragmentShaderQuad.glsl");
         ret += shader_gbuffer_.Init(shaders_dir + "/VertexShaderGBuffer.glsl", shaders_dir + "/FragmentShaderGBuffer.glsl");
+        ret += shader_gbuffer_instanced_.Init(shaders_dir + "/VertexShaderGBufferInstanced.glsl", shaders_dir + "/FragmentShaderGBuffer.glsl");
         ret += shader_standard_.Init(shaders_dir + "/VertexShaderGBuffer.glsl", shaders_dir + "/FragmentShaderStandard.glsl");
         ret += shader_ssao_.Init(shaders_dir + "/VertexShaderQuad.glsl", shaders_dir + "/PostProcessing/FragmentShaderSSAO.glsl");
         ret += shader_separable_ao_.Init(shaders_dir + "/VertexShaderQuad.glsl", shaders_dir + "/PostProcessing/FragmentShaderSeparableAO.glsl");

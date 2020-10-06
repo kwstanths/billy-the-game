@@ -17,6 +17,7 @@
 #include "AssetManager.hpp"
 #include "Light.hpp"
 #include "Material.hpp"
+#include "Instancing.hpp"
 
 namespace game_engine {
     
@@ -119,6 +120,11 @@ namespace graphics {
         */
         int Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 
+        /**
+        
+        */
+        void AddInstance(Material * material, Mesh * mesh, glm::mat4& position);
+
     private:
 
         /* Temporary storage for a draw call */
@@ -150,6 +156,8 @@ namespace graphics {
         MaterialSkybox * skybox_ = nullptr;
         /* */
         DirectionalLight * light_shadows_ = nullptr;
+        /* */
+        Instancing instancing_;
 
         /* Variables needed for opengl drawiing */
         opengl::OpenGLContext * context_ = nullptr;

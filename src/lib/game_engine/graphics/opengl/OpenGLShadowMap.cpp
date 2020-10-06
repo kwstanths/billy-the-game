@@ -99,8 +99,8 @@ namespace opengl {
 
         /* Calculate the limits of the cascades */
         cascade_limits_[0] = camera_config.z_near_;
-        cascade_limits_[1] = camera_config.z_near_ + 0.14 * (z_far - z_near);
-        cascade_limits_[2] = camera_config.z_near_ + 0.4 * (z_far - z_near);
+        cascade_limits_[1] = camera_config.z_near_ + 25;
+        cascade_limits_[2] = camera_config.z_near_ + 80;
         cascade_limits_[3] = camera_config.z_far_;
 
         /* For all cascades */

@@ -73,6 +73,7 @@ namespace game_engine { namespace graphics { namespace opengl {
             Draws the object using a GBuffer
         */
         int DrawGBufferStandard(OpenGLObject & object, glm::mat4 model, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
+        int DrawGBufferStandardInstanced(OpenGLObject & object, GLuint models_buffer, size_t amount, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
     
         /**
             Draws the object with displacement, using a GBuffer
@@ -207,7 +208,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         OpenGLText * text_renderer_ = nullptr;
         OpenGLCamera * camera_ = nullptr;
         OpenGLSkyboxCube * skybox_cube_ = nullptr;
-    
+
         /* AO parameters */
         size_t number_of_samples_;
         std::vector<glm::vec3> random_samples_kernel_;
@@ -232,6 +233,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         OpenGLShaderQuad shader_quad_;
         /* gbuffer shader used */
         OpenGLShaderGBuffer shader_gbuffer_;
+        OpenGLShaderGBufferInstanced shader_gbuffer_instanced_;
         /* Standard forward shader */
         OpenGLShaderStandard shader_standard_;
         /* SSAO shader */

@@ -51,6 +51,12 @@ namespace game_engine { namespace graphics { namespace opengl {
             shader_gbuffer_.Use();
             shader_gbuffer_.SetUniformInt(shader_gbuffer_.GetUniformLocation("object_material.texture_diffuse"), 0);
             shader_gbuffer_.SetUniformInt(shader_gbuffer_.GetUniformLocation("object_material.texture_specular"), 1);
+
+            shader_gbuffer_instanced_ = context->shader_gbuffer_instanced_;
+            shader_gbuffer_instanced_.Use();
+            shader_gbuffer_instanced_.SetUniformInt(shader_gbuffer_instanced_.GetUniformLocation("object_material.texture_diffuse"), 0);
+            shader_gbuffer_instanced_.SetUniformInt(shader_gbuffer_instanced_.GetUniformLocation("object_material.texture_specular"), 1);
+
         }
 
         {
@@ -295,6 +301,10 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_View_, camera->view_matrix_);
         shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_Projection_, camera->projection_matrix_);
 
+        shader_gbuffer_instanced_.Use();
+        shader_gbuffer_instanced_.SetUniformMat4(shader_gbuffer_instanced_.uni_View_, camera->view_matrix_);
+        shader_gbuffer_instanced_.SetUniformMat4(shader_gbuffer_instanced_.uni_Projection_, camera->projection_matrix_);
+
         shader_standard_.Use();
         shader_standard_.SetUniformMat4(shader_standard_.uni_View_, camera->view_matrix_);
         shader_standard_.SetUniformMat4(shader_standard_.uni_Projection_, camera->projection_matrix_);
@@ -338,6 +348,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         if (!is_inited_) return -1;
         if (!object.IsInited()) return -1;
 
+        glBindVertexArray(object.VAO_);
+
         /* TODO commented components not used */
         shader_gbuffer_.Use();
         /* Set the model uniform */
@@ -346,8 +358,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.diffuse"), diffuse);
         shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.specular"), specular);
         //shader_gbuffer_.SetUniformFloat(shader_gbuffer_.GetUniformLocation("object_material.shininess"), mtl.shininess_);
-    
-        glBindVertexArray(object.VAO_);
     
         object.SetupAttributes(&shader_gbuffer_);
     
@@ -360,6 +370,51 @@ namespace game_engine { namespace graphics { namespace opengl {
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
     
+        return 0;
+    }
+
+    int OpenGLRenderer::DrawGBufferStandardInstanced(OpenGLObject & object, GLuint models_buffer, size_t amount, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture)
+    {
+        if (!is_inited_) return -1;
+        if (!object.IsInited()) return -1;
+
+        glBindVertexArray(object.VAO_);
+
+        /* TODO commented components not used */
+        shader_gbuffer_instanced_.Use();
+        /* Set the model uniform */
+        //shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.ambient"), mtl.ambient_);
+        shader_gbuffer_instanced_.SetUniformVec3(shader_gbuffer_instanced_.GetUniformLocation("object_material.diffuse"), diffuse);
+        shader_gbuffer_instanced_.SetUniformVec3(shader_gbuffer_instanced_.GetUniformLocation("object_material.specular"), specular);
+        //shader_gbuffer_.SetUniformFloat(shader_gbuffer_.GetUniformLocation("object_material.shininess"), mtl.shininess_);
+
+        object.SetupAttributes(&shader_gbuffer_);
+
+        glBindBuffer(GL_ARRAY_BUFFER, models_buffer);
+        std::size_t vec4Size = sizeof(glm::vec4);
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+        glVertexAttribDivisor(3, 1);
+        glVertexAttribDivisor(4, 1);
+        glVertexAttribDivisor(5, 1);
+        glVertexAttribDivisor(6, 1);
+
+        diffuse_texture->ActivateTexture(0);
+        specular_texture->ActivateTexture(1);
+
+        object.Render(amount);
+
+        /* Unbind */
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindVertexArray(0);
+
         return 0;
     }
 
@@ -526,7 +581,7 @@ namespace game_engine { namespace graphics { namespace opengl {
     
         shader_gbuffer_.Use();
         /* Set the model uniform */
-        shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_Model_, glm::mat4(1.0f));
+        //shader_gbuffer_.SetUniformMat4(shader_gbuffer_.uni_Model_, glm::mat4(1.0f));
         //shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.ambient"), mtl.ambient_);
         shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.diffuse"), color);
         shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.specular"), color);

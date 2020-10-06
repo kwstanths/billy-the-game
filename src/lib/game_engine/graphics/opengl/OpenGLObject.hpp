@@ -43,7 +43,7 @@ namespace opengl {
         void SetupAttributes(OpenGLShaderDrawNormals * shader);
         void SetupAttributes(OpenGLShaderDisplacement * shader);
 
-        void Render();
+        void Render(size_t amount = 1);
 
         void RenderBoundingBoxLines();
 
