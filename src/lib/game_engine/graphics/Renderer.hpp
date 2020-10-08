@@ -131,9 +131,12 @@ namespace graphics {
         struct MESH_DRAW_t {
             Mesh * mesh_ = nullptr;
             Material * material_ = nullptr;
-            glm::mat4 * model_matrix_ = nullptr;
+            GLuint model_matrix_vbo_;
+            glm::mat4 * model_matrix_;
+            size_t amount_;
             MESH_DRAW_t() {};
-            MESH_DRAW_t(Mesh * mesh, Material * material, glm::mat4 * model_matrix) : mesh_(mesh), material_(material), model_matrix_(model_matrix) {};
+            MESH_DRAW_t(Mesh * mesh, Material * material, glm::mat4 * model_matrix, GLuint model_matrix_vbo, size_t amount) : 
+                mesh_(mesh), material_(material), model_matrix_(model_matrix), model_matrix_vbo_(model_matrix_vbo), amount_(amount) {};
         };
 
         /* Temporary storage for a text draw call */

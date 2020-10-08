@@ -1,5 +1,5 @@
 #include "Instancing.hpp"
-
+#include "Renderer.hpp"
 
 namespace game_engine { namespace graphics {
 
@@ -49,12 +49,14 @@ namespace game_engine { namespace graphics {
                 glGenBuffers(1, &models_buffer);
                 glBindBuffer(GL_ARRAY_BUFFER, models_buffer);
                 glBufferData(GL_ARRAY_BUFFER, models.size() * sizeof(glm::mat4), &models[0], GL_STATIC_DRAW);
+                model_matrices_.push_back(models);
 
                 InstanceDrawCall data;
                 data.amount_ = models.size();
                 data.material_ = material;
                 data.mesh_ = mesh;
-                data.buffer_ = models_buffer;
+                data.model_matrices_ = &model_matrices_.back()[0];
+                data.model_matrices_buffer_ = models_buffer;
                 instanced_draws_.push_back(data);
             }
         }

@@ -34,6 +34,12 @@ int Player::Init(ge::Real_t x, ge::Real_t y, ge::Real_t z, Input * input, Camera
     return ret == 0;
 }
 
+void Player::Step(double delta_time) {
+    //ge::Real_t move_offset = 1.0f * static_cast<float>(delta_time);
+
+    //SetPosition(GetX() + move_offset, GetY(), GetZ() + move_offset);
+}
+
 int Player::Destroy() {
 
     /* TODO */

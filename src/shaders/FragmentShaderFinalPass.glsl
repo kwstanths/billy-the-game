@@ -195,7 +195,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec
        //light_ambient = clamp(light_ambient, 0, 0);
        //light_diffuse = clamp(light_diffuse, 0, 0);
        //light_specular = clamp(light_specular, 0, 0);
-       
+    
 	return light_ambient + (1 - fragment_in_shadow) * (light_diffuse + light_specular);
 }
 

@@ -21,6 +21,8 @@ public:
 
     int Destroy();
 
+    void Step(double delta_time);
+
 private:
     bool is_inited_;
 

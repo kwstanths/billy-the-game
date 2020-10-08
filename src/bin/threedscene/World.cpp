@@ -44,8 +44,9 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     game_engine::graphics::Mesh * mesh_bark = model->GetMesh(1);
     game_engine::graphics::MaterialDeferredStandard * mat_leaves = new game_engine::graphics::MaterialDeferredStandard(math::Vector3D(0.129850, 0.306291, 0.117666), math::Vector3D(0.085514, 0.355277, 0.074845), assets_dir + "textures/spec_map_empty.png", assets_dir + "textures/spec_map_empty.png");
     game_engine::graphics::MaterialDeferredStandard * mat_bark = new game_engine::graphics::MaterialDeferredStandard(math::Vector3D(0.176206, 0.051816, 0.016055), math::Vector3D(0.015532, 0.005717, 0.002170), assets_dir + "textures/spec_map_empty.png", assets_dir + "textures/spec_map_empty.png");
-    for (int i = -250; i <= 250; i+=10){
-        for (int j = -250; j <= 250; j+=10) {
+    int size = 250;
+    for (int i = -size; i <= size; i+=10){
+        for (int j = -size; j <= size; j+=10) {
             glm::mat4 model = math::GetTranslateMatrix(i, 0, j);
             engine->GetRenderer()->AddInstance(mat_leaves, mesh_leaves, model);
             engine->GetRenderer()->AddInstance(mat_bark, mesh_bark, model);

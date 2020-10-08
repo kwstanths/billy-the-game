@@ -215,10 +215,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         SetUniformInt(id, static_cast<int>(value));
     }
     
+
     OpenGLShaderText::OpenGLShaderText() :OpenGLShader() {
-    
     }
-    
     int OpenGLShaderText::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
     
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
@@ -232,9 +231,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
     
+
     OpenGLShaderVerticesColor::OpenGLShaderVerticesColor() {
     }
-    
     int OpenGLShaderVerticesColor::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
     
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
@@ -250,10 +249,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
     
+
     OpenGLShaderGBuffer::OpenGLShaderGBuffer() {
-    
     }
-    
     int OpenGLShaderGBuffer::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
     
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
@@ -262,36 +260,16 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((attr_vertex_position_ = GetAttributeLocation(shader_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((attr_vertex_uv_ = GetAttributeLocation(shader_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((attr_vertex_normal_ = GetAttributeLocation(shader_vertex_normal)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_model_ = GetAttributeLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
     
         return 0;
     }
 
-    OpenGLShaderGBufferInstanced::OpenGLShaderGBufferInstanced() {
 
+    OpenGLShaderStandard::OpenGLShaderStandard(){
     }
-
-    int OpenGLShaderGBufferInstanced::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
-
-        int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
-        if (ret != 0) return ret;
-
-        if ((attr_vertex_position_ = GetAttributeLocation(shader_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((attr_vertex_uv_ = GetAttributeLocation(shader_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((attr_vertex_normal_ = GetAttributeLocation(shader_vertex_normal)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((attr_vertex_position_ = GetAttributeLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-
-        return 0;
-    }
-
-    OpenGLShaderStandard::OpenGLShaderStandard()
-    {
-    }
-
     int OpenGLShaderStandard::Init(std::string vertex_shader_path, std::string fragment_shader_path)
     {
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
@@ -300,16 +278,16 @@ namespace game_engine { namespace graphics { namespace opengl {
         if ((attr_vertex_position_ = GetAttributeLocation(shader_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((attr_vertex_uv_ = GetAttributeLocation(shader_vertex_uv)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((attr_vertex_normal_ = GetAttributeLocation(shader_vertex_normal)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_model_ = GetAttributeLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_View_ = GetUniformLocation(shader_uni_view)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Projection_ = GetUniformLocation(shader_uni_projection)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
 
         return 0;
     }
 
+
     OpenGLShaderSSAO::OpenGLShaderSSAO() {
     }
-    
     int OpenGLShaderSSAO::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
     
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
@@ -329,10 +307,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
     
-    OpenGLShaderFinalPass::OpenGLShaderFinalPass()
-    {
+
+    OpenGLShaderFinalPass::OpenGLShaderFinalPass(){
     }
-    
     int OpenGLShaderFinalPass::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
     
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
@@ -362,9 +339,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
     
+
     OpenGLShaderSeparableAO::OpenGLShaderSeparableAO() {
     }
-    
     int OpenGLShaderSeparableAO::Init(std::string vertex_shader_path, std::string fragment_shader_path) {
     
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
@@ -384,24 +361,23 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
     
+
     OpenGLShaderShadowMap::OpenGLShaderShadowMap(){
     }
-    
     int OpenGLShaderShadowMap::Init(std::string vertex_shader_path, std::string fragment_shader_path){
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
         if (ret != 0) return ret;
     
         if ((attr_vertex_position_ = GetAttributeLocation(shader_vertex_position)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-        if ((uni_Model_ = GetUniformLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
+        if ((attr_vertex_model_ = GetAttributeLocation(shader_uni_model)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
         if ((uni_Lightspace_ = GetUniformLocation(shader_uni_lightspace)) == -1) return Error::ERROR_SHADER_RES_NOT_FOUND;
-    
+
         return 0;
     }
 
-    OpenGLShaderQuad::OpenGLShaderQuad()
-    {
-    }
 
+    OpenGLShaderQuad::OpenGLShaderQuad(){
+    }
     int OpenGLShaderQuad::Init(std::string vertex_shader_path, std::string fragment_shader_path)
     {
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);
@@ -414,10 +390,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
+
     OpenGLShaderDrawNormals::OpenGLShaderDrawNormals() {
-
     }
-
     int OpenGLShaderDrawNormals::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string geometry_shader_path)
     {
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path, geometry_shader_path);
@@ -433,10 +408,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
-    OpenGLShaderDisplacement::OpenGLShaderDisplacement()
-    {
-    }
 
+    OpenGLShaderDisplacement::OpenGLShaderDisplacement(){
+    }
     int OpenGLShaderDisplacement::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader)
     {
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path, tesselation_control_shader, tesselation_evaluation_shader);
@@ -460,10 +434,8 @@ namespace game_engine { namespace graphics { namespace opengl {
     }
 
     
-    OpenGLShaderDisplacementDrawNormals::OpenGLShaderDisplacementDrawNormals()
-    {
+    OpenGLShaderDisplacementDrawNormals::OpenGLShaderDisplacementDrawNormals(){
     }
-
     int OpenGLShaderDisplacementDrawNormals::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader, std::string geometry_shader)
     {
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path, tesselation_control_shader, tesselation_evaluation_shader, geometry_shader);
@@ -484,10 +456,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
-    OpenGLShaderWater::OpenGLShaderWater()
-    {
-    }
 
+    OpenGLShaderWater::OpenGLShaderWater(){
+    }
     int OpenGLShaderWater::Init(std::string vertex_shader_path, std::string fragment_shader_path, std::string tesselation_control_shader, std::string tesselation_evaluation_shader)
     {
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path, tesselation_control_shader, tesselation_evaluation_shader);
@@ -511,10 +482,9 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
-    OpenGLShaderSkybox::OpenGLShaderSkybox()
-    {
-    }
 
+    OpenGLShaderSkybox::OpenGLShaderSkybox(){
+    }
     int OpenGLShaderSkybox::Init(std::string vertex_shader_path, std::string fragment_shader_path)
     {
         int ret = OpenGLShader::Init(vertex_shader_path, fragment_shader_path);

@@ -40,6 +40,10 @@ namespace graphics {
 
         model_materials_ = std::vector<Material *>(model_->GetNumberOfMeshes(), nullptr);
 
+        glGenBuffers(1, &model_vbo_);
+        glBindBuffer(GL_ARRAY_BUFFER, model_vbo_);
+        glBufferData(GL_ARRAY_BUFFER, 1 * sizeof(glm::mat4), &model_matrix_, GL_DYNAMIC_DRAW);
+
         is_inited_ = true;
         return 0;
     }
@@ -118,6 +122,9 @@ namespace graphics {
 
     void GraphicsObject::SetModelMatrix() {
         model_matrix_ = translation_matrix_ * rotation_matrix_ * scale_matrix_;
+
+        glBindBuffer(GL_ARRAY_BUFFER, model_vbo_);
+        glBufferData(GL_ARRAY_BUFFER, 1 * sizeof(glm::mat4), &model_matrix_, GL_DYNAMIC_DRAW);
     }
 
 

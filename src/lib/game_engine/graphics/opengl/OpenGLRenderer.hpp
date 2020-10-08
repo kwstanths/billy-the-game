@@ -72,9 +72,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         /**
             Draws the object using a GBuffer
         */
-        int DrawGBufferStandard(OpenGLObject & object, glm::mat4 model, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
-        int DrawGBufferStandardInstanced(OpenGLObject & object, GLuint models_buffer, size_t amount, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
-    
+        int DrawGBufferStandard(OpenGLObject & object, GLuint models_buffer, size_t amount, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
+        
         /**
             Draws the object with displacement, using a GBuffer
         */
@@ -88,7 +87,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         /**
             Draws an object using the standard shader, forward rendering, alpha value currently not processed, hardcoded as 1 in the shader 
         */
-        int DrawStandard(OpenGLObject & object, glm::mat4 model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
+        int DrawStandard(OpenGLObject & object, glm::mat4 & model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
 
         /**
             Draws an object using the water shader, forward rendering
@@ -108,7 +107,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         /**
             Draws the objecet on the shadow map
         */
-        int DrawShadowMap(OpenGLObject & object, glm::mat4 model);
+        int DrawShadowMap(OpenGLObject & object, GLuint models_buffer, size_t amount);
     
         /**
             Runs the SSAO algorithm
@@ -233,7 +232,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         OpenGLShaderQuad shader_quad_;
         /* gbuffer shader used */
         OpenGLShaderGBuffer shader_gbuffer_;
-        OpenGLShaderGBufferInstanced shader_gbuffer_instanced_;
         /* Standard forward shader */
         OpenGLShaderStandard shader_standard_;
         /* SSAO shader */

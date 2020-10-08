@@ -2,10 +2,10 @@
 
 /* Input vertex attributes */
 layout(location = 0) in vec3 vertex_position_modelspace;
+layout(location = 1) in mat4 matrix_model;
 
 /* Values that stay constant */
 uniform mat4 matrix_lightspace;
-uniform mat4 matrix_model;
 
 void main(){
 

@@ -32,10 +32,14 @@ namespace game_engine { namespace graphics {
         struct InstanceDrawCall {
             Material * material_;
             Mesh * mesh_;
-            GLuint buffer_;
+            glm::mat4 * model_matrices_;
+            GLuint model_matrices_buffer_;
             size_t amount_;
         };
+
         std::vector<InstanceDrawCall> instanced_draws_;
+        /* list of model matrixes per instanced draw call */
+        std::vector<std::vector<glm::mat4>> model_matrices_;
 
     };
 

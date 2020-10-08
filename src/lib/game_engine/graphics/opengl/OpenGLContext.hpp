@@ -106,7 +106,6 @@ namespace game_engine { namespace graphics { namespace opengl {
         OpenGLShaderVerticesColor shader_vertices_color_;
         OpenGLShaderText shader_text_;
         OpenGLShaderGBuffer shader_gbuffer_;
-        OpenGLShaderGBufferInstanced shader_gbuffer_instanced_;
         OpenGLShaderStandard shader_standard_;
         OpenGLShaderSSAO shader_ssao_;
         OpenGLShaderSeparableAO shader_separable_ao_;

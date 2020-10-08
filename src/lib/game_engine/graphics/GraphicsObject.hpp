@@ -85,6 +85,7 @@ namespace graphics {
         glm::mat4 rotation_matrix_;
         glm::mat4 scale_matrix_;
         glm::mat4 model_matrix_;
+        GLuint model_vbo_;
 
         std::vector<Material *> model_materials_;
 

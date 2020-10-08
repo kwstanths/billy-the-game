@@ -129,7 +129,7 @@ namespace graphics {
                 return -1;
             }
             rendering_object->SetModelMatrix();
-            queue.Push(MESH_DRAW_t(mesh, material, &rendering_object->model_matrix_));
+            queue.Push(MESH_DRAW_t(mesh, material, &rendering_object->model_matrix_, rendering_object->model_vbo_, 1));
         }
 
         return 0;
@@ -211,7 +211,7 @@ namespace graphics {
         case RENDER_MODE::REGULAR:
         {
                 Mesh * mesh = draw_call.mesh_;
-                draw_call.material_->Render(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
+                draw_call.material_->Render(renderer_, mesh->opengl_object_, draw_call.model_matrix_, draw_call.model_matrix_vbo_, draw_call.amount_);
                 draw_calls_++;
             break;
         }
@@ -240,7 +240,7 @@ namespace graphics {
             AABox<3> box(min, max);
             int ret = f.BoxInFrustum(box);
             if (ret != Frustum::OUTSIDE) {
-                draw_call.material_->Render(renderer_, mesh->opengl_object_, model_matrix);
+                draw_call.material_->Render(renderer_, mesh->opengl_object_, draw_call.model_matrix_, draw_call.model_matrix_vbo_, draw_call.amount_);
                 draw_calls_++;
             }
 
@@ -265,6 +265,10 @@ namespace graphics {
 
         if (!instancing_.buffers_prepared_) {
             instancing_.PrepareBuffers();
+        }
+        for (size_t i = 0; i < instancing_.instanced_draws_.size(); i++) {
+            Instancing::InstanceDrawCall data = instancing_.instanced_draws_[i];
+            rendering_queues_[data.material_->rendering_queue_].Push(MESH_DRAW_t(data.mesh_, data.material_, data.model_matrices_, data.model_matrices_buffer_, data.amount_));
         }
 
         draw_calls_ = 0;
@@ -297,7 +301,7 @@ namespace graphics {
                     MESH_DRAW_t& draw_call = *itr;
                     Mesh * mesh = draw_call.mesh_;
 
-                    draw_call.material_->RenderShadow(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
+                    draw_call.material_->RenderShadow(renderer_, mesh->opengl_object_, draw_call.model_matrix_, draw_call.model_matrix_vbo_, draw_call.amount_);
                     draw_calls_shadows_++;
                 }
 
@@ -320,20 +324,12 @@ namespace graphics {
         glViewport(0, 0, context_->GetWindowWidth(), context_->GetWindowHeight());
         /* Bind the gbuffer, and draw the geometry */
         renderer_->g_buffer_->Bind();
-
-
         utility::CircularBuffer<MESH_DRAW_t>& queue = rendering_queues_[0];
         for (utility::CircularBuffer<MESH_DRAW_t>::iterator itr = queue.begin(); itr != queue.end(); ++itr) {
             MESH_DRAW_t& draw_call = *itr;
             RenderGBuffer(draw_call);
         }
-
-        for (size_t i = 0; i < instancing_.instanced_draws_.size(); i++) {
-            Instancing::InstanceDrawCall& data = instancing_.instanced_draws_[i];
-            data.material_->RenderInstanced(renderer_, data.mesh_->opengl_object_, data.buffer_, data.amount_);
-        }
         renderer_->g_buffer_->UnBind();
-
         renderer_->DrawWireframe(false);
         
         // Post processing stack should go here
@@ -447,15 +443,14 @@ namespace graphics {
             MESH_DRAW_t& draw_call = *itr;
             Mesh * mesh = draw_call.mesh_;
 
-            draw_call.material_->Render(renderer_, mesh->opengl_object_, *draw_call.model_matrix_);
+            draw_call.material_->Render(renderer_, mesh->opengl_object_, draw_call.model_matrix_, draw_call.model_matrix_vbo_, draw_call.amount_);
             draw_calls_++;
         }
         renderer_->DrawWireframe(false);
 
 
         /* Render the skybox */
-        if (skybox_ != nullptr) renderer_->DrawSkybox(skybox_->texture_cubemap_);
-
+        //if (skybox_ != nullptr) renderer_->DrawSkybox(skybox_->texture_cubemap_);
 
         /* Render overlay */
         while (text_to_draw_.Items() > 0) {
