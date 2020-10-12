@@ -24,7 +24,6 @@ in VS_OUT {
     vec2 uv;
     vec3 normal_viewspace;
     vec3 fragment_position_viewspace;
-    vec4 fragment_position_lightspace;
 } fs_in;
 
 uniform Material object_material;
@@ -40,9 +39,6 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec
 void main(){
 
 	vec4 texture_color = texture(object_material.texture_diffuse, fs_in.uv);
-	if (texture_color.a < 0.1) 
-        discard;
-	
     vec3 fragment_position_viewspace = fs_in.fragment_position_viewspace;
     vec3 normal_viewspace = normalize(fs_in.normal_viewspace);
     vec3 fragment_color = texture_color.rgb + object_material.diffuse;
@@ -54,7 +50,7 @@ void main(){
 	vec3 directional_light_color = CalculateDirectionalLight(directional_light, normal_viewspace, view_direction, fragment_color, fragment_specular_intensity, object_material.shininess, 1);
 
 	/* Sum total components, the minimum color is zero, the maxium color possible the actual color of the fragment */
-	FragColor = vec4(clamp(directional_light_color, vec3(0,0,0), fragment_color), 1);
+	FragColor = vec4(clamp(directional_light_color, vec3(0,0,0), fragment_color), 1.0);
 }
 
 vec3 CalculateDirectionalLight(DirectionalLight light, vec3 fragment_normal, vec3 view_direction, vec3 fragment_color, float fragment_specular_intensity, float shininess, float ambient_factor) {

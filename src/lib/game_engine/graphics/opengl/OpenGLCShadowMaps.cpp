@@ -1,4 +1,4 @@
-#include "OpenGLShadowMap.hpp"
+#include "OpenGLCShadowMaps.hpp"
 
 #undef min
 #undef max
@@ -9,19 +9,17 @@
 #include "debug_tools/Console.hpp"
 namespace dt = debug_tools;
 
-namespace game_engine {
-namespace graphics {
-namespace opengl {
+namespace game_engine { namespace graphics { namespace opengl {
 
-    OpenGLCShadowMapS::OpenGLCShadowMapS() {
+    OpenGLCShadowMaps::OpenGLCShadowMaps() {
         is_inited_ = false;
     }
 
-    OpenGLCShadowMapS::~OpenGLCShadowMapS() {
+    OpenGLCShadowMaps::~OpenGLCShadowMaps() {
         is_inited_ = false;
     }
 
-    int OpenGLCShadowMapS::Init(OpenGLContext * context, size_t width, size_t height) {
+    int OpenGLCShadowMaps::Init(OpenGLContext * context, size_t width, size_t height) {
         width_ = width;
         height_ = height;
         aspect_ratio_ = (float)context->GetWindowWidth() / (float)context->GetWindowHeight();
@@ -29,7 +27,7 @@ namespace opengl {
         glGenFramebuffers(1, &frame_buffer_);
         glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer_);
 
-        glGenTextures(3, shadow_maps);
+        glGenTextures(4, shadow_maps);
         for (size_t i = 0; i < n_shadow_maps_; i++) {
             glBindTexture(GL_TEXTURE_2D, shadow_maps[i]);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -57,12 +55,12 @@ namespace opengl {
         return 0;
     }
 
-    int OpenGLCShadowMapS::Destroy() {
+    int OpenGLCShadowMaps::Destroy() {
         /* TODO */
         return 0;
     }
 
-    int OpenGLCShadowMapS::Bind(size_t index) {
+    int OpenGLCShadowMaps::Bind(size_t index) {
 
         if (index >= n_shadow_maps_) return -1;
 
@@ -72,14 +70,14 @@ namespace opengl {
         return 0;
     }
 
-    int OpenGLCShadowMapS::Unbind() {
+    int OpenGLCShadowMaps::Unbind() {
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         return 0;
     }
 
-    void OpenGLCShadowMapS::CalculateProjectionMatrices(glm::vec3 light_direction, OpenGLCamera * camera)
+    void OpenGLCShadowMaps::CalculateProjectionMatrices(glm::vec3 light_direction, OpenGLCamera * camera)
     {
         /* Calculate an orthogonal coordinate system based on the light direction */
         glm::vec3 light_forward = light_direction;
@@ -99,9 +97,10 @@ namespace opengl {
 
         /* Calculate the limits of the cascades */
         cascade_limits_[0] = camera_config.z_near_;
-        cascade_limits_[1] = camera_config.z_near_ + 25;
-        cascade_limits_[2] = camera_config.z_near_ + 80;
-        cascade_limits_[3] = camera_config.z_far_;
+        cascade_limits_[1] = camera_config.z_near_ + 35;
+        cascade_limits_[2] = camera_config.z_near_ + 70;
+        cascade_limits_[3] = camera_config.z_near_ + 150;
+        cascade_limits_[4] = camera_config.z_far_;
 
         /* For all cascades */
         for (size_t i = 0; i < n_shadow_maps_; i++) {
@@ -141,8 +140,8 @@ namespace opengl {
                 [shaderx7] 4.1 Practical Cascaded Shadow Maps
                 https://pt.slideshare.net/ohyecloudy/shaderx7-41-practical-cascaded-shadow-maps?nomobile=true
             */
-            float x = glm::ceil(glm::dot(frustum_bs_center, light_up) * 1024 / frustum_bs_radius) * frustum_bs_radius / 1024;
-            float y = glm::ceil(glm::dot(frustum_bs_center, light_side) * 1024/ frustum_bs_radius) * frustum_bs_radius / 1024;
+            float x = glm::ceil(glm::dot(frustum_bs_center, light_up) * (height_ / 2) / frustum_bs_radius) * frustum_bs_radius / (height_ / 2);
+            float y = glm::ceil(glm::dot(frustum_bs_center, light_side) * (width_ / 2) / frustum_bs_radius) * frustum_bs_radius / (width_ / 2);
             frustum_bs_center = light_up * x + light_side * y + light_direction * glm::dot(frustum_bs_center, light_direction);
 
             /* Calculate view and projection matrices */
@@ -157,7 +156,7 @@ namespace opengl {
         }
     }
 
-    void OpenGLCShadowMapS::ActivateTextures(size_t index)
+    void OpenGLCShadowMaps::ActivateTextures(size_t index)
     {
         glActiveTexture(GL_TEXTURE0 + index);
         glBindTexture(GL_TEXTURE_2D, shadow_maps[0]);
@@ -167,40 +166,45 @@ namespace opengl {
 
         glActiveTexture(GL_TEXTURE0 + index + 2);
         glBindTexture(GL_TEXTURE_2D, shadow_maps[2]);
+
+        glActiveTexture(GL_TEXTURE0 + index + 3);
+        glBindTexture(GL_TEXTURE_2D, shadow_maps[3]);
     }
 
-    void OpenGLCShadowMapS::ConfigureViewport() {
+    void OpenGLCShadowMaps::ConfigureViewport() {
         glViewport(0, 0, width_, height_);
     }
 
-    void OpenGLCShadowMapS::ClearDepth() {
+    void OpenGLCShadowMaps::ClearDepth() {
         Bind(0);
         glClear(GL_DEPTH_BUFFER_BIT);
         Bind(1);
         glClear(GL_DEPTH_BUFFER_BIT);
         Bind(2);
         glClear(GL_DEPTH_BUFFER_BIT);
+        Bind(3);
+        glClear(GL_DEPTH_BUFFER_BIT);
     }
 
-    size_t OpenGLCShadowMapS::GetNCascades() {
+    size_t OpenGLCShadowMaps::GetNCascades() {
         return n_shadow_maps_;
     }
 
-    glm::mat4 & OpenGLCShadowMapS::GetProjectionMatrix(size_t index) {
+    glm::mat4 & OpenGLCShadowMaps::GetProjectionMatrix(size_t index) {
         return projection_matrices_[index];
     }
 
-    glm::mat4 & OpenGLCShadowMapS::GetViewMatrix(size_t index)
+    glm::mat4 & OpenGLCShadowMaps::GetViewMatrix(size_t index)
     {
         return view_matrices_[index];
     }
 
-    glm::mat4 & OpenGLCShadowMapS::GetLightspaceMatrix(size_t index)
+    glm::mat4 & OpenGLCShadowMaps::GetLightspaceMatrix(size_t index)
     {
         return lightspace_[index];
     }
 
-    float OpenGLCShadowMapS::GetCascadeEnd(size_t index)
+    float OpenGLCShadowMaps::GetCascadeEnd(size_t index)
     {
         return cascade_limits_[index + 1];
     }

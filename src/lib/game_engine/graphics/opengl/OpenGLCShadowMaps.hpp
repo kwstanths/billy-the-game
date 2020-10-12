@@ -1,5 +1,5 @@
-#ifndef __OpenGLShadowMap_hpp__
-#define __OpenGLShadowMap_hpp__
+#ifndef __OpenGLCShadowMaps_hpp__
+#define __OpenGLCShadowMaps_hpp__
 
 #include <glm/glm.hpp>
 #include "glm/gtc/matrix_transform.hpp"
@@ -9,18 +9,16 @@
 #include "OpenGLContext.hpp"
 #include "OpenGLCamera.hpp"
 
-namespace game_engine {
-namespace graphics {
-namespace opengl {
+namespace game_engine { namespace graphics { namespace opengl {
 
     /*
-        Cascaded shadow maps, with 3 cascades
+        Cascaded shadow maps, with 4 cascades
     */
-    class OpenGLCShadowMapS {
+    class OpenGLCShadowMaps {
     public:
-        OpenGLCShadowMapS();
+        OpenGLCShadowMaps();
 
-        ~OpenGLCShadowMapS();
+        ~OpenGLCShadowMaps();
 
         /**
             @param context The OpenGLContext
@@ -79,12 +77,12 @@ namespace opengl {
 
         GLuint frame_buffer_;
 
-        size_t n_shadow_maps_ = 3;
-        GLuint shadow_maps[3];
-        glm::mat4 view_matrices_[3];
-        glm::mat4 projection_matrices_[3];
-        glm::mat4 lightspace_[3];
-        GLfloat cascade_limits_[4];
+        size_t n_shadow_maps_ = 4;
+        GLuint shadow_maps[4];
+        glm::mat4 view_matrices_[4];
+        glm::mat4 projection_matrices_[4];
+        glm::mat4 lightspace_[4];
+        GLfloat cascade_limits_[5];
     };
 
 }

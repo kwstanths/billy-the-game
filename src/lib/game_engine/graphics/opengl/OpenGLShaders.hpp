@@ -354,12 +354,15 @@ namespace game_engine { namespace graphics { namespace opengl {
         GLuint uni_shadow_map_0_;
         GLuint uni_shadow_map_1_;
         GLuint uni_shadow_map_2_;
+        GLuint uni_shadow_map_3_;
         GLuint uni_matrix_lightspace_0_;
         GLuint uni_matrix_lightspace_1_;
         GLuint uni_matrix_lightspace_2_;
+        GLuint uni_matrix_lightspace_3_;
         GLuint uni_shadow_cascade_0_;
         GLuint uni_shadow_cascade_1_;
         GLuint uni_shadow_cascade_2_;
+        GLuint uni_shadow_cascade_3_;
     };
 
     /* A shader to draw the normals of a model */

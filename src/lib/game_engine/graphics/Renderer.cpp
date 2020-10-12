@@ -263,9 +263,11 @@ namespace graphics {
 
     void Renderer::FlushDrawCalls() {
 
+        /* If instanced data have not been prepared, prepare them, should happen only once */
         if (!instancing_.buffers_prepared_) {
             instancing_.PrepareBuffers();
         }
+        /* Get instanced draw calls, and put them in their respective rendering queues */
         for (size_t i = 0; i < instancing_.instanced_draws_.size(); i++) {
             Instancing::InstanceDrawCall data = instancing_.instanced_draws_[i];
             rendering_queues_[data.material_->rendering_queue_].Push(MESH_DRAW_t(data.mesh_, data.material_, data.model_matrices_, data.model_matrices_buffer_, data.amount_));
@@ -277,13 +279,13 @@ namespace graphics {
         /* Check if shadows are enabled or not */
         ConsoleCommand command = ConsoleParser::GetInstance().GetLastCommand();
         if (command.type_ == COMMAND_SHADOW_MAPPING) shadows = static_cast<bool>(command.arg_1_);
-        
         renderer_->use_shadows_ = shadows;
+        
         if (shadows && light_shadows_ != nullptr) {
-            /* Calculate cascaded shadow maps matrices */
+            /* Calculate the cascaded shadow maps matrices */
             renderer_->shadow_maps_->CalculateProjectionMatrices(light_shadows_->direction_, camera_);
 
-            /* Render the shadow maps with all the GBuffer object */
+            /* Render each shadow maps with all the objects in the GBuffer */
             size_t n_of_cascades = renderer_->shadow_maps_->GetNCascades();
             for (size_t i = 0; i < n_of_cascades; i++) {
                 renderer_->shadow_maps_->Bind(i);
@@ -318,7 +320,7 @@ namespace graphics {
             draw_wireframe_ = static_cast<bool>(command.arg_1_);
         }
         renderer_->DrawWireframe(draw_wireframe_);
-        
+
 
         /* Render GBuffer */
         glViewport(0, 0, context_->GetWindowWidth(), context_->GetWindowHeight());
@@ -332,6 +334,7 @@ namespace graphics {
         renderer_->g_buffer_->UnBind();
         renderer_->DrawWireframe(false);
         
+
         // Post processing stack should go here
         // Is AO enabled?
         bool ssao = ConfigurationFile::GetInstance().DoSSAO();
@@ -450,7 +453,8 @@ namespace graphics {
 
 
         /* Render the skybox */
-        //if (skybox_ != nullptr) renderer_->DrawSkybox(skybox_->texture_cubemap_);
+        if (skybox_ != nullptr) renderer_->DrawSkybox(skybox_->texture_cubemap_);
+
 
         /* Render overlay */
         while (text_to_draw_.Items() > 0) {

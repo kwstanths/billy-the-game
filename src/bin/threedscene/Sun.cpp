@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "game_engine/core/FileSystem.hpp"
 #include "game_engine/math/RNGenerator.hpp"
 #include "game_engine/math/Types.hpp"
 #include "game_engine/graphics/Material.hpp"

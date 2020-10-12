@@ -26,7 +26,7 @@ namespace game_engine { namespace graphics {
 
 
     /**
-        Material used for standard drawing, deferred pass
+        Material used for standard drawing, deferred pass, default shader
     */
     class MaterialDeferredStandard : public Material {
     public:

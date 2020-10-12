@@ -21,12 +21,10 @@ namespace game_engine { namespace graphics {
 
         rendering_queue_ = 0;
     }
-    void MaterialDeferredStandard::Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 * model_matrix, GLuint models_buffer, size_t amount)
-    {
+    void MaterialDeferredStandard::Render(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 * model_matrix, GLuint models_buffer, size_t amount) {
         renderer->DrawGBufferStandard(object, models_buffer, amount, diffuse_.ToGlm(), specular_.ToGlm(), texture_diffuse_, texture_specular_);
     }
-    void MaterialDeferredStandard::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 * model_matrix, GLuint models_buffer, size_t amount)
-    {
+    void MaterialDeferredStandard::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 * model_matrix, GLuint models_buffer, size_t amount) {
         renderer->DrawShadowMap(object, models_buffer, amount);
     }
 
@@ -49,13 +47,12 @@ namespace game_engine { namespace graphics {
     {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        renderer->DrawStandard(object, *model_matrix, ambient_.ToGlm(), diffuse_.ToGlm(), specular_.ToGlm(), shininess_, texture_diffuse_, texture_specular_);
+        renderer->DrawStandard(object, models_buffer, amount, ambient_.ToGlm(), diffuse_.ToGlm(), specular_.ToGlm(), shininess_, texture_diffuse_, texture_specular_);
         glDisable(GL_BLEND);
     }
     void MaterialForwardStandard::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 * model_matrix, GLuint models_buffer, size_t amount)
     {
-        /* TODO Standard forward rendering shadow mapping not implemented */
-        /* empty */
+        /* TODO objects rendered in a forward pass don't cast shadows currently */
     }
 
 
@@ -76,7 +73,7 @@ namespace game_engine { namespace graphics {
     }
     void MaterialDeferredDisplacement::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 * model_matrix, GLuint models_buffer, size_t amount)
     {
-        /* TODO Displacement map rendering shadow mapping not implemented */
+        /* TODO Objects rendered with a displacement map don't cast shadows currently */
         return;
     }
 
@@ -92,8 +89,7 @@ namespace game_engine { namespace graphics {
     }
     void MaterialForwardDrawNormals::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 * model_matrix, GLuint models_buffer, size_t amount)
     {
-        /* does not cast shadow */
-        /* empty */
+        /* Does not cast shadow */
     }
 
 
@@ -112,7 +108,7 @@ namespace game_engine { namespace graphics {
     }
     void MaterialForwardColor::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 * model_matrix, GLuint models_buffer, size_t amount)
     {
-        /* does not cast shadow */
+        /* Does not cast shadow */
         /* empty */
     }
 
@@ -133,8 +129,7 @@ namespace game_engine { namespace graphics {
     }
     void MaterialForwardDisplacementDrawNormals::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 * model_matrix, GLuint models_buffer, size_t amount)
     {
-        /* does not cast shadow */
-        /* empty */
+        /* Does not cast shadow */
     }
 
 
@@ -163,7 +158,6 @@ namespace game_engine { namespace graphics {
     void MaterialForwardWater::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 * model_matrix, GLuint models_buffer, size_t amount)
     {
         /* Water does not cast shadow */
-        /* empty */
     }
 
 
@@ -180,7 +174,6 @@ namespace game_engine { namespace graphics {
     void MaterialSkybox::RenderShadow(opengl::OpenGLRenderer * renderer, opengl::OpenGLObject & object, glm::mat4 * model_matrix, GLuint models_buffer, size_t amount)
     {
         /* skybox does not cast shadow */
-        /* empty */
     }
 
 }

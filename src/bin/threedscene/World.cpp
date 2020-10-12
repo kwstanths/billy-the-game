@@ -30,15 +30,17 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     if (ret) return ret;
 
     ///* Create a tree */
-    {
-        Player * player;
-        player = NewObj<Player>();
-        player->Init(0, 0, 8, input, camera, this, engine);
-    }
+    //{
+    //    Player * player;
+    //    player = NewObj<Player>();
+    //    player->Init(0, 0, 8, input, camera, this, engine);
+    //}
 
+    /* Initialize a model */
     game_engine::graphics::Model * model = new game_engine::graphics::Model();
     model->Init("lowpolytree.obj");
 
+    /* And create some instances from its meshes */
     std::string assets_dir = game_engine::FileSystem::GetInstance().GetDirectoryAssets();
     game_engine::graphics::Mesh * mesh_leaves = model->GetMesh(0);
     game_engine::graphics::Mesh * mesh_bark = model->GetMesh(1);
@@ -56,6 +58,12 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     /* Create a floor, solid green color everywhere */
     Floor * floor = NewObj<Floor>();
     floor->Init(150, -1.8, 150, this);
+
+    /* Create a sun */
+    Sun * sun = NewObj<Sun>();
+    sun->Init(0.0f, 100, 0.0f, this, engine);
+
+    /* And nothing else */
 
     /* Draw some islands */
     //{
@@ -133,10 +141,6 @@ int World::Init(Input * input, Camera * camera, ge::GameEngine * engine) {
     //    Water * water = NewObj<Water>();
     //    water->Init(-480.0f, 0.0f, 480.0f, this);
     //}
-
-    /* Draw a sun */
-    Sun * sun = NewObj<Sun>();
-    sun->Init(300, 300, 0.0f, this, engine);
 
     ///* Create a skybox */
     //std::string asssets_directory = ge::FileSystem::GetInstance().GetDirectoryAssets();

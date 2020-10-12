@@ -23,7 +23,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         g_buffer_ = new OpenGLGBuffer();
         frame_buffer_one_ = new OpenGLFrameBufferTexture();
         frame_buffer_two_ = new OpenGLFrameBufferTexture();
-        shadow_maps_ = new OpenGLCShadowMapS();
+        shadow_maps_ = new OpenGLCShadowMaps();
     
     }
     
@@ -163,8 +163,7 @@ namespace game_engine { namespace graphics { namespace opengl {
             shader_final_pass_.SetUniformInt(shader_final_pass_.uni_shadow_map_0_, 4);
             shader_final_pass_.SetUniformInt(shader_final_pass_.uni_shadow_map_1_, 5);
             shader_final_pass_.SetUniformInt(shader_final_pass_.uni_shadow_map_2_, 6);
-
-
+            shader_final_pass_.SetUniformInt(shader_final_pass_.uni_shadow_map_3_, 7);
         }
 
         {
@@ -348,26 +347,11 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_gbuffer_.SetUniformVec3(shader_gbuffer_.GetUniformLocation("object_material.specular"), specular);
         //shader_gbuffer_.SetUniformFloat(shader_gbuffer_.GetUniformLocation("object_material.shininess"), mtl.shininess_);
 
+        /* Setup shader attributes */
         object.SetupAttributes(&shader_gbuffer_);
+        SetModelMatrixAttribute(3, models_buffer);
 
-        glBindBuffer(GL_ARRAY_BUFFER, models_buffer);
-        std::size_t vec4Size = sizeof(glm::vec4);
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
-        glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
-        glEnableVertexAttribArray(5);
-        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
-        glEnableVertexAttribArray(6);
-        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
-        glVertexAttribDivisor(0, 0);
-        glVertexAttribDivisor(1, 0);
-        glVertexAttribDivisor(2, 0);
-        glVertexAttribDivisor(3, 1);
-        glVertexAttribDivisor(4, 1);
-        glVertexAttribDivisor(5, 1);
-        glVertexAttribDivisor(6, 1);
-
+        /* Activate textures */
         diffuse_texture->ActivateTexture(0);
         specular_texture->ActivateTexture(1);
 
@@ -446,7 +430,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         return 0;
     }
 
-    int OpenGLRenderer::DrawStandard(OpenGLObject & object, glm::mat4 & model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture)
+    int OpenGLRenderer::DrawStandard(OpenGLObject & object, GLuint models_buffer, size_t amount, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture)
     {
 
         if (!is_inited_) return -1;
@@ -462,8 +446,8 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_standard_.SetUniformFloat(shader_standard_.GetUniformLocation("object_material.shininess"), shininess);
 
         glBindVertexArray(object.VAO_);
-
         object.SetupAttributes(&shader_gbuffer_);
+        SetModelMatrixAttribute(3, models_buffer);
 
         diffuse_texture->ActivateTexture(0);
         specular_texture->ActivateTexture(1);
@@ -579,22 +563,9 @@ namespace game_engine { namespace graphics { namespace opengl {
 
         shader_shadow_map_.Use();
 
+        /* Setup shader attributes */
         object.SetupAttributes(&shader_shadow_map_);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, models_buffer);
-        std::size_t vec4Size = sizeof(glm::vec4);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
-        glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
-        glVertexAttribDivisor(1, 1);
-        glVertexAttribDivisor(2, 1);
-        glVertexAttribDivisor(3, 1);
-        glVertexAttribDivisor(4, 1);
+        SetModelMatrixAttribute(1, models_buffer);
 
         object.Render(amount);
         
@@ -715,9 +686,11 @@ namespace game_engine { namespace graphics { namespace opengl {
         shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_0_, shadow_maps_->GetLightspaceMatrix(0));
         shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_1_, shadow_maps_->GetLightspaceMatrix(1));
         shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_2_, shadow_maps_->GetLightspaceMatrix(2));
+        shader_final_pass_.SetUniformMat4(shader_final_pass_.uni_matrix_lightspace_3_, shadow_maps_->GetLightspaceMatrix(3));
         shader_final_pass_.SetUniformFloat(shader_final_pass_.uni_shadow_cascade_0_, shadow_maps_->GetCascadeEnd(0));
         shader_final_pass_.SetUniformFloat(shader_final_pass_.uni_shadow_cascade_1_, shadow_maps_->GetCascadeEnd(1));
         shader_final_pass_.SetUniformFloat(shader_final_pass_.uni_shadow_cascade_2_, shadow_maps_->GetCascadeEnd(2));
+        shader_final_pass_.SetUniformFloat(shader_final_pass_.uni_shadow_cascade_3_, shadow_maps_->GetCascadeEnd(3));
         shader_final_pass_.SetUniformBool(shader_final_pass_.GetUniformLocation("show_cascades"), show_shadow_cascades_);
 
         glActiveTexture(GL_TEXTURE0);
@@ -938,6 +911,24 @@ namespace game_engine { namespace graphics { namespace opengl {
         glBindVertexArray(VAO_Quad_);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glBindVertexArray(0);
+    }
+
+    void OpenGLRenderer::SetModelMatrixAttribute(GLuint position, GLuint buffer)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        std::size_t vec4Size = sizeof(glm::vec4);
+        glEnableVertexAttribArray(position);
+        glVertexAttribPointer(position, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+        glVertexAttribDivisor(position, 1);
+        glEnableVertexAttribArray(position + 1);
+        glVertexAttribPointer(position + 1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+        glVertexAttribDivisor(position + 1, 1);
+        glEnableVertexAttribArray(position + 2);
+        glVertexAttribPointer(position + 2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+        glVertexAttribDivisor(position + 2, 1);
+        glEnableVertexAttribArray(position + 3);
+        glVertexAttribPointer(position + 3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+        glVertexAttribDivisor(position + 3, 1);
     }
 
 }

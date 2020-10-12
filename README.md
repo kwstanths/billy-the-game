@@ -1,14 +1,15 @@
 # billy-the-game
 Billy the game is a personal project to create an open world 2D game, by using C++, OpenGL and other similar libraries to ease development. 
-The main goal is to learn basic rendering techniques, physics, memory 
+The main goal is to learn rendering techniques, physics, memory 
 management, data structures, engine development and anything else that might be used 
-in the development of a game, featuring:  
+in the development of a game. While the main goal is in 2D, the core features are in 3D, and I spend a considerable amount of time developing for 3D. Featuring:   
 
 
 In Graphics with OpenGL:  
 - Reading models through assimp
 - Rendering with Phong shading (Point/Directional/Spot lights), one diffuse texture, and one specular map
 - Deferred and forward rendering queues
+- Instancing
 - Shadows with cascaded shadow maps
 - View frustum culling and occlusion queries
 - Screen Space Ambient Occlusion
@@ -42,8 +43,8 @@ Tessellation, terrain:
 Tessellation, water:    
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/AP2Zud0mouY/0.jpg)](https://www.youtube.com/watch?v=AP2Zud0mouY&list=PLocuszpm1snWZPt-0sGtqyRBMn3De0Rnq&index=4)
 
-Cascaded shadow maps:    
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/B9FWrrfOGlE/0.jpg)](https://www.youtube.com/watch?v=B9FWrrfOGlE)
+Instancing and cascaded shadow maps:    
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/tQ1OW0HHD0k/0.jpg)](https://www.youtube.com/watch?v=tQ1OW0HHD0k&list=PLocuszpm1snXQ3j0rftTlSW7g4SMdAK3z&index=2)
 
 
 
@@ -61,7 +62,7 @@ Rope and cloth
 
 ## Roadmap  
 In Graphics:   
-- Instancing
+- Create a 3D scene that has a little bit of everything
 - Cloud rendering through volumetric rendering
 - Replace Phong shading with Physically based rendering
 - Create some post processing effects, fog, bloom, etc. 

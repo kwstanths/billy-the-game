@@ -16,7 +16,7 @@
 #include "OpenGLCamera.hpp"
 #include "OpenGLGBuffer.hpp"
 #include "OpenGLFrameBufferTexture.hpp"
-#include "OpenGLShadowMap.hpp"
+#include "OpenGLCShadowMaps.hpp"
 #include "OpenGLCubemap.hpp"
 
 namespace game_engine { namespace graphics { namespace opengl {
@@ -70,12 +70,20 @@ namespace game_engine { namespace graphics { namespace opengl {
         void SetView(OpenGLCamera * camera);
     
         /**
-            Draws the object using a GBuffer
+            Draws an object using the GBuffer
+            @param object The mesh declared as an OpenGL vbo
+            @param models_buffer The opengl buffer holding  the model matrix of the mesh
+            @param amount The number of instances to draw, the models buffer should hold a model matrix for all of the instances
+            @param diffuse The diffuse color
+            @param specular The specular color
+            @param diffuse_texture The diffuse texure
+            @param specular_texture The specular texture
+            @return 0 = OK, -1 = Something is not initialized
         */
         int DrawGBufferStandard(OpenGLObject & object, GLuint models_buffer, size_t amount, glm::vec3 diffuse, glm::vec3 specular, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
         
         /**
-            Draws the object with displacement, using a GBuffer
+            Draw a mesh with displacement using the GBuffer
         */
         int DrawGBufferDisplacement(OpenGLObject & object, glm::mat4 & model, float specular_intensity, OpenGLTexture * displacement_texture, float displacement_mult, OpenGLTexture * diffuse_texture);
 
@@ -87,7 +95,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         /**
             Draws an object using the standard shader, forward rendering, alpha value currently not processed, hardcoded as 1 in the shader 
         */
-        int DrawStandard(OpenGLObject & object, glm::mat4 & model, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
+        int DrawStandard(OpenGLObject & object, GLuint models_buffer, size_t amount, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, OpenGLTexture * diffuse_texture, OpenGLTexture * specular_texture);
 
         /**
             Draws an object using the water shader, forward rendering
@@ -100,7 +108,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         int DrawColor(OpenGLObject & object, glm::mat4 & model, glm::vec3 color, float alpha);
 
         /**
-        
+            
         */
         int DrawGBufferTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 color = { 1,1,1 });
     
@@ -178,7 +186,7 @@ namespace game_engine { namespace graphics { namespace opengl {
             @return 0=OK, -1=Font was not initialised
         */
         int Draw2DText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
-    
+        
         /**
             Draws a texture
             @param texture_id The id of the texture
@@ -196,7 +204,7 @@ namespace game_engine { namespace graphics { namespace opengl {
         OpenGLGBuffer * g_buffer_;
         OpenGLFrameBufferTexture * frame_buffer_one_;
         OpenGLFrameBufferTexture * frame_buffer_two_;
-        OpenGLCShadowMapS * shadow_maps_;
+        OpenGLCShadowMaps * shadow_maps_;
         bool use_shadows_;
         OpenGLCubemap * skybox_ = nullptr;
     
@@ -267,6 +275,13 @@ namespace game_engine { namespace graphics { namespace opengl {
             Location 0 is position, Location 1 is uv coordinates
         */
         void RenderQuad();
+
+        /**
+            Set the model matrix attribute for a shader, at a certain position
+            @param position The shader attribute position
+            @param buffer The ARRAY_BUFFER storing the model matrix data
+        */
+        void SetModelMatrixAttribute(GLuint position, GLuint buffer);
     };
 
 }

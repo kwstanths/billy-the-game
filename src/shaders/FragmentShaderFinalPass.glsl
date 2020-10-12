@@ -53,9 +53,9 @@ uniform mat4 matrix_projection;
 uniform mat4 matrix_view_inverse;
 
 /* CSM info */
-uniform sampler2D shadow_map[3];
-uniform mat4 matrix_lightspace[3];
-uniform float shadow_cascades[3];
+uniform sampler2D shadow_map[4];
+uniform mat4 matrix_lightspace[4];
+uniform float shadow_cascades[4];
 uniform bool use_shadows;
 uniform bool show_cascades;
 
@@ -131,12 +131,13 @@ void main() {
         vec4 fragment_position_worldspace = matrix_view_inverse * vec4(fragment_position_viewspace, 1);
         
         /* Discard actual color, set color based on cascade for debugging */
-        vec3 colors[3];
+        vec3 colors[4];
         colors[0] = vec3(1, 0.5, 0.5);
         colors[1] = vec3(0.5, 1, 0.5);
-        colors[2] = vec3(0.5, 0.5, 1);
+        colors[2] = vec3(1, 1, 0.5);
+        colors[3] = vec3(0.5, 0.5, 1);
         
-        for (int i = 0 ; i < 3 ; i++) {
+        for (int i = 0 ; i < 4 ; i++) {
             if (-fragment_position_viewspace.z <= shadow_cascades[i]) {
                 
                 if (show_cascades) 
